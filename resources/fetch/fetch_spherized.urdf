@@ -1,0 +1,985 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="fetch" path="/home/zak/src/grapeshot/grapeshot/assets/fetch/fetch_simple.urdf">
+	<link name="base_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/base_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.356 0.361 0.376 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.24"></sphere>
+			</geometry>
+			<origin xyz="-0.12 0.0 0.182" rpy="0 0 0"></origin>
+		</collision>
+
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.225 0.00 0.31" rpy="0 0 0"></origin>
+		</collision>
+
+
+		<collision>
+			<geometry>
+				<sphere radius="0.22"></sphere>
+			</geometry>
+			<origin xyz="0.08 -0.06 0.16" rpy="0 0 0"></origin>
+		</collision>
+
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.215 -0.07 0.31" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.185 -0.135 0.31" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.13 -0.185 0.31" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.065 -0.2 0.31" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.01 -0.2 0.31" rpy="0 0 0"></origin>
+		</collision>
+
+		<collision>
+			<geometry>
+				<sphere radius="0.22"></sphere>
+			</geometry>
+			<origin xyz="0.08 0.06 0.16" rpy="0 0 0"></origin>
+		</collision>
+
+
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.215 0.07 0.31" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.185 0.135 0.31" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.13 0.185 0.31" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.065 0.2 0.31" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.066"></sphere>
+			</geometry>
+			<origin xyz="0.01 0.2 0.31" rpy="0 0 0"></origin>
+		</collision>
+
+
+
+	</link>
+	<link name="torso_lift_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/torso_lift_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="1 1 1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.15"></sphere>
+			</geometry>
+			<origin xyz="-0.1 -0.05 0.15" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.15"></sphere>
+			</geometry>
+			<origin xyz="-0.1 0.05 0.15" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.15"></sphere>
+			</geometry>
+			<origin xyz="-0.1 0.05 0.3" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.15"></sphere>
+			</geometry>
+			<origin xyz="-0.1 0.05 0.45" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.15"></sphere>
+			</geometry>
+			<origin xyz="-0.1 -0.05 0.45" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.15"></sphere>
+			</geometry>
+			<origin xyz="-0.1 -0.05 0.3" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="torso_lift_link_collision_2">
+		<visual>
+			<geometry>
+				<sphere radius="0.0001"></sphere>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.07"></sphere>
+			</geometry>
+			<origin xyz="0.1 0 0.24" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="head_pan_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/head_pan_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.356 0.361 0.376 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.15"></sphere>
+			</geometry>
+			<origin xyz="0 0 0.06" rpy="0 0 0"></origin>
+		</collision>
+
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="0.145 0 0.058" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="0.145 -0.0425 0.058" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="0.145 0.0425 0.058" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="0.145 0.085 0.058" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="0.145 -0.085 0.058" rpy="0 0 0"></origin>
+		</collision>
+
+
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.0625 -0.115 0.03" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.088 -0.115 0.03" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.1135 -0.115 0.03" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.139 -0.115 0.03" rpy="0 0 0"></origin>
+		</collision>
+
+
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.0625 -0.115 0.085" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.088 -0.115 0.085" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.1135 -0.115 0.085" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.139 -0.115 0.085" rpy="0 0 0"></origin>
+		</collision>
+
+    <collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.16 -0.115 0.075" rpy="0 0 0"></origin>
+		</collision>
+    <collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.168 -0.115 0.0575" rpy="0 0 0"></origin>
+		</collision>
+    <collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.16 -0.115 0.04" rpy="0 0 0"></origin>
+		</collision>
+
+	<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.0625 0.115 0.03" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.088 0.115 0.03" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.1135 0.115 0.03" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.139 0.115 0.03" rpy="0 0 0"></origin>
+		</collision>
+
+
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.0625 0.115 0.085" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.088 0.115 0.085" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.1135 0.115 0.085" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.139 0.115 0.085" rpy="0 0 0"></origin>
+		</collision>
+
+    <collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.16 0.115 0.075" rpy="0 0 0"></origin>
+		</collision>
+    <collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.168 0.115 0.0575" rpy="0 0 0"></origin>
+		</collision>
+    <collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.16 0.115 0.04" rpy="0 0 0"></origin>
+		</collision>
+
+
+
+	</link>
+	<link name="head_tilt_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/head_tilt_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.086 0.506 0.767 1"></color>
+			</material>
+		</visual>
+	</link>
+	<link name="shoulder_pan_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/shoulder_pan_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="1 1 1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.025 -0.015 0.035" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.05 -0.03 0.06" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.12 -0.03 0.06" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="shoulder_lift_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/shoulder_lift_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.086 0.506 0.767 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.04"></sphere>
+			</geometry>
+			<origin xyz="0.025 0.04 0.025" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.04"></sphere>
+			</geometry>
+			<origin xyz="-0.025 0.04 -0.025" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.04"></sphere>
+			</geometry>
+			<origin xyz="0.025 0.04 -0.025" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.04"></sphere>
+			</geometry>
+			<origin xyz="-0.025 0.04 0.025" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.08 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.11 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.14 0 0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="upperarm_roll_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/upperarm_roll_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="1 1 1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="-0.02 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.03 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.08 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.11 -0.045 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.11 -0.045 -0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.155 -0.045 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.155 -0.045 -0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.13 0 0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="elbow_flex_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/elbow_flex_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.086 0.506 0.767 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.02 0.045 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.02 0.045 -0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="-0.02 0.045 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="-0.02 0.045 -0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.08 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.14 0 0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="forearm_roll_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/forearm_roll_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="1 1 1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.05 -0.06 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.05 -0.06 -0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.1 -0.06 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.1 -0.06 -0.02" rpy="0 0 0"></origin>
+		</collision>
+    <collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.15 -0.06 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.15 -0.06 -0.02" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="wrist_flex_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/wrist_flex_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.086 0.506 0.767 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0.06 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.02 0.045 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="0.02 0.045 -0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="-0.02 0.045 0.02" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.03"></sphere>
+			</geometry>
+			<origin xyz="-0.02 0.045 -0.02" rpy="0 0 0"></origin>
+		</collision>
+
+	</link>
+	<link name="wrist_roll_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/wrist_roll_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="1 1 1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="-0.03 0 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055"></sphere>
+			</geometry>
+			<origin xyz="0 0 0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="gripper_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/gripper_link.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="-0.07 0.02 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="-0.07 -0.02 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="-0.1 0.02 0" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="-0.1 -0.02 0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="r_gripper_finger_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0.101425 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/r_gripper_finger_link.STL"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.356 0.361 0.376 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="0.017 -0.0085 -0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="0.017 -0.0085 0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="0 -0.0085 -0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="0 -0.0085 0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="-0.017 -0.0085 -0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="-0.017 -0.0085 0.005" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="l_gripper_finger_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 -0.101425 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/l_gripper_finger_link.STL"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.356 0.361 0.376 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="0.017 0.0085 -0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="0.017 0.0085 0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="0 0.0085 -0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="0 0.0085 0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="-0.017 0.0085 -0.005" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.012"></sphere>
+			</geometry>
+			<origin xyz="-0.017 0.0085 0.005" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="bellows_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/bellows_link.STL"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0 0 0 1"></color>
+			</material>
+		</visual>
+	</link>
+	<link name="torso_fixed_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://meshes/torso_fixed_link.dae"></mesh>
+			</geometry>
+			<material name="">
+				<color rgba="0.086 0.506 0.767 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.12"></sphere>
+			</geometry>
+			<origin xyz="-0.1 -0.07 0.35" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.12"></sphere>
+			</geometry>
+			<origin xyz="-0.1 0.07 0.35" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.12"></sphere>
+			</geometry>
+			<origin xyz="-0.1 -0.07 0.2" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.12"></sphere>
+			</geometry>
+			<origin xyz="-0.1 0.07 0.2" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.12"></sphere>
+			</geometry>
+			<origin xyz="-0.1 0.07 0.07" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.12"></sphere>
+			</geometry>
+			<origin xyz="-0.1 -0.07 0.07" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<joint name="torso_lift_joint" type="prismatic">
+		<origin rpy="0 0 0" xyz="-0.086875 0 0.37743"></origin>
+		<parent link="base_link"></parent>
+		<child link="torso_lift_link"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="450.0" lower="0" upper="0.38615" velocity="0.1"></limit>
+		<dynamics damping="100.0"></dynamics>
+	</joint>
+	<joint name="torso_lift_collision_2_joint" type="fixed">
+		<parent link="torso_lift_link"></parent>
+		<child link="torso_lift_link_collision_2"></child>
+	</joint>
+	<joint name="head_pan_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.053125 0 0.603001417713939"></origin>
+		<parent link="torso_lift_link"></parent>
+		<child link="head_pan_link"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="0.32" lower="-1.57" upper="1.57" velocity="1.57"></limit>
+	</joint>
+	<joint name="head_tilt_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.14253 0 0.057999"></origin>
+		<parent link="head_pan_link"></parent>
+		<child link="head_tilt_link"></child>
+		<axis xyz="0 1 0"></axis>
+		<limit effort="0.68" lower="-0.76" upper="1.45" velocity="1.57"></limit>
+	</joint>
+	<joint name="shoulder_pan_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.119525 0 0.34858"></origin>
+		<parent link="torso_lift_link"></parent>
+		<child link="shoulder_pan_link"></child>
+		<axis xyz="0 0 1"></axis>
+		<dynamics damping="1.0"></dynamics>
+		<limit effort="33.82" lower="-1.6056" upper="1.6056" velocity="1.256"></limit>
+	</joint>
+	<joint name="shoulder_lift_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.117 0 0.0599999999999999"></origin>
+		<parent link="shoulder_pan_link"></parent>
+		<child link="shoulder_lift_link"></child>
+		<axis xyz="0 1 0"></axis>
+		<dynamics damping="1.0"></dynamics>
+		<limit effort="131.76" lower="-1.221" upper="1.518" velocity="1.454"></limit>
+	</joint>
+	<joint name="upperarm_roll_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.219 0 0"></origin>
+		<parent link="shoulder_lift_link"></parent>
+		<child link="upperarm_roll_link"></child>
+		<axis xyz="1 0 0"></axis>
+		<dynamics damping="5.0"></dynamics>
+		<limit effort="76.94" velocity="1.571" lower="-3.14159" upper="3.14159"></limit>
+	</joint>
+	<joint name="elbow_flex_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.133 0 0"></origin>
+		<parent link="upperarm_roll_link"></parent>
+		<child link="elbow_flex_link"></child>
+		<axis xyz="0 1 0"></axis>
+		<dynamics damping="1.0"></dynamics>
+		<limit effort="66.18" lower="-2.251" upper="2.251" velocity="1.521"></limit>
+	</joint>
+	<joint name="forearm_roll_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.197 0 0"></origin>
+		<parent link="elbow_flex_link"></parent>
+		<child link="forearm_roll_link"></child>
+		<axis xyz="1 0 0"></axis>
+		<dynamics damping="5.0"></dynamics>
+		<limit effort="29.35" velocity="1.571" lower="-3.14159" upper="3.14159"></limit>
+	</joint>
+	<joint name="wrist_flex_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.1245 0 0"></origin>
+		<parent link="forearm_roll_link"></parent>
+		<child link="wrist_flex_link"></child>
+		<axis xyz="0 1 0"></axis>
+		<dynamics damping="1.0"></dynamics>
+		<limit effort="25.7" lower="-2.16" upper="2.16" velocity="2.268"></limit>
+	</joint>
+	<joint name="wrist_roll_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.1385 0 0"></origin>
+		<parent link="wrist_flex_link"></parent>
+		<child link="wrist_roll_link"></child>
+		<axis xyz="1 0 0"></axis>
+		<limit effort="7.36" velocity="2.268" lower="-3.14159" upper="3.14159"></limit>
+		<dynamics damping="5.0"></dynamics>
+	</joint>
+	<joint name="gripper_axis" type="fixed">
+		<origin rpy="0 0 0" xyz="0.16645 0 0"></origin>
+		<parent link="wrist_roll_link"></parent>
+		<child link="gripper_link"></child>
+		<axis xyz="0 1 0"></axis>
+	</joint>
+	<joint name="r_gripper_finger_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0.065425 0"></origin>
+		<parent link="gripper_link"></parent>
+		<child link="r_gripper_finger_link"></child>
+		<axis xyz="0 1 0"></axis>
+	</joint>
+	<joint name="l_gripper_finger_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0 -0.065425 0"></origin>
+		<parent link="gripper_link"></parent>
+		<child link="l_gripper_finger_link"></child>
+		<axis xyz="0 -1 0"></axis>
+	</joint>
+	<joint name="bellows_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0"></origin>
+		<parent link="torso_lift_link"></parent>
+		<child link="bellows_link"></child>
+		<axis xyz="0 0 -1"></axis>
+	</joint>
+	<joint name="torso_fixed_joint" type="fixed">
+		<origin rpy="-6.12303176911189E-17 0 0" xyz="-0.086875 0 0.377425"></origin>
+		<parent link="base_link"></parent>
+		<child link="torso_fixed_link"></child>
+		<axis xyz="0 1 0"></axis>
+	</joint>
+</robot>

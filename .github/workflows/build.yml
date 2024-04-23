@@ -1,0 +1,92 @@
+name: Build Check
+
+on:
+  push:
+    paths:
+      - src/impl/**
+      - CMakeLists.txt
+      - cmake/Dependencies.cmake
+    branches:
+      - main
+
+  pull_request:
+    paths:
+      - src/impl/**
+      - CMakeLists.txt
+      - cmake/Dependencies.cmake
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, macos-latest]
+        build_type: [Release]
+        c_compiler: [gcc, clang]
+        include:
+          - os: ubuntu-20.04
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: ubuntu-20.04
+            c_compiler: clang
+            cpp_compiler: clang++
+          - os: ubuntu-22.04
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: ubuntu-22.04
+            c_compiler: clang
+            cpp_compiler: clang++
+          - os: macos-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+          - os: macos-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+
+    - name: Install packages (Linux)
+      if: runner.os == 'Linux'
+      run: >
+        sudo apt-get install -y libeigen3-dev llvm
+
+
+    - name: Install packages (MacOS)
+      if: runner.os == 'macOS'
+      run: >
+        brew install eigen
+
+    - name: Install GCC (MacOS)
+      if: runner.os == 'macOS' && matrix.c_compiler == 'gcc'
+      run: >
+        brew install gcc
+
+
+    - name: Install Python packages
+      run: >
+        pip install typing_extensions
+
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}
+
+    - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}

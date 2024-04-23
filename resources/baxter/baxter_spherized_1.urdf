@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="baxter" path="resources/baxter/baxter_spherized.urdf">
+	<link name="base"></link>
+	<link name="torso">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/torso/base_link.DAE"></mesh>
+			</geometry>
+			<material name="darkgray">
+				<color rgba=".2 .2 .2 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.409"></sphere>
+			</geometry>
+			<origin xyz="-0.044 0.0 0.222" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="head">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 .00953"></origin>
+			<geometry>
+				<mesh filename="meshes/head/H0.DAE"></mesh>
+			</geometry>
+			<material name="darkgray">
+				<color rgba=".2 .2 .2 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.2"></sphere>
+			</geometry>
+			<origin xyz="-0.02 0.0 0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="screen">
+		<visual>
+			<origin rpy="0 -1.57079632679 0" xyz="0 -.00953 -.0347"></origin>
+			<geometry>
+				<mesh filename="meshes/head/H1.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+	</link>
+	<link name="display">
+		<visual>
+			<origin rpy="0.2617993877991494 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<box size="0.218 0.16 0.001"></box>
+			</geometry>
+			<material name="black">
+				<color rgba="0 0 0 1"></color>
+			</material>
+		</visual>
+	</link>
+	<link name="right_arm_mount"></link>
+	<link name="right_upper_shoulder">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/upper_shoulder/S0.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.175"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 0.175" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="right_lower_shoulder">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/lower_shoulder/S1.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.1"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="right_upper_elbow">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/upper_elbow/E0.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.19"></sphere>
+			</geometry>
+			<origin xyz="-0.01 0.0 0.11" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="right_upper_elbow_visual"></link>
+	<link name="right_lower_elbow">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/lower_elbow/E1.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.1"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="right_upper_forearm">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/upper_forearm/W0.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.19"></sphere>
+			</geometry>
+			<origin xyz="0.0 -0.0 0.11" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="right_upper_forearm_visual"></link>
+	<link name="right_lower_forearm">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/lower_forearm/W1.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.1"></sphere>
+			</geometry>
+			<origin xyz="-0.0 0.0 0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="right_wrist">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/wrist/W2.DAE"></mesh>
+			</geometry>
+			<material name="lightgrey">
+				<color rgba=".1 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.105"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 -0.015" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="right_hand">
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="0.01 0.0 -0.02" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_arm_mount"></link>
+	<link name="left_upper_shoulder">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/upper_shoulder/S0.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.175"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 0.175" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_lower_shoulder">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/lower_shoulder/S1.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.1"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_upper_elbow">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/upper_elbow/E0.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.19"></sphere>
+			</geometry>
+			<origin xyz="-0.01 0.0 0.11" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_upper_elbow_visual"></link>
+	<link name="left_lower_elbow">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/lower_elbow/E1.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.1"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_upper_forearm">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/upper_forearm/W0.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.19"></sphere>
+			</geometry>
+			<origin xyz="0.0 -0.0 0.11" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_upper_forearm_visual"></link>
+	<link name="left_lower_forearm">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/lower_forearm/W1.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/lower_forearm/W1.DAE"></mesh>
+			</geometry>
+			<material name="darkred">
+				<color rgba=".5 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.1"></sphere>
+			</geometry>
+			<origin xyz="-0.0 0.0 0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_wrist">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/wrist/W2.DAE"></mesh>
+			</geometry>
+			<material name="lightgrey">
+				<color rgba=".1 .1 .1 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.105"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 -0.015" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_hand">
+		<collision>
+			<geometry>
+				<sphere radius="0.05"></sphere>
+			</geometry>
+			<origin xyz="0.01 0.0 -0.02" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="pedestal">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/base/PEDESTAL.DAE"></mesh>
+			</geometry>
+			<material name="darkgray">
+				<color rgba=".2 .2 .2 1"></color>
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.5"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.0 -0.6" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_gripper_base">
+		<visual>
+			<origin rpy="-1.5707963267948966 3.141592653589793 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/electric_gripper_base.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.06"></sphere>
+			</geometry>
+			<origin xyz="-0.0 -0.0 -0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="l_gripper_l_finger">
+		<visual>
+			<origin rpy="0 0 -3.141592653589793" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/fingers/extended_narrow.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.027"></sphere>
+			</geometry>
+			<origin xyz="-0.005 -0.0 0.008" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="l_gripper_l_finger_2">
+		<collision>
+			<geometry>
+				<sphere radius="0.032"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.017 0.05" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="l_gripper_l_finger_tip">
+		<visual>
+			<origin rpy="0 0 3.141592653589793" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/fingers/paddle_tip.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.028"></sphere>
+			</geometry>
+			<origin xyz="0.0 -0.004 -0.015" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="l_gripper_r_finger">
+		<visual>
+			<origin rpy="0 0 -0.0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/fingers/extended_narrow.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.025"></sphere>
+			</geometry>
+			<origin xyz="0.005 -0.0 0.008" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="l_gripper_r_finger_2">
+		<collision>
+			<geometry>
+				<sphere radius="0.032"></sphere>
+			</geometry>
+			<origin xyz="0.0 -0.017 0.05" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="l_gripper_r_finger_tip">
+		<visual>
+			<origin rpy="0 0 0.0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/fingers/paddle_tip.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.028"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.004 -0.015" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="left_gripper"></link>
+	<link name="right_gripper_base">
+		<visual>
+			<origin rpy="-1.5707963267948966 3.141592653589793 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/electric_gripper_base.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.06"></sphere>
+			</geometry>
+			<origin xyz="-0.0 -0.0 -0.0" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="r_gripper_l_finger">
+		<visual>
+			<origin rpy="0 0 -3.141592653589793" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/fingers/extended_narrow.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.027"></sphere>
+			</geometry>
+			<origin xyz="-0.005 -0.0 0.008" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="r_gripper_l_finger_2">
+		<collision>
+			<geometry>
+				<sphere radius="0.032"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.017 0.05" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="r_gripper_l_finger_tip">
+		<visual>
+			<origin rpy="0 0 3.141592653589793" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/fingers/paddle_tip.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.028"></sphere>
+			</geometry>
+			<origin xyz="0.0 -0.004 -0.015" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="r_gripper_r_finger">
+		<visual>
+			<origin rpy="0 0 -0.0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/fingers/extended_narrow.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.025"></sphere>
+			</geometry>
+			<origin xyz="0.005 -0.0 0.008" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="r_gripper_r_finger_2">
+		<collision>
+			<geometry>
+				<sphere radius="0.032"></sphere>
+			</geometry>
+			<origin xyz="0.0 -0.017 0.05" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="r_gripper_r_finger_tip">
+		<visual>
+			<origin rpy="0 0 0.0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="meshes/electric_gripper/fingers/paddle_tip.DAE"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.028"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.004 -0.015" rpy="0 0 0"></origin>
+		</collision>
+	</link>
+	<link name="right_gripper"></link>
+	<joint name="torso_t0" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0"></origin>
+		<parent link="base"></parent>
+		<child link="torso"></child>
+	</joint>
+	<joint name="head_pan" type="fixed">
+		<origin rpy="0 0 0" xyz="0.06 0 0.686"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="torso"></parent>
+		<child link="head"></child>
+	</joint>
+	<joint name="head_nod" type="fixed">
+		<origin rpy="1.75057 0 1.57079632679" xyz=".1227 0 0"></origin>
+		<parent link="head"></parent>
+		<child link="screen"></child>
+	</joint>
+	<joint name="display_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 -0.016 0.0"></origin>
+		<parent link="screen"></parent>
+		<child link="display"></child>
+	</joint>
+	<joint name="right_torso_arm_mount" type="fixed">
+		<origin rpy="0 0 -0.7854" xyz="0.024645 -0.219645 0.118588"></origin>
+		<parent link="torso"></parent>
+		<child link="right_arm_mount"></child>
+	</joint>
+	<joint name="right_s0" type="revolute">
+		<origin rpy="0 0 0" xyz="0.055695 0 0.011038"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_arm_mount"></parent>
+		<child link="right_upper_shoulder"></child>
+		<limit effort="50.0" lower="-1.70167993878" upper="1.70167993878" velocity="1.5"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="right_s1" type="revolute">
+		<origin rpy="-1.57079632679 0 0" xyz="0.069 0 0.27035"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_upper_shoulder"></parent>
+		<child link="right_lower_shoulder"></child>
+		<limit effort="50.0" lower="-2.147" upper="1.047" velocity="1.5"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="right_e0" type="revolute">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.102 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_lower_shoulder"></parent>
+		<child link="right_upper_elbow"></child>
+		<limit effort="50.0" lower="-3.05417993878" upper="3.05417993878" velocity="1.5"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="right_e0_fixed" type="fixed">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.107 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_lower_shoulder"></parent>
+		<child link="right_upper_elbow_visual"></child>
+	</joint>
+	<joint name="right_e1" type="revolute">
+		<origin rpy="-1.57079632679 -1.57079632679 0" xyz="0.069 0 0.26242"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_upper_elbow"></parent>
+		<child link="right_lower_elbow"></child>
+		<limit effort="50.0" lower="-0.05" upper="2.618" velocity="1.5"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="right_w0" type="revolute">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.10359 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_lower_elbow"></parent>
+		<child link="right_upper_forearm"></child>
+		<limit effort="15.0" lower="-3.059" upper="3.059" velocity="4.0"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="right_w0_fixed" type="fixed">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.088 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_lower_elbow"></parent>
+		<child link="right_upper_forearm_visual"></child>
+	</joint>
+	<joint name="right_w1" type="revolute">
+		<origin rpy="-1.57079632679 -1.57079632679 0" xyz="0.01 0 0.2707"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_upper_forearm"></parent>
+		<child link="right_lower_forearm"></child>
+		<limit effort="15.0" lower="-1.57079632679" upper="2.094" velocity="4.0"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="right_w2" type="revolute">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.115975 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_lower_forearm"></parent>
+		<child link="right_wrist"></child>
+		<limit effort="15.0" lower="-3.059" upper="3.059" velocity="4.0"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="right_hand" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.11355"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="right_wrist"></parent>
+		<child link="right_hand"></child>
+	</joint>
+	<joint name="left_torso_arm_mount" type="fixed">
+		<origin rpy="0 0 0.7854" xyz="0.024645 0.219645 0.118588"></origin>
+		<parent link="torso"></parent>
+		<child link="left_arm_mount"></child>
+	</joint>
+	<joint name="left_s0" type="revolute">
+		<origin rpy="0 0 0" xyz="0.055695 0 0.011038"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_arm_mount"></parent>
+		<child link="left_upper_shoulder"></child>
+		<limit effort="50.0" lower="-1.70167993878" upper="1.70167993878" velocity="1.5"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="left_s1" type="revolute">
+		<origin rpy="-1.57079632679 0 0" xyz="0.069 0 0.27035"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_upper_shoulder"></parent>
+		<child link="left_lower_shoulder"></child>
+		<limit effort="50.0" lower="-2.147" upper="1.047" velocity="1.5"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="left_e0" type="revolute">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.102 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_lower_shoulder"></parent>
+		<child link="left_upper_elbow"></child>
+		<limit effort="50.0" lower="-3.05417993878" upper="3.05417993878" velocity="1.5"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="left_e0_fixed" type="fixed">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.107 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_lower_shoulder"></parent>
+		<child link="left_upper_elbow_visual"></child>
+	</joint>
+	<joint name="left_e1" type="revolute">
+		<origin rpy="-1.57079632679 -1.57079632679 0" xyz="0.069 0 0.26242"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_upper_elbow"></parent>
+		<child link="left_lower_elbow"></child>
+		<limit effort="50.0" lower="-0.05" upper="2.618" velocity="1.5"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="left_w0" type="revolute">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.10359 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_lower_elbow"></parent>
+		<child link="left_upper_forearm"></child>
+		<limit effort="15.0" lower="-3.059" upper="3.059" velocity="4.0"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="left_w0_fixed" type="fixed">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.088 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_lower_elbow"></parent>
+		<child link="left_upper_forearm_visual"></child>
+	</joint>
+	<joint name="left_w1" type="revolute">
+		<origin rpy="-1.57079632679 -1.57079632679 0" xyz="0.01 0 0.2707"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_upper_forearm"></parent>
+		<child link="left_lower_forearm"></child>
+		<limit effort="15.0" lower="-1.57079632679" upper="2.094" velocity="4.0"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="left_w2" type="revolute">
+		<origin rpy="1.57079632679 0 1.57079632679" xyz="0.115975 0 0"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_lower_forearm"></parent>
+		<child link="left_wrist"></child>
+		<limit effort="15.0" lower="-3.059" upper="3.059" velocity="4.0"></limit>
+		<dynamics damping="0.7" friction="0.0"></dynamics>
+	</joint>
+	<joint name="left_hand" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.11355"></origin>
+		<axis xyz="0 0 1"></axis>
+		<parent link="left_wrist"></parent>
+		<child link="left_hand"></child>
+	</joint>
+	<joint name="pedestal_fixed" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 0.0 0.0"></origin>
+		<parent link="torso"></parent>
+		<child link="pedestal"></child>
+	</joint>
+	<joint name="left_gripper_base" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.025"></origin>
+		<parent link="left_hand"></parent>
+		<child link="left_gripper_base"></child>
+	</joint>
+	<joint name="l_gripper_l_finger_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 0.069333 0.02"></origin>
+		<axis xyz="0 1 0"></axis>
+		<parent link="left_gripper_base"></parent>
+		<child link="l_gripper_l_finger"></child>
+	</joint>
+	<joint name="l_gripper_l_finger_2_joint" type="fixed">
+		<parent link="l_gripper_l_finger"></parent>
+		<child link="l_gripper_l_finger_2"></child>
+	</joint>
+	<joint name="l_gripper_l_finger_tip_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 0.01725 0.1127"></origin>
+		<parent link="l_gripper_l_finger"></parent>
+		<child link="l_gripper_l_finger_tip"></child>
+	</joint>
+	<joint name="l_gripper_r_finger_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 -0.069333 0.02"></origin>
+		<axis xyz="0 1 0"></axis>
+		<parent link="left_gripper_base"></parent>
+		<child link="l_gripper_r_finger"></child>
+	</joint>
+	<joint name="l_gripper_r_finger_2_joint" type="fixed">
+		<parent link="l_gripper_r_finger"></parent>
+		<child link="l_gripper_r_finger_2"></child>
+	</joint>
+	<joint name="l_gripper_r_finger_tip_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 -0.01725 0.1127"></origin>
+		<parent link="l_gripper_r_finger"></parent>
+		<child link="l_gripper_r_finger_tip"></child>
+	</joint>
+	<joint name="left_endpoint" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.1327"></origin>
+		<parent link="left_gripper_base"></parent>
+		<child link="left_gripper"></child>
+	</joint>
+	<joint name="right_gripper_base" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.025"></origin>
+		<parent link="right_hand"></parent>
+		<child link="right_gripper_base"></child>
+	</joint>
+	<joint name="r_gripper_l_finger_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 0.069333 0.02"></origin>
+		<axis xyz="0 1 0"></axis>
+		<parent link="right_gripper_base"></parent>
+		<child link="r_gripper_l_finger"></child>
+	</joint>
+	<joint name="r_gripper_l_finger_2_joint" type="fixed">
+		<parent link="r_gripper_l_finger"></parent>
+		<child link="r_gripper_l_finger_2"></child>
+	</joint>
+	<joint name="r_gripper_l_finger_tip_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 0.01725 0.1127"></origin>
+		<parent link="r_gripper_l_finger"></parent>
+		<child link="r_gripper_l_finger_tip"></child>
+	</joint>
+	<joint name="r_gripper_r_finger_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 -0.069333 0.02"></origin>
+		<axis xyz="0 1 0"></axis>
+		<parent link="right_gripper_base"></parent>
+		<child link="r_gripper_r_finger"></child>
+	</joint>
+	<joint name="r_gripper_r_finger_2_joint" type="fixed">
+		<parent link="r_gripper_r_finger"></parent>
+		<child link="r_gripper_r_finger_2"></child>
+	</joint>
+	<joint name="r_gripper_r_finger_tip_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0.0 -0.01725 0.1127"></origin>
+		<parent link="r_gripper_r_finger"></parent>
+		<child link="r_gripper_r_finger_tip"></child>
+	</joint>
+	<joint name="right_endpoint" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.1327"></origin>
+		<parent link="right_gripper_base"></parent>
+		<child link="right_gripper"></child>
+	</joint>
+</robot>

@@ -1,0 +1,43 @@
+name: Format Check
+
+on:
+  push:
+    paths:
+      - src/**
+      - scripts/**
+    branches:
+      - main
+
+  pull_request:
+    paths:
+      - src/**
+      - scripts/**
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  formatting-check:
+    name: Formatting Check
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install packages
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        yes | sudo ./llvm.sh 16 || true
+        sudo apt-get install -y clang-format-16 python3-pip
+        pip install yapf
+
+    - name: Run clang-format style check.
+      run: >
+        find . -iname *.hh -o -iname *.cc | xargs -I{} clang-format-16 --dry-run -Werror {}
+
+    - name: Run yapf style check.
+      run: >
+        find . -iname *.py | xargs -I{} yapf -d {}

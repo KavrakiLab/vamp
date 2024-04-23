@@ -1,0 +1,21 @@
+[style]
+based_on_style = pep8
+column_limit = 110
+
+spaces_around_default_or_named_assign = true
+spaces_before_comment = 4, 6, 8, 10, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52
+
+split_before_first_argument = true
+split_all_top_level_comma_separated_values = true
+split_before_dot = true
+split_before_logical_operator = true
+split_complex_comprehension = true
+
+blank_line_before_nested_class_or_def = true
+blank_lines_around_top_level_definition = 2
+
+indent_closing_brackets = true
+align_closing_bracket_with_visual_indent = true
+
+use_tabs = False
+indent_width = 4

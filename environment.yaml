@@ -1,0 +1,13 @@
+name: vamp
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python
+  - eigen
+  - clang
+  - clangxx
+  - lld
+  - llvm-tools
+  - libstdcxx-ng

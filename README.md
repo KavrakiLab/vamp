@@ -6,8 +6,8 @@
 
 This repository hosts the code for the forthcoming ICRA 2024 paper “Motions in Microseconds via Vectorized Sampling-Based Planning” (https://arxiv.org/abs/2309.14545).
 
-**TL;DR**: By exploiting ubiquitous [CPU SIMD instructions](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) to accelerate collision checking and forward kinematics (FK), `vamp`'s RRT-Connect [[1]](#1) solves problems for the Franka Emika Panda from the MotionBenchMaker dataset [[2]](#2) at a median speed of 35 microseconds (on one core of a consumer desktop PC).
-This approach to hardware-accelerated parallel sampling-based motion planning extends to other planning algorithms without modification (e.g., PRM [2](#2)) and also works on low-power systems (e.g., an ARM-based [OrangePi](http://www.orangepi.org/)).
+**TL;DR**: By exploiting ubiquitous [CPU SIMD instructions](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) to accelerate collision checking and forward kinematics (FK), `vamp`'s RRT-Connect [[1]](#1) solves problems for the Franka Emika Panda from the MotionBenchMaker dataset [[3]](#3) at a median speed of 35 microseconds (on one core of a consumer desktop PC).
+This approach to hardware-accelerated parallel sampling-based motion planning extends to other planning algorithms without modification (e.g., PRM [[2]](#2)) and also works on low-power systems (e.g., an ARM-based [OrangePi](http://www.orangepi.org/)).
 
 If you found this research useful for your own work, please use the following citation:
 ```bibtex
@@ -30,7 +30,7 @@ VAMP requires the following system dependencies:
   To install Clang and its C++ standard library implementation on Ubuntu 22.04, `sudo apt install clang libstdc++6`
 - Python development headers for generating Python bindings.
   We support Python 3.8 and above.
-  To install on Ubuntu 22.04, `sudo apt install python-dev`.
+  To install on Ubuntu 22.04, `sudo apt install python3-dev`.
 - [`Eigen3`](https://eigen.tuxfamily.org/index.php?title=Main_Page) for some vector/matrix operations.
   To install on Ubuntu 22.04, `sudo apt install libeigen3-dev`.
 

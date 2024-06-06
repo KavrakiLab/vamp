@@ -28,8 +28,7 @@ namespace vamp::collision
           , cylinders(other.cylinders.begin(), other.cylinders.end())
           , cuboids(other.cuboids.begin(), other.cuboids.end())
           , z_aligned_cuboids(other.z_aligned_cuboids.begin(), other.z_aligned_cuboids.end())
-          ,
-          heightfields(other.heightfields.begin(), other.heightfields.end())
+          , heightfields(other.heightfields.begin(), other.heightfields.end())
           , pointclouds(other.pointclouds.begin(), other.pointclouds.end())
         {
         }

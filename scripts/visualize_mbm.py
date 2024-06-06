@@ -1,19 +1,25 @@
 import pickle
 from pathlib import Path
+import numpy as np
 
 from fire import Fire
 
 import vamp
 from vamp import pybullet_interface as vpb
+from vamp import pointcloud as vpc
 
 
 def main(
-    robot: str = "panda",
-    planner: str = "rrtc",
-    dataset: str = "problems.pkl",
-    problem: str = "",
-    index: int = 1,
-    display_object_names: bool = False,
+    robot: str = "panda",                  # Robot to plan for
+    planner: str = "rrtc",                 # Planner name to use
+    dataset: str = "problems.pkl",         # Pickled dataset to use
+    problem: str = "",                     # Problem name
+    index: int = 1,                        # Problem index
+    display_object_names: bool = False,    # Display object names over geometry
+    pointcloud: bool = False,              # Use pointcloud rather than primitive geometry
+    samples_per_object: int = 10000,       # If pointcloud, samples per object to use
+    filter_radius: float = 0.02,           # Filter radius for pointcloud filtering
+    filter_cull: bool = True,              # Cull pointcloud around robot by maximum distance
     **kwargs,
     ):
 
@@ -24,7 +30,11 @@ def main(
     with open(robot_dir / dataset, 'rb') as f:
         data = pickle.load(f)
 
-    vamp_module, planner_func, plan_settings, simp_settings = vamp.configure_robot_and_planner_with_kwargs(robot, planner, **kwargs)
+    (vamp_module, planner_func, plan_settings, simp_settings) = vamp.configure_robot_and_planner_with_kwargs(
+        robot,
+        planner,
+        **kwargs,
+        )
 
     if not problem:
         problem = list(data['problems'].keys())[0]
@@ -41,7 +51,27 @@ Existing problems: {list(data['problems'].keys())}"""
     except StopIteration:
         raise RuntimeError(f"No problem in {problem} with index {index}!")
 
-    env = vamp.problem_dict_to_vamp(problem_data)
+    if pointcloud:
+        (env, original_pc, filtered_pc, filter_time, build_time) = vpc.problem_dict_to_pointcloud(
+            robot,
+            problem_data,
+            samples_per_object,
+            filter_radius,
+            filter_cull,
+            )
+
+        print(
+            f"""
+Original Pointcloud size: {len(original_pc)}
+Filtered Pointcloud size: {len(filtered_pc)}
+
+        Filtering Time: {filter_time * 1e-6:5.3f}ms
+CAPT Construction Time: {build_time * 1e-6:5.3f}ms
+            """
+            )
+
+    else:
+        env = vamp.problem_dict_to_vamp(problem_data)
 
     start = problem_data['start']
     goals = problem_data['goals']
@@ -99,6 +129,9 @@ n Graph States: {result.size}
 
     sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp.ROBOT_JOINTS[robot], True)
     sim.add_environment_from_problem_dict(problem_data, display_object_names)
+
+    # if pointcloud:
+    #     sim.draw_pointcloud(filtered_pc)
 
     if not valid:
         for state in [start, *goals]:

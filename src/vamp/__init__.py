@@ -18,6 +18,7 @@ __all__ = [
     "PRMNeighborParams",
     "SimplifySettings",
     "SimplifyRoutine",
+    "filter_pointcloud"
     ]
 
 from pathlib import Path
@@ -42,6 +43,7 @@ from ._core import fetch as fetch
 from ._core import panda as panda
 from ._core import sphere as sphere
 from ._core import ur5 as ur5
+from ._core import filter_pointcloud as filter_pointcloud
 
 AnyPlanningResult = Union[
     sphere.PlanningResult,

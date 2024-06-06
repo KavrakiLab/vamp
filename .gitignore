@@ -18,3 +18,4 @@ venv/
 /resources/panda/*.json
 /resources/panda/*.pkl
 src/vamp/_core/*.pyi
+/.mypy_cache/

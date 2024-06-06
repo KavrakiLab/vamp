@@ -1080,14 +1080,14 @@ namespace vamp::robots::ur5
         const vamp::collision::Environment<FloatVector<rake>> &environment,
         const ConfigurationBlock<rake> &q) noexcept
     {
-        // if (/*base_link*/ sphere_environment_in_collision(environment, 0.0, 0.0, 0.9144, 0.08))
+        //if (/*base_link*/ sphere_environment_in_collision(environment, 0.0, 0.0, 0.9144, 0.08))
         //{
-        //     return false;
-        // }  // (0, 0)
-        // if (/*shoulder_link*/ sphere_environment_in_collision(environment, 0.0, 0.0, 1.003559, 0.08))
+        //    return false;
+        //}  // (0, 0)
+        //if (/*shoulder_link*/ sphere_environment_in_collision(environment, 0.0, 0.0, 1.003559, 0.08))
         //{
-        //     return false;
-        // }  // (0, 0)
+        //    return false;
+        //}  // (0, 0)
         auto INPUT_1 = q[1];
         auto DIV_123 = INPUT_1 * 0.5;
         auto SIN_124 = DIV_123.sin();

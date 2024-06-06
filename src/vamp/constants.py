@@ -53,3 +53,25 @@ ROBOT_RRT_RANGES = {
     "fetch": 1.0,
     "baxter": 0.5,
     }
+
+ROBOT_RADII_RANGES = {
+    "baxter": (0.012, 0.08),
+    "fetch": (0.012, 0.055),
+    "panda": (0.012, 0.06),
+    "sphere": (0.2, 0.2),
+    "ur5": (0.015, 0.08),
+    }
+
+ROBOT_FIRST_JOINT_LOCATIONS = {
+    "fetch": [0.0, 0.0, 0.4],
+    "ur5": [0.0, 0.0, 0.91],
+    "panda": [0.0, 0.0, 0.0],
+    }
+
+ROBOT_MAX_RADII = {
+    "ur5": 1.2,
+    "fetch": 1.5,
+    "panda": 1.19,
+    }
+
+POINT_RADIUS = 0.0025

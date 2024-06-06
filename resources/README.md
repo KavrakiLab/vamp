@@ -76,6 +76,44 @@ Completed all problems in 137.891 milliseconds
 Total time including Python overhead: 236.387 milliseconds
 ```
 
+Using CAPTs for pointclouds:
+```
+|      |   Planning Time (μs) |   Simplification Time (μs) |   Total Time (μs) |   Planning Iters. |   Time per Iter. (μs) |
+|------|----------------------|----------------------------|-------------------|-------------------|-----------------------|
+| mean |              337.898 |                    202.762 |           541.141 |           1112.89 |              2.43163  |
+| std  |              995.4   |                    157.294 |          1058.5   |           3177.61 |              2.67853  |
+| min  |               15     |                      2     |            20     |              0    |              0        |
+| 25%  |               58     |                     76     |           164.75  |             42    |              0.604432 |
+| 50%  |               90     |                    166     |           271.5   |            162    |              1.728    |
+| 75%  |              182.25  |                    290.5   |           498.5   |            580.25 |              3.30235  |
+| 95%  |             1525.05  |                    516.3   |          1897.75  |           5448.05 |              6.88009  |
+| max  |            12450     |                    853     |         13044     |          37051    |             24.1276   |
+|      |    Initial Cost (L2) |       Simplified Cost (L2) |
+|------|----------------------|----------------------------|
+| mean |             11.2462  |                    6.68846 |
+| std  |              4.31888 |                    1.86498 |
+| min  |              1.86895 |                    1.86895 |
+| 25%  |              8.40302 |                    5.36698 |
+| 50%  |             10.1019  |                    6.51718 |
+| 75%  |             13.0541  |                    7.93681 |
+| 95%  |             19.1538  |                   10.2341  |
+| max  |             37.6167  |                   12.7789  |
+|      |     Filter Time (ms) |       CAPT Build Time (ms) |   Total Time (ms) |
+|------|----------------------|----------------------------|-------------------|
+| mean |              2.97212 |                    4.25712 |           7.77142 |
+| std  |              1.08287 |                    1.75468 |           2.85696 |
+| min  |              1.305   |                    1.623   |           3.066   |
+| 25%  |              2.40475 |                    2.6185  |           5.4575  |
+| 50%  |              2.5805  |                    4.226   |           7.0575  |
+| 75%  |              2.8385  |                    5.36225 |           9.5895  |
+| 95%  |              5.4488  |                    7.56915 |          13.1883  |
+| max  |              6.147   |                    8.675   |          19.828   |
+Solved / Valid / Total # Problems: 608 / 608 / 700
+Completed all problems in 329.014 milliseconds
+Total time including Python overhead: 37523.806 milliseconds
+```
+
+
 #### Panda
 ```
 |      |   Planning Time (μs) |   Simplification Time (μs) |   Total Time (μs) |   Planning Iters. |   Time per Iter. (μs) |
@@ -103,6 +141,43 @@ Completed all problems in 99.162 milliseconds
 Total time including Python overhead: 210.897 milliseconds
 ```
 
+Using CAPTs for pointclouds:
+```
+|      |   Planning Time (μs) |   Simplification Time (μs) |   Total Time (μs) |   Planning Iters. |   Time per Iter. (μs) |
+|------|----------------------|----------------------------|-------------------|-------------------|-----------------------|
+| mean |              206.778 |                    243.318 |           450.584 |           375.525 |              1.15073  |
+| std  |              296.366 |                    213.687 |           458.693 |          1781.27  |              1.68118  |
+| min  |               15     |                      2     |            18     |             0     |              0        |
+| 25%  |               72     |                     85     |           185     |            26     |              0.24737  |
+| 50%  |              111     |                    188     |           330     |            85     |              0.715909 |
+| 75%  |              207     |                    338.5   |           552.5   |           245.5   |              1.36029  |
+| 95%  |              711     |                    656.8   |          1244.8   |          1566.9   |              4.09809  |
+| max  |             2782     |                   1432     |          4183     |         42794     |             22.3584   |
+|      |    Initial Cost (L2) |       Simplified Cost (L2) |
+|------|----------------------|----------------------------|
+| mean |              8.70002 |                    5.16676 |
+| std  |              3.51816 |                    1.28799 |
+| min  |              2.78403 |                    2.78403 |
+| 25%  |              6.38199 |                    4.29836 |
+| 50%  |              7.76216 |                    4.90825 |
+| 75%  |             10.0274  |                    5.59457 |
+| 95%  |             16.2303  |                    8.00961 |
+| max  |             29.3161  |                   11.1757  |
+|      |     Filter Time (ms) |       CAPT Build Time (ms) |   Total Time (ms) |
+|------|----------------------|----------------------------|-------------------|
+| mean |              2.65961 |                    2.87958 |           5.99077 |
+| std  |              1.20675 |                    1.52154 |           2.65257 |
+| min  |              0.689   |                    0.445   |           1.195   |
+| 25%  |              1.981   |                    1.7385  |           4.179   |
+| 50%  |              2.303   |                    2.132   |           5.012   |
+| 75%  |              2.6725  |                    4.0525  |           7.1435  |
+| 95%  |              5.4955  |                    5.9582  |          11.8494  |
+| max  |              6.063   |                    6.988   |          13.244   |
+Solved / Valid / Total # Problems: 699 / 699 / 700
+Completed all problems in 314.958 milliseconds
+Total time including Python overhead: 41970.451 milliseconds
+```
+
 #### Fetch
 ```
 |      |   Planning Time (μs) |   Simplification Time (μs) |   Total Time (μs) |   Planning Iters. |   Time per Iter. (μs) |
@@ -128,6 +203,44 @@ Total time including Python overhead: 210.897 milliseconds
 Solved / Valid / Total # Problems: 668 / 679 / 700
 Completed all problems in 2803.015 milliseconds
 Total time including Python overhead: 3152.705 milliseconds
+```
+
+Using CAPTs for pointclouds:
+```
+
+|      |   Planning Time (μs) |   Simplification Time (μs) |   Total Time (μs) |   Planning Iters. |   Time per Iter. (μs) |
+|------|----------------------|----------------------------|-------------------|-------------------|-----------------------|
+| mean |             11121.4  |                    951.833 |          12073.7  |           18192.2 |              1.85053  |
+| std  |             31058.9  |                    710.608 |          31347.4  |           57625.7 |              2.3801   |
+| min  |                66    |                     55     |            225    |              60   |              0.297561 |
+| 25%  |               540.25 |                    495.5   |           1206.25 |             659   |              0.755285 |
+| 50%  |              2354    |                    777     |           3114    |            3997.5 |              1.09338  |
+| 75%  |             10157.2  |                   1175.25  |          11168.2  |           12895.5 |              2.12096  |
+| 95%  |             44671    |                   2285.6   |          47224.9  |           75164.7 |              5.13299  |
+| max  |            463080    |                   5526     |         465414    |          880485   |             37.1921   |
+|      |    Initial Cost (L2) |       Simplified Cost (L2) |
+|------|----------------------|----------------------------|
+| mean |             20.6585  |                   10.5799  |
+| std  |              7.82485 |                    3.27368 |
+| min  |              6.97623 |                    4.05423 |
+| 25%  |             14.969   |                    8.31298 |
+| 50%  |             19.1902  |                   10.1528  |
+| 75%  |             24.7936  |                   12.4421  |
+| 95%  |             35.3264  |                   16.5518  |
+| max  |             53.2503  |                   26.6381  |
+|      |     Filter Time (ms) |       CAPT Build Time (ms) |   Total Time (ms) |
+|------|----------------------|----------------------------|-------------------|
+| mean |              3.376   |                    4.37196 |          19.8227  |
+| std  |              1.32559 |                    1.70298 |          31.678   |
+| min  |              1.476   |                    1.44    |           3.98    |
+| 25%  |              2.6275  |                    3.129   |           7.31875 |
+| 50%  |              2.776   |                    3.7875  |          11.664   |
+| 75%  |              4.52225 |                    6.2365  |          19.9468  |
+| 95%  |              6.1671  |                    7.4751  |          58.0952  |
+| max  |              6.691   |                    8.955   |         471.304   |
+Solved / Valid / Total # Problems: 672 / 679 / 700
+Completed all problems in 8113.554 milliseconds
+Total time including Python overhead: 50923.907 milliseconds
 ```
 
 ### [Orange Pi 5B](http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5B.html)

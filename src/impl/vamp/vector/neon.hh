@@ -210,7 +210,7 @@ namespace vamp
         template <unsigned int i>
         inline static constexpr auto lshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vreinterpretq_s32_f32(vshlq_n_s32(vreinterpretq_s32_f32(v), i));
+            return vreinterpretq_u32_f32(vshlq_n_u32(vreinterpretq_u32_f32(v), i));
         }
 
         template <unsigned int = 0>
@@ -234,7 +234,7 @@ namespace vamp
         template <unsigned int i>
         inline static constexpr auto rshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vreinterpretq_s32_f32(vshrq_n_s32(vreinterpretq_s32_f32(v), i));
+            return vreinterpretq_u32_f32(vshrq_n_u32(vreinterpretq_u32_f32(v), i));
         }
 
         template <unsigned int = 0>
@@ -330,11 +330,11 @@ namespace vamp
         inline static auto gather(int32x4_t idxs, const ScalarT *base) noexcept -> VectorT
         {
             // Pretty sure there isn't a better way to do a 32-bit lookup table...
-            float32x4_t result;
-            result[0] = base[idxs[0]];
-            result[1] = base[idxs[1]];
-            result[2] = base[idxs[2]];
-            result[3] = base[idxs[3]];
+            float32x4_t result = vdupq_n_f32(0);
+            result = vsetq_lane_f32(base[vgetq_lane_s32(idxs, 0)], result, 0);
+            result = vsetq_lane_f32(base[vgetq_lane_s32(idxs, 1)], result, 1);
+            result = vsetq_lane_f32(base[vgetq_lane_s32(idxs, 2)], result, 2);
+            result = vsetq_lane_f32(base[vgetq_lane_s32(idxs, 3)], result, 3);
             return result;
         }
 
@@ -429,7 +429,7 @@ namespace vamp
         template <ScalarT i>
         inline static constexpr auto lshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vshlq_n_s32(v, i);
+            return vshlq_n_u32(v, i);
         }
 
         template <unsigned int = 0>
@@ -453,7 +453,7 @@ namespace vamp
         template <ScalarT i>
         inline static constexpr auto rshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vshrq_n_s32(v, i);
+            return vshrq_n_u32(v, i);
         }
 
         template <unsigned int = 0>
@@ -514,11 +514,11 @@ namespace vamp
         inline static constexpr auto gather(int32x4_t idxs, const ScalarT *base) noexcept -> VectorT
         {
             // Pretty sure there isn't a better way to do a 32-bit lookup table...
-            int32x4_t result;
-            result[0] = base[idxs[0]];
-            result[1] = base[idxs[1]];
-            result[2] = base[idxs[2]];
-            result[3] = base[idxs[3]];
+            int32x4_t result = vdupq_n_s32(0);
+            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 0)], result, 0);
+            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 1)], result, 1);
+            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 2)], result, 2);
+            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 3)], result, 3);
             return result;
         }
 

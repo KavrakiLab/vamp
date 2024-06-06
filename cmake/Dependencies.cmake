@@ -3,7 +3,7 @@ find_package(Python 3.8
   REQUIRED COMPONENTS Interpreter Development.Module
   OPTIONAL_COMPONENTS Development.SABIModule)
 
-CPMAddPackage("gh:wjakob/nanobind#03ebcb883a8658706bada56e7bc11faf2e2b3f67")
+CPMAddPackage("gh:wjakob/nanobind#4ed5fdf80de460edc416c0e948d6e6c60e61a02a")
 
 CPMAddPackage("gh:kavrakilab/nigh#97130999440647c204e0265d05a997dbd8da4e70")
 set(NIGH_INCLUDE_DIRS ${nigh_SOURCE_DIR}/src)

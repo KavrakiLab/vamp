@@ -130,8 +130,8 @@ n Graph States: {result.size}
     sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp.ROBOT_JOINTS[robot], True)
     sim.add_environment_from_problem_dict(problem_data, display_object_names)
 
-    # if pointcloud:
-    #     sim.draw_pointcloud(filtered_pc)
+    if pointcloud:
+        sim.draw_pointcloud(filtered_pc)
 
     if not valid:
         for state in [start, *goals]:

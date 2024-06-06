@@ -13,7 +13,7 @@ We also make collision checking against pointclouds fast with a novel spatial da
 
 If you found this research useful for your own work, please use the following citation:
 ```bibtex
-@InProceedings{vamp,
+@InProceedings{vamp_2024,
   title = {Motions in Microseconds via Vectorized Sampling-Based Planning},
   author = {Thomason, Wil and Kingston, Zachary and Kavraki, Lydia E.},
   booktitle = {IEEE International Conference on Robotics and Automation},
@@ -24,7 +24,7 @@ If you found this research useful for your own work, please use the following ci
 
 If you use CAPTs or the pointcloud collision checking components of this repository, please use the following citation:
 ```bibtex
-@InProceedings{capt,
+@InProceedings{capt_2024,
   title = {Collision-Affording Point Trees: {SIMD}-Amenable Nearest Neighbors for Fast Collision Checking},
   author = {Ramsey, Clayton W. and Kingston, Zachary and Tomason, Wil and Kavraki, Lydia E.},
   booktitle = {Robotics: Science and Systems},

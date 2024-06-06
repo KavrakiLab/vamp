@@ -39,6 +39,10 @@ These scripts support standard planner and simplifier configuration arguments (s
 In addition, they both support the following arguments:
 - `problem`: which takes in either a single problem name (e.g., `table_pick`) or a list (e.g., `table_pick,table_under_pick`) to evaluate against a specific set of problems.
 - `dataset`: which describes the specific dataset of problems that should be loaded and inspected. See [Datasets](../resources/README.md#supported-planners) for more information.
+- `pointcloud`: instead of primitives, construct pointclouds from these primitive representations and plan against this representation using the CAPT datastructure.
+- `samples_per_object`: number of samples per each object for pointcloud generation.
+- `filter_radius`: pointcloud filtering radius. Will remove all redundant points that are within the specified radius.
+- `filter_cull`: remove points from the pointcloud that are farther than are reachable by the robot.
 
 `evaluate_mbm.py` also supports:
 - `trials`: the number of times to repeat each test.

@@ -5,6 +5,8 @@
 
 namespace vamp::collision
 {
+    using Point = std::array<float, 3>;
+
     template <typename DataT>
     inline constexpr auto dot_2(const DataT &ax, const DataT &ay, const DataT &bx, const DataT &by) -> DataT
     {

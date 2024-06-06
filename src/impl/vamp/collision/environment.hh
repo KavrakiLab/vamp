@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <vamp/collision/shapes.hh>
+#include <vamp/collision/capt.hh>
 
 namespace vamp::collision
 {
@@ -15,6 +16,7 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> cuboids;
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
+        std::vector<CAPT> pointclouds;
 
         Environment() = default;
 
@@ -27,6 +29,7 @@ namespace vamp::collision
           , cuboids(other.cuboids.begin(), other.cuboids.end())
           , z_aligned_cuboids(other.z_aligned_cuboids.begin(), other.z_aligned_cuboids.end())
           , heightfields(other.heightfields.begin(), other.heightfields.end())
+          , pointclouds(other.pointclouds.begin(), other.pointclouds.end())
         {
         }
 

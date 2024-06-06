@@ -23,6 +23,59 @@ namespace vamp::binding
     static constexpr const std::size_t rake = vamp::FloatVectorWidth;
 
     template <typename Robot>
+    auto filter_robot_from_pointcloud(
+        const std::vector<collision::Point> &pc,
+        const typename Robot::ConfigurationArray &configuration,
+        const collision::Environment<float> &environment,
+        float point_radius) -> std::vector<collision::Point>
+    {
+        using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
+
+        // TODO: Do this smarter with SIMD CC
+        typename Robot::template Spheres<1> out;
+        typename Robot::template ConfigurationBlock<1> block;
+
+        EnvironmentVector ev(environment);
+
+        for (auto i = 0U; i < Robot::dimension; ++i)
+        {
+            block[i] = configuration[i];
+        }
+
+        Robot::template sphere_fk<1>(block, out);
+
+        std::vector<collision::Point> filtered;
+        filtered.reserve(pc.size());
+
+        for (const auto &point : pc)
+        {
+            const auto x = point[0];
+            const auto y = point[1];
+            const auto z = point[2];
+            const auto r = point_radius;
+
+            bool valid = true;
+            for (auto i = 0U; i < Robot::n_spheres; ++i)
+            {
+                if (collision::sphere_sphere_sql2(
+                        out.x[{i, 0}], out.y[{i, 0}], out.z[{i, 0}], out.r[{i, 0}], x, y, z, r) < 0 or
+                    sphere_environment_in_collision<>(ev, x, y, z, r))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid)
+            {
+                filtered.emplace_back(point);
+            }
+        }
+
+        return filtered;
+    }
+
+    template <typename Robot>
     struct Helper
     {
         using Configuration = typename Robot::Configuration;
@@ -170,6 +223,15 @@ namespace vamp::binding
         {
             return vamp::planning::simplify<Robot, rake, Robot::resolution>(
                 path, EnvironmentVector(environment), settings);
+        }
+
+        inline static auto filter_self_from_pointcloud(
+            const std::vector<collision::Point> &pc,
+            const ConfigurationArray &start,
+            const EnvironmentInput &environment,
+            float point_radius) -> std::vector<collision::Point>
+        {
+            return filter_robot_from_pointcloud<Robot>(pc, start, environment, point_radius);
         }
     };
 
@@ -431,6 +493,15 @@ namespace vamp::binding
             RH::fk,
             "configuration"_a,
             "Computes the forward kinematics of the robot. Returns array of all collision sphere positions.");
+
+        submodule.def(
+            "filter_from_pointcloud",
+            RH::filter_self_from_pointcloud,
+            "pointcloud"_a,
+            "configuration"_a,
+            "environment"_a,
+            "point_radius"_a,
+            "Filters all colliding points from a point cloud.");
 
         return submodule;
     }

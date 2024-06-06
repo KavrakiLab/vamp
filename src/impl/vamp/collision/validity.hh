@@ -137,6 +137,15 @@ namespace vamp
             }
         }
 
+        const std::array<DataT, 3> positions = {sx, sy, sz};
+        for (const auto &pc : e.pointclouds)
+        {
+            if (pc.collides_simd(positions, sr))
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 

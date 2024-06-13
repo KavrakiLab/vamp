@@ -298,8 +298,8 @@ namespace vamp::binding
                 "numpy",
                 [](const typename RH::Configuration &v) noexcept
                 {
-                    auto *v_arr = new FloatT[Robot::dimension];
                     v.to_array(v_arr);
+                    auto *v_arr = new FloatT[RH::Configuration::num_scalars_rounded];
                     nb::capsule arr_owner(
                         v_arr, [](void *a) noexcept { delete[] reinterpret_cast<FloatT *>(a); });
                     return nb::ndarray<nb::numpy, const FloatT, nb::shape<Robot::dimension>, nb::device::cpu>(
@@ -358,8 +358,10 @@ namespace vamp::binding
                 "numpy",
                 [](const typename RH::Path &p) noexcept
                 {
-                    auto *path_arr = new FloatT[Robot::dimension * p.size()];
                     for (auto i = 0U; i < p.size(); i += Robot::dimension)
+                    auto *path_arr = new FloatT
+                        [Robot::dimension * p.size() +
+                         (RH::Configuration::num_scalars_rounded - Robot::dimension)];
                     {
                         p[i].to_array(path_arr + i);
                     }

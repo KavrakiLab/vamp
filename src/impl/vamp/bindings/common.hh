@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <vamp/collision/sphere_sphere.hh>
 #include <vamp/collision/validity.hh>
 #include <vamp/planning/validate.hh>

@@ -247,4 +247,48 @@ namespace vamp
 
         return objects;
     }
+
+    template <typename DataT>
+    inline constexpr auto attachment_environment_collision(const collision::Environment<DataT> &e) noexcept
+        -> bool
+    {
+        for (const auto &s : e.attachments->posed_spheres)
+        {
+            // HACK: The radius needs to be a float, and unfortunately the spheres assume homogeneous
+            // DataT for storage
+            // TODO: Fix the sphere representation to allow to store float radii even with vector
+            // centers
+            if (sphere_environment_in_collision(e, s.x, s.y, s.z, s.r[{0, 0}]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    template <typename DataT, typename ArgT1, typename ArgT2, typename ArgT3, typename ArgT4>
+    inline constexpr auto attachment_sphere_collision(
+        const collision::Environment<DataT> &e,
+        ArgT1 sx_,
+        ArgT2 sy_,
+        ArgT3 sz_,
+        ArgT4 sr_) noexcept -> bool
+    {
+        // TODO: Figure out a way to avoid needing to upcast floats to vectors
+        auto sx = static_cast<DataT>(sx_);
+        auto sy = static_cast<DataT>(sy_);
+        auto sz = static_cast<DataT>(sz_);
+        auto sr = static_cast<DataT>(sr_);
+        for (const auto &att_s : e.attachments->posed_spheres)
+        {
+            if (not collision::sphere_sphere_sql2(sx, sy, sz, sr, att_s.x, att_s.y, att_s.z, att_s.r)
+                        .test_zero())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }  // namespace vamp

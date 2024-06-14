@@ -41,6 +41,12 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static auto store_unaligned(ScalarT *f, VectorT v) noexcept -> void
+        {
+            return vst1q_f32(f, v);
+        }
+
+        template <unsigned int = 0>
         inline static auto extract(VectorT v, int idx) noexcept -> ScalarT
         {
             return v[idx];
@@ -486,6 +492,12 @@ namespace vamp
 
         template <unsigned int = 0>
         inline static auto store(ScalarT *i, VectorT v) noexcept -> void
+        {
+            return vst1q_s32(i, v);
+        }
+
+        template <unsigned int = 0>
+        inline static auto store_unaligned(ScalarT *i, VectorT v) noexcept -> void
         {
             return vst1q_s32(i, v);
         }

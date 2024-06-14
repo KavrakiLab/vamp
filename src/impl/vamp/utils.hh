@@ -3,8 +3,6 @@
 #include <chrono>
 #include <utility>
 #include <cstdint>
-#include <vector>
-#include <algorithm>
 
 namespace vamp::utils
 {

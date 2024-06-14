@@ -78,6 +78,11 @@ namespace vamp
             store_vector(buf, std::make_index_sequence<num_vectors>());
         }
 
+        inline constexpr void to_array_unaligned(typename S::ScalarT *buf) const noexcept
+        {
+            store_vector_unaligned(buf, std::make_index_sequence<num_vectors>());
+        }
+
         inline static constexpr auto fill(typename S::ScalarT f) noexcept -> D
         {
             return D(make_array(f, std::make_index_sequence<num_vectors>()));
@@ -742,6 +747,16 @@ namespace vamp
             // TODO: This might segfault if we had to over-allocate vectors and the scalar data isn't
             // full for the over-allocated size
             (..., (S::template store<0>(scalar_array + I * S::VectorWidth, std::get<I>(d()->data))));
+        }
+
+        template <std::size_t... I>
+        inline constexpr void
+        store_vector_unaligned(typename S::ScalarT *scalar_array, std::index_sequence<I...>) const noexcept
+        {
+            // TODO: This might segfault if we had to over-allocate vectors and the scalar data isn't
+            // full for the over-allocated size
+            (...,
+             (S::template store_unaligned<0>(scalar_array + I * S::VectorWidth, std::get<I>(d()->data))));
         }
 
         inline constexpr auto d() const noexcept -> const D *

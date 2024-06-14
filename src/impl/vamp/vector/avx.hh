@@ -38,6 +38,12 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static constexpr auto store_unaligned(ScalarT *f, VectorT v) noexcept -> void
+        {
+            _mm256_storeu_ps(f, v);
+        }
+
+        template <unsigned int = 0>
         inline static auto extract(VectorT v, int idx) noexcept -> ScalarT
         {
             return v[idx];
@@ -410,6 +416,12 @@ namespace vamp
         inline static constexpr auto store(ScalarT *f, VectorT v) noexcept -> void
         {
             _mm256_store_si256(reinterpret_cast<VectorT *>(f), v);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto store_unaligned(ScalarT *f, VectorT v) noexcept -> void
+        {
+            _mm256_storeu_si256(reinterpret_cast<VectorT *>(f), v);
         }
 
         template <unsigned int = 0>

@@ -9,8 +9,14 @@ namespace vamp::collision
     template <typename DataT>
     struct Attachment
     {
-        Attachment(DataT tf_tx, DataT tf_ty, DataT tf_tz, DataT tf_rx, DataT tf_ry, DataT tf_rz,
-                   DataT tf_rw) noexcept
+        Attachment(
+            DataT tf_tx,
+            DataT tf_ty,
+            DataT tf_tz,
+            DataT tf_rx,
+            DataT tf_ry,
+            DataT tf_rz,
+            DataT tf_rw) noexcept
           : tf_tx(std::move(tf_tx))
           , tf_ty(std::move(tf_ty))
           , tf_tz(std::move(tf_tz))
@@ -22,11 +28,22 @@ namespace vamp::collision
         }
 
         template <typename DT = DataT, typename = std::enable_if_t<not std::is_same_v<DT, float>>>
-        Attachment(float tf_tx, float tf_ty, float tf_tz, float tf_rx, float tf_ry, float tf_rz,
-                   float tf_rw) noexcept
-          : Attachment(static_cast<DataT>(tf_tx), static_cast<DataT>(tf_ty), static_cast<DataT>(tf_tz),
-                       static_cast<DataT>(tf_rx), static_cast<DataT>(tf_ry), static_cast<DataT>(tf_rz),
-                       static_cast<DataT>(tf_rw))
+        Attachment(
+            float tf_tx,
+            float tf_ty,
+            float tf_tz,
+            float tf_rx,
+            float tf_ry,
+            float tf_rz,
+            float tf_rw) noexcept
+          : Attachment(
+                static_cast<DataT>(tf_tx),
+                static_cast<DataT>(tf_ty),
+                static_cast<DataT>(tf_tz),
+                static_cast<DataT>(tf_rx),
+                static_cast<DataT>(tf_ry),
+                static_cast<DataT>(tf_rz),
+                static_cast<DataT>(tf_rw))
         {
         }
 
@@ -36,6 +53,9 @@ namespace vamp::collision
         Attachment(const Attachment<float> &o) noexcept
           : Attachment(o.tf_tx, o.tf_ty, o.tf_tz, o.tf_rx, o.tf_ry, o.tf_rz, o.tf_rw)
         {
+            spheres.reserve(o.spheres.size());
+            for (const auto &sphere : o.spheres)
+                spheres.emplace_back(sphere);
         }
 
         std::vector<Sphere<DataT>> spheres;
@@ -50,8 +70,8 @@ namespace vamp::collision
         DataT tf_rz;
         DataT tf_rw;
 
-        inline void pose(DataT p_tx, DataT p_ty, DataT p_tz, DataT p_rx, DataT p_ry, DataT p_rz,
-                         DataT p_rw) const noexcept
+        inline void pose(DataT p_tx, DataT p_ty, DataT p_tz, DataT p_rx, DataT p_ry, DataT p_rz, DataT p_rw)
+            const noexcept
         {
             // Multiply parent orientation quaternion and attachment orientation quaternion
             const auto rx = p_rw * tf_rx + p_rx * tf_rw + p_ry * tf_rz - p_rz * tf_ry;

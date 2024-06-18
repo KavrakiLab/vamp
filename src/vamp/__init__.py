@@ -11,6 +11,7 @@ __all__ = [
     "fetch",
     "baxter",
     "Environment",
+    "Attachment",
     "Sphere",
     "Cuboid",
     "Cylinder",
@@ -32,6 +33,7 @@ from .constants import *
 from . import _core
 from ._core import Cuboid as Cuboid
 from ._core import Cylinder as Cylinder
+from ._core import Attachment as Attachment
 from ._core import Environment as Environment
 from ._core import PRMNeighborParams as PRMNeighborParams
 from ._core import PRMSettings as PRMSettings
@@ -72,8 +74,8 @@ def png_to_heightfield(
 
 
 def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, **kwargs):
+    robot_module = getattr(_core, robot_name)
     # robot_module = getattr(_core, robot_name + "_attachment")
-    robot_module = getattr(_core, robot_name + "_attachment")
     try:
         planner_func = getattr(robot_module, planner_name)
     except AttributeError:

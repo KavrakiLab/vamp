@@ -152,7 +152,9 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
                 auto start_time = std::chrono::steady_clock::now();
                 e.pointclouds.emplace_back(pc, r_min, r_max, r_point);
                 return vamp::utils::get_elapsed_nanoseconds(start_time);
-            });
+            })
+        .def("attach", [](vc::Environment<float> &e, const vc::Attachment<float> &a) { e.attachments = a; })
+        ;
 
     pymodule.def(
         "filter_pointcloud",
@@ -169,4 +171,11 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
                 vc::filter_pointcloud(pc, min_dist, max_range, origin, workcell_min, workcell_max, cull);
             return {filtered, vamp::utils::get_elapsed_nanoseconds(start_time)};
         });
+
+    nb::class_<vc::Attachment<float>>(pymodule, "Attachment")
+        .def(nb::init<float, float, float, float, float, float, float>())
+        .def(
+            "add_spheres",
+            [](vc::Attachment<float> &a, std::vector<collision::Sphere<float>> &spheres)
+            { a.spheres.insert(a.spheres.end(), spheres.cbegin(), spheres.cend()); });
 }

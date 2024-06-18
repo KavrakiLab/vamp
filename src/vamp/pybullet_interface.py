@@ -320,7 +320,7 @@ class PyBulletSimulator:
         with DisableRendering(self.client), RedirectStream(sys.stdout), RedirectStream(sys.stderr):
             self.client.removeAllUserDebugItems()
 
-    def animate(self, plan):
+    def animate(self, plan, callback = None):
         plan_idx = 0
         playing = False
         moved = True
@@ -336,11 +336,16 @@ Use left/right arrow keys to move through individual states."""
         while True:
             c = plan[plan_idx]
             if isinstance(c, list):
-                self.set_joint_positions(c)
+                c_list = c
             elif isinstance(c, np.ndarray):
-                self.set_joint_positions(c.tolist())
+                c_list = c.tolist()
             else:
-                self.set_joint_positions(c.to_list())
+                c_list = c.to_list()
+
+            self.set_joint_positions(c_list)
+
+            if callback is not None:
+                callback(c_list)
 
             moved = False
             keys = self.client.getKeyboardEvents()

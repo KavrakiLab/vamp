@@ -98,6 +98,10 @@ namespace vamp::robots::sphere
     {
         return not sphere_environment_in_collision(environment, q[0], q[1], q[2], radius);
     }
+
+    inline auto eefk(const std::array<float, 3> &q) noexcept -> std::array<float, 7>
+    {
+    }
 }  // namespace vamp::robots::sphere
 
 // NOLINTEND(*-magic-numbers)

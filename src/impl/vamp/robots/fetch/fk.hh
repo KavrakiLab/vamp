@@ -16076,6 +16076,10 @@ namespace vamp::robots::fetch
 
         return true;
     }
+
+    inline auto eefk(const std::array<float, 8> &q) noexcept -> std::array<float, 7>
+    {
+    }
 }  // namespace vamp::robots::fetch
 
 // NOLINTEND(*-magic-numbers)

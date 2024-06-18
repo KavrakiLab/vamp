@@ -6249,6 +6249,10 @@ namespace vamp::robots::panda
 
         return true;
     }
+
+    inline auto eefk(const std::array<float, 7> &q) noexcept -> std::array<float, 7>
+    {
+    }
 }  // namespace vamp::robots::panda
 
 // NOLINTEND(*-magic-numbers)

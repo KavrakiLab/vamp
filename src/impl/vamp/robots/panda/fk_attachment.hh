@@ -6453,7 +6453,7 @@ namespace vamp::robots::panda_attachment
         return true;
     }
 
-    inline auto eefk(const std::array<float, 7> &q) noexcept -> std::array<double, 7>
+    inline auto eefk(const std::array<float, 7> &q) noexcept -> std::array<float, 7>
     {
         auto INPUT_6 = q[6];
         auto DIV_842 = INPUT_6 * 0.5;

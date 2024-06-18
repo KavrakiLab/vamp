@@ -41,5 +41,7 @@ namespace vamp::robots
 
         template <std::size_t rake>
         static constexpr auto sphere_fk = ur5::sphere_fk<rake>;
+
+        static constexpr auto eefk = ur5::eefk;
     };
 }  // namespace vamp::robots

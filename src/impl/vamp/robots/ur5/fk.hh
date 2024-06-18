@@ -3021,6 +3021,9 @@ namespace vamp::robots::ur5
         return true;
     }
 
+    inline auto eefk(const std::array<float, 6> &q) noexcept -> std::array<float, 7>
+    {
+    }
 }  // namespace vamp::robots::ur5
 
 // NOLINTEND(*-magic-numbers)

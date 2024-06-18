@@ -232,6 +232,12 @@ namespace vamp::binding
         {
             return filter_robot_from_pointcloud<Robot>(pc, start, environment, point_radius);
         }
+
+        inline static auto eefk(
+            const ConfigurationArray &start) -> std::array<float, 7>
+        {
+            return Robot::eefk(start);
+        }
     };
 
     template <typename Robot>
@@ -503,6 +509,12 @@ namespace vamp::binding
             "environment"_a,
             "point_radius"_a,
             "Filters all colliding points from a point cloud.");
+
+        submodule.def(
+            "eefk",
+            RH::eefk,
+            "configuration"_a,
+            "");
 
         return submodule;
     }

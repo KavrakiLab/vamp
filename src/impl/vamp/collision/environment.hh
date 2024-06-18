@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <optional>
 #include <vamp/collision/shapes.hh>
 #include <vamp/collision/capt.hh>
 #include <vamp/collision/attachments.hh>
@@ -18,7 +19,7 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
         std::vector<CAPT> pointclouds;
-        Attachment<DataT> *attachments = nullptr;
+        std::optional<Attachment<DataT>> attachments;
 
         Environment() = default;
 
@@ -64,27 +65,19 @@ namespace vamp::collision
                 [](const auto &a, const auto &b) { return a.min_distance < b.min_distance; });
         }
 
-        ~Environment()
-        {
-            if (attachments)
-            {
-                delete attachments;
-            }
-        }
-
     private:
         template <typename OtherDataT>
         friend struct Environment;
 
         template <typename OtherDataT>
-        inline auto clone_attachments() const noexcept -> Attachment<OtherDataT>*
+        inline auto clone_attachments() const noexcept -> std::optional<Attachment<OtherDataT>>
         {
             if (attachments)
             {
-                return new Attachment<OtherDataT>(*attachments);
+                return Attachment<OtherDataT>(*attachments);
             }
 
-            return nullptr;
+            return std::nullopt;
         }
     };
 

@@ -73,7 +73,7 @@ def png_to_heightfield(
 
 def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, **kwargs):
     # robot_module = getattr(_core, robot_name + "_attachment")
-    robot_module = getattr(_core, robot_name)
+    robot_module = getattr(_core, robot_name + "_attachment")
     try:
         planner_func = getattr(robot_module, planner_name)
     except AttributeError:

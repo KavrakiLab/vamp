@@ -121,11 +121,11 @@ n Graph States: {result.size}
 """
                 )
 
-    if not solved:
-        plan = vamp_module.Path()
-        plan.append(vamp_module.Configuration(start))
-        for goal in goals:
-            plan.append(vamp_module.Configuration(goal))
+    # if not solved:
+    #     plan = vamp_module.Path()
+    #     plan.append(vamp_module.Configuration(start))
+    #     for goal in goals:
+    #         plan.append(vamp_module.Configuration(goal))
 
     sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp.ROBOT_JOINTS[robot], True)
     sim.add_environment_from_problem_dict(problem_data, display_object_names)
@@ -133,12 +133,13 @@ n Graph States: {result.size}
     if pointcloud:
         sim.draw_pointcloud(filtered_pc)
 
-    if not valid:
-        for state in [start, *goals]:
+    # if not valid:
+    for state in [start, *goals]:
             if not vamp_module.validate(state, env):
                 print(f"Displaying colliding spheres for first invalid state: {state}")
 
                 validity = vamp_module.sphere_validity(state, env)
+                print(validity)
                 invalid = [x[0] for x in filter(lambda x: x[1], enumerate(validity))]
 
                 spheres = vamp_module.fk(state)
@@ -148,7 +149,10 @@ n Graph States: {result.size}
 
                 break
 
-    sim.animate(plan)
+    # sim.animate(plan)
+
+    while True:
+        ...
 
 
 if __name__ == "__main__":

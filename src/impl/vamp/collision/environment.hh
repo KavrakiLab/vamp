@@ -18,7 +18,7 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
         std::vector<CAPT> pointclouds;
-        std::unique_ptr<Attachment<DataT>> attachments;
+        Attachment<DataT> *attachments = nullptr;
 
         Environment() = default;
 
@@ -64,16 +64,24 @@ namespace vamp::collision
                 [](const auto &a, const auto &b) { return a.min_distance < b.min_distance; });
         }
 
+        ~Environment()
+        {
+            if (attachments)
+            {
+                delete attachments;
+            }
+        }
+
     private:
         template <typename OtherDataT>
         friend struct Environment;
 
         template <typename OtherDataT>
-        inline auto clone_attachments() const noexcept -> std::unique_ptr<Attachment<OtherDataT>>
+        inline auto clone_attachments() const noexcept -> Attachment<OtherDataT>*
         {
             if (attachments)
             {
-                return std::make_unique<Attachment<OtherDataT>>(*attachments);
+                return new Attachment<OtherDataT>(*attachments);
             }
 
             return nullptr;

@@ -9,6 +9,7 @@ NB_MODULE(_core_ext, pymodule)
     vb::init_sphere(pymodule);
     vb::init_ur5(pymodule);
     vb::init_panda(pymodule);
+    vb::init_panda_attachment(pymodule);
     vb::init_fetch(pymodule);
     vb::init_baxter(pymodule);
 }

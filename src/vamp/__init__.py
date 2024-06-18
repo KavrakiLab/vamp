@@ -7,6 +7,7 @@ __all__ = [
     "sphere",
     "ur5",
     "panda",
+    "panda_attachment",
     "fetch",
     "baxter",
     "Environment",
@@ -41,6 +42,7 @@ from ._core import Sphere as Sphere
 from ._core import baxter as baxter
 from ._core import fetch as fetch
 from ._core import panda as panda
+from ._core import panda_attachment as panda_attachment
 from ._core import sphere as sphere
 from ._core import ur5 as ur5
 from ._core import filter_pointcloud as filter_pointcloud
@@ -70,6 +72,7 @@ def png_to_heightfield(
 
 
 def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, **kwargs):
+    # robot_module = getattr(_core, robot_name + "_attachment")
     robot_module = getattr(_core, robot_name)
     try:
         planner_func = getattr(robot_module, planner_name)

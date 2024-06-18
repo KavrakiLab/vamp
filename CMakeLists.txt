@@ -55,6 +55,7 @@ list(APPEND VAMP_ROBOT_MODULES
   sphere
   ur5
   panda
+  panda_attachment
   fetch
   baxter
 )

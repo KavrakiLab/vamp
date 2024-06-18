@@ -136,7 +136,7 @@ class PyBulletSimulator:
             )
         col_shape_id = self.client.createCollisionShape(pb.GEOM_CAPSULE, radius = radius, height = length)
 
-        self.client.createMultiBody(
+        multibody_id = self.client.createMultiBody(
             baseVisualShapeIndex = vis_shape_id,
             baseCollisionShapeIndex = col_shape_id,
             basePosition = position,
@@ -149,6 +149,8 @@ class PyBulletSimulator:
                 textPosition = position,
                 textColorRGB = [0., 0., 0.],
                 )
+
+        return multibody_id
 
     def add_cylinder(
         self,
@@ -168,7 +170,7 @@ class PyBulletSimulator:
             )
         col_shape_id = self.client.createCollisionShape(pb.GEOM_CYLINDER, radius = radius, height = length)
 
-        self.client.createMultiBody(
+        multibody_id = self.client.createMultiBody(
             baseVisualShapeIndex = vis_shape_id,
             baseCollisionShapeIndex = col_shape_id,
             basePosition = position,
@@ -181,6 +183,8 @@ class PyBulletSimulator:
                 textPosition = position,
                 textColorRGB = [0., 0., 0.],
                 )
+
+        return multibody_id
 
     def add_cuboid(
         self,
@@ -198,7 +202,7 @@ class PyBulletSimulator:
             )
         col_shape_id = self.client.createCollisionShape(pb.GEOM_BOX, halfExtents = half_extents)
 
-        self.client.createMultiBody(
+        multibody_id = self.client.createMultiBody(
             baseVisualShapeIndex = vis_shape_id,
             baseCollisionShapeIndex = col_shape_id,
             basePosition = position,
@@ -211,6 +215,8 @@ class PyBulletSimulator:
                 textPosition = position,
                 textColorRGB = [0., 0., 0.],
                 )
+
+        return multibody_id
 
     def add_sphere(
         self,
@@ -227,7 +233,7 @@ class PyBulletSimulator:
             )
         col_shape_id = self.client.createCollisionShape(pb.GEOM_SPHERE, radius = radius)
 
-        self.client.createMultiBody(
+        multibody_id = self.client.createMultiBody(
             baseVisualShapeIndex = vis_shape_id,
             baseCollisionShapeIndex = col_shape_id,
             basePosition = position,
@@ -239,6 +245,13 @@ class PyBulletSimulator:
                 textPosition = position,
                 textColorRGB = [0., 0., 0.],
                 )
+
+        return multibody_id
+
+    def update_object_position(
+            self, multibody_id: int, position: Position, rot_xywz: XYZWQuaternion = [0, 0, 0, 1]
+        ):
+        self.client.resetBasePositionAndOrientation(multibody_id, position, rot_xywz)
 
     def add_height_map(
             self,

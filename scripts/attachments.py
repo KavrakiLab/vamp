@@ -14,25 +14,27 @@ b = [2.35, 1., 0., -0.8, 0, 2.5, 0.785]
 
 # Problem specification: a list of sphere centers
 problem = [
-    # [0.55, 0, 0.25],
-    # [0.35, 0.35, 0.25],
-    # [0, 0.55, 0.25],
-    # [-0.55, 0, 0.25],
-    # [-0.35, -0.35, 0.25],
-    # [0, -0.55, 0.25],
-    # [0.35, -0.35, 0.25],
-    # [0.35, 0.35, 0.8],
-    # [0, 0.55, 0.8],
-    # [-0.35, 0.35, 0.8],
-    # [-0.55, 0, 0.8],
-    # [-0.35, -0.35, 0.8],
-    # [0, -0.55, 0.8],
-    # [0.35, -0.35, 0.8],
-    ]
+               # [0.55, 0, 0.25],
+               # [0.35, 0.35, 0.25],
+               # [0, 0.55, 0.25],
+               # [-0.55, 0, 0.25],
+               # [-0.35, -0.35, 0.25],
+               # [0, -0.55, 0.25],
+               # [0.35, -0.35, 0.25],
+               # [0.35, 0.35, 0.8],
+               # [0, 0.55, 0.8],
+               # [-0.35, 0.35, 0.8],
+               # [-0.55, 0, 0.8],
+               # [-0.35, -0.35, 0.8],
+               # [0, -0.55, 0.8],
+               # [0.35, -0.35, 0.8],
+]
 
 
 def main(
-    radius: float = 0.2,
+    obstacle_radius: float = 0.2,
+    attachment_radius: float = 0.01,
+    attachment_offset: float = 1.0,
     visualize: bool = False,
     planner: str = "rrtc",
     **kwargs,
@@ -41,8 +43,8 @@ def main(
     (vamp_module, planner_func, plan_settings,
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda_attachment", planner, **kwargs)
 
-    attachment = vamp.Attachment(1, 0, 0, 0, 0, 0, 1)
-    attachment.add_spheres([vamp.Sphere([0, 0, 0], 0.2)])
+    attachment = vamp.Attachment(attachment_offset, 0, 0, 0, 0, 0, 1)
+    attachment.add_spheres([vamp.Sphere([0, 0, 0], attachment_radius)])
 
     if visualize:
         from vamp import pybullet_interface as vpb
@@ -54,14 +56,17 @@ def main(
 
         e = vamp.Environment()
         for sphere in problem:
-            e.add_sphere(vamp.Sphere(sphere, radius))
-            sim.add_sphere(radius, sphere)
+            e.add_sphere(vamp.Sphere(sphere, obstacle_radius))
+            sim.add_sphere(obstacle_radius, sphere)
+
+        attachment_pose = [0, 0, 0] # replace.
+        attachment_sphere = sim.add_sphere(attachment_radius, attachment_pose)
 
         e.attach(attachment)
 
+
         result = planner_func(a, b, e, plan_settings)
         simple = vamp_module.simplify(result.path, e, simp_settings)
-
         simple.path.interpolate(vamp.panda.resolution())
 
         sim.animate(simple.path)

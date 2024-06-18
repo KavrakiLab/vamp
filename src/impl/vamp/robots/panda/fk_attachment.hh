@@ -3582,6 +3582,136 @@ namespace vamp::robots::panda_attachment
         auto MUL_965 = ADD_962 * 2.0;
         auto SUB_968 = 0.107 - MUL_965;
         auto ADD_971 = ADD_840 + SUB_968;
+        if (environment.attachments)
+        {
+            if (set_attachment_pose_hack(
+                    environment, ADD_969, ADD_970, ADD_971, SUB_1039, ADD_1050, SUB_1063, ADD_1074))
+            {
+                return false;
+            }
+            if (attachment_environment_collision(environment))
+            {
+                return false;
+            }
+            if (/*attachment vs. panda_link0*/ attachment_sphere_collision<decltype(q[0])>(
+                environment, -0.043343, 1.4e-06, 0.0629063, 0.130366))
+            {
+                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.0, 0.0, 0.05, 0.08))
+                {
+                    return false;
+                }
+            }
+            if (/*attachment vs. panda_link1*/ attachment_sphere_collision<decltype(q[0])>(
+                environment, ADD_1636, SUB_1637, 0.2598976, 0.144259))
+            {
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, MUL_1650, NEGATE_1654, 0.333, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, MUL_1674, NEGATE_1678, 0.333, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.0, 0.0, 0.213, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.0, 0.0, 0.163, 0.06))
+                {
+                    return false;
+                }
+            }
+            if (/*attachment vs. panda_link2*/ attachment_sphere_collision<decltype(q[0])>(
+                environment, ADD_1835, SUB_1836, ADD_1838, 0.145067))
+            {
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, MUL_1852, MUL_1854, ADD_1857, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, MUL_1871, MUL_1873, ADD_1876, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, MUL_1885, NEGATE_1889, SUB_1900, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, MUL_1909, NEGATE_1913, SUB_1924, 0.06))
+                {
+                    return false;
+                }
+            }
+            if (/*attachment vs. panda_link5*/ attachment_sphere_collision<decltype(q[0])>(
+                environment, ADD_2399, ADD_2400, ADD_2401, 0.173531))
+            {
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2420, ADD_2421, ADD_2422, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2441, ADD_2442, ADD_2443, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, SUB_2468, SUB_2469, SUB_2470, 0.06))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2498, ADD_2499, ADD_2500, 0.05))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2531, ADD_2532, ADD_2533, 0.025))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2564, ADD_2565, ADD_2566, 0.025))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2597, ADD_2598, ADD_2599, 0.025))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2630, ADD_2631, ADD_2632, 0.025))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2669, ADD_2670, ADD_2671, 0.025))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2708, ADD_2709, ADD_2710, 0.025))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2747, ADD_2748, ADD_2749, 0.025))
+                {
+                    return false;
+                }
+                if (attachment_sphere_collision<decltype(q[0])>(
+                        environment, ADD_2786, ADD_2787, ADD_2788, 0.025))
+                {
+                    return false;
+                }
+            }
+        }  // (821, 898)
         auto ADD_3314 = ADD_971 + ADD_3311;
         auto MUL_3334 = MUL_3271 * 0.01;
         auto MUL_3323 = MUL_3258 * 0.075;
@@ -3784,7 +3914,7 @@ namespace vamp::robots::panda_attachment
             {
                 return false;
             }
-        }  // (821, 1025)
+        }  // (898, 1025)
         if (/*panda_link0 vs. panda_hand*/ sphere_sphere_self_collision<decltype(q[0])>(
             -0.043343, 1.4e-06, 0.0629063, 0.130366, ADD_3312, ADD_3313, ADD_3314, 0.107701))
         {
@@ -6321,36 +6451,6 @@ namespace vamp::robots::panda_attachment
                 return false;
             }
         }  // (1179, 1179)
-        auto MUL_1476 = SUB_1039 * 0.105;
-        auto MUL_1481 = SUB_1063 * MUL_1476;
-        auto MUL_1468 = ADD_1050 * 0.105;
-        auto MUL_1479 = ADD_1074 * MUL_1468;
-        auto ADD_1482 = MUL_1479 + MUL_1481;
-        auto MUL_1484 = ADD_1482 * 2.0;
-        auto ADD_1506 = ADD_969 + MUL_1484;
-        auto MUL_1487 = ADD_1074 * MUL_1476;
-        auto MUL_1490 = SUB_1063 * MUL_1468;
-        auto SUB_1491 = MUL_1490 - MUL_1487;
-        auto MUL_1493 = SUB_1491 * 2.0;
-        auto ADD_1507 = ADD_970 + MUL_1493;
-        auto MUL_1496 = SUB_1039 * MUL_1476;
-        auto MUL_1498 = ADD_1050 * MUL_1468;
-        auto ADD_1499 = MUL_1496 + MUL_1498;
-        auto MUL_1502 = ADD_1499 * 2.0;
-        auto SUB_1505 = 0.105 - MUL_1502;
-        auto ADD_1508 = ADD_971 + SUB_1505;
-        if (environment.attachments())
-        {
-            if (set_attachment_pose_hack(
-                    environment, ADD_1506, ADD_1507, ADD_1508, SUB_1039, ADD_1050, SUB_1063, ADD_1074))
-            {
-                return false;
-            }
-            if (attachment_environment_collision(environment))
-            {
-                return false;
-            }
-        }  // (1179, 1197)
         return true;
     }
 }  // namespace vamp::robots::panda_attachment

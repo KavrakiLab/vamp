@@ -16,8 +16,9 @@ cmake --install build
 
 The VAMP demo can be compiled with (in the VAMP directory):
 ```bash
+# Specify OMPL demos are to be build with -DVAMP_BUILD_OMPL_DEMOS=On
 # If using a local installation, specify the OMPL path with VAMP_OMPL_PATH
-cmake -Bbuild -GNinja -DVAMP_BUILD_CPP_DEMOS=On -DVAMP_OMPL_PATH=~/ompl_install .
+cmake -Bbuild -GNinja -DVAMP_BUILD_OMPL_DEMOS=On -DVAMP_OMPL_PATH=~/ompl_install .
 cmake --build build
 ```
 

@@ -4,7 +4,7 @@ option(VAMP_LTO "Use LTO." ON)
 option(VAMP_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output." ON)
 option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
 
-option(VAMP_BUILD_CPP_DEMOS "Build VAMP C++ Demo Scripts" OFF)
+option(VAMP_BUILD_OMPL_DEMOS "Build VAMP C++ OMPL Integration Scripts" OFF)
 option(VAMP_OMPL_PATH "Default OMPL Search Path for Demos" "")
 
 if(VAMP_FORCE_CLANG)
@@ -130,7 +130,7 @@ foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
   )
 endforeach()
 
-if(VAMP_BUILD_CPP_DEMOS)
+if(VAMP_BUILD_OMPL_DEMOS)
   find_package(ompl QUIET PATHS ${VAMP_OMPL_PATH})
 
   if(ompl_FOUND)

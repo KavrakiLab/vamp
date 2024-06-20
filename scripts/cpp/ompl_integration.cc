@@ -1,38 +1,42 @@
-#include <vamp/planning/validate.hh>
 #include <vector>
 #include <array>
+#include <utility>
+#include <iostream>
 
 #include <vamp/collision/factory.hh>
-#include <vamp/planning/simplify.hh>
-#include <vamp/planning/rrtc.hh>
+#include <vamp/planning/validate.hh>
+
 #include <vamp/robots/panda.hh>
 
 #include <ompl/base/MotionValidator.h>
 #include <ompl/base/ProblemDefinition.h>
 #include <ompl/base/SpaceInformation.h>
+#include <ompl/base/StateValidityChecker.h>
 #include <ompl/base/spaces/RealVectorStateSpace.h>
 #include <ompl/base/objectives/PathLengthOptimizationObjective.h>
 #include <ompl/geometric/PathSimplifier.h>
 #include <ompl/geometric/planners/informedtrees/BITstar.h>
 #include <ompl/util/Exception.h>
-#include <utility>
-#include <iostream>
+
+namespace ob = ompl::base;
+namespace og = ompl::geometric;
 
 using Robot = vamp::robots::Panda;
 static constexpr std::size_t dimension = Robot::dimension;
 using Configuration = Robot::Configuration;
-using Halton = vamp::rng::Halton<dimension>;
 static constexpr const std::size_t rake = vamp::FloatVectorWidth;
-using RRTC = vamp::planning::RRTC<Robot, Halton, rake, Robot::resolution>;
 using EnvironmentInput = vamp::collision::Environment<float>;
 using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
 
-const std::array<float, dimension> zeros = {0., 0., 0., 0., 0., 0., 0.};
-const std::array<float, dimension> ones = {1., 1., 1., 1., 1., 1., 1.};
+static const std::array<float, dimension> zeros = {0., 0., 0., 0., 0., 0., 0.};
+static const std::array<float, dimension> ones = {1., 1., 1., 1., 1., 1., 1.};
 
-const std::array<float, dimension> start = {0., -0.785, 0., -2.356, 0., 1.571, 0.785};
-const std::array<float, dimension> goal = {2.35, 1., 0., -0.8, 0, 2.5, 0.785};
-const std::vector<std::array<float, 3>> problem = {
+// Start and goal configurations
+static const std::array<float, dimension> start = {0., -0.785, 0., -2.356, 0., 1.571, 0.785};
+static const std::array<float, dimension> goal = {2.35, 1., 0., -0.8, 0, 2.5, 0.785};
+
+// Spheres for the cage problem
+static const std::vector<std::array<float, 3>> problem = {
     {0.55, 0, 0.25},
     {0.35, 0.35, 0.25},
     {0, 0.55, 0.25},
@@ -48,26 +52,52 @@ const std::vector<std::array<float, 3>> problem = {
     {0, -0.55, 0.8},
     {0.35, -0.35, 0.8},
 };
+
+// Radius for obstacle spheres
 static constexpr const float radius = 0.2;
 
-namespace ob = ompl::base;
-namespace og = ompl::geometric;
-
+// Convert an OMPL state into a VAMP vector
 inline static auto ompl_to_vamp(const ob::State *state) -> Configuration
 {
-    auto *as = state->as<ob::RealVectorStateSpace::StateType>();
+    // Create an aligned memory buffer to load VAMP vector from
     alignas(Configuration::S::Alignment)
         std::array<typename Configuration::S::ScalarT, Configuration::num_scalars>
             aligned_buffer;
 
+    // Copy OMPL data into aligned buffer
+    auto *as = state->as<ob::RealVectorStateSpace::StateType>();
     for (auto i = 0U; i < dimension; ++i)
     {
         aligned_buffer[i] = static_cast<float>(as->values[i]);
     }
 
-    Configuration c(aligned_buffer.data());
-    return c;
+    // Create configuration from aligned buffer data
+    return Configuration(aligned_buffer.data());
 }
+
+// State validator using VAMP
+class VAMPStateValidator : public ob::StateValidityChecker
+{
+public:
+    VAMPStateValidator(ob::SpaceInformation *si, const EnvironmentVector &env_v)
+      : ob::StateValidityChecker(si), env_v(env_v)
+    {
+    }
+
+    VAMPStateValidator(const ob::SpaceInformationPtr &si, const EnvironmentVector &env_v)
+      : ob::StateValidityChecker(si), env_v(env_v)
+    {
+    }
+
+    auto isValid(const ob::State *state) const -> bool override
+    {
+        // Convert OMPL to VAMP vector and validate
+        auto configuration = ompl_to_vamp(state);
+        return vamp::planning::validate_motion<Robot, rake, 1>(configuration, configuration, env_v);
+    }
+
+    const EnvironmentVector &env_v;
+};
 
 class VAMPMotionValidator : public ob::MotionValidator
 {
@@ -84,6 +114,7 @@ public:
 
     auto checkMotion(const ob::State *s1, const ob::State *s2) const -> bool override
     {
+        // Convert OMPL states to VAMP vectors and check motion between states
         return vamp::planning::validate_motion<Robot, rake, Robot::resolution>(
             ompl_to_vamp(s1), ompl_to_vamp(s2), env_v);
     }
@@ -97,8 +128,17 @@ public:
     const EnvironmentVector &env_v;
 };
 
-auto main(int, char **) -> int
+auto main(int argc, char **) -> int
 {
+    bool optimize = false;  // Flag - if true, will spend entire planning budget optimizing, otherwise exit on
+                            // first solution
+
+    // Set optimize flag if another argument is provided
+    if (argc == 2)
+    {
+        optimize = true;
+    }
+
     // Build sphere cage environment
     EnvironmentInput environment;
     for (const auto &sphere : problem)
@@ -131,13 +171,7 @@ auto main(int, char **) -> int
     // Create space information and set state validator and custom VAMP motion validator
     auto si = std::make_shared<ob::SpaceInformation>(space);
 
-    si->setStateValidityChecker(
-        [&env_v](const ob::State *state)
-        {
-            auto configuration = ompl_to_vamp(state);
-            return vamp::planning::validate_motion<Robot, rake, 1>(configuration, configuration, env_v);
-        });
-
+    si->setStateValidityChecker(std::make_shared<VAMPStateValidator>(si, env_v));
     si->setMotionValidator(std::make_shared<VAMPMotionValidator>(si, env_v));
     si->setup();
 
@@ -156,9 +190,11 @@ auto main(int, char **) -> int
     auto obj = std::make_shared<ob::PathLengthOptimizationObjective>(si);
     pdef->setOptimizationObjective(obj);
 
-    // Set planner to terminate as soon as a solution is found.
-    // Remove this line if you want BIT* to plan for the entire planning budget
-    obj->setCostThreshold(obj->infiniteCost());
+    if (not optimize)
+    {
+        // Set planner to terminate as soon as a solution is found.
+        obj->setCostThreshold(obj->infiniteCost());
+    }
 
     // Create planner
     auto planner = std::make_shared<og::BITstar>(si);
@@ -166,13 +202,17 @@ auto main(int, char **) -> int
     planner->setProblemDefinition(pdef);
     planner->setup();
 
+    // Solve the problem
     auto start_time = std::chrono::steady_clock::now();
     ob::PlannerStatus solved = planner->ob::Planner::solve(1.0);
     auto nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
 
+    // Only accept exact solutions
     if (solved == ob::PlannerStatus::EXACT_SOLUTION)
     {
         std::cout << "Found solution in " << nanoseconds / 1e6 << "ms! Simplfying..." << std::endl;
+
+        // Simplify the path
         const ob::PathPtr &path = pdef->getSolutionPath();
         og::PathGeometric &path_geometric = static_cast<og::PathGeometric &>(*path);
 
@@ -186,6 +226,7 @@ auto main(int, char **) -> int
 
         auto simplified_cost = path_geometric.cost(obj);
 
+        // Output statistics
         std::cout << "Found initial solution with cost " << initial_cost.value() << std::endl;
         std::cout << "Simplified solution to cost " << simplified_cost.value() << std::endl;
         std::cout << "Simplified solution:" << std::endl;

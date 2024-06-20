@@ -13,9 +13,10 @@
 #include <ompl/base/spaces/RealVectorStateSpace.h>
 #include <ompl/base/objectives/PathLengthOptimizationObjective.h>
 #include <ompl/geometric/PathSimplifier.h>
-#include <ompl/geometric/planners/rrt/RRTConnect.h>
-#include <ompl/geometric/planners/rrt/RRTstar.h>
+#include <ompl/geometric/planners/informedtrees/BITstar.h>
 #include <ompl/util/Exception.h>
+#include <utility>
+#include <iostream>
 
 using Robot = vamp::robots::Panda;
 static constexpr std::size_t dimension = Robot::dimension;
@@ -155,20 +156,25 @@ auto main(int, char **) -> int
     auto obj = std::make_shared<ob::PathLengthOptimizationObjective>(si);
     pdef->setOptimizationObjective(obj);
 
+    // Set planner to terminate as soon as a solution is found.
+    // Remove this line if you want BIT* to plan for the entire planning budget
+    obj->setCostThreshold(obj->infiniteCost());
+
     // Create planner
-    auto planner = std::make_shared<og::RRTstar>(si);
-    // planner->setRange(1.0);
+    auto planner = std::make_shared<og::BITstar>(si);
 
     planner->setProblemDefinition(pdef);
     planner->setup();
 
+    auto start_time = std::chrono::steady_clock::now();
     ob::PlannerStatus solved = planner->ob::Planner::solve(1.0);
+    auto nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
 
     if (solved == ob::PlannerStatus::EXACT_SOLUTION)
     {
-        std::cout << "Found solution! Simplfying..." << std::endl;
+        std::cout << "Found solution in " << nanoseconds / 1e6 << "ms! Simplfying..." << std::endl;
         const ob::PathPtr &path = pdef->getSolutionPath();
-        og::PathGeometric &path_geometric = static_cast<og::PathGeometric&>(*path);
+        og::PathGeometric &path_geometric = static_cast<og::PathGeometric &>(*path);
 
         auto initial_cost = path_geometric.cost(obj);
 

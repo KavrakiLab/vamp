@@ -4,6 +4,9 @@ option(VAMP_LTO "Use LTO." ON)
 option(VAMP_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output." ON)
 option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
 
+option(VAMP_BUILD_CPP_DEMOS "Build VAMP C++ Demo Scripts" OFF)
+option(VAMP_OMPL_PATH "Default OMPL Search Path for Demos" "")
+
 if(VAMP_FORCE_CLANG)
   find_program(CLANG "clang")
   find_program(CLANGPP "clang++")
@@ -126,3 +129,13 @@ foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
     DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
   )
 endforeach()
+
+if(VAMP_BUILD_CPP_DEMOS)
+  find_package(ompl QUIET PATHS ${VAMP_OMPL_PATH})
+
+  if(ompl_FOUND)
+    add_executable(vamp_ompl_integration scripts/cpp/ompl_integration.cc)
+    target_link_libraries(vamp_ompl_integration PRIVATE ompl::ompl Eigen3::Eigen)
+    target_include_directories(vamp_ompl_integration SYSTEM PRIVATE ${VAMP_EXT_INCLUDES})
+  endif()
+endif()

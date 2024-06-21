@@ -32,8 +32,8 @@ problem = [
 
 def main(
     obstacle_radius: float = 0.2,
-    attachment_radius: float = 0.05,
-    attachment_offset: float = 0.12,
+    attachment_radius: float = 0.07,
+    attachment_offset: float = 0.14,
     planner: str = "rrtc",
     **kwargs,
     ):

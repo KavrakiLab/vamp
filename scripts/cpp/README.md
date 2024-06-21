@@ -6,9 +6,10 @@ We provide an example of using VAMP as a motion validator and collision checker 
 
 If you do not have an installation of OMPL already (or wish to do local development of OMPL with VAMP as a collision checking backend), we recommend installing the latest version of OMPL to a local directory:
 ```bash
-# Here we are installing OMPL to a directory in the home folder, ~/ompl_install
+cd
 git clone git@github.com:ompl/ompl.git
 cd ompl/
+# Here we are installing OMPL to a directory in the home folder, ~/ompl_install
 cmake -Bbuild -GNinja -DCMAKE_INSTALL_PREFIX=~/ompl_install -DOMPL_REGISTRATION=Off -DOMPL_BUILD_DEMOS=Off -DOMPL_BUILD_TESTS=Off .
 cmake --build build
 cmake --install build

@@ -28,12 +28,9 @@ static constexpr const std::size_t rake = vamp::FloatVectorWidth;
 using EnvironmentInput = vamp::collision::Environment<float>;
 using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
 
-static const std::array<float, dimension> zeros = {0., 0., 0., 0., 0., 0., 0.};
-static const std::array<float, dimension> ones = {1., 1., 1., 1., 1., 1., 1.};
-
 // Start and goal configurations
-static const std::array<float, dimension> start = {0., -0.785, 0., -2.356, 0., 1.571, 0.785};
-static const std::array<float, dimension> goal = {2.35, 1., 0., -0.8, 0, 2.5, 0.785};
+static constexpr std::array<float, dimension> start = {0., -0.785, 0., -2.356, 0., 1.571, 0.785};
+static constexpr std::array<float, dimension> goal = {2.35, 1., 0., -0.8, 0, 2.5, 0.785};
 
 // Spheres for the cage problem - (x, y, z) center coordinates with fixed, common radius defined below
 static const std::vector<std::array<float, 3>> problem = {
@@ -54,7 +51,13 @@ static const std::vector<std::array<float, 3>> problem = {
 };
 
 // Radius for obstacle spheres
-static constexpr const float radius = 0.2;
+static constexpr float radius = 0.2;
+
+// Maximum planning time
+static constexpr float planning_time = 1.0;
+
+// Maximum simplification time
+static constexpr float simplification_time = 1.0;
 
 // Convert an OMPL state into a VAMP vector
 inline static auto ompl_to_vamp(const ob::State *state) -> Configuration
@@ -75,10 +78,19 @@ inline static auto ompl_to_vamp(const ob::State *state) -> Configuration
     return Configuration(aligned_buffer.data());
 }
 
-// State validator using VAMP
-class VAMPStateValidator : public ob::StateValidityChecker
+// Convert a VAMP vector to an OMPL state
+inline static auto vamp_to_ompl(const Configuration &c, ob::State *state)
 {
-public:
+    auto *as = state->as<ob::RealVectorStateSpace::StateType>();
+    for (auto i = 0U; i < dimension; ++i)
+    {
+        as->values[i] = static_cast<double>(c[{i, 0}]);
+    }
+}
+
+// State validator using VAMP
+struct VAMPStateValidator : public ob::StateValidityChecker
+{
     VAMPStateValidator(ob::SpaceInformation *si, const EnvironmentVector &env_v)
       : ob::StateValidityChecker(si), env_v(env_v)
     {
@@ -99,9 +111,8 @@ public:
     const EnvironmentVector &env_v;
 };
 
-class VAMPMotionValidator : public ob::MotionValidator
+struct VAMPMotionValidator : public ob::MotionValidator
 {
-public:
     VAMPMotionValidator(ob::SpaceInformation *si, const EnvironmentVector &env_v)
       : ob::MotionValidator(si), env_v(env_v)
     {
@@ -153,6 +164,9 @@ auto main(int argc, char **) -> int
     auto space = std::make_shared<ob::RealVectorStateSpace>(dimension);
 
     // Get bounds from VAMP Robot information, scale 0/1 config to min/max
+    static constexpr std::array<float, dimension> zeros = {0., 0., 0., 0., 0., 0., 0.};
+    static constexpr std::array<float, dimension> ones = {1., 1., 1., 1., 1., 1., 1.};
+
     auto zero_v = Configuration(zeros);
     auto one_v = Configuration(ones);
 
@@ -204,7 +218,7 @@ auto main(int argc, char **) -> int
 
     // Solve the problem
     auto start_time = std::chrono::steady_clock::now();
-    ob::PlannerStatus solved = planner->ob::Planner::solve(1.0);
+    ob::PlannerStatus solved = planner->ob::Planner::solve(planning_time);
     auto nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
 
     // Only accept exact solutions
@@ -212,14 +226,14 @@ auto main(int argc, char **) -> int
     {
         std::cout << "Found solution in " << nanoseconds / 1e6 << "ms! Simplfying..." << std::endl;
 
-        // Simplify the path
+        // Simplify the path using OMPL's path simplification
         const ob::PathPtr &path = pdef->getSolutionPath();
         og::PathGeometric &path_geometric = static_cast<og::PathGeometric &>(*path);
 
         auto initial_cost = path_geometric.cost(obj);
 
         og::PathSimplifier simplifier(si, pdef->getGoal(), obj);
-        if (not simplifier.simplify(path_geometric, 1.0))
+        if (not simplifier.simplify(path_geometric, simplification_time))
         {
             std::cout << "Path not valid!" << std::endl;
         }

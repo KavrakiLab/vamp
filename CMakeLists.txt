@@ -5,7 +5,7 @@ option(VAMP_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output." ON)
 option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
 
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Script" OFF)
-option(VAMP_OMPL_PATH "Default OMPL Search Path for Demos" "")
+option(VAMP_OMPL_PATH "Search Path for OMPL Installation - Only Needed for Demo Script" "")
 
 if(VAMP_FORCE_CLANG)
   find_program(CLANG "clang")

@@ -1,9 +1,8 @@
-import numpy as np
 from pathlib import Path
-import pandas as pd
-import random
-import copy
+
 import vamp
+from vamp import pybullet_interface as vpb
+
 from fire import Fire
 
 # Starting configuration
@@ -35,7 +34,6 @@ def main(
     obstacle_radius: float = 0.2,
     attachment_radius: float = 0.05,
     attachment_offset: float = 0.12,
-    visualize: bool = False,
     planner: str = "rrtc",
     **kwargs,
     ):
@@ -43,38 +41,40 @@ def main(
     (vamp_module, planner_func, plan_settings,
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda", planner, **kwargs)
 
-    attachment = vamp.Attachment(0, 0, attachment_offset, 0, 0, 0, 1)
+    # Create an attachment offset on the Z-axis from the end-effector frame
+    attachment = vamp.Attachment([0, 0, attachment_offset], [0, 0, 0, 1])
+
+    # Add a single sphere to the attachment - spheres are added in the attachment's local frame
     attachment.add_spheres([vamp.Sphere([0, 0, 0], attachment_radius)])
 
-    if visualize:
-        from vamp import pybullet_interface as vpb
+    robot_dir = Path(__file__).parent.parent / 'resources' / 'panda'
+    sim = vpb.PyBulletSimulator(str(robot_dir / f"panda_spherized.urdf"), vamp.ROBOT_JOINTS['panda'], True)
 
-        robot_dir = Path(__file__).parent.parent / 'resources' / 'panda'
-        sim = vpb.PyBulletSimulator(
-            str(robot_dir / f"panda_spherized.urdf"), vamp.ROBOT_JOINTS['panda'], True
-            )
+    e = vamp.Environment()
+    for sphere in problem:
+        e.add_sphere(vamp.Sphere(sphere, obstacle_radius))
+        sim.add_sphere(obstacle_radius, sphere)
 
-        e = vamp.Environment()
-        for sphere in problem:
-            e.add_sphere(vamp.Sphere(sphere, obstacle_radius))
-            sim.add_sphere(obstacle_radius, sphere)
+    # Add the attchment to the VAMP environment
+    e.attach(attachment)
 
-        attachment_sphere = sim.add_sphere(attachment_radius, [0, 0, 0])
+    # Add attachment sphere to visualization
+    attachment_sphere = sim.add_sphere(attachment_radius, [0, 0, 0])
 
-        def callback(configuration):
-            output = vamp_module.eefk(configuration)
-            attachment.pose(output)
-            sphere = attachment.posed_spheres[0]
+    # Callback to update sphere's location in PyBullet visualization
+    def callback(configuration):
+        position, orientation_xyzw = vamp_module.eefk(configuration)
+        attachment.pose(position, orientation_xyzw)
+        sphere = attachment.posed_spheres[0]
 
-            sim.update_object_position(attachment_sphere, [sphere.x, sphere.y, sphere.z])
+        sim.update_object_position(attachment_sphere, sphere.position)
 
-        e.attach(attachment)
+    # Plan and display
+    result = planner_func(a, b, e, plan_settings)
+    simple = vamp_module.simplify(result.path, e, simp_settings)
+    simple.path.interpolate(vamp.panda.resolution())
 
-        result = planner_func(a, b, e, plan_settings)
-        simple = vamp_module.simplify(result.path, e, simp_settings)
-        simple.path.interpolate(vamp.panda.resolution())
-
-        sim.animate(simple.path, callback)
+    sim.animate(simple.path, callback)
 
 
 if __name__ == "__main__":

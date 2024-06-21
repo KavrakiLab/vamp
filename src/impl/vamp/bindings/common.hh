@@ -233,10 +233,15 @@ namespace vamp::binding
             return filter_robot_from_pointcloud<Robot>(pc, start, environment, point_radius);
         }
 
-        inline static auto eefk(
-            const ConfigurationArray &start) -> std::array<float, 7>
+        inline static auto eefk(const ConfigurationArray &start)
+            -> std::pair<std::array<float, 3>, std::array<float, 4>>
         {
-            return Robot::eefk(start);
+            const auto &result = Robot::eefk(start);
+
+            std::array<float, 3> position = {result[0], result[1], result[2]};
+            std::array<float, 4> orientation = {result[3], result[4], result[5], result[6]};
+
+            return {position, orientation};
         }
     };
 
@@ -514,7 +519,7 @@ namespace vamp::binding
             "eefk",
             RH::eefk,
             "configuration"_a,
-            "");
+            "Returns the position and orientation (as a xyzw quaternion) of the robot's end-effector.");
 
         return submodule;
     }

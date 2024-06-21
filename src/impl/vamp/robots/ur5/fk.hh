@@ -5777,7 +5777,7 @@ namespace vamp::robots::ur5
         auto ADD_921 = MUL_770 + MUL_753;
         if (environment.attachments)
         {
-            if (set_attachment_pose_hack(
+            if (set_attachment_pose(
                     environment, ADD_968, ADD_969, ADD_970, SUB_888, SUB_903, ADD_914, ADD_921))
             {
                 return false;

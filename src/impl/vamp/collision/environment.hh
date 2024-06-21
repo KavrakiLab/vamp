@@ -82,7 +82,7 @@ namespace vamp::collision
     };
 
     template <typename DataT>
-    inline auto set_attachment_pose_hack(
+    inline auto set_attachment_pose(
         const Environment<DataT> &e,
         DataT tx,
         DataT ty,

@@ -8508,7 +8508,7 @@ namespace vamp::robots::panda
         auto ADD_971 = ADD_840 + SUB_968;
         if (environment.attachments)
         {
-            set_attachment_pose_hack(
+            set_attachment_pose(
                 environment, ADD_969, ADD_970, ADD_971, SUB_1039, ADD_1050, SUB_1063, ADD_1074);
 
             if (attachment_environment_collision(environment))

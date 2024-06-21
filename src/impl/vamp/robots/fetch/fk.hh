@@ -24978,7 +24978,7 @@ namespace vamp::robots::fetch
         auto ADD_999 = ADD_863 + MUL_995;
         if (environment.attachments)
         {
-            if (set_attachment_pose_hack(
+            if (set_attachment_pose(
                     environment, ADD_997, ADD_998, ADD_999, ADD_875, ADD_882, SUB_888, SUB_891))
             {
                 return false;

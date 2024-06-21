@@ -130,7 +130,7 @@ foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
   )
 endforeach()
 
-if(VAMP_BUILD_OMPL_DEMOS)
+if(VAMP_BUILD_OMPL_DEMO)
   find_package(ompl QUIET PATHS ${VAMP_OMPL_PATH})
 
   if(ompl_FOUND)

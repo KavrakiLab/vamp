@@ -2,7 +2,7 @@
 
 ## OMPL Integration Demo
 
-We provide an example of using VAMP as a motion validator and collision checker inside the [https://ompl.kavrakilab.org/index.html](Open Motion Planning Library), given in `ompl_integration.cc`.
+We provide an example of using VAMP as a motion validator and collision checker inside the [https://ompl.kavrakilab.org/index.html](Open Motion Planning Library), given in `ompl_integration.cc`. Please note that - although offering a substantial speedup to OMPL planners - this example is not engineered for maximum performance (e.g., it relies on state copying between OMPL and VAMP representations, etc.).
 
 If you do not have an installation of OMPL already (or wish to do local development of OMPL with VAMP as a collision checking backend), we recommend installing the latest version of OMPL to a local directory:
 ```bash

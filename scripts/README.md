@@ -64,6 +64,9 @@ This script has the following arguments that only affect benchmarking:
 
 Visualization is enabled by `--visualize`, which shows the plan with the PyBullet visualizer.
 
+## `attachments.py`
+Demonstrates planning with end-effector attachments using the same problem as used in `sphere_cage_example.py`.
+
 ## `flying_sphere.py`
 Demonstrates generating a roadmap over a heightfield for a flying sphere.
 The script has the following arguments:

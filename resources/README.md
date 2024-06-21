@@ -10,6 +10,10 @@ See the `*_spherized.urdf` files for examples of these spherical decompositions 
 We also use a secondary hierarchical decomposition: see the high-level single sphere URDF used for each robot in the `*_spherized_1.urdf` files.
 These decompositions are conservative estimations of the robot's mesh geometry.
 
+## Attachments
+
+
+
 ## Datasets
 
 ### MotionBenchMaker problems

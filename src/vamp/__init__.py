@@ -7,7 +7,6 @@ __all__ = [
     "sphere",
     "ur5",
     "panda",
-    "panda_attachment",
     "fetch",
     "baxter",
     "Environment",
@@ -44,7 +43,6 @@ from ._core import Sphere as Sphere
 from ._core import baxter as baxter
 from ._core import fetch as fetch
 from ._core import panda as panda
-from ._core import panda_attachment as panda_attachment
 from ._core import sphere as sphere
 from ._core import ur5 as ur5
 from ._core import filter_pointcloud as filter_pointcloud

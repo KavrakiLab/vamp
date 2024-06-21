@@ -41,7 +41,7 @@ def main(
     ):
 
     (vamp_module, planner_func, plan_settings,
-     simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda_attachment", planner, **kwargs)
+     simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda", planner, **kwargs)
 
     attachment = vamp.Attachment(0, 0, attachment_offset, 0, 0, 0, 1)
     attachment.add_spheres([vamp.Sphere([0, 0, 0], attachment_radius)])

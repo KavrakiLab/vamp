@@ -196,7 +196,7 @@ auto main(int argc, char **) -> int
         obj->setCostThreshold(obj->infiniteCost());
     }
 
-    // Create planner
+    // Create planner - BITstar by default, but you can change this to use other geometric planners instead
     auto planner = std::make_shared<og::BITstar>(si);
 
     planner->setProblemDefinition(pdef);

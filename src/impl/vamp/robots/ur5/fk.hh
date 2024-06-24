@@ -5798,7 +5798,7 @@ namespace vamp::robots::ur5
                 return false;
             }
         }  // (882, 882)
-        set_attachment_pose_hack(
+        set_attachment_pose(
             environment, SUB_1529, ADD_1530, ADD_1531, SUB_1444, SUB_1459, ADD_1470, ADD_1477);
         if (/*attachment vs. base_link*/ attachment_sphere_collision<decltype(q[0])>(
             environment, 0.0, 0.0, 0.9144, 0.08))

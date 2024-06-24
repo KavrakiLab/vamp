@@ -30693,7 +30693,7 @@ namespace vamp::robots::fetch
                 return false;
             }
         }  // (991, 991)
-        set_attachment_pose_hack(environment, ADD_997, ADD_998, ADD_999, ADD_875, ADD_882, SUB_888, SUB_891);
+        set_attachment_pose(environment, ADD_997, ADD_998, ADD_999, ADD_875, ADD_882, SUB_888, SUB_891);
         if (/*attachment vs. base_link*/ attachment_sphere_collision<decltype(q[0])>(
             environment, -0.02, 0.0, 0.188, 0.34))
         {

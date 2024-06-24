@@ -11243,7 +11243,7 @@ namespace vamp::robots::panda
                 return false;
             }
         }  // (1179, 1179)
-        set_attachment_pose_hack(
+        set_attachment_pose(
             environment, ADD_969, ADD_970, ADD_971, SUB_1039, ADD_1050, SUB_1063, ADD_1074);
         if (/*attachment vs. panda_link0*/ attachment_sphere_collision<decltype(q[0])>(
             environment, 0.0, 0.0, 0.05, 0.08))

@@ -4229,6 +4229,76 @@ namespace vamp::robots::ur5
         auto SUB_1375 = 0.0375 - MUL_1372;
         auto ADD_1378 = ADD_1120 + SUB_1375;
         auto ADD_1531 = ADD_1378 + SUB_1528;
+        set_attachment_pose_hack(
+            environment, SUB_1529, ADD_1530, ADD_1531, SUB_1444, SUB_1459, ADD_1470, ADD_1477);
+        if (attachment_environment_collision(environment))
+        {
+            return false;
+        }
+        if (/*attachment vs. base_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, 0.0, 0.0, 0.9144, 0.08))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.0, 0.0, 0.9144, 0.08))
+            {
+                return false;
+            }
+        }
+        if (/*attachment vs. shoulder_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, 0.0, 0.0, 1.003559, 0.08))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.0, 0.0, 1.003559, 0.08))
+            {
+                return false;
+            }
+        }
+        if (/*attachment vs. upper_arm_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, SUB_2869, ADD_2870, ADD_2871, 0.29))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, SUB_2890, ADD_2891, ADD_2892, 0.08))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, SUB_2869, ADD_2870, ADD_2871, 0.08))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, SUB_2932, ADD_2933, ADD_2934, 0.08))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, SUB_2953, ADD_2954, ADD_2955, 0.08))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, NEGATE_101, SUB_112, 1.003559, 0.08))
+            {
+                return false;
+            }
+        }
+        if (/*attachment vs. forearm_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, ADD_3067, ADD_3068, ADD_3069, 0.265))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, SUB_260, ADD_261, ADD_262, 0.08))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_3106, ADD_3107, ADD_3108, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_3127, ADD_3128, ADD_3129, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_3148, ADD_3149, ADD_3150, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_3169, ADD_3170, ADD_3171, 0.06))
+            {
+                return false;
+            }
+        }
         auto ADD_3956 = ADD_1531 + MUL_3953;
         auto MUL_3970 = MUL_3925 * 0.06;
         auto ADD_3975 = SUB_1529 + MUL_3970;
@@ -4255,7 +4325,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }  // (476, 555)
+        }  // (542, 555)
         if (/*forearm_link vs. robotiq_85_base_link*/ sphere_sphere_self_collision<decltype(q[0])>(
             ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_3954, ADD_3955, ADD_3956, 0.06))
         {
@@ -5761,32 +5831,6 @@ namespace vamp::robots::ur5
                 return false;
             }
         }  // (882, 882)
-        auto SUB_942 = MUL_793 - MUL_791;
-        auto MUL_945 = SUB_942 * 2.0;
-        auto ADD_968 = ADD_678 + MUL_945;
-        auto ADD_953 = MUL_801 + MUL_803;
-        auto MUL_956 = ADD_953 * 2.0;
-        auto SUB_959 = 0.0823 - MUL_956;
-        auto ADD_969 = ADD_679 + SUB_959;
-        auto ADD_964 = MUL_812 + MUL_814;
-        auto MUL_966 = ADD_964 * 2.0;
-        auto ADD_970 = ADD_680 + MUL_966;
-        auto SUB_888 = MUL_753 - MUL_770;
-        auto SUB_903 = MUL_756 - MUL_776;
-        auto ADD_914 = MUL_756 + MUL_776;
-        auto ADD_921 = MUL_770 + MUL_753;
-        if (environment.attachments)
-        {
-            if (set_attachment_pose(
-                    environment, ADD_968, ADD_969, ADD_970, SUB_888, SUB_903, ADD_914, ADD_921))
-            {
-                return false;
-            }
-            if (attachment_environment_collision(environment))
-            {
-                return false;
-            }
-        }  // (882, 902)
         return true;
     }
 
@@ -5894,21 +5938,60 @@ namespace vamp::robots::ur5
         auto ADD_574 = MUL_570 + MUL_573;
         auto MUL_703 = ADD_574 * COS_689;
         auto ADD_704 = MUL_701 + MUL_703;
-        auto MUL_929 = ADD_704 * 0.0823;
+        auto MUL_776 = ADD_704 * 0.7071068;
+        auto MUL_781 = ADD_704 * 0.0823;
         auto MUL_693 = ADD_574 * SIN_683;
         auto SUB_694 = MUL_691 - MUL_693;
-        auto MUL_932 = SUB_694 * 0.0823;
+        auto MUL_753 = SUB_694 * 0.7071068;
+        auto MUL_784 = SUB_694 * 0.0823;
         auto MUL_653 = ADD_574 * MUL_648;
         auto MUL_578 = SUB_434 * SIN_551;
         auto SUB_579 = MUL_575 - MUL_578;
         auto MUL_705 = SUB_579 * COS_689;
         auto SUB_708 = MUL_705 - MUL_707;
-        auto MUL_939 = SUB_708 * MUL_929;
+        auto MUL_791 = SUB_708 * MUL_781;
+        auto MUL_770 = SUB_708 * 0.7071068;
+        auto SUB_777 = MUL_770 - MUL_776;
+        auto ADD_768 = MUL_770 + MUL_776;
+        auto MUL_1064 = SUB_777 * 0.7073883;
+        auto MUL_1054 = SUB_777 * 0.7068252;
+        auto MUL_1061 = ADD_768 * 0.7073883;
+        auto SUB_1062 = MUL_1061 - MUL_1054;
+        auto MUL_1071 = ADD_768 * 0.7068252;
+        auto ADD_1073 = MUL_1064 + MUL_1071;
+        auto MUL_1086 = ADD_768 * 0.035;
+        auto MUL_1091 = ADD_768 * MUL_1086;
         auto MUL_695 = SUB_579 * SIN_683;
         auto ADD_698 = MUL_695 + MUL_697;
-        auto MUL_941 = ADD_698 * MUL_932;
-        auto SUB_942 = MUL_941 - MUL_939;
-        auto MUL_945 = SUB_942 * 2.0;
+        auto MUL_793 = ADD_698 * MUL_784;
+        auto SUB_794 = MUL_793 - MUL_791;
+        auto MUL_797 = SUB_794 * 2.0;
+        auto MUL_756 = ADD_698 * 0.7071068;
+        auto SUB_757 = MUL_756 - MUL_753;
+        auto ADD_747 = MUL_753 + MUL_756;
+        auto MUL_1048 = SUB_757 * 0.7073883;
+        auto MUL_1036 = SUB_757 * 0.7068252;
+        auto MUL_1081 = SUB_757 * 0.035;
+        auto MUL_1089 = SUB_757 * MUL_1081;
+        auto ADD_1093 = MUL_1089 + MUL_1091;
+        auto MUL_1096 = ADD_1093 * 2.0;
+        auto SUB_1099 = 0.035 - MUL_1096;
+        auto MUL_1033 = ADD_747 * 0.7073883;
+        auto SUB_1038 = MUL_1033 - MUL_1036;
+        auto MUL_1346 = SUB_1038 * 0.0375;
+        auto MUL_1351 = SUB_1062 * MUL_1346;
+        auto MUL_1494 = SUB_1038 * 0.037;
+        auto MUL_1501 = SUB_1062 * MUL_1494;
+        auto MUL_1045 = ADD_747 * 0.7068252;
+        auto ADD_1049 = MUL_1045 + MUL_1048;
+        auto MUL_1338 = ADD_1049 * 0.0375;
+        auto MUL_1349 = ADD_1073 * MUL_1338;
+        auto ADD_1352 = MUL_1349 + MUL_1351;
+        auto MUL_1354 = ADD_1352 * 2.0;
+        auto MUL_1484 = ADD_1049 * 0.037;
+        auto MUL_1498 = ADD_1073 * MUL_1484;
+        auto ADD_1503 = MUL_1498 + MUL_1501;
+        auto MUL_1506 = ADD_1503 * 2.0;
         auto MUL_651 = SUB_579 * MUL_640;
         auto ADD_654 = MUL_651 + MUL_653;
         auto MUL_656 = ADD_654 * 2.0;
@@ -5930,12 +6013,27 @@ namespace vamp::robots::ur5
         auto ADD_405 = SUB_260 + MUL_384;
         auto SUB_546 = ADD_405 - MUL_521;
         auto ADD_678 = SUB_546 + MUL_656;
-        auto ADD_968 = ADD_678 + MUL_945;
-        auto MUL_951 = ADD_704 * MUL_929;
-        auto MUL_949 = SUB_694 * MUL_932;
-        auto ADD_953 = MUL_949 + MUL_951;
-        auto MUL_956 = ADD_953 * 2.0;
-        auto SUB_959 = 0.0823 - MUL_956;
+        auto ADD_820 = ADD_678 + MUL_797;
+        auto ADD_1118 = ADD_820 + SUB_1099;
+        auto ADD_1376 = ADD_1118 + MUL_1354;
+        auto SUB_1529 = ADD_1376 - MUL_1506;
+        auto MUL_1510 = ADD_1073 * MUL_1494;
+        auto MUL_1357 = ADD_1073 * MUL_1346;
+        auto MUL_1512 = SUB_1062 * MUL_1484;
+        auto SUB_1514 = MUL_1510 - MUL_1512;
+        auto MUL_1516 = SUB_1514 * 2.0;
+        auto MUL_1360 = SUB_1062 * MUL_1338;
+        auto SUB_1361 = MUL_1360 - MUL_1357;
+        auto MUL_1363 = SUB_1361 * 2.0;
+        auto MUL_1101 = SUB_777 * MUL_1086;
+        auto MUL_1102 = ADD_747 * MUL_1081;
+        auto ADD_1104 = MUL_1101 + MUL_1102;
+        auto MUL_1107 = ADD_1104 * 2.0;
+        auto MUL_803 = ADD_704 * MUL_781;
+        auto MUL_801 = SUB_694 * MUL_784;
+        auto ADD_805 = MUL_801 + MUL_803;
+        auto MUL_808 = ADD_805 * 2.0;
+        auto SUB_811 = 0.0823 - MUL_808;
         auto MUL_659 = SUB_579 * MUL_648;
         auto MUL_662 = ADD_574 * MUL_640;
         auto SUB_663 = MUL_662 - MUL_659;
@@ -5963,11 +6061,28 @@ namespace vamp::robots::ur5
         auto ADD_406 = ADD_261 + MUL_392;
         auto ADD_547 = ADD_406 + SUB_536;
         auto ADD_679 = ADD_547 + MUL_665;
-        auto ADD_969 = ADD_679 + SUB_959;
-        auto MUL_960 = SUB_708 * MUL_932;
-        auto MUL_962 = ADD_698 * MUL_929;
-        auto ADD_964 = MUL_960 + MUL_962;
-        auto MUL_966 = ADD_964 * 2.0;
+        auto ADD_821 = ADD_679 + SUB_811;
+        auto ADD_1119 = ADD_821 + MUL_1107;
+        auto ADD_1377 = ADD_1119 + MUL_1363;
+        auto ADD_1530 = ADD_1377 + MUL_1516;
+        auto MUL_1519 = SUB_1038 * MUL_1494;
+        auto MUL_1366 = SUB_1038 * MUL_1346;
+        auto MUL_1521 = ADD_1049 * MUL_1484;
+        auto ADD_1523 = MUL_1519 + MUL_1521;
+        auto MUL_1525 = ADD_1523 * 2.0;
+        auto SUB_1528 = MUL_1525 - 0.037;
+        auto MUL_1368 = ADD_1049 * MUL_1338;
+        auto ADD_1369 = MUL_1366 + MUL_1368;
+        auto MUL_1372 = ADD_1369 * 2.0;
+        auto SUB_1375 = 0.0375 - MUL_1372;
+        auto MUL_1109 = SUB_777 * MUL_1081;
+        auto MUL_1111 = ADD_747 * MUL_1086;
+        auto SUB_1113 = MUL_1111 - MUL_1109;
+        auto MUL_1116 = SUB_1113 * 2.0;
+        auto MUL_812 = SUB_708 * MUL_784;
+        auto MUL_814 = ADD_698 * MUL_781;
+        auto ADD_816 = MUL_812 + MUL_814;
+        auto MUL_818 = ADD_816 * 2.0;
         auto MUL_668 = SUB_562 * MUL_648;
         auto MUL_670 = ADD_568 * MUL_640;
         auto ADD_671 = MUL_668 + MUL_670;
@@ -5993,16 +6108,23 @@ namespace vamp::robots::ur5
         auto ADD_407 = ADD_262 + SUB_404;
         auto ADD_548 = ADD_407 + MUL_544;
         auto ADD_680 = ADD_548 + SUB_677;
-        auto ADD_970 = ADD_680 + MUL_966;
-        auto MUL_884 = SUB_708 * 0.7071068;
-        auto MUL_887 = SUB_694 * 0.7071068;
-        auto SUB_888 = MUL_887 - MUL_884;
-        auto MUL_901 = ADD_704 * 0.7071068;
-        auto MUL_898 = ADD_698 * 0.7071068;
-        auto SUB_903 = MUL_898 - MUL_901;
-        auto ADD_914 = MUL_898 + MUL_901;
-        auto ADD_921 = MUL_884 + MUL_887;
-        return {ADD_968, ADD_969, ADD_970, SUB_888, SUB_903, ADD_914, ADD_921};
+        auto ADD_822 = ADD_680 + MUL_818;
+        auto ADD_1120 = ADD_822 + MUL_1116;
+        auto ADD_1378 = ADD_1120 + SUB_1375;
+        auto ADD_1531 = ADD_1378 + SUB_1528;
+        auto MUL_1440 = ADD_1073 * 0.7068252;
+        auto MUL_1443 = SUB_1038 * 0.7073883;
+        auto SUB_1444 = MUL_1443 - MUL_1440;
+        auto MUL_1457 = SUB_1062 * 0.7068252;
+        auto MUL_1454 = ADD_1049 * 0.7073883;
+        auto SUB_1459 = MUL_1454 - MUL_1457;
+        auto MUL_1469 = SUB_1062 * 0.7073883;
+        auto MUL_1466 = ADD_1049 * 0.7068252;
+        auto ADD_1470 = MUL_1466 + MUL_1469;
+        auto MUL_1472 = ADD_1073 * 0.7073883;
+        auto MUL_1475 = SUB_1038 * 0.7068252;
+        auto ADD_1477 = MUL_1472 + MUL_1475;
+        return {SUB_1529, ADD_1530, ADD_1531, SUB_1444, SUB_1459, ADD_1470, ADD_1477};
     }
 }  // namespace vamp::robots::ur5
 

@@ -16082,29 +16082,93 @@ namespace vamp::robots::fetch
         const vamp::collision::Environment<FloatVector<rake>> &environment,
         const ConfigurationBlock<rake> &q) noexcept
     {
-        // if(/*base_link*/ sphere_environment_in_collision(environment, -0.02, 0.0, 0.188, 0.34)){
-        // if(sphere_environment_in_collision(environment, -0.12, 0.0, 0.182, 0.24)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.225, 0.0, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.08, -0.06, 0.16, 0.22)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.215, -0.07, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.185, -0.135, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.13, -0.185, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.065, -0.2, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.01, -0.2, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.08, 0.06, 0.16, 0.22)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.215, 0.07, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.185, 0.135, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.13, 0.185, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.065, 0.2, 0.31, 0.066)){ return false; }
-        // if(sphere_environment_in_collision(environment, 0.01, 0.2, 0.31, 0.066)){ return false; } } // (0,
-        // 0) if(/*torso_fixed_link*/ sphere_environment_in_collision(environment, -0.186875, 0.0, 0.587425,
-        // 0.277)){ if(sphere_environment_in_collision(environment, -0.186875, -0.07, 0.727425, 0.12)){ return
-        // false; } if(sphere_environment_in_collision(environment, -0.186875, 0.07, 0.727425, 0.12)){ return
-        // false; } if(sphere_environment_in_collision(environment, -0.186875, -0.07, 0.577425, 0.12)){ return
-        // false; } if(sphere_environment_in_collision(environment, -0.186875, 0.07, 0.577425, 0.12)){ return
-        // false; } if(sphere_environment_in_collision(environment, -0.186875, 0.07, 0.447425, 0.12)){ return
-        // false; } if(sphere_environment_in_collision(environment, -0.186875, -0.07, 0.447425, 0.12)){ return
-        // false; } } // (0, 0)
+        if (/*base_link*/ sphere_environment_in_collision(environment, -0.02, 0.0, 0.188, 0.34))
+        {
+            if (sphere_environment_in_collision(environment, -0.12, 0.0, 0.182, 0.24))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.225, 0.0, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.08, -0.06, 0.16, 0.22))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.215, -0.07, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.185, -0.135, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.13, -0.185, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.065, -0.2, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.01, -0.2, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.08, 0.06, 0.16, 0.22))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.215, 0.07, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.185, 0.135, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.13, 0.185, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.065, 0.2, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.01, 0.2, 0.31, 0.066))
+            {
+                return false;
+            }
+        }  // (0, 0)
+        if (/*torso_fixed_link*/ sphere_environment_in_collision(
+            environment, -0.186875, 0.0, 0.587425, 0.277))
+        {
+            if (sphere_environment_in_collision(environment, -0.186875, -0.07, 0.727425, 0.12))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, -0.186875, 0.07, 0.727425, 0.12))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, -0.186875, -0.07, 0.577425, 0.12))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, -0.186875, 0.07, 0.577425, 0.12))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, -0.186875, 0.07, 0.447425, 0.12))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, -0.186875, -0.07, 0.447425, 0.12))
+            {
+                return false;
+            }
+        }  // (0, 0)
         auto INPUT_0 = q[0];
         auto ADD_54 = INPUT_0 + 0.37743;
         auto ADD_1421 = ADD_54 + 0.3;
@@ -24976,327 +25040,6 @@ namespace vamp::robots::fetch
         auto SUB_992 = MUL_990 - MUL_988;
         auto MUL_995 = SUB_992 * 2.0;
         auto ADD_999 = ADD_863 + MUL_995;
-        if (environment.attachments)
-        {
-            if (set_attachment_pose(
-                    environment, ADD_997, ADD_998, ADD_999, ADD_875, ADD_882, SUB_888, SUB_891))
-            {
-                return false;
-            }
-            if (attachment_environment_collision(environment))
-            {
-                return false;
-            }
-            if (/*attachment vs. base_link*/ attachment_sphere_collision<decltype(q[0])>(
-                environment, -0.02, 0.0, 0.188, 0.34))
-            {
-                if (attachment_sphere_collision<decltype(q[0])>(environment, -0.12, 0.0, 0.182, 0.24))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.225, 0.0, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.08, -0.06, 0.16, 0.22))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.215, -0.07, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.185, -0.135, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.13, -0.185, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.065, -0.2, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.01, -0.2, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.08, 0.06, 0.16, 0.22))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.215, 0.07, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.185, 0.135, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.13, 0.185, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.065, 0.2, 0.31, 0.066))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.01, 0.2, 0.31, 0.066))
-                {
-                    return false;
-                }
-            }
-            if (/*attachment vs. torso_lift_link*/ attachment_sphere_collision<decltype(q[0])>(
-                environment, -0.186875, 0.0, ADD_1421, 0.308))
-            {
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, -0.186875, -0.05, ADD_1429, 0.15))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.05, ADD_1429, 0.15))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.05, ADD_1421, 0.15))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.05, ADD_1450, 0.15))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, -0.186875, -0.05, ADD_1450, 0.15))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, -0.186875, -0.05, ADD_1421, 0.15))
-                {
-                    return false;
-                }
-            }
-            if (/*attachment vs. torso_lift_link_collision_2*/ attachment_sphere_collision<decltype(q[0])>(
-                environment, 0.013125, 0.0, ADD_1490, 0.07))
-            {
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.013125, 0.0, ADD_1490, 0.07))
-                {
-                    return false;
-                }
-            }
-            if (/*attachment vs. head_pan_link*/ attachment_sphere_collision<decltype(q[0])>(
-                environment, 0.01325, 0.0, ADD_1497, 0.197))
-            {
-                if (attachment_sphere_collision<decltype(q[0])>(environment, -0.03375, 0.0, ADD_1501, 0.15))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, 0.0, ADD_1506, 0.05))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, 0.11125, -0.0425, ADD_1506, 0.05))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, 0.0425, ADD_1506, 0.05))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, 0.085, ADD_1506, 0.05))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, -0.085, ADD_1506, 0.05))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.02875, -0.115, ADD_1534, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.05425, -0.115, ADD_1534, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.07975, -0.115, ADD_1534, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.10525, -0.115, ADD_1534, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.02875, -0.115, ADD_1558, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.05425, -0.115, ADD_1558, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.07975, -0.115, ADD_1558, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.10525, -0.115, ADD_1558, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.12625, -0.115, ADD_1582, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.13425, -0.115, ADD_1588, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.12625, -0.115, ADD_1594, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.02875, 0.115, ADD_1534, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.05425, 0.115, ADD_1534, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.07975, 0.115, ADD_1534, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.10525, 0.115, ADD_1534, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.02875, 0.115, ADD_1558, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.05425, 0.115, ADD_1558, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.07975, 0.115, ADD_1558, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.10525, 0.115, ADD_1558, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.12625, 0.115, ADD_1582, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.13425, 0.115, ADD_1588, 0.03))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.12625, 0.115, ADD_1594, 0.03))
-                {
-                    return false;
-                }
-            }
-            if (/*attachment vs. shoulder_pan_link*/ attachment_sphere_collision<decltype(q[0])>(
-                environment, ADD_1770, SUB_1769, ADD_1771, 0.124))
-            {
-                if (attachment_sphere_collision<decltype(q[0])>(environment, 0.03265, 0.0, ADD_82, 0.055))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_1812, SUB_1811, ADD_1813, 0.055))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_1837, SUB_1836, ADD_1838, 0.055))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_1862, SUB_1861, ADD_1838, 0.055))
-                {
-                    return false;
-                }
-            }
-            if (/*attachment vs. shoulder_lift_link*/ attachment_sphere_collision<decltype(q[0])>(
-                environment, ADD_1952, ADD_1953, ADD_1954, 0.134))
-            {
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_1981, ADD_1982, ADD_1983, 0.04))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, SUB_2022, ADD_2023, ADD_2024, 0.04))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_2057, ADD_2058, ADD_2059, 0.04))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_2091, ADD_2092, ADD_2093, 0.04))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_2113, ADD_2114, SUB_2115, 0.055))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_2135, ADD_2136, SUB_2137, 0.055))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, ADD_2157, ADD_2158, SUB_2159, 0.055))
-                {
-                    return false;
-                }
-            }
-            if (/*attachment vs. torso_fixed_link*/ attachment_sphere_collision<decltype(q[0])>(
-                environment, -0.186875, 0.0, 0.587425, 0.277))
-            {
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, -0.186875, -0.07, 0.727425, 0.12))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.07, 0.727425, 0.12))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, -0.186875, -0.07, 0.577425, 0.12))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.07, 0.577425, 0.12))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.07, 0.447425, 0.12))
-                {
-                    return false;
-                }
-                if (attachment_sphere_collision<decltype(q[0])>(
-                        environment, -0.186875, -0.07, 0.447425, 0.12))
-                {
-                    return false;
-                }
-            }
-        }  // (751, 778)
         auto SUB_3551 = ADD_999 - MUL_3535;
         auto SUB_3499 = MUL_3357 - MUL_3353;
         auto MUL_3501 = SUB_3499 * 2.0;
@@ -25624,7 +25367,7 @@ namespace vamp::robots::fetch
             {
                 return false;
             }
-        }  // (778, 822)
+        }  // (751, 822)
         if (/*gripper_link vs. torso_fixed_link*/ sphere_sphere_self_collision<decltype(q[0])>(
             SUB_3549, SUB_3550, SUB_3551, 0.075, -0.186875, 0.0, 0.587425, 0.277))
         {
@@ -30950,6 +30693,300 @@ namespace vamp::robots::fetch
                 return false;
             }
         }  // (991, 991)
+        set_attachment_pose_hack(environment, ADD_997, ADD_998, ADD_999, ADD_875, ADD_882, SUB_888, SUB_891);
+        if (/*attachment vs. base_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, -0.02, 0.0, 0.188, 0.34))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.12, 0.0, 0.182, 0.24))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.225, 0.0, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.08, -0.06, 0.16, 0.22))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.215, -0.07, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.185, -0.135, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.13, -0.185, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.065, -0.2, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.01, -0.2, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.08, 0.06, 0.16, 0.22))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.215, 0.07, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.185, 0.135, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.13, 0.185, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.065, 0.2, 0.31, 0.066))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.01, 0.2, 0.31, 0.066))
+            {
+                return false;
+            }
+        }  // (991, 993)
+        if (/*attachment vs. head_pan_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, 0.01325, 0.0, ADD_1497, 0.197))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.03375, 0.0, ADD_1501, 0.15))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, 0.0, ADD_1506, 0.05))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, -0.0425, ADD_1506, 0.05))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, 0.0425, ADD_1506, 0.05))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, 0.085, ADD_1506, 0.05))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.11125, -0.085, ADD_1506, 0.05))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.02875, -0.115, ADD_1534, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.05425, -0.115, ADD_1534, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.07975, -0.115, ADD_1534, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.10525, -0.115, ADD_1534, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.02875, -0.115, ADD_1558, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.05425, -0.115, ADD_1558, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.07975, -0.115, ADD_1558, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.10525, -0.115, ADD_1558, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.12625, -0.115, ADD_1582, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.13425, -0.115, ADD_1588, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.12625, -0.115, ADD_1594, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.02875, 0.115, ADD_1534, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.05425, 0.115, ADD_1534, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.07975, 0.115, ADD_1534, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.10525, 0.115, ADD_1534, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.02875, 0.115, ADD_1558, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.05425, 0.115, ADD_1558, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.07975, 0.115, ADD_1558, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.10525, 0.115, ADD_1558, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.12625, 0.115, ADD_1582, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.13425, 0.115, ADD_1588, 0.03))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.12625, 0.115, ADD_1594, 0.03))
+            {
+                return false;
+            }
+        }  // (993, 993)
+        if (/*attachment vs. shoulder_lift_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, ADD_1952, ADD_1953, ADD_1954, 0.134))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_1981, ADD_1982, ADD_1983, 0.04))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, SUB_2022, ADD_2023, ADD_2024, 0.04))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2057, ADD_2058, ADD_2059, 0.04))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2091, ADD_2092, ADD_2093, 0.04))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2113, ADD_2114, SUB_2115, 0.055))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2135, ADD_2136, SUB_2137, 0.055))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2157, ADD_2158, SUB_2159, 0.055))
+            {
+                return false;
+            }
+        }  // (993, 993)
+        if (/*attachment vs. shoulder_pan_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, ADD_1770, SUB_1769, ADD_1771, 0.124))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.03265, 0.0, ADD_82, 0.055))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_1812, SUB_1811, ADD_1813, 0.055))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_1837, SUB_1836, ADD_1838, 0.055))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_1862, SUB_1861, ADD_1838, 0.055))
+            {
+                return false;
+            }
+        }  // (993, 993)
+        if (/*attachment vs. torso_fixed_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, -0.186875, 0.0, 0.587425, 0.277))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, -0.07, 0.727425, 0.12))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.07, 0.727425, 0.12))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, -0.07, 0.577425, 0.12))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.07, 0.577425, 0.12))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.07, 0.447425, 0.12))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, -0.07, 0.447425, 0.12))
+            {
+                return false;
+            }
+        }  // (993, 993)
+        if (/*attachment vs. torso_lift_link*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, -0.186875, 0.0, ADD_1421, 0.308))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, -0.05, ADD_1429, 0.15))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.05, ADD_1429, 0.15))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.05, ADD_1421, 0.15))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, 0.05, ADD_1450, 0.15))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, -0.05, ADD_1450, 0.15))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, -0.186875, -0.05, ADD_1421, 0.15))
+            {
+                return false;
+            }
+        }  // (993, 993)
+        if (/*attachment vs. torso_lift_link_collision_2*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, 0.013125, 0.0, ADD_1490, 0.07))
+        {
+            return false;
+        }  // (993, 993)
+        if (attachment_environment_collision(environment))
+        {
+            return false;
+        }  // (993, 993)
         return true;
     }
 

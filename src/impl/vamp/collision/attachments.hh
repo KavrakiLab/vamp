@@ -55,7 +55,9 @@ namespace vamp::collision
         {
             spheres.reserve(o.spheres.size());
             for (const auto &sphere : o.spheres)
+            {
                 spheres.emplace_back(sphere);
+            }
         }
 
         std::vector<Sphere<DataT>> spheres;

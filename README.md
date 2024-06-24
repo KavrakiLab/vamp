@@ -246,7 +246,7 @@ Inside `impl/vamp`, the code is divided into the following directories:
 - [ ] Improved Python API
 - [ ] Batch configuration validation
 - [ ] Planning subgroups
-- [ ] Object attachment at end-effector
+- [X] Object attachment at end-effector
 - [ ] Mesh collision checking
 - [X] Pointcloud collision checking
 - [ ] Manifold-constrained planning

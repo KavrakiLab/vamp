@@ -30,9 +30,7 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
         .def_ro("r", &vc::Sphere<float>::r)
         .def_prop_ro(
             "position",
-            [](vc::Sphere<float> &sphere) {
-                return std::array<float, 3>{sphere.x, sphere.y, sphere.z};
-            })
+            [](vc::Sphere<float> &sphere) { return std::array<float, 3>{sphere.x, sphere.y, sphere.z}; })
         .def_ro("min_distance", &vc::Sphere<float>::min_distance)
         .def_rw("name", &vc::Sphere<float>::name);
 
@@ -158,7 +156,9 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
                 e.pointclouds.emplace_back(pc, r_min, r_max, r_point);
                 return vamp::utils::get_elapsed_nanoseconds(start_time);
             })
-        .def("attach", [](vc::Environment<float> &e, const vc::Attachment<float> &a) { e.attachments.emplace(a); })
+        .def(
+            "attach",
+            [](vc::Environment<float> &e, const vc::Attachment<float> &a) { e.attachments.emplace(a); })
         .def("detach", [](vc::Environment<float> &e) { e.attachments.reset(); });
 
     pymodule.def(

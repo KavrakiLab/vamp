@@ -68,7 +68,7 @@ Visualization is enabled by `--visualize`, which shows the plan with the PyBulle
 Demonstrates planning with end-effector attachments using the same problem as in `sphere_cage_example.py`.
 A single sphere is attached to the end-effector of the Franka and carried through the cage.
 
-This script has the following arguments that effect the placement of the attached sphere.
+This script has the following arguments that affect the placement of the attached sphere.
 - `attachment_radius`: Radius of the attached sphere.
 - `attachment_offset`: Offset of the attachment transform along the relative Z-axis (distance from the end-effector).
 

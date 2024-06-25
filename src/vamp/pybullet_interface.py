@@ -348,7 +348,7 @@ Use left/right arrow keys to move through individual states."""
 
             self.set_joint_positions(c_list)
 
-            if callback is not None:
+            if callable(callback):
                 callback(c_list)
 
             moved = False

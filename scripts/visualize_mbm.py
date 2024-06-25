@@ -139,7 +139,6 @@ n Graph States: {result.size}
                 print(f"Displaying colliding spheres for first invalid state: {state}")
 
                 validity = vamp_module.sphere_validity(state, env)
-                print(validity)
                 invalid = [x[0] for x in filter(lambda x: x[1], enumerate(validity))]
 
                 spheres = vamp_module.fk(state)
@@ -150,9 +149,6 @@ n Graph States: {result.size}
                 break
 
     sim.animate(plan)
-
-    while True:
-        ...
 
 
 if __name__ == "__main__":

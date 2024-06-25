@@ -90,10 +90,9 @@ namespace vamp::collision
         DataT rx,
         DataT ry,
         DataT rz,
-        DataT rw) noexcept -> bool
+        DataT rw) noexcept
     {
         e.attachments->pose(tx, ty, tz, rx, ry, rz, rw);
-        return false;
     }
 
 }  // namespace vamp::collision

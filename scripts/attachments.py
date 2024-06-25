@@ -64,7 +64,7 @@ def main(
     # Callback to update sphere's location in PyBullet visualization
     def callback(configuration):
         position, orientation_xyzw = vamp_module.eefk(configuration)
-        attachment.pose(position, orientation_xyzw)
+        attachment.set_ee_pose(position, orientation_xyzw)
         sphere = attachment.posed_spheres[0]
 
         sim.update_object_position(attachment_sphere, sphere.position)

@@ -194,12 +194,25 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             },
             "Constructor for an attachment centered at a relative position and XYZW quaternion from the "
             "end-effector.")
+        .def_prop_ro(
+            "relative_frame",
+            [](vc::Attachment<float> &a)
+            {
+                std::array<float, 3> position = {a.tf_tx, a.tf_ty, a.tf_tz};
+                std::array<float, 4> quaternion_xyzw = {a.tf_rx, a.tf_ry, a.tf_rz, a.tf_rw};
+
+                return std::pair{position, quaternion_xyzw};
+            })
+        .def(
+            "add_sphere",
+            [](vc::Attachment<float> &a, collision::Sphere<float> &sphere)
+            { a.spheres.emplace_back(sphere); })
         .def(
             "add_spheres",
             [](vc::Attachment<float> &a, std::vector<collision::Sphere<float>> &spheres)
             { a.spheres.insert(a.spheres.end(), spheres.cbegin(), spheres.cend()); })
         .def(
-            "pose",
+            "set_ee_pose",
             [](vc::Attachment<float> &a,
                const std::array<float, 3> &position,
                const std::array<float, 4> &quaternion_xyzw)

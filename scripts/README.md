@@ -65,7 +65,7 @@ This script has the following arguments that only affect benchmarking:
 Visualization is enabled by `--visualize`, which shows the plan with the PyBullet visualizer.
 
 ## `attachments.py`
-Demonstrates planning with end-effector attachments using the same problem as used in `sphere_cage_example.py`.
+Demonstrates planning with end-effector attachments using the same problem as in `sphere_cage_example.py`.
 A single sphere is attached to the end-effector of the Franka and carried through the cage.
 
 This script has the following arguments that effect the placement of the attached sphere.

@@ -12,7 +12,10 @@ These decompositions are conservative estimations of the robot's mesh geometry.
 
 ## Attachments
 
-
+There is support to attach custom geometry to the end-effector of the following robots, with respect to the following end-effector frames (see the robot's URDF for transform information):
+- UR5:
+- Panda:
+- Fetch:
 
 ## Datasets
 

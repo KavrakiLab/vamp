@@ -47,7 +47,7 @@ namespace vamp::collision
         {
         }
 
-        Attachment(const Attachment &) noexcept = default;
+        Attachment(const Attachment &) = default;
 
         template <typename DT = DataT, typename = std::enable_if_t<not std::is_same_v<DT, float>>>
         Attachment(const Attachment<float> &o) noexcept

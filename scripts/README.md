@@ -70,7 +70,7 @@ A single sphere is attached to the end-effector of the Panda and carried through
 
 This script has the following arguments that affect the placement of the attached sphere.
 - `attachment_radius`: Radius of the attached sphere.
-- `attachment_offset`: Offset of the attachment transform along the relative Z-axis (distance from the end-effector).
+- `attachment_offset`: Offset of the attachment transform along the local-frame Z-axis of the end-effector (i.e., its distance from the end-effector).
 
 ## `flying_sphere.py`
 Demonstrates generating a roadmap over a heightfield for a flying sphere.

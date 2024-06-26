@@ -127,28 +127,30 @@ class PyBulletSimulator:
         name: Optional[str] = None,
         color: Optional[Union[List[float], str]] = None,
         ):
-
-        vis_shape_id = self.client.createVisualShape(
-            pb.GEOM_CAPSULE,
-            radius = radius,
-            length = length,
-            rgbaColor = handle_color(name, color),
-            )
-        col_shape_id = self.client.createCollisionShape(pb.GEOM_CAPSULE, radius = radius, height = length)
-
-        self.client.createMultiBody(
-            baseVisualShapeIndex = vis_shape_id,
-            baseCollisionShapeIndex = col_shape_id,
-            basePosition = position,
-            baseOrientation = rot_xyzw,
-            )
-
-        if name:
-            self.client.addUserDebugText(
-                text = name,
-                textPosition = position,
-                textColorRGB = [0., 0., 0.],
+        with DisableRendering(self.client):
+            vis_shape_id = self.client.createVisualShape(
+                pb.GEOM_CAPSULE,
+                radius = radius,
+                length = length,
+                rgbaColor = handle_color(name, color),
                 )
+            col_shape_id = self.client.createCollisionShape(pb.GEOM_CAPSULE, radius = radius, height = length)
+
+            multibody_id = self.client.createMultiBody(
+                baseVisualShapeIndex = vis_shape_id,
+                baseCollisionShapeIndex = col_shape_id,
+                basePosition = position,
+                baseOrientation = rot_xyzw,
+                )
+
+            if name:
+                self.client.addUserDebugText(
+                    text = name,
+                    textPosition = position,
+                    textColorRGB = [0., 0., 0.],
+                    )
+
+                return multibody_id
 
     def add_cylinder(
         self,
@@ -159,28 +161,32 @@ class PyBulletSimulator:
         name: Optional[str] = None,
         color: Optional[Union[List[float], str]] = None,
         ):
-
-        vis_shape_id = self.client.createVisualShape(
-            pb.GEOM_CYLINDER,
-            radius = radius,
-            length = length,
-            rgbaColor = handle_color(name, color),
-            )
-        col_shape_id = self.client.createCollisionShape(pb.GEOM_CYLINDER, radius = radius, height = length)
-
-        self.client.createMultiBody(
-            baseVisualShapeIndex = vis_shape_id,
-            baseCollisionShapeIndex = col_shape_id,
-            basePosition = position,
-            baseOrientation = rot_xyzw,
-            )
-
-        if name:
-            self.client.addUserDebugText(
-                text = name,
-                textPosition = position,
-                textColorRGB = [0., 0., 0.],
+        with DisableRendering(self.client):
+            vis_shape_id = self.client.createVisualShape(
+                pb.GEOM_CYLINDER,
+                radius = radius,
+                length = length,
+                rgbaColor = handle_color(name, color),
                 )
+            col_shape_id = self.client.createCollisionShape(
+                pb.GEOM_CYLINDER, radius = radius, height = length
+                )
+
+            multibody_id = self.client.createMultiBody(
+                baseVisualShapeIndex = vis_shape_id,
+                baseCollisionShapeIndex = col_shape_id,
+                basePosition = position,
+                baseOrientation = rot_xyzw,
+                )
+
+            if name:
+                self.client.addUserDebugText(
+                    text = name,
+                    textPosition = position,
+                    textColorRGB = [0., 0., 0.],
+                    )
+
+                return multibody_id
 
     def add_cuboid(
         self,
@@ -191,26 +197,29 @@ class PyBulletSimulator:
         color: Optional[Union[List[float], str]] = None,
         ):
 
-        vis_shape_id = self.client.createVisualShape(
-            pb.GEOM_BOX,
-            halfExtents = half_extents,
-            rgbaColor = handle_color(name, color),
-            )
-        col_shape_id = self.client.createCollisionShape(pb.GEOM_BOX, halfExtents = half_extents)
-
-        self.client.createMultiBody(
-            baseVisualShapeIndex = vis_shape_id,
-            baseCollisionShapeIndex = col_shape_id,
-            basePosition = position,
-            baseOrientation = rot_xyzw,
-            )
-
-        if name:
-            self.client.addUserDebugText(
-                text = name,
-                textPosition = position,
-                textColorRGB = [0., 0., 0.],
+        with DisableRendering(self.client):
+            vis_shape_id = self.client.createVisualShape(
+                pb.GEOM_BOX,
+                halfExtents = half_extents,
+                rgbaColor = handle_color(name, color),
                 )
+            col_shape_id = self.client.createCollisionShape(pb.GEOM_BOX, halfExtents = half_extents)
+
+            multibody_id = self.client.createMultiBody(
+                baseVisualShapeIndex = vis_shape_id,
+                baseCollisionShapeIndex = col_shape_id,
+                basePosition = position,
+                baseOrientation = rot_xyzw,
+                )
+
+            if name:
+                self.client.addUserDebugText(
+                    text = name,
+                    textPosition = position,
+                    textColorRGB = [0., 0., 0.],
+                    )
+
+                return multibody_id
 
     def add_sphere(
         self,
@@ -220,25 +229,33 @@ class PyBulletSimulator:
         color: Optional[Union[List[float], str]] = None,
         ):
 
-        vis_shape_id = self.client.createVisualShape(
-            pb.GEOM_SPHERE,
-            radius = radius,
-            rgbaColor = handle_color(name, color),
-            )
-        col_shape_id = self.client.createCollisionShape(pb.GEOM_SPHERE, radius = radius)
-
-        self.client.createMultiBody(
-            baseVisualShapeIndex = vis_shape_id,
-            baseCollisionShapeIndex = col_shape_id,
-            basePosition = position,
-            )
-
-        if name:
-            self.client.addUserDebugText(
-                text = name,
-                textPosition = position,
-                textColorRGB = [0., 0., 0.],
+        with DisableRendering(self.client):
+            vis_shape_id = self.client.createVisualShape(
+                pb.GEOM_SPHERE,
+                radius = radius,
+                rgbaColor = handle_color(name, color),
                 )
+            col_shape_id = self.client.createCollisionShape(pb.GEOM_SPHERE, radius = radius)
+
+            multibody_id = self.client.createMultiBody(
+                baseVisualShapeIndex = vis_shape_id,
+                baseCollisionShapeIndex = col_shape_id,
+                basePosition = position,
+                )
+
+            if name:
+                self.client.addUserDebugText(
+                    text = name,
+                    textPosition = position,
+                    textColorRGB = [0., 0., 0.],
+                    )
+
+            return multibody_id
+
+    def update_object_position(
+            self, multibody_id: int, position: Position, rot_xywz: XYZWQuaternion = [0, 0, 0, 1]
+        ):
+        self.client.resetBasePositionAndOrientation(multibody_id, position, rot_xywz)
 
     def add_height_map(
             self,
@@ -307,7 +324,7 @@ class PyBulletSimulator:
         with DisableRendering(self.client), RedirectStream(sys.stdout), RedirectStream(sys.stderr):
             self.client.removeAllUserDebugItems()
 
-    def animate(self, plan):
+    def animate(self, plan, callback = None):
         plan_idx = 0
         playing = False
         moved = True
@@ -323,11 +340,16 @@ Use left/right arrow keys to move through individual states."""
         while True:
             c = plan[plan_idx]
             if isinstance(c, list):
-                self.set_joint_positions(c)
+                c_list = c
             elif isinstance(c, np.ndarray):
-                self.set_joint_positions(c.tolist())
+                c_list = c.tolist()
             else:
-                self.set_joint_positions(c.to_list())
+                c_list = c.to_list()
+
+            self.set_joint_positions(c_list)
+
+            if callable(callback):
+                callback(c_list)
 
             moved = False
             keys = self.client.getKeyboardEvents()

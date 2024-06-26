@@ -39,7 +39,14 @@ namespace vamp::robots
         template <std::size_t rake>
         static constexpr auto fkcc = baxter::interleaved_sphere_fk<rake>;
 
+        // TODO: Add attachment support for one of Baxter's end-effectors
+        template <std::size_t rake>
+        static constexpr auto fkcc_attach = baxter::interleaved_sphere_fk<rake>;
+
         template <std::size_t rake>
         static constexpr auto sphere_fk = baxter::sphere_fk<rake>;
+
+        // Currently not implemented
+        static constexpr auto eefk = baxter::eefk;
     };
 }  // namespace vamp::robots

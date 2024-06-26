@@ -40,7 +40,8 @@ namespace vamp::planning
 
         const std::size_t n = std::max(std::ceil(distance / static_cast<float>(rake) * resolution), 1.F);
 
-        bool valid = Robot::template fkcc<rake>(environment, block);
+        bool valid = (environment.attachments) ? Robot::template fkcc_attach<rake>(environment, block) :
+                                                 Robot::template fkcc<rake>(environment, block);
         if (not valid or n == 1)
         {
             return valid;

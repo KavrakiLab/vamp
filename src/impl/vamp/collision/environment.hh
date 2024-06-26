@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <optional>
 #include <vamp/collision/shapes.hh>
 #include <vamp/collision/capt.hh>
+#include <vamp/collision/attachments.hh>
 
 namespace vamp::collision
 {
@@ -17,6 +19,7 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
         std::vector<CAPT> pointclouds;
+        std::optional<Attachment<DataT>> attachments;
 
         Environment() = default;
 
@@ -30,6 +33,7 @@ namespace vamp::collision
           , z_aligned_cuboids(other.z_aligned_cuboids.begin(), other.z_aligned_cuboids.end())
           , heightfields(other.heightfields.begin(), other.heightfields.end())
           , pointclouds(other.pointclouds.begin(), other.pointclouds.end())
+          , attachments(other.template clone_attachments<DataT>())
         {
         }
 
@@ -60,6 +64,35 @@ namespace vamp::collision
                 z_aligned_cuboids.end(),
                 [](const auto &a, const auto &b) { return a.min_distance < b.min_distance; });
         }
+
+    private:
+        template <typename OtherDataT>
+        friend struct Environment;
+
+        template <typename OtherDataT>
+        inline auto clone_attachments() const noexcept -> std::optional<Attachment<OtherDataT>>
+        {
+            if (attachments)
+            {
+                return Attachment<OtherDataT>(*attachments);
+            }
+
+            return std::nullopt;
+        }
     };
+
+    template <typename DataT>
+    inline auto set_attachment_pose(
+        const Environment<DataT> &e,
+        DataT tx,
+        DataT ty,
+        DataT tz,
+        DataT rx,
+        DataT ry,
+        DataT rz,
+        DataT rw) noexcept
+    {
+        e.attachments->pose(tx, ty, tz, rx, ry, rz, rw);
+    }
 
 }  // namespace vamp::collision

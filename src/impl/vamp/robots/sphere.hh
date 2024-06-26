@@ -39,7 +39,14 @@ namespace vamp::robots
         template <std::size_t rake>
         static constexpr auto fkcc = sphere::interleaved_sphere_fk<rake>;
 
+        // Currently not implemented
+        template <std::size_t rake>
+        static constexpr auto fkcc_attach = sphere::interleaved_sphere_fk<rake>;
+
         template <std::size_t rake>
         static constexpr auto sphere_fk = sphere::sphere_fk<rake>;
+
+        // Currently not implemented
+        static constexpr auto eefk = sphere::eefk;
     };
 }  // namespace vamp::robots

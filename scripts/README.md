@@ -64,6 +64,14 @@ This script has the following arguments that only affect benchmarking:
 
 Visualization is enabled by `--visualize`, which shows the plan with the PyBullet visualizer.
 
+## `attachments.py`
+Demonstrates planning with end-effector attachments using the same problem as in `sphere_cage_example.py`.
+A single sphere is attached to the end-effector of the Panda and carried through the cage.
+
+This script has the following arguments that affect the placement of the attached sphere.
+- `attachment_radius`: Radius of the attached sphere.
+- `attachment_offset`: Offset of the attachment transform along the local-frame Z-axis of the end-effector (i.e., its distance from the end-effector).
+
 ## `flying_sphere.py`
 Demonstrates generating a roadmap over a heightfield for a flying sphere.
 The script has the following arguments:

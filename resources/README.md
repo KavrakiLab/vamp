@@ -10,6 +10,13 @@ See the `*_spherized.urdf` files for examples of these spherical decompositions 
 We also use a secondary hierarchical decomposition: see the high-level single sphere URDF used for each robot in the `*_spherized_1.urdf` files.
 These decompositions are conservative estimations of the robot's mesh geometry.
 
+## Attachments
+
+There is support to attach custom geometry to the end-effector of the following robots, with respect to the following end-effector frames (see the robot's URDF for transform information):
+- UR5: `robotiq85_base_link`
+- Panda: `panda_hand`
+- Fetch: `gripper_link`
+
 ## Datasets
 
 ### MotionBenchMaker problems

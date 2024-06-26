@@ -40,6 +40,11 @@ namespace vamp::robots
         static constexpr auto fkcc = panda::interleaved_sphere_fk<rake>;
 
         template <std::size_t rake>
+        static constexpr auto fkcc_attach = panda::interleaved_sphere_fk_attachment<rake>;
+
+        template <std::size_t rake>
         static constexpr auto sphere_fk = panda::sphere_fk<rake>;
+
+        static constexpr auto eefk = panda::eefk;
     };
 }  // namespace vamp::robots

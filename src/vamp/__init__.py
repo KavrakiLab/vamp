@@ -10,6 +10,7 @@ __all__ = [
     "fetch",
     "baxter",
     "Environment",
+    "Attachment",
     "Sphere",
     "Cuboid",
     "Cylinder",
@@ -31,6 +32,7 @@ from .constants import *
 from . import _core
 from ._core import Cuboid as Cuboid
 from ._core import Cylinder as Cylinder
+from ._core import Attachment as Attachment
 from ._core import Environment as Environment
 from ._core import PRMNeighborParams as PRMNeighborParams
 from ._core import PRMSettings as PRMSettings

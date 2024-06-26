@@ -40,6 +40,11 @@ namespace vamp::robots
         static constexpr auto fkcc = ur5::interleaved_sphere_fk<rake>;
 
         template <std::size_t rake>
+        static constexpr auto fkcc_attach = ur5::interleaved_sphere_fk_attachment<rake>;
+
+        template <std::size_t rake>
         static constexpr auto sphere_fk = ur5::sphere_fk<rake>;
+
+        static constexpr auto eefk = ur5::eefk;
     };
 }  // namespace vamp::robots

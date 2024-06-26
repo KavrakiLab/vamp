@@ -28,6 +28,11 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
         .def_ro("y", &vc::Sphere<float>::y)
         .def_ro("z", &vc::Sphere<float>::z)
         .def_ro("r", &vc::Sphere<float>::r)
+        .def_prop_ro(
+            "position",
+            [](vc::Sphere<float> &sphere) {
+                return std::array<float, 3>{sphere.x, sphere.y, sphere.z};
+            })
         .def_ro("min_distance", &vc::Sphere<float>::min_distance)
         .def_rw("name", &vc::Sphere<float>::name);
 
@@ -152,7 +157,11 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
                 auto start_time = std::chrono::steady_clock::now();
                 e.pointclouds.emplace_back(pc, r_min, r_max, r_point);
                 return vamp::utils::get_elapsed_nanoseconds(start_time);
-            });
+            })
+        .def(
+            "attach",
+            [](vc::Environment<float> &e, const vc::Attachment<float> &a) { e.attachments.emplace(a); })
+        .def("detach", [](vc::Environment<float> &e) { e.attachments.reset(); });
 
     pymodule.def(
         "filter_pointcloud",
@@ -169,4 +178,58 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
                 vc::filter_pointcloud(pc, min_dist, max_range, origin, workcell_min, workcell_max, cull);
             return {filtered, vamp::utils::get_elapsed_nanoseconds(start_time)};
         });
+
+    nb::class_<vc::Attachment<float>>(pymodule, "Attachment")
+        .def(
+            "__init__",
+            [](vc::Attachment<float> *q,
+               const std::array<float, 3> &center,
+               const std::array<float, 4> &quaternion_xyzw) noexcept
+            {
+                new (q) vc::Attachment<float>(
+                    center[0],
+                    center[1],
+                    center[2],
+                    quaternion_xyzw[0],
+                    quaternion_xyzw[1],
+                    quaternion_xyzw[2],
+                    quaternion_xyzw[3]);
+            },
+            "Constructor for an attachment centered at a relative position and XYZW quaternion from the "
+            "end-effector.")
+        .def_prop_ro(
+            "relative_frame",
+            [](vc::Attachment<float> &a)
+            {
+                std::array<float, 3> position = {a.tf_tx, a.tf_ty, a.tf_tz};
+                std::array<float, 4> quaternion_xyzw = {a.tf_rx, a.tf_ry, a.tf_rz, a.tf_rw};
+
+                return std::pair{position, quaternion_xyzw};
+            })
+        .def(
+            "add_sphere",
+            [](vc::Attachment<float> &a, collision::Sphere<float> &sphere)
+            { a.spheres.emplace_back(sphere); })
+        .def(
+            "add_spheres",
+            [](vc::Attachment<float> &a, std::vector<collision::Sphere<float>> &spheres)
+            { a.spheres.insert(a.spheres.end(), spheres.cbegin(), spheres.cend()); })
+        .def(
+            "set_ee_pose",
+            [](vc::Attachment<float> &a,
+               const std::array<float, 3> &position,
+               const std::array<float, 4> &quaternion_xyzw)
+            {
+                a.pose(
+                    position[0],
+                    position[1],
+                    position[2],
+                    quaternion_xyzw[0],
+                    quaternion_xyzw[1],
+                    quaternion_xyzw[2],
+                    quaternion_xyzw[3]);
+            },
+            "position"_a,
+            "quaternion_xyzw"_a)
+        .def_ro("posed_spheres", &vc::Attachment<float>::posed_spheres);
 }

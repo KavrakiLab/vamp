@@ -6249,6 +6249,5359 @@ namespace vamp::robots::panda
 
         return true;
     }
+
+    template <std::size_t rake>
+    inline bool interleaved_sphere_fk_attachment(
+        const vamp::collision::Environment<FloatVector<rake>> &environment,
+        const ConfigurationBlock<rake> &q) noexcept
+    {
+        // ignore collision of static link
+        // if(/*panda_link0*/ sphere_environment_in_collision(environment, 0.0, 0.0, 0.05, 0.08)){ return
+        // false; } // (0, 0)
+        auto INPUT_0 = q[0];
+        auto DIV_8 = INPUT_0 * 0.5;
+        auto SIN_9 = DIV_8.sin();
+        auto COS_15 = DIV_8.cos();
+        auto MUL_1575 = COS_15 * SIN_9;
+        auto MUL_1574 = SIN_9 * SIN_9;
+        auto MUL_1594 = MUL_1575 * 2.0;
+        auto MUL_1620 = MUL_1594 * 0.0265023;
+        auto MUL_1584 = MUL_1574 * 2.0;
+        auto SUB_1587 = 1.0 - MUL_1584;
+        auto MUL_1613 = SUB_1587 * 4.21e-05;
+        auto ADD_1636 = MUL_1613 + MUL_1620;
+        auto MUL_1623 = SUB_1587 * 0.0265023;
+        auto MUL_1615 = MUL_1594 * 4.21e-05;
+        auto SUB_1637 = MUL_1615 - MUL_1623;
+        auto MUL_1650 = MUL_1594 * 0.08;
+        auto MUL_1653 = SUB_1587 * 0.08;
+        auto NEGATE_1654 = -MUL_1653;
+        auto MUL_1674 = MUL_1594 * 0.03;
+        auto MUL_1677 = SUB_1587 * 0.03;
+        auto NEGATE_1678 = -MUL_1677;
+        if (/*panda_link1*/ sphere_environment_in_collision(
+            environment, ADD_1636, SUB_1637, 0.2598976, 0.144259))
+        {
+            if (sphere_environment_in_collision(environment, MUL_1650, NEGATE_1654, 0.333, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, MUL_1674, NEGATE_1678, 0.333, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.0, 0.0, 0.213, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, 0.0, 0.0, 0.163, 0.06))
+            {
+                return false;
+            }
+        }  // (0, 21)
+        auto MUL_74 = COS_15 * 0.7071068;
+        auto MUL_72 = SIN_9 * 0.7071068;
+        auto INPUT_1 = q[1];
+        auto DIV_117 = INPUT_1 * 0.5;
+        auto SIN_118 = DIV_117.sin();
+        auto COS_124 = DIV_117.cos();
+        auto MUL_143 = MUL_72 * COS_124;
+        auto MUL_128 = MUL_72 * SIN_118;
+        auto MUL_126 = MUL_74 * COS_124;
+        auto SUB_149 = MUL_126 - MUL_128;
+        auto ADD_130 = MUL_126 + MUL_128;
+        auto MUL_140 = MUL_74 * SIN_118;
+        auto SUB_138 = MUL_140 - MUL_143;
+        auto ADD_144 = MUL_140 + MUL_143;
+        auto MUL_1750 = SUB_149 * ADD_144;
+        auto MUL_1751 = SUB_149 * SUB_138;
+        auto MUL_1749 = ADD_144 * ADD_144;
+        auto MUL_1748 = SUB_138 * SUB_138;
+        auto ADD_1760 = MUL_1748 + MUL_1749;
+        auto MUL_1763 = ADD_1760 * 2.0;
+        auto SUB_1766 = 1.0 - MUL_1763;
+        auto MUL_1805 = SUB_1766 * 2.72e-05;
+        auto MUL_1757 = ADD_130 * ADD_144;
+        auto SUB_1790 = MUL_1751 - MUL_1757;
+        auto MUL_1792 = SUB_1790 * 2.0;
+        auto MUL_1826 = MUL_1792 * 0.0265382;
+        auto MUL_1755 = ADD_130 * SUB_138;
+        auto ADD_1775 = MUL_1755 + MUL_1750;
+        auto MUL_1778 = ADD_1775 * 2.0;
+        auto MUL_1816 = MUL_1778 * 0.074083;
+        auto SUB_1831 = MUL_1816 - MUL_1805;
+        auto ADD_1835 = SUB_1831 + MUL_1826;
+        auto SUB_1767 = MUL_1750 - MUL_1755;
+        auto MUL_1769 = SUB_1767 * 2.0;
+        auto MUL_1809 = MUL_1769 * 2.72e-05;
+        auto MUL_1753 = SUB_149 * ADD_130;
+        auto MUL_1759 = SUB_138 * ADD_144;
+        auto ADD_1793 = MUL_1759 + MUL_1753;
+        auto MUL_1795 = ADD_1793 * 2.0;
+        auto MUL_1828 = MUL_1795 * 0.0265382;
+        auto MUL_1752 = ADD_130 * ADD_130;
+        auto ADD_1780 = MUL_1749 + MUL_1752;
+        auto MUL_1783 = ADD_1780 * 2.0;
+        auto SUB_1786 = 1.0 - MUL_1783;
+        auto MUL_1819 = SUB_1786 * 0.074083;
+        auto ADD_1832 = MUL_1809 + MUL_1819;
+        auto SUB_1836 = MUL_1828 - ADD_1832;
+        auto SUB_1787 = MUL_1759 - MUL_1753;
+        auto ADD_1770 = MUL_1757 + MUL_1751;
+        auto ADD_1796 = MUL_1748 + MUL_1752;
+        auto MUL_1799 = ADD_1796 * 2.0;
+        auto SUB_1802 = 1.0 - MUL_1799;
+        auto MUL_1830 = SUB_1802 * 0.0265382;
+        auto MUL_1789 = SUB_1787 * 2.0;
+        auto MUL_1823 = MUL_1789 * 0.074083;
+        auto MUL_1773 = ADD_1770 * 2.0;
+        auto MUL_1813 = MUL_1773 * 2.72e-05;
+        auto SUB_1834 = MUL_1813 - MUL_1823;
+        auto ADD_1837 = SUB_1834 + MUL_1830;
+        auto ADD_1838 = 0.333 + ADD_1837;
+        auto MUL_1852 = MUL_1792 * 0.03;
+        auto MUL_1854 = MUL_1795 * 0.03;
+        auto MUL_1856 = SUB_1802 * 0.03;
+        auto ADD_1857 = 0.333 + MUL_1856;
+        auto MUL_1871 = MUL_1792 * 0.08;
+        auto MUL_1873 = MUL_1795 * 0.08;
+        auto MUL_1875 = SUB_1802 * 0.08;
+        auto ADD_1876 = 0.333 + MUL_1875;
+        auto MUL_1885 = MUL_1778 * 0.12;
+        auto MUL_1888 = SUB_1786 * 0.12;
+        auto NEGATE_1889 = -MUL_1888;
+        auto MUL_1892 = MUL_1789 * 0.12;
+        auto SUB_1900 = 0.333 - MUL_1892;
+        auto MUL_1909 = MUL_1778 * 0.17;
+        auto MUL_1912 = SUB_1786 * 0.17;
+        auto NEGATE_1913 = -MUL_1912;
+        auto MUL_1916 = MUL_1789 * 0.17;
+        auto SUB_1924 = 0.333 - MUL_1916;
+        if (/*panda_link2*/ sphere_environment_in_collision(
+            environment, ADD_1835, SUB_1836, ADD_1838, 0.145067))
+        {
+            if (sphere_environment_in_collision(environment, MUL_1852, MUL_1854, ADD_1857, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, MUL_1871, MUL_1873, ADD_1876, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, MUL_1885, NEGATE_1889, SUB_1900, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, MUL_1909, NEGATE_1913, SUB_1924, 0.06))
+            {
+                return false;
+            }
+        }  // (21, 99)
+        auto MUL_182 = SUB_149 * 0.7071068;
+        auto MUL_198 = ADD_144 * 0.7071068;
+        auto MUL_196 = SUB_138 * 0.7071068;
+        auto SUB_209 = MUL_198 - MUL_196;
+        auto ADD_199 = MUL_196 + MUL_198;
+        auto MUL_184 = ADD_130 * 0.7071068;
+        auto SUB_186 = MUL_182 - MUL_184;
+        auto ADD_215 = MUL_182 + MUL_184;
+        auto MUL_224 = ADD_144 * 0.316;
+        auto MUL_235 = SUB_149 * MUL_224;
+        auto MUL_228 = ADD_130 * 0.316;
+        auto MUL_236 = SUB_138 * MUL_228;
+        auto ADD_237 = MUL_235 + MUL_236;
+        auto MUL_240 = ADD_237 * 2.0;
+        auto INPUT_2 = q[2];
+        auto DIV_262 = INPUT_2 * 0.5;
+        auto SIN_263 = DIV_262.sin();
+        auto COS_269 = DIV_262.cos();
+        auto MUL_286 = ADD_215 * COS_269;
+        auto MUL_281 = ADD_215 * SIN_263;
+        auto MUL_284 = SUB_209 * COS_269;
+        auto ADD_285 = MUL_281 + MUL_284;
+        auto MUL_1936 = ADD_285 * ADD_285;
+        auto MUL_289 = SUB_209 * SIN_263;
+        auto SUB_290 = MUL_286 - MUL_289;
+        auto MUL_1937 = SUB_290 * ADD_285;
+        auto MUL_271 = SUB_186 * COS_269;
+        auto MUL_276 = SUB_186 * SIN_263;
+        auto MUL_278 = ADD_199 * COS_269;
+        auto SUB_279 = MUL_278 - MUL_276;
+        auto MUL_1938 = SUB_290 * SUB_279;
+        auto MUL_1935 = SUB_279 * SUB_279;
+        auto ADD_1944 = MUL_1935 + MUL_1936;
+        auto MUL_1947 = ADD_1944 * 2.0;
+        auto SUB_1950 = 1.0 - MUL_1947;
+        auto MUL_1984 = SUB_1950 * 0.0404726;
+        auto MUL_272 = ADD_199 * SIN_263;
+        auto ADD_273 = MUL_271 + MUL_272;
+        auto MUL_1942 = ADD_273 * ADD_285;
+        auto ADD_1970 = MUL_1942 + MUL_1938;
+        auto MUL_1972 = ADD_1970 * 2.0;
+        auto MUL_1997 = MUL_1972 * 0.0439448;
+        auto MUL_1941 = ADD_273 * SUB_279;
+        auto SUB_1957 = MUL_1941 - MUL_1937;
+        auto MUL_1959 = SUB_1957 * 2.0;
+        auto MUL_1990 = MUL_1959 * 0.0229569;
+        auto ADD_2007 = MUL_1984 + MUL_1990;
+        auto SUB_2010 = ADD_2007 - MUL_1997;
+        auto ADD_2013 = MUL_240 + SUB_2010;
+        auto ADD_1951 = MUL_1941 + MUL_1937;
+        auto MUL_1953 = ADD_1951 * 2.0;
+        auto MUL_1986 = MUL_1953 * 0.0404726;
+        auto MUL_1940 = SUB_290 * ADD_273;
+        auto MUL_1943 = SUB_279 * ADD_285;
+        auto SUB_1973 = MUL_1943 - MUL_1940;
+        auto MUL_1975 = SUB_1973 * 2.0;
+        auto MUL_2001 = MUL_1975 * 0.0439448;
+        auto MUL_1939 = ADD_273 * ADD_273;
+        auto ADD_1960 = MUL_1936 + MUL_1939;
+        auto MUL_1963 = ADD_1960 * 2.0;
+        auto SUB_1966 = 1.0 - MUL_1963;
+        auto MUL_1992 = SUB_1966 * 0.0229569;
+        auto ADD_2008 = MUL_1986 + MUL_1992;
+        auto SUB_2011 = ADD_2008 - MUL_2001;
+        auto MUL_246 = ADD_144 * MUL_224;
+        auto MUL_244 = ADD_130 * MUL_228;
+        auto ADD_247 = MUL_244 + MUL_246;
+        auto MUL_249 = ADD_247 * 2.0;
+        auto SUB_252 = MUL_249 - 0.316;
+        auto ADD_2014 = SUB_252 + SUB_2011;
+        auto SUB_1954 = MUL_1942 - MUL_1938;
+        auto ADD_1967 = MUL_1943 + MUL_1940;
+        auto ADD_1976 = MUL_1935 + MUL_1939;
+        auto MUL_1979 = ADD_1976 * 2.0;
+        auto SUB_1982 = 1.0 - MUL_1979;
+        auto MUL_2005 = SUB_1982 * 0.0439448;
+        auto MUL_1969 = ADD_1967 * 2.0;
+        auto MUL_1994 = MUL_1969 * 0.0229569;
+        auto MUL_1956 = SUB_1954 * 2.0;
+        auto MUL_1988 = MUL_1956 * 0.0404726;
+        auto ADD_2009 = MUL_1988 + MUL_1994;
+        auto SUB_2012 = ADD_2009 - MUL_2005;
+        auto MUL_253 = SUB_149 * MUL_228;
+        auto MUL_255 = SUB_138 * MUL_224;
+        auto SUB_256 = MUL_253 - MUL_255;
+        auto MUL_258 = SUB_256 * 2.0;
+        auto ADD_260 = 0.333 + MUL_258;
+        auto ADD_2015 = ADD_260 + SUB_2012;
+        auto MUL_2030 = MUL_1972 * 0.1;
+        auto SUB_2040 = MUL_240 - MUL_2030;
+        auto MUL_2034 = MUL_1975 * 0.1;
+        auto SUB_2041 = SUB_252 - MUL_2034;
+        auto MUL_2038 = SUB_1982 * 0.1;
+        auto SUB_2042 = ADD_260 - MUL_2038;
+        auto MUL_2057 = MUL_1972 * 0.06;
+        auto SUB_2067 = MUL_240 - MUL_2057;
+        auto MUL_2061 = MUL_1975 * 0.06;
+        auto SUB_2068 = SUB_252 - MUL_2061;
+        auto MUL_2065 = SUB_1982 * 0.06;
+        auto SUB_2069 = ADD_260 - MUL_2065;
+        auto MUL_2077 = MUL_1959 * 0.06;
+        auto MUL_2071 = SUB_1950 * 0.08;
+        auto ADD_2088 = MUL_2071 + MUL_2077;
+        auto ADD_2091 = MUL_240 + ADD_2088;
+        auto MUL_2079 = SUB_1966 * 0.06;
+        auto MUL_2073 = MUL_1953 * 0.08;
+        auto ADD_2089 = MUL_2073 + MUL_2079;
+        auto ADD_2092 = SUB_252 + ADD_2089;
+        auto MUL_2081 = MUL_1969 * 0.06;
+        auto MUL_2075 = MUL_1956 * 0.08;
+        auto ADD_2090 = MUL_2075 + MUL_2081;
+        auto ADD_2093 = ADD_260 + ADD_2090;
+        auto MUL_2101 = MUL_1959 * 0.02;
+        auto ADD_2112 = MUL_2071 + MUL_2101;
+        auto ADD_2115 = MUL_240 + ADD_2112;
+        auto MUL_2103 = SUB_1966 * 0.02;
+        auto ADD_2113 = MUL_2073 + MUL_2103;
+        auto ADD_2116 = SUB_252 + ADD_2113;
+        auto MUL_2105 = MUL_1969 * 0.02;
+        auto ADD_2114 = MUL_2075 + MUL_2105;
+        auto ADD_2117 = ADD_260 + ADD_2114;
+        if (/*panda_link3*/ sphere_environment_in_collision(
+            environment, ADD_2013, ADD_2014, ADD_2015, 0.127656))
+        {
+            if (sphere_environment_in_collision(environment, SUB_2040, SUB_2041, SUB_2042, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, SUB_2067, SUB_2068, SUB_2069, 0.05))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2091, ADD_2092, ADD_2093, 0.055))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2115, ADD_2116, ADD_2117, 0.055))
+            {
+                return false;
+            }
+        }  // (99, 220)
+        auto MUL_323 = SUB_290 * 0.7071068;
+        auto MUL_338 = ADD_285 * 0.7071068;
+        auto MUL_336 = SUB_279 * 0.7071068;
+        auto SUB_349 = MUL_338 - MUL_336;
+        auto ADD_339 = MUL_336 + MUL_338;
+        auto MUL_325 = ADD_273 * 0.7071068;
+        auto SUB_354 = MUL_323 - MUL_325;
+        auto ADD_326 = MUL_323 + MUL_325;
+        auto MUL_371 = ADD_285 * 0.0825;
+        auto MUL_376 = ADD_285 * MUL_371;
+        auto MUL_366 = SUB_279 * 0.0825;
+        auto MUL_374 = SUB_279 * MUL_366;
+        auto ADD_378 = MUL_374 + MUL_376;
+        auto MUL_381 = ADD_378 * 2.0;
+        auto SUB_384 = 0.0825 - MUL_381;
+        auto ADD_403 = MUL_240 + SUB_384;
+        auto INPUT_3 = q[3];
+        auto DIV_407 = INPUT_3 * 0.5;
+        auto SIN_408 = DIV_407.sin();
+        auto COS_414 = DIV_407.cos();
+        auto MUL_431 = SUB_354 * COS_414;
+        auto MUL_426 = SUB_354 * SIN_408;
+        auto MUL_429 = SUB_349 * COS_414;
+        auto ADD_430 = MUL_426 + MUL_429;
+        auto MUL_2129 = ADD_430 * ADD_430;
+        auto MUL_434 = SUB_349 * SIN_408;
+        auto SUB_435 = MUL_431 - MUL_434;
+        auto MUL_2130 = SUB_435 * ADD_430;
+        auto MUL_416 = ADD_326 * COS_414;
+        auto MUL_421 = ADD_326 * SIN_408;
+        auto MUL_423 = ADD_339 * COS_414;
+        auto SUB_424 = MUL_423 - MUL_421;
+        auto MUL_2131 = SUB_435 * SUB_424;
+        auto MUL_2128 = SUB_424 * SUB_424;
+        auto ADD_2137 = MUL_2128 + MUL_2129;
+        auto MUL_2140 = ADD_2137 * 2.0;
+        auto SUB_2143 = 1.0 - MUL_2140;
+        auto MUL_2178 = SUB_2143 * 0.0422068;
+        auto MUL_417 = ADD_339 * SIN_408;
+        auto ADD_418 = MUL_416 + MUL_417;
+        auto MUL_2135 = ADD_418 * ADD_430;
+        auto ADD_2163 = MUL_2135 + MUL_2131;
+        auto MUL_2165 = ADD_2163 * 2.0;
+        auto MUL_2195 = MUL_2165 * 0.0226917;
+        auto MUL_2134 = ADD_418 * SUB_424;
+        auto SUB_2150 = MUL_2134 - MUL_2130;
+        auto MUL_2152 = SUB_2150 * 2.0;
+        auto MUL_2189 = MUL_2152 * 0.0449876;
+        auto SUB_2200 = MUL_2189 - MUL_2178;
+        auto ADD_2203 = SUB_2200 + MUL_2195;
+        auto ADD_2206 = ADD_403 + ADD_2203;
+        auto ADD_2144 = MUL_2134 + MUL_2130;
+        auto MUL_2146 = ADD_2144 * 2.0;
+        auto MUL_2182 = MUL_2146 * 0.0422068;
+        auto MUL_2133 = SUB_435 * ADD_418;
+        auto MUL_2136 = SUB_424 * ADD_430;
+        auto SUB_2166 = MUL_2136 - MUL_2133;
+        auto MUL_2168 = SUB_2166 * 2.0;
+        auto MUL_2197 = MUL_2168 * 0.0226917;
+        auto MUL_2132 = ADD_418 * ADD_418;
+        auto ADD_2153 = MUL_2129 + MUL_2132;
+        auto MUL_2156 = ADD_2153 * 2.0;
+        auto SUB_2159 = 1.0 - MUL_2156;
+        auto MUL_2191 = SUB_2159 * 0.0449876;
+        auto SUB_2201 = MUL_2191 - MUL_2182;
+        auto ADD_2204 = SUB_2201 + MUL_2197;
+        auto MUL_386 = SUB_290 * MUL_371;
+        auto MUL_387 = ADD_273 * MUL_366;
+        auto ADD_389 = MUL_386 + MUL_387;
+        auto MUL_392 = ADD_389 * 2.0;
+        auto ADD_404 = SUB_252 + MUL_392;
+        auto ADD_2207 = ADD_404 + ADD_2204;
+        auto SUB_2147 = MUL_2135 - MUL_2131;
+        auto ADD_2160 = MUL_2136 + MUL_2133;
+        auto ADD_2169 = MUL_2128 + MUL_2132;
+        auto MUL_2172 = ADD_2169 * 2.0;
+        auto SUB_2175 = 1.0 - MUL_2172;
+        auto MUL_2199 = SUB_2175 * 0.0226917;
+        auto MUL_2162 = ADD_2160 * 2.0;
+        auto MUL_2193 = MUL_2162 * 0.0449876;
+        auto MUL_2149 = SUB_2147 * 2.0;
+        auto MUL_2186 = MUL_2149 * 0.0422068;
+        auto SUB_2202 = MUL_2193 - MUL_2186;
+        auto ADD_2205 = SUB_2202 + MUL_2199;
+        auto MUL_394 = SUB_290 * MUL_366;
+        auto MUL_396 = ADD_273 * MUL_371;
+        auto SUB_398 = MUL_396 - MUL_394;
+        auto MUL_401 = SUB_398 * 2.0;
+        auto ADD_405 = ADD_260 + MUL_401;
+        auto ADD_2208 = ADD_405 + ADD_2205;
+        auto MUL_2211 = SUB_2143 * 0.08;
+        auto MUL_2222 = MUL_2152 * 0.095;
+        auto SUB_2233 = MUL_2222 - MUL_2211;
+        auto ADD_2236 = ADD_403 + SUB_2233;
+        auto MUL_2224 = SUB_2159 * 0.095;
+        auto MUL_2215 = MUL_2146 * 0.08;
+        auto SUB_2234 = MUL_2224 - MUL_2215;
+        auto ADD_2237 = ADD_404 + SUB_2234;
+        auto MUL_2226 = MUL_2162 * 0.095;
+        auto MUL_2219 = MUL_2149 * 0.08;
+        auto SUB_2235 = MUL_2226 - MUL_2219;
+        auto ADD_2238 = ADD_405 + SUB_2235;
+        auto MUL_2252 = MUL_2165 * 0.02;
+        auto ADD_2257 = ADD_403 + MUL_2252;
+        auto MUL_2254 = MUL_2168 * 0.02;
+        auto ADD_2258 = ADD_404 + MUL_2254;
+        auto MUL_2256 = SUB_2175 * 0.02;
+        auto ADD_2259 = ADD_405 + MUL_2256;
+        auto MUL_2273 = MUL_2165 * 0.06;
+        auto ADD_2278 = ADD_403 + MUL_2273;
+        auto MUL_2275 = MUL_2168 * 0.06;
+        auto ADD_2279 = ADD_404 + MUL_2275;
+        auto MUL_2277 = SUB_2175 * 0.06;
+        auto ADD_2280 = ADD_405 + MUL_2277;
+        auto MUL_2294 = MUL_2152 * 0.06;
+        auto SUB_2305 = MUL_2294 - MUL_2211;
+        auto ADD_2308 = ADD_403 + SUB_2305;
+        auto MUL_2296 = SUB_2159 * 0.06;
+        auto SUB_2306 = MUL_2296 - MUL_2215;
+        auto ADD_2309 = ADD_404 + SUB_2306;
+        auto MUL_2298 = MUL_2162 * 0.06;
+        auto SUB_2307 = MUL_2298 - MUL_2219;
+        auto ADD_2310 = ADD_405 + SUB_2307;
+        if (/*panda_link4*/ sphere_environment_in_collision(
+            environment, ADD_2206, ADD_2207, ADD_2208, 0.12849))
+        {
+            if (sphere_environment_in_collision(environment, ADD_2236, ADD_2237, ADD_2238, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2257, ADD_2258, ADD_2259, 0.055))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2278, ADD_2279, ADD_2280, 0.055))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2308, ADD_2309, ADD_2310, 0.055))
+            {
+                return false;
+            }
+        }  // (220, 343)
+        auto MUL_469 = SUB_435 * 0.7071068;
+        auto MUL_486 = ADD_430 * 0.7071068;
+        auto MUL_527 = ADD_430 * 0.0825;
+        auto MUL_533 = ADD_430 * MUL_527;
+        auto MUL_483 = SUB_424 * 0.7071068;
+        auto SUB_488 = MUL_483 - MUL_486;
+        auto ADD_499 = MUL_483 + MUL_486;
+        auto MUL_520 = SUB_424 * 0.0825;
+        auto MUL_472 = ADD_418 * 0.7071068;
+        auto SUB_473 = MUL_472 - MUL_469;
+        auto ADD_506 = MUL_469 + MUL_472;
+        auto MUL_514 = ADD_430 * 0.384;
+        auto MUL_529 = SUB_435 * MUL_514;
+        auto MUL_517 = ADD_418 * 0.384;
+        auto ADD_522 = MUL_517 + MUL_520;
+        auto MUL_531 = SUB_424 * ADD_522;
+        auto SUB_532 = MUL_531 - MUL_529;
+        auto ADD_534 = SUB_532 + MUL_533;
+        auto MUL_536 = ADD_534 * 2.0;
+        auto SUB_539 = MUL_536 - 0.0825;
+        auto ADD_564 = ADD_403 + SUB_539;
+        auto INPUT_4 = q[4];
+        auto DIV_568 = INPUT_4 * 0.5;
+        auto SIN_569 = DIV_568.sin();
+        auto COS_575 = DIV_568.cos();
+        auto MUL_592 = ADD_506 * COS_575;
+        auto MUL_587 = ADD_506 * SIN_569;
+        auto MUL_590 = ADD_499 * COS_575;
+        auto ADD_591 = MUL_587 + MUL_590;
+        auto MUL_2322 = ADD_591 * ADD_591;
+        auto MUL_595 = ADD_499 * SIN_569;
+        auto SUB_596 = MUL_592 - MUL_595;
+        auto MUL_2323 = SUB_596 * ADD_591;
+        auto MUL_577 = SUB_473 * COS_575;
+        auto MUL_582 = SUB_473 * SIN_569;
+        auto MUL_584 = SUB_488 * COS_575;
+        auto SUB_585 = MUL_584 - MUL_582;
+        auto MUL_2324 = SUB_596 * SUB_585;
+        auto MUL_2321 = SUB_585 * SUB_585;
+        auto ADD_2330 = MUL_2321 + MUL_2322;
+        auto MUL_2333 = ADD_2330 * 2.0;
+        auto SUB_2336 = 1.0 - MUL_2333;
+        auto MUL_2370 = SUB_2336 * 3.14e-05;
+        auto MUL_578 = SUB_488 * SIN_569;
+        auto ADD_579 = MUL_577 + MUL_578;
+        auto MUL_2328 = ADD_579 * ADD_591;
+        auto ADD_2356 = MUL_2328 + MUL_2324;
+        auto MUL_2358 = ADD_2356 * 2.0;
+        auto MUL_2383 = MUL_2358 * 0.1065559;
+        auto MUL_2327 = ADD_579 * SUB_585;
+        auto SUB_2343 = MUL_2327 - MUL_2323;
+        auto MUL_2345 = SUB_2343 * 2.0;
+        auto MUL_2376 = MUL_2345 * 0.027819;
+        auto ADD_2393 = MUL_2370 + MUL_2376;
+        auto SUB_2396 = ADD_2393 - MUL_2383;
+        auto ADD_2399 = ADD_564 + SUB_2396;
+        auto ADD_2337 = MUL_2327 + MUL_2323;
+        auto MUL_2339 = ADD_2337 * 2.0;
+        auto MUL_2372 = MUL_2339 * 3.14e-05;
+        auto MUL_2326 = SUB_596 * ADD_579;
+        auto MUL_2329 = SUB_585 * ADD_591;
+        auto SUB_2359 = MUL_2329 - MUL_2326;
+        auto MUL_2361 = SUB_2359 * 2.0;
+        auto MUL_2387 = MUL_2361 * 0.1065559;
+        auto MUL_2325 = ADD_579 * ADD_579;
+        auto ADD_2346 = MUL_2322 + MUL_2325;
+        auto MUL_2349 = ADD_2346 * 2.0;
+        auto SUB_2352 = 1.0 - MUL_2349;
+        auto MUL_2378 = SUB_2352 * 0.027819;
+        auto ADD_2394 = MUL_2372 + MUL_2378;
+        auto SUB_2397 = ADD_2394 - MUL_2387;
+        auto MUL_541 = SUB_435 * MUL_527;
+        auto MUL_546 = ADD_430 * MUL_514;
+        auto MUL_543 = ADD_418 * ADD_522;
+        auto ADD_544 = MUL_541 + MUL_543;
+        auto ADD_548 = ADD_544 + MUL_546;
+        auto MUL_551 = ADD_548 * 2.0;
+        auto SUB_554 = 0.384 - MUL_551;
+        auto ADD_565 = ADD_404 + SUB_554;
+        auto ADD_2400 = ADD_565 + SUB_2397;
+        auto SUB_2340 = MUL_2328 - MUL_2324;
+        auto ADD_2353 = MUL_2329 + MUL_2326;
+        auto ADD_2362 = MUL_2321 + MUL_2325;
+        auto MUL_2365 = ADD_2362 * 2.0;
+        auto SUB_2368 = 1.0 - MUL_2365;
+        auto MUL_2391 = SUB_2368 * 0.1065559;
+        auto MUL_2355 = ADD_2353 * 2.0;
+        auto MUL_2380 = MUL_2355 * 0.027819;
+        auto MUL_2342 = SUB_2340 * 2.0;
+        auto MUL_2374 = MUL_2342 * 3.14e-05;
+        auto ADD_2395 = MUL_2374 + MUL_2380;
+        auto SUB_2398 = ADD_2395 - MUL_2391;
+        auto MUL_555 = SUB_435 * ADD_522;
+        auto MUL_558 = SUB_424 * MUL_514;
+        auto MUL_556 = ADD_418 * MUL_527;
+        auto SUB_557 = MUL_555 - MUL_556;
+        auto ADD_560 = SUB_557 + MUL_558;
+        auto MUL_562 = ADD_560 * 2.0;
+        auto ADD_566 = ADD_405 + MUL_562;
+        auto ADD_2401 = ADD_566 + SUB_2398;
+        auto MUL_2409 = MUL_2345 * 0.055;
+        auto ADD_2420 = ADD_564 + MUL_2409;
+        auto MUL_2411 = SUB_2352 * 0.055;
+        auto ADD_2421 = ADD_565 + MUL_2411;
+        auto MUL_2413 = MUL_2355 * 0.055;
+        auto ADD_2422 = ADD_566 + MUL_2413;
+        auto MUL_2430 = MUL_2345 * 0.075;
+        auto ADD_2441 = ADD_564 + MUL_2430;
+        auto MUL_2432 = SUB_2352 * 0.075;
+        auto ADD_2442 = ADD_565 + MUL_2432;
+        auto MUL_2434 = MUL_2355 * 0.075;
+        auto ADD_2443 = ADD_566 + MUL_2434;
+        auto MUL_2458 = MUL_2358 * 0.22;
+        auto SUB_2468 = ADD_564 - MUL_2458;
+        auto MUL_2462 = MUL_2361 * 0.22;
+        auto SUB_2469 = ADD_565 - MUL_2462;
+        auto MUL_2466 = SUB_2368 * 0.22;
+        auto SUB_2470 = ADD_566 - MUL_2466;
+        auto MUL_2485 = MUL_2358 * 0.18;
+        auto MUL_2478 = MUL_2345 * 0.05;
+        auto SUB_2495 = MUL_2478 - MUL_2485;
+        auto ADD_2498 = ADD_564 + SUB_2495;
+        auto MUL_2489 = MUL_2361 * 0.18;
+        auto MUL_2480 = SUB_2352 * 0.05;
+        auto SUB_2496 = MUL_2480 - MUL_2489;
+        auto ADD_2499 = ADD_565 + SUB_2496;
+        auto MUL_2493 = SUB_2368 * 0.18;
+        auto MUL_2482 = MUL_2355 * 0.05;
+        auto SUB_2497 = MUL_2482 - MUL_2493;
+        auto ADD_2500 = ADD_566 + SUB_2497;
+        auto MUL_2508 = MUL_2345 * 0.08;
+        auto MUL_2515 = MUL_2358 * 0.14;
+        auto MUL_2502 = SUB_2336 * 0.01;
+        auto ADD_2525 = MUL_2502 + MUL_2508;
+        auto SUB_2528 = ADD_2525 - MUL_2515;
+        auto ADD_2531 = ADD_564 + SUB_2528;
+        auto MUL_2519 = MUL_2361 * 0.14;
+        auto MUL_2510 = SUB_2352 * 0.08;
+        auto MUL_2504 = MUL_2339 * 0.01;
+        auto ADD_2526 = MUL_2504 + MUL_2510;
+        auto SUB_2529 = ADD_2526 - MUL_2519;
+        auto ADD_2532 = ADD_565 + SUB_2529;
+        auto MUL_2523 = SUB_2368 * 0.14;
+        auto MUL_2512 = MUL_2355 * 0.08;
+        auto MUL_2506 = MUL_2342 * 0.01;
+        auto ADD_2527 = MUL_2506 + MUL_2512;
+        auto SUB_2530 = ADD_2527 - MUL_2523;
+        auto ADD_2533 = ADD_566 + SUB_2530;
+        auto MUL_2548 = MUL_2358 * 0.11;
+        auto MUL_2541 = MUL_2345 * 0.085;
+        auto ADD_2558 = MUL_2502 + MUL_2541;
+        auto SUB_2561 = ADD_2558 - MUL_2548;
+        auto ADD_2564 = ADD_564 + SUB_2561;
+        auto MUL_2552 = MUL_2361 * 0.11;
+        auto MUL_2543 = SUB_2352 * 0.085;
+        auto ADD_2559 = MUL_2504 + MUL_2543;
+        auto SUB_2562 = ADD_2559 - MUL_2552;
+        auto ADD_2565 = ADD_565 + SUB_2562;
+        auto MUL_2556 = SUB_2368 * 0.11;
+        auto MUL_2545 = MUL_2355 * 0.085;
+        auto ADD_2560 = MUL_2506 + MUL_2545;
+        auto SUB_2563 = ADD_2560 - MUL_2556;
+        auto ADD_2566 = ADD_566 + SUB_2563;
+        auto MUL_2581 = MUL_2358 * 0.08;
+        auto MUL_2574 = MUL_2345 * 0.09;
+        auto ADD_2591 = MUL_2502 + MUL_2574;
+        auto SUB_2594 = ADD_2591 - MUL_2581;
+        auto ADD_2597 = ADD_564 + SUB_2594;
+        auto MUL_2585 = MUL_2361 * 0.08;
+        auto MUL_2576 = SUB_2352 * 0.09;
+        auto ADD_2592 = MUL_2504 + MUL_2576;
+        auto SUB_2595 = ADD_2592 - MUL_2585;
+        auto ADD_2598 = ADD_565 + SUB_2595;
+        auto MUL_2589 = SUB_2368 * 0.08;
+        auto MUL_2578 = MUL_2355 * 0.09;
+        auto ADD_2593 = MUL_2506 + MUL_2578;
+        auto SUB_2596 = ADD_2593 - MUL_2589;
+        auto ADD_2599 = ADD_566 + SUB_2596;
+        auto MUL_2614 = MUL_2358 * 0.05;
+        auto MUL_2607 = MUL_2345 * 0.095;
+        auto ADD_2624 = MUL_2502 + MUL_2607;
+        auto SUB_2627 = ADD_2624 - MUL_2614;
+        auto ADD_2630 = ADD_564 + SUB_2627;
+        auto MUL_2618 = MUL_2361 * 0.05;
+        auto MUL_2609 = SUB_2352 * 0.095;
+        auto ADD_2625 = MUL_2504 + MUL_2609;
+        auto SUB_2628 = ADD_2625 - MUL_2618;
+        auto ADD_2631 = ADD_565 + SUB_2628;
+        auto MUL_2622 = SUB_2368 * 0.05;
+        auto MUL_2611 = MUL_2355 * 0.095;
+        auto ADD_2626 = MUL_2506 + MUL_2611;
+        auto SUB_2629 = ADD_2626 - MUL_2622;
+        auto ADD_2632 = ADD_566 + SUB_2629;
+        auto SUB_2663 = MUL_2508 - MUL_2502;
+        auto SUB_2666 = SUB_2663 - MUL_2515;
+        auto ADD_2669 = ADD_564 + SUB_2666;
+        auto SUB_2664 = MUL_2510 - MUL_2504;
+        auto SUB_2667 = SUB_2664 - MUL_2519;
+        auto ADD_2670 = ADD_565 + SUB_2667;
+        auto SUB_2665 = MUL_2512 - MUL_2506;
+        auto SUB_2668 = SUB_2665 - MUL_2523;
+        auto ADD_2671 = ADD_566 + SUB_2668;
+        auto SUB_2702 = MUL_2541 - MUL_2502;
+        auto SUB_2705 = SUB_2702 - MUL_2548;
+        auto ADD_2708 = ADD_564 + SUB_2705;
+        auto SUB_2703 = MUL_2543 - MUL_2504;
+        auto SUB_2706 = SUB_2703 - MUL_2552;
+        auto ADD_2709 = ADD_565 + SUB_2706;
+        auto SUB_2704 = MUL_2545 - MUL_2506;
+        auto SUB_2707 = SUB_2704 - MUL_2556;
+        auto ADD_2710 = ADD_566 + SUB_2707;
+        auto SUB_2741 = MUL_2574 - MUL_2502;
+        auto SUB_2744 = SUB_2741 - MUL_2581;
+        auto ADD_2747 = ADD_564 + SUB_2744;
+        auto SUB_2742 = MUL_2576 - MUL_2504;
+        auto SUB_2745 = SUB_2742 - MUL_2585;
+        auto ADD_2748 = ADD_565 + SUB_2745;
+        auto SUB_2743 = MUL_2578 - MUL_2506;
+        auto SUB_2746 = SUB_2743 - MUL_2589;
+        auto ADD_2749 = ADD_566 + SUB_2746;
+        auto SUB_2780 = MUL_2607 - MUL_2502;
+        auto SUB_2783 = SUB_2780 - MUL_2614;
+        auto ADD_2786 = ADD_564 + SUB_2783;
+        auto SUB_2781 = MUL_2609 - MUL_2504;
+        auto SUB_2784 = SUB_2781 - MUL_2618;
+        auto ADD_2787 = ADD_565 + SUB_2784;
+        auto SUB_2782 = MUL_2611 - MUL_2506;
+        auto SUB_2785 = SUB_2782 - MUL_2622;
+        auto ADD_2788 = ADD_566 + SUB_2785;
+        if (/*panda_link0 vs. panda_link5*/ sphere_sphere_self_collision<decltype(q[0])>(
+            -0.043343, 1.4e-06, 0.0629063, 0.130366, ADD_2399, ADD_2400, ADD_2401, 0.173531))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+        }  // (343, 572)
+        if (/*panda_link1 vs. panda_link5*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1636, SUB_1637, 0.2598976, 0.144259, ADD_2399, ADD_2400, ADD_2401, 0.173531))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+        }  // (572, 572)
+        if (/*panda_link2 vs. panda_link5*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1835, SUB_1836, ADD_1838, 0.145067, ADD_2399, ADD_2400, ADD_2401, 0.173531))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+        }  // (572, 572)
+        if (/*panda_link5*/ sphere_environment_in_collision(
+            environment, ADD_2399, ADD_2400, ADD_2401, 0.173531))
+        {
+            if (sphere_environment_in_collision(environment, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+        }  // (572, 572)
+        auto MUL_629 = SUB_596 * 0.7071068;
+        auto MUL_644 = ADD_591 * 0.7071068;
+        auto MUL_642 = SUB_585 * 0.7071068;
+        auto SUB_655 = MUL_644 - MUL_642;
+        auto ADD_645 = MUL_642 + MUL_644;
+        auto MUL_631 = ADD_579 * 0.7071068;
+        auto SUB_660 = MUL_629 - MUL_631;
+        auto ADD_632 = MUL_629 + MUL_631;
+        auto INPUT_5 = q[5];
+        auto DIV_697 = INPUT_5 * 0.5;
+        auto SIN_698 = DIV_697.sin();
+        auto COS_704 = DIV_697.cos();
+        auto MUL_716 = SUB_660 * SIN_698;
+        auto MUL_721 = SUB_660 * COS_704;
+        auto MUL_724 = SUB_655 * SIN_698;
+        auto SUB_725 = MUL_721 - MUL_724;
+        auto MUL_719 = SUB_655 * COS_704;
+        auto ADD_720 = MUL_716 + MUL_719;
+        auto MUL_2817 = SUB_725 * ADD_720;
+        auto MUL_2816 = ADD_720 * ADD_720;
+        auto MUL_711 = ADD_632 * SIN_698;
+        auto MUL_706 = ADD_632 * COS_704;
+        auto MUL_707 = ADD_645 * SIN_698;
+        auto ADD_708 = MUL_706 + MUL_707;
+        auto MUL_2822 = ADD_708 * ADD_720;
+        auto MUL_713 = ADD_645 * COS_704;
+        auto SUB_714 = MUL_713 - MUL_711;
+        auto MUL_2818 = SUB_725 * SUB_714;
+        auto ADD_2850 = MUL_2822 + MUL_2818;
+        auto MUL_2852 = ADD_2850 * 2.0;
+        auto MUL_2876 = MUL_2852 * 0.0108239;
+        auto MUL_2815 = SUB_714 * SUB_714;
+        auto ADD_2824 = MUL_2815 + MUL_2816;
+        auto MUL_2827 = ADD_2824 * 2.0;
+        auto SUB_2830 = 1.0 - MUL_2827;
+        auto MUL_2864 = SUB_2830 * 0.0485274;
+        auto MUL_2821 = ADD_708 * SUB_714;
+        auto SUB_2837 = MUL_2821 - MUL_2817;
+        auto MUL_2839 = SUB_2837 * 2.0;
+        auto MUL_2870 = MUL_2839 * 0.0033602;
+        auto ADD_2881 = MUL_2864 + MUL_2870;
+        auto ADD_2884 = ADD_2881 + MUL_2876;
+        auto ADD_2887 = ADD_564 + ADD_2884;
+        auto ADD_2831 = MUL_2821 + MUL_2817;
+        auto MUL_2833 = ADD_2831 * 2.0;
+        auto MUL_2866 = MUL_2833 * 0.0485274;
+        auto MUL_2820 = SUB_725 * ADD_708;
+        auto MUL_2823 = SUB_714 * ADD_720;
+        auto SUB_2853 = MUL_2823 - MUL_2820;
+        auto MUL_2855 = SUB_2853 * 2.0;
+        auto MUL_2878 = MUL_2855 * 0.0108239;
+        auto MUL_2819 = ADD_708 * ADD_708;
+        auto ADD_2840 = MUL_2816 + MUL_2819;
+        auto MUL_2843 = ADD_2840 * 2.0;
+        auto SUB_2846 = 1.0 - MUL_2843;
+        auto MUL_2872 = SUB_2846 * 0.0033602;
+        auto ADD_2882 = MUL_2866 + MUL_2872;
+        auto ADD_2885 = ADD_2882 + MUL_2878;
+        auto ADD_2888 = ADD_565 + ADD_2885;
+        auto SUB_2834 = MUL_2822 - MUL_2818;
+        auto ADD_2847 = MUL_2823 + MUL_2820;
+        auto ADD_2856 = MUL_2815 + MUL_2819;
+        auto MUL_2859 = ADD_2856 * 2.0;
+        auto SUB_2862 = 1.0 - MUL_2859;
+        auto MUL_2880 = SUB_2862 * 0.0108239;
+        auto MUL_2849 = ADD_2847 * 2.0;
+        auto MUL_2874 = MUL_2849 * 0.0033602;
+        auto MUL_2836 = SUB_2834 * 2.0;
+        auto MUL_2868 = MUL_2836 * 0.0485274;
+        auto ADD_2883 = MUL_2868 + MUL_2874;
+        auto ADD_2886 = ADD_2883 + MUL_2880;
+        auto ADD_2889 = ADD_566 + ADD_2886;
+        auto MUL_2916 = MUL_2839 * 0.01;
+        auto MUL_2909 = SUB_2830 * 0.08;
+        auto SUB_2932 = MUL_2909 - MUL_2916;
+        auto ADD_2935 = ADD_564 + SUB_2932;
+        auto MUL_2920 = SUB_2846 * 0.01;
+        auto MUL_2911 = MUL_2833 * 0.08;
+        auto SUB_2933 = MUL_2911 - MUL_2920;
+        auto ADD_2936 = ADD_565 + SUB_2933;
+        auto MUL_2924 = MUL_2849 * 0.01;
+        auto MUL_2913 = MUL_2836 * 0.08;
+        auto SUB_2934 = MUL_2913 - MUL_2924;
+        auto ADD_2937 = ADD_566 + SUB_2934;
+        auto MUL_2945 = MUL_2839 * 0.035;
+        auto ADD_2956 = MUL_2909 + MUL_2945;
+        auto ADD_2959 = ADD_564 + ADD_2956;
+        auto MUL_2947 = SUB_2846 * 0.035;
+        auto ADD_2957 = MUL_2911 + MUL_2947;
+        auto ADD_2960 = ADD_565 + ADD_2957;
+        auto MUL_2949 = MUL_2849 * 0.035;
+        auto ADD_2958 = MUL_2913 + MUL_2949;
+        auto ADD_2961 = ADD_566 + ADD_2958;
+        if (/*panda_link0 vs. panda_link6*/ sphere_sphere_self_collision<decltype(q[0])>(
+            -0.043343, 1.4e-06, 0.0629063, 0.130366, ADD_2887, ADD_2888, ADD_2889, 0.104795))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_564, ADD_565, ADD_566, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2935, ADD_2936, ADD_2937, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_2959, ADD_2960, ADD_2961, 0.052))
+            {
+                return false;
+            }
+        }  // (572, 665)
+        if (/*panda_link1 vs. panda_link6*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1636, SUB_1637, 0.2598976, 0.144259, ADD_2887, ADD_2888, ADD_2889, 0.104795))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_564, ADD_565, ADD_566, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2935, ADD_2936, ADD_2937, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_2959, ADD_2960, ADD_2961, 0.052))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_564, ADD_565, ADD_566, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2935, ADD_2936, ADD_2937, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_2959, ADD_2960, ADD_2961, 0.052))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_564, ADD_565, ADD_566, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2935, ADD_2936, ADD_2937, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_2959, ADD_2960, ADD_2961, 0.052))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_564, ADD_565, ADD_566, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2935, ADD_2936, ADD_2937, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_2959, ADD_2960, ADD_2961, 0.052))
+            {
+                return false;
+            }
+        }  // (665, 665)
+        if (/*panda_link6*/ sphere_environment_in_collision(
+            environment, ADD_2887, ADD_2888, ADD_2889, 0.104795))
+        {
+            if (sphere_environment_in_collision(environment, ADD_564, ADD_565, ADD_566, 0.05))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2935, ADD_2936, ADD_2937, 0.05))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_2959, ADD_2960, ADD_2961, 0.052))
+            {
+                return false;
+            }
+        }  // (665, 665)
+        auto MUL_758 = SUB_725 * 0.7071068;
+        auto MUL_773 = ADD_720 * 0.7071068;
+        auto MUL_771 = SUB_714 * 0.7071068;
+        auto SUB_784 = MUL_773 - MUL_771;
+        auto ADD_774 = MUL_771 + MUL_773;
+        auto MUL_760 = ADD_708 * 0.7071068;
+        auto SUB_789 = MUL_758 - MUL_760;
+        auto ADD_761 = MUL_758 + MUL_760;
+        auto MUL_806 = ADD_720 * 0.088;
+        auto MUL_811 = ADD_720 * MUL_806;
+        auto MUL_801 = SUB_714 * 0.088;
+        auto MUL_809 = SUB_714 * MUL_801;
+        auto ADD_813 = MUL_809 + MUL_811;
+        auto MUL_816 = ADD_813 * 2.0;
+        auto SUB_819 = 0.088 - MUL_816;
+        auto ADD_838 = ADD_564 + SUB_819;
+        auto INPUT_6 = q[6];
+        auto DIV_842 = INPUT_6 * 0.5;
+        auto SIN_843 = DIV_842.sin();
+        auto COS_849 = DIV_842.cos();
+        auto MUL_866 = SUB_789 * COS_849;
+        auto MUL_861 = SUB_789 * SIN_843;
+        auto MUL_864 = SUB_784 * COS_849;
+        auto ADD_865 = MUL_861 + MUL_864;
+        auto MUL_2971 = ADD_865 * ADD_865;
+        auto MUL_869 = SUB_784 * SIN_843;
+        auto SUB_870 = MUL_866 - MUL_869;
+        auto MUL_2972 = SUB_870 * ADD_865;
+        auto MUL_851 = ADD_761 * COS_849;
+        auto MUL_856 = ADD_761 * SIN_843;
+        auto MUL_858 = ADD_774 * COS_849;
+        auto SUB_859 = MUL_858 - MUL_856;
+        auto MUL_2973 = SUB_870 * SUB_859;
+        auto MUL_2970 = SUB_859 * SUB_859;
+        auto ADD_2979 = MUL_2970 + MUL_2971;
+        auto MUL_2982 = ADD_2979 * 2.0;
+        auto SUB_2985 = 1.0 - MUL_2982;
+        auto MUL_3019 = SUB_2985 * 0.0132698;
+        auto MUL_852 = ADD_774 * SIN_843;
+        auto ADD_853 = MUL_851 + MUL_852;
+        auto MUL_2977 = ADD_853 * ADD_865;
+        auto ADD_3005 = MUL_2977 + MUL_2973;
+        auto MUL_3007 = ADD_3005 * 2.0;
+        auto MUL_3031 = MUL_3007 * 0.0793978;
+        auto MUL_2976 = ADD_853 * SUB_859;
+        auto SUB_2992 = MUL_2976 - MUL_2972;
+        auto MUL_2994 = SUB_2992 * 2.0;
+        auto MUL_3025 = MUL_2994 * 0.0133909;
+        auto ADD_3036 = MUL_3019 + MUL_3025;
+        auto ADD_3039 = ADD_3036 + MUL_3031;
+        auto ADD_3042 = ADD_838 + ADD_3039;
+        auto ADD_2986 = MUL_2976 + MUL_2972;
+        auto MUL_2988 = ADD_2986 * 2.0;
+        auto MUL_3021 = MUL_2988 * 0.0132698;
+        auto MUL_2975 = SUB_870 * ADD_853;
+        auto MUL_2978 = SUB_859 * ADD_865;
+        auto SUB_3008 = MUL_2978 - MUL_2975;
+        auto MUL_3010 = SUB_3008 * 2.0;
+        auto MUL_3033 = MUL_3010 * 0.0793978;
+        auto MUL_2974 = ADD_853 * ADD_853;
+        auto ADD_2995 = MUL_2971 + MUL_2974;
+        auto MUL_2998 = ADD_2995 * 2.0;
+        auto SUB_3001 = 1.0 - MUL_2998;
+        auto MUL_3027 = SUB_3001 * 0.0133909;
+        auto ADD_3037 = MUL_3021 + MUL_3027;
+        auto ADD_3040 = ADD_3037 + MUL_3033;
+        auto MUL_821 = SUB_725 * MUL_806;
+        auto MUL_822 = ADD_708 * MUL_801;
+        auto ADD_824 = MUL_821 + MUL_822;
+        auto MUL_827 = ADD_824 * 2.0;
+        auto ADD_839 = ADD_565 + MUL_827;
+        auto ADD_3043 = ADD_839 + ADD_3040;
+        auto SUB_2989 = MUL_2977 - MUL_2973;
+        auto ADD_3002 = MUL_2978 + MUL_2975;
+        auto ADD_3011 = MUL_2970 + MUL_2974;
+        auto MUL_3014 = ADD_3011 * 2.0;
+        auto SUB_3017 = 1.0 - MUL_3014;
+        auto MUL_3035 = SUB_3017 * 0.0793978;
+        auto MUL_3004 = ADD_3002 * 2.0;
+        auto MUL_3029 = MUL_3004 * 0.0133909;
+        auto MUL_2991 = SUB_2989 * 2.0;
+        auto MUL_3023 = MUL_2991 * 0.0132698;
+        auto ADD_3038 = MUL_3023 + MUL_3029;
+        auto ADD_3041 = ADD_3038 + MUL_3035;
+        auto MUL_829 = SUB_725 * MUL_801;
+        auto MUL_831 = ADD_708 * MUL_806;
+        auto SUB_833 = MUL_831 - MUL_829;
+        auto MUL_836 = SUB_833 * 2.0;
+        auto ADD_840 = ADD_566 + MUL_836;
+        auto ADD_3044 = ADD_840 + ADD_3041;
+        auto MUL_3058 = MUL_3007 * 0.07;
+        auto ADD_3063 = ADD_838 + MUL_3058;
+        auto MUL_3060 = MUL_3010 * 0.07;
+        auto ADD_3064 = ADD_839 + MUL_3060;
+        auto MUL_3062 = SUB_3017 * 0.07;
+        auto ADD_3065 = ADD_840 + MUL_3062;
+        auto MUL_3079 = MUL_3007 * 0.08;
+        auto MUL_3067 = SUB_2985 * 0.02;
+        auto MUL_3073 = MUL_2994 * 0.04;
+        auto ADD_3084 = MUL_3067 + MUL_3073;
+        auto ADD_3087 = ADD_3084 + MUL_3079;
+        auto ADD_3090 = ADD_838 + ADD_3087;
+        auto MUL_3081 = MUL_3010 * 0.08;
+        auto MUL_3075 = SUB_3001 * 0.04;
+        auto MUL_3069 = MUL_2988 * 0.02;
+        auto ADD_3085 = MUL_3069 + MUL_3075;
+        auto ADD_3088 = ADD_3085 + MUL_3081;
+        auto ADD_3091 = ADD_839 + ADD_3088;
+        auto MUL_3083 = SUB_3017 * 0.08;
+        auto MUL_3077 = MUL_3004 * 0.04;
+        auto MUL_3071 = MUL_2991 * 0.02;
+        auto ADD_3086 = MUL_3071 + MUL_3077;
+        auto ADD_3089 = ADD_3086 + MUL_3083;
+        auto ADD_3092 = ADD_840 + ADD_3089;
+        auto MUL_3100 = MUL_2994 * 0.02;
+        auto MUL_3094 = SUB_2985 * 0.04;
+        auto ADD_3111 = MUL_3094 + MUL_3100;
+        auto ADD_3114 = ADD_3111 + MUL_3079;
+        auto ADD_3117 = ADD_838 + ADD_3114;
+        auto MUL_3102 = SUB_3001 * 0.02;
+        auto MUL_3096 = MUL_2988 * 0.04;
+        auto ADD_3112 = MUL_3096 + MUL_3102;
+        auto ADD_3115 = ADD_3112 + MUL_3081;
+        auto ADD_3118 = ADD_839 + ADD_3115;
+        auto MUL_3104 = MUL_3004 * 0.02;
+        auto MUL_3098 = MUL_2991 * 0.04;
+        auto ADD_3113 = MUL_3098 + MUL_3104;
+        auto ADD_3116 = ADD_3113 + MUL_3083;
+        auto ADD_3119 = ADD_840 + ADD_3116;
+        auto MUL_3133 = MUL_3007 * 0.085;
+        auto MUL_3127 = MUL_2994 * 0.06;
+        auto ADD_3138 = MUL_3094 + MUL_3127;
+        auto ADD_3141 = ADD_3138 + MUL_3133;
+        auto ADD_3144 = ADD_838 + ADD_3141;
+        auto MUL_3135 = MUL_3010 * 0.085;
+        auto MUL_3129 = SUB_3001 * 0.06;
+        auto ADD_3139 = MUL_3096 + MUL_3129;
+        auto ADD_3142 = ADD_3139 + MUL_3135;
+        auto ADD_3145 = ADD_839 + ADD_3142;
+        auto MUL_3137 = SUB_3017 * 0.085;
+        auto MUL_3131 = MUL_3004 * 0.06;
+        auto ADD_3140 = MUL_3098 + MUL_3131;
+        auto ADD_3143 = ADD_3140 + MUL_3137;
+        auto ADD_3146 = ADD_840 + ADD_3143;
+        auto MUL_3148 = SUB_2985 * 0.06;
+        auto ADD_3165 = MUL_3148 + MUL_3073;
+        auto ADD_3168 = ADD_3165 + MUL_3133;
+        auto ADD_3171 = ADD_838 + ADD_3168;
+        auto MUL_3150 = MUL_2988 * 0.06;
+        auto ADD_3166 = MUL_3150 + MUL_3075;
+        auto ADD_3169 = ADD_3166 + MUL_3135;
+        auto ADD_3172 = ADD_839 + ADD_3169;
+        auto MUL_3152 = MUL_2991 * 0.06;
+        auto ADD_3167 = MUL_3152 + MUL_3077;
+        auto ADD_3170 = ADD_3167 + MUL_3137;
+        auto ADD_3173 = ADD_840 + ADD_3170;
+        if (/*panda_link0 vs. panda_link7*/ sphere_sphere_self_collision<decltype(q[0])>(
+            -0.043343, 1.4e-06, 0.0629063, 0.130366, ADD_3042, ADD_3043, ADD_3044, 0.073242))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+        }  // (665, 821)
+        if (/*panda_link1 vs. panda_link7*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1636, SUB_1637, 0.2598976, 0.144259, ADD_3042, ADD_3043, ADD_3044, 0.073242))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+        }  // (821, 821)
+        if (/*panda_link2 vs. panda_link7*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1835, SUB_1836, ADD_1838, 0.145067, ADD_3042, ADD_3043, ADD_3044, 0.073242))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+        }  // (821, 821)
+        if (/*panda_link5 vs. panda_link7*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_2399, ADD_2400, ADD_2401, 0.173531, ADD_3042, ADD_3043, ADD_3044, 0.073242))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+        }  // (821, 821)
+        if (/*panda_link7*/ sphere_environment_in_collision(
+            environment, ADD_3042, ADD_3043, ADD_3044, 0.073242))
+        {
+            if (sphere_environment_in_collision(environment, ADD_3063, ADD_3064, ADD_3065, 0.05))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3090, ADD_3091, ADD_3092, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3117, ADD_3118, ADD_3119, 0.025))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3144, ADD_3145, ADD_3146, 0.02))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3171, ADD_3172, ADD_3173, 0.02))
+            {
+                return false;
+            }
+        }  // (821, 821)
+        auto MUL_1065 = SUB_870 * 0.9238795;
+        auto MUL_1062 = ADD_865 * 0.9238795;
+        auto MUL_1049 = SUB_859 * 0.9238795;
+        auto MUL_1034 = ADD_853 * 0.9238795;
+        auto MUL_1055 = SUB_870 * 0.3826834;
+        auto SUB_1063 = MUL_1062 - MUL_1055;
+        auto MUL_3235 = SUB_1063 * SUB_1063;
+        auto MUL_1072 = ADD_865 * 0.3826834;
+        auto ADD_1074 = MUL_1065 + MUL_1072;
+        auto MUL_3236 = ADD_1074 * SUB_1063;
+        auto MUL_1037 = SUB_859 * 0.3826834;
+        auto SUB_1039 = MUL_1034 - MUL_1037;
+        auto MUL_3241 = SUB_1039 * SUB_1063;
+        auto MUL_1046 = ADD_853 * 0.3826834;
+        auto ADD_1050 = MUL_1046 + MUL_1049;
+        auto MUL_3237 = ADD_1074 * ADD_1050;
+        auto ADD_3269 = MUL_3241 + MUL_3237;
+        auto MUL_3271 = ADD_3269 * 2.0;
+        auto MUL_3240 = SUB_1039 * ADD_1050;
+        auto SUB_3256 = MUL_3240 - MUL_3236;
+        auto MUL_3258 = SUB_3256 * 2.0;
+        auto MUL_3234 = ADD_1050 * ADD_1050;
+        auto ADD_3243 = MUL_3234 + MUL_3235;
+        auto MUL_3246 = ADD_3243 * 2.0;
+        auto SUB_3249 = 1.0 - MUL_3246;
+        auto MUL_931 = SUB_859 * 0.107;
+        auto MUL_942 = SUB_870 * MUL_931;
+        auto MUL_939 = ADD_853 * 0.107;
+        auto MUL_944 = ADD_865 * MUL_939;
+        auto ADD_945 = MUL_942 + MUL_944;
+        auto MUL_947 = ADD_945 * 2.0;
+        auto ADD_969 = ADD_838 + MUL_947;
+        auto MUL_3301 = MUL_3271 * 0.0196227;
+        auto MUL_3295 = MUL_3258 * 2.7e-05;
+        auto MUL_3284 = SUB_3249 * 5.1e-06;
+        auto SUB_3306 = MUL_3295 - MUL_3284;
+        auto ADD_3309 = SUB_3306 + MUL_3301;
+        auto ADD_3312 = ADD_969 + ADD_3309;
+        auto ADD_3250 = MUL_3240 + MUL_3236;
+        auto MUL_3252 = ADD_3250 * 2.0;
+        auto MUL_3288 = MUL_3252 * 5.1e-06;
+        auto MUL_3239 = ADD_1074 * SUB_1039;
+        auto MUL_3238 = SUB_1039 * SUB_1039;
+        auto ADD_3259 = MUL_3235 + MUL_3238;
+        auto MUL_3262 = ADD_3259 * 2.0;
+        auto SUB_3265 = 1.0 - MUL_3262;
+        auto MUL_3297 = SUB_3265 * 2.7e-05;
+        auto SUB_3307 = MUL_3297 - MUL_3288;
+        auto MUL_3242 = ADD_1050 * SUB_1063;
+        auto SUB_3272 = MUL_3242 - MUL_3239;
+        auto MUL_3274 = SUB_3272 * 2.0;
+        auto MUL_3303 = MUL_3274 * 0.0196227;
+        auto ADD_3310 = SUB_3307 + MUL_3303;
+        auto MUL_950 = SUB_870 * MUL_939;
+        auto MUL_953 = ADD_865 * MUL_931;
+        auto SUB_954 = MUL_953 - MUL_950;
+        auto MUL_956 = SUB_954 * 2.0;
+        auto ADD_970 = ADD_839 + MUL_956;
+        auto ADD_3313 = ADD_970 + ADD_3310;
+        auto SUB_3253 = MUL_3241 - MUL_3237;
+        auto ADD_3266 = MUL_3242 + MUL_3239;
+        auto ADD_3275 = MUL_3234 + MUL_3238;
+        auto MUL_3278 = ADD_3275 * 2.0;
+        auto SUB_3281 = 1.0 - MUL_3278;
+        auto MUL_3305 = SUB_3281 * 0.0196227;
+        auto MUL_3268 = ADD_3266 * 2.0;
+        auto MUL_3299 = MUL_3268 * 2.7e-05;
+        auto MUL_3255 = SUB_3253 * 2.0;
+        auto MUL_3292 = MUL_3255 * 5.1e-06;
+        auto SUB_3308 = MUL_3299 - MUL_3292;
+        auto ADD_3311 = SUB_3308 + MUL_3305;
+        auto MUL_961 = SUB_859 * MUL_931;
+        auto MUL_959 = ADD_853 * MUL_939;
+        auto ADD_962 = MUL_959 + MUL_961;
+        auto MUL_965 = ADD_962 * 2.0;
+        auto SUB_968 = 0.107 - MUL_965;
+        auto ADD_971 = ADD_840 + SUB_968;
+        auto ADD_3314 = ADD_971 + ADD_3311;
+        auto MUL_3334 = MUL_3271 * 0.01;
+        auto MUL_3323 = MUL_3258 * 0.075;
+        auto SUB_3339 = MUL_3334 - MUL_3323;
+        auto ADD_3342 = ADD_969 + SUB_3339;
+        auto MUL_3336 = MUL_3274 * 0.01;
+        auto MUL_3327 = SUB_3265 * 0.075;
+        auto SUB_3340 = MUL_3336 - MUL_3327;
+        auto ADD_3343 = ADD_970 + SUB_3340;
+        auto MUL_3338 = SUB_3281 * 0.01;
+        auto MUL_3331 = MUL_3268 * 0.075;
+        auto SUB_3341 = MUL_3338 - MUL_3331;
+        auto ADD_3344 = ADD_971 + SUB_3341;
+        auto MUL_3353 = MUL_3258 * 0.045;
+        auto SUB_3369 = MUL_3334 - MUL_3353;
+        auto ADD_3372 = ADD_969 + SUB_3369;
+        auto MUL_3357 = SUB_3265 * 0.045;
+        auto SUB_3370 = MUL_3336 - MUL_3357;
+        auto ADD_3373 = ADD_970 + SUB_3370;
+        auto MUL_3361 = MUL_3268 * 0.045;
+        auto SUB_3371 = MUL_3338 - MUL_3361;
+        auto ADD_3374 = ADD_971 + SUB_3371;
+        auto MUL_3383 = MUL_3258 * 0.015;
+        auto SUB_3399 = MUL_3334 - MUL_3383;
+        auto ADD_3402 = ADD_969 + SUB_3399;
+        auto MUL_3387 = SUB_3265 * 0.015;
+        auto SUB_3400 = MUL_3336 - MUL_3387;
+        auto ADD_3403 = ADD_970 + SUB_3400;
+        auto MUL_3391 = MUL_3268 * 0.015;
+        auto SUB_3401 = MUL_3338 - MUL_3391;
+        auto ADD_3404 = ADD_971 + SUB_3401;
+        auto ADD_3423 = MUL_3383 + MUL_3334;
+        auto ADD_3426 = ADD_969 + ADD_3423;
+        auto ADD_3424 = MUL_3387 + MUL_3336;
+        auto ADD_3427 = ADD_970 + ADD_3424;
+        auto ADD_3425 = MUL_3391 + MUL_3338;
+        auto ADD_3428 = ADD_971 + ADD_3425;
+        auto ADD_3447 = MUL_3353 + MUL_3334;
+        auto ADD_3450 = ADD_969 + ADD_3447;
+        auto ADD_3448 = MUL_3357 + MUL_3336;
+        auto ADD_3451 = ADD_970 + ADD_3448;
+        auto ADD_3449 = MUL_3361 + MUL_3338;
+        auto ADD_3452 = ADD_971 + ADD_3449;
+        auto ADD_3471 = MUL_3323 + MUL_3334;
+        auto ADD_3474 = ADD_969 + ADD_3471;
+        auto ADD_3472 = MUL_3327 + MUL_3336;
+        auto ADD_3475 = ADD_970 + ADD_3472;
+        auto ADD_3473 = MUL_3331 + MUL_3338;
+        auto ADD_3476 = ADD_971 + ADD_3473;
+        auto MUL_3496 = MUL_3271 * 0.03;
+        auto SUB_3501 = MUL_3496 - MUL_3323;
+        auto ADD_3504 = ADD_969 + SUB_3501;
+        auto MUL_3498 = MUL_3274 * 0.03;
+        auto SUB_3502 = MUL_3498 - MUL_3327;
+        auto ADD_3505 = ADD_970 + SUB_3502;
+        auto MUL_3500 = SUB_3281 * 0.03;
+        auto SUB_3503 = MUL_3500 - MUL_3331;
+        auto ADD_3506 = ADD_971 + SUB_3503;
+        auto SUB_3531 = MUL_3496 - MUL_3353;
+        auto ADD_3534 = ADD_969 + SUB_3531;
+        auto SUB_3532 = MUL_3498 - MUL_3357;
+        auto ADD_3535 = ADD_970 + SUB_3532;
+        auto SUB_3533 = MUL_3500 - MUL_3361;
+        auto ADD_3536 = ADD_971 + SUB_3533;
+        auto SUB_3561 = MUL_3496 - MUL_3383;
+        auto ADD_3564 = ADD_969 + SUB_3561;
+        auto SUB_3562 = MUL_3498 - MUL_3387;
+        auto ADD_3565 = ADD_970 + SUB_3562;
+        auto SUB_3563 = MUL_3500 - MUL_3391;
+        auto ADD_3566 = ADD_971 + SUB_3563;
+        auto ADD_3585 = MUL_3383 + MUL_3496;
+        auto ADD_3588 = ADD_969 + ADD_3585;
+        auto ADD_3586 = MUL_3387 + MUL_3498;
+        auto ADD_3589 = ADD_970 + ADD_3586;
+        auto ADD_3587 = MUL_3391 + MUL_3500;
+        auto ADD_3590 = ADD_971 + ADD_3587;
+        auto ADD_3609 = MUL_3353 + MUL_3496;
+        auto ADD_3612 = ADD_969 + ADD_3609;
+        auto ADD_3610 = MUL_3357 + MUL_3498;
+        auto ADD_3613 = ADD_970 + ADD_3610;
+        auto ADD_3611 = MUL_3361 + MUL_3500;
+        auto ADD_3614 = ADD_971 + ADD_3611;
+        auto ADD_3633 = MUL_3323 + MUL_3496;
+        auto ADD_3636 = ADD_969 + ADD_3633;
+        auto ADD_3634 = MUL_3327 + MUL_3498;
+        auto ADD_3637 = ADD_970 + ADD_3634;
+        auto ADD_3635 = MUL_3331 + MUL_3500;
+        auto ADD_3638 = ADD_971 + ADD_3635;
+        auto MUL_3658 = MUL_3271 * 0.05;
+        auto SUB_3663 = MUL_3658 - MUL_3323;
+        auto ADD_3666 = ADD_969 + SUB_3663;
+        auto MUL_3660 = MUL_3274 * 0.05;
+        auto SUB_3664 = MUL_3660 - MUL_3327;
+        auto ADD_3667 = ADD_970 + SUB_3664;
+        auto MUL_3662 = SUB_3281 * 0.05;
+        auto SUB_3665 = MUL_3662 - MUL_3331;
+        auto ADD_3668 = ADD_971 + SUB_3665;
+        auto SUB_3693 = MUL_3658 - MUL_3353;
+        auto ADD_3696 = ADD_969 + SUB_3693;
+        auto SUB_3694 = MUL_3660 - MUL_3357;
+        auto ADD_3697 = ADD_970 + SUB_3694;
+        auto SUB_3695 = MUL_3662 - MUL_3361;
+        auto ADD_3698 = ADD_971 + SUB_3695;
+        auto SUB_3723 = MUL_3658 - MUL_3383;
+        auto ADD_3726 = ADD_969 + SUB_3723;
+        auto SUB_3724 = MUL_3660 - MUL_3387;
+        auto ADD_3727 = ADD_970 + SUB_3724;
+        auto SUB_3725 = MUL_3662 - MUL_3391;
+        auto ADD_3728 = ADD_971 + SUB_3725;
+        auto ADD_3747 = MUL_3383 + MUL_3658;
+        auto ADD_3750 = ADD_969 + ADD_3747;
+        auto ADD_3748 = MUL_3387 + MUL_3660;
+        auto ADD_3751 = ADD_970 + ADD_3748;
+        auto ADD_3749 = MUL_3391 + MUL_3662;
+        auto ADD_3752 = ADD_971 + ADD_3749;
+        auto ADD_3771 = MUL_3353 + MUL_3658;
+        auto ADD_3774 = ADD_969 + ADD_3771;
+        auto ADD_3772 = MUL_3357 + MUL_3660;
+        auto ADD_3775 = ADD_970 + ADD_3772;
+        auto ADD_3773 = MUL_3361 + MUL_3662;
+        auto ADD_3776 = ADD_971 + ADD_3773;
+        auto ADD_3795 = MUL_3323 + MUL_3658;
+        auto ADD_3798 = ADD_969 + ADD_3795;
+        auto ADD_3796 = MUL_3327 + MUL_3660;
+        auto ADD_3799 = ADD_970 + ADD_3796;
+        auto ADD_3797 = MUL_3331 + MUL_3662;
+        auto ADD_3800 = ADD_971 + ADD_3797;
+        if (/*panda_hand*/ sphere_environment_in_collision(
+            environment, ADD_3312, ADD_3313, ADD_3314, 0.107701))
+        {
+            if (sphere_environment_in_collision(environment, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+        }  // (821, 1025)
+        if (/*panda_link0 vs. panda_hand*/ sphere_sphere_self_collision<decltype(q[0])>(
+            -0.043343, 1.4e-06, 0.0629063, 0.130366, ADD_3312, ADD_3313, ADD_3314, 0.107701))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+        }  // (1025, 1025)
+        if (/*panda_link1 vs. panda_hand*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1636, SUB_1637, 0.2598976, 0.144259, ADD_3312, ADD_3313, ADD_3314, 0.107701))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+        }  // (1025, 1025)
+        if (/*panda_link2 vs. panda_hand*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1835, SUB_1836, ADD_1838, 0.145067, ADD_3312, ADD_3313, ADD_3314, 0.107701))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+        }  // (1025, 1025)
+        if (/*panda_link5 vs. panda_hand*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_2399, ADD_2400, ADD_2401, 0.173531, ADD_3312, ADD_3313, ADD_3314, 0.107701))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3342, ADD_3343, ADD_3344, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3372, ADD_3373, ADD_3374, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3402, ADD_3403, ADD_3404, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3426, ADD_3427, ADD_3428, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3450, ADD_3451, ADD_3452, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3474, ADD_3475, ADD_3476, 0.028))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3504, ADD_3505, ADD_3506, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3534, ADD_3535, ADD_3536, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3564, ADD_3565, ADD_3566, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3588, ADD_3589, ADD_3590, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3612, ADD_3613, ADD_3614, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3636, ADD_3637, ADD_3638, 0.026))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3666, ADD_3667, ADD_3668, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3696, ADD_3697, ADD_3698, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3726, ADD_3727, ADD_3728, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3750, ADD_3751, ADD_3752, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3774, ADD_3775, ADD_3776, 0.024))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3798, ADD_3799, ADD_3800, 0.024))
+            {
+                return false;
+            }
+        }  // (1025, 1025)
+        auto MUL_3876 = ADD_3269 * 2.0;
+        auto MUL_3863 = SUB_3256 * 2.0;
+        auto MUL_3851 = ADD_3243 * 2.0;
+        auto SUB_3854 = 1.0 - MUL_3851;
+        auto MUL_1196 = SUB_1063 * 0.065;
+        auto MUL_1199 = SUB_1039 * 0.065;
+        auto MUL_1207 = ADD_1050 * MUL_1199;
+        auto MUL_1203 = SUB_1039 * 0.0584;
+        auto MUL_1209 = SUB_1063 * MUL_1203;
+        auto MUL_1194 = ADD_1050 * 0.0584;
+        auto SUB_1197 = MUL_1194 - MUL_1196;
+        auto MUL_1206 = ADD_1074 * SUB_1197;
+        auto ADD_1208 = MUL_1206 + MUL_1207;
+        auto ADD_1210 = ADD_1208 + MUL_1209;
+        auto MUL_1212 = ADD_1210 * 2.0;
+        auto ADD_1235 = ADD_969 + MUL_1212;
+        auto MUL_3906 = MUL_3876 * 0.0261043;
+        auto MUL_3900 = MUL_3863 * 0.0129294;
+        auto MUL_3889 = SUB_3854 * 4.3e-06;
+        auto SUB_3911 = MUL_3900 - MUL_3889;
+        auto ADD_3914 = SUB_3911 + MUL_3906;
+        auto ADD_3917 = ADD_1235 + ADD_3914;
+        auto MUL_3879 = SUB_3272 * 2.0;
+        auto MUL_3908 = MUL_3879 * 0.0261043;
+        auto MUL_3867 = ADD_3259 * 2.0;
+        auto SUB_3870 = 1.0 - MUL_3867;
+        auto MUL_3902 = SUB_3870 * 0.0129294;
+        auto MUL_3857 = ADD_3250 * 2.0;
+        auto MUL_3893 = MUL_3857 * 4.3e-06;
+        auto SUB_3912 = MUL_3902 - MUL_3893;
+        auto ADD_3915 = SUB_3912 + MUL_3908;
+        auto MUL_1215 = ADD_1074 * MUL_1203;
+        auto MUL_1220 = SUB_1063 * SUB_1197;
+        auto MUL_1217 = SUB_1039 * MUL_1199;
+        auto ADD_1218 = MUL_1215 + MUL_1217;
+        auto SUB_1221 = MUL_1220 - ADD_1218;
+        auto MUL_1223 = SUB_1221 * 2.0;
+        auto ADD_1225 = MUL_1223 + 0.065;
+        auto ADD_1236 = ADD_970 + ADD_1225;
+        auto ADD_3918 = ADD_1236 + ADD_3915;
+        auto MUL_3883 = ADD_3275 * 2.0;
+        auto SUB_3886 = 1.0 - MUL_3883;
+        auto MUL_3910 = SUB_3886 * 0.0261043;
+        auto MUL_3873 = ADD_3266 * 2.0;
+        auto MUL_3904 = MUL_3873 * 0.0129294;
+        auto MUL_3860 = SUB_3253 * 2.0;
+        auto MUL_3897 = MUL_3860 * 4.3e-06;
+        auto SUB_3913 = MUL_3904 - MUL_3897;
+        auto ADD_3916 = SUB_3913 + MUL_3910;
+        auto MUL_1226 = ADD_1074 * MUL_1199;
+        auto MUL_1227 = SUB_1039 * MUL_1203;
+        auto SUB_1228 = MUL_1226 - MUL_1227;
+        auto MUL_1229 = ADD_1050 * SUB_1197;
+        auto SUB_1230 = SUB_1228 - MUL_1229;
+        auto MUL_1232 = SUB_1230 * 2.0;
+        auto ADD_1234 = MUL_1232 + 0.0584;
+        auto ADD_1237 = ADD_971 + ADD_1234;
+        auto ADD_3919 = ADD_1237 + ADD_3916;
+        auto MUL_3927 = MUL_3863 * 0.015;
+        auto MUL_3933 = MUL_3876 * 0.022;
+        auto ADD_3938 = MUL_3927 + MUL_3933;
+        auto ADD_3941 = ADD_1235 + ADD_3938;
+        auto MUL_3935 = MUL_3879 * 0.022;
+        auto MUL_3929 = SUB_3870 * 0.015;
+        auto ADD_3939 = MUL_3929 + MUL_3935;
+        auto ADD_3942 = ADD_1236 + ADD_3939;
+        auto MUL_3937 = SUB_3886 * 0.022;
+        auto MUL_3931 = MUL_3873 * 0.015;
+        auto ADD_3940 = MUL_3931 + MUL_3937;
+        auto ADD_3943 = ADD_1237 + ADD_3940;
+        auto MUL_3957 = MUL_3876 * 0.044;
+        auto MUL_3951 = MUL_3863 * 0.008;
+        auto ADD_3962 = MUL_3951 + MUL_3957;
+        auto ADD_3965 = ADD_1235 + ADD_3962;
+        auto MUL_3959 = MUL_3879 * 0.044;
+        auto MUL_3953 = SUB_3870 * 0.008;
+        auto ADD_3963 = MUL_3953 + MUL_3959;
+        auto ADD_3966 = ADD_1236 + ADD_3963;
+        auto MUL_3961 = SUB_3886 * 0.044;
+        auto MUL_3955 = MUL_3873 * 0.008;
+        auto ADD_3964 = MUL_3955 + MUL_3961;
+        auto ADD_3967 = ADD_1237 + ADD_3964;
+        if (/*panda_leftfinger*/ sphere_environment_in_collision(
+            environment, ADD_3917, ADD_3918, ADD_3919, 0.031022))
+        {
+            if (sphere_environment_in_collision(environment, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+        }  // (1025, 1107)
+        if (/*panda_link0 vs. panda_leftfinger*/ sphere_sphere_self_collision<decltype(q[0])>(
+            -0.043343, 1.4e-06, 0.0629063, 0.130366, ADD_3917, ADD_3918, ADD_3919, 0.031022))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+        }  // (1107, 1107)
+        if (/*panda_link1 vs. panda_leftfinger*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1636, SUB_1637, 0.2598976, 0.144259, ADD_3917, ADD_3918, ADD_3919, 0.031022))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+        }  // (1107, 1107)
+        if (/*panda_link2 vs. panda_leftfinger*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1835, SUB_1836, ADD_1838, 0.145067, ADD_3917, ADD_3918, ADD_3919, 0.031022))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+        }  // (1107, 1107)
+        if (/*panda_link5 vs. panda_leftfinger*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_2399, ADD_2400, ADD_2401, 0.173531, ADD_3917, ADD_3918, ADD_3919, 0.031022))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3941, ADD_3942, ADD_3943, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_3965, ADD_3966, ADD_3967, 0.012))
+            {
+                return false;
+            }
+        }  // (1107, 1107)
+        auto ADD_1331 = MUL_1194 + MUL_1196;
+        auto MUL_4011 = ADD_3269 * 2.0;
+        auto MUL_3998 = SUB_3256 * 2.0;
+        auto MUL_3986 = ADD_3243 * 2.0;
+        auto SUB_3989 = 1.0 - MUL_3986;
+        auto MUL_1342 = ADD_1074 * ADD_1331;
+        auto SUB_1345 = MUL_1342 - MUL_1207;
+        auto ADD_1347 = SUB_1345 + MUL_1209;
+        auto MUL_1349 = ADD_1347 * 2.0;
+        auto ADD_1377 = ADD_969 + MUL_1349;
+        auto MUL_4041 = MUL_4011 * 0.0261203;
+        auto MUL_4030 = MUL_3998 * 0.0129624;
+        auto MUL_4023 = SUB_3989 * 5.4e-06;
+        auto SUB_4046 = MUL_4023 - MUL_4030;
+        auto ADD_4049 = SUB_4046 + MUL_4041;
+        auto ADD_4052 = ADD_1377 + ADD_4049;
+        auto SUB_1356 = MUL_1217 - MUL_1215;
+        auto MUL_4014 = SUB_3272 * 2.0;
+        auto MUL_4043 = MUL_4014 * 0.0261203;
+        auto MUL_4002 = ADD_3259 * 2.0;
+        auto SUB_4005 = 1.0 - MUL_4002;
+        auto MUL_4034 = SUB_4005 * 0.0129624;
+        auto MUL_3992 = ADD_3250 * 2.0;
+        auto MUL_4025 = MUL_3992 * 5.4e-06;
+        auto SUB_4047 = MUL_4025 - MUL_4034;
+        auto ADD_4050 = SUB_4047 + MUL_4043;
+        auto MUL_1357 = SUB_1063 * ADD_1331;
+        auto ADD_1358 = SUB_1356 + MUL_1357;
+        auto MUL_1360 = ADD_1358 * 2.0;
+        auto SUB_1363 = MUL_1360 - 0.065;
+        auto ADD_1378 = ADD_970 + SUB_1363;
+        auto ADD_4053 = ADD_1378 + ADD_4050;
+        auto ADD_1367 = MUL_1226 + MUL_1227;
+        auto MUL_4018 = ADD_3275 * 2.0;
+        auto SUB_4021 = 1.0 - MUL_4018;
+        auto MUL_4045 = SUB_4021 * 0.0261203;
+        auto MUL_4008 = ADD_3266 * 2.0;
+        auto MUL_4038 = MUL_4008 * 0.0129624;
+        auto MUL_3995 = SUB_3253 * 2.0;
+        auto MUL_4027 = MUL_3995 * 5.4e-06;
+        auto SUB_4048 = MUL_4027 - MUL_4038;
+        auto ADD_4051 = SUB_4048 + MUL_4045;
+        auto MUL_1369 = ADD_1050 * ADD_1331;
+        auto ADD_1370 = ADD_1367 + MUL_1369;
+        auto MUL_1373 = ADD_1370 * 2.0;
+        auto SUB_1376 = 0.0584 - MUL_1373;
+        auto ADD_1379 = ADD_971 + SUB_1376;
+        auto ADD_4054 = ADD_1379 + ADD_4051;
+        auto MUL_4074 = MUL_4011 * 0.022;
+        auto MUL_4063 = MUL_3998 * 0.015;
+        auto SUB_4079 = MUL_4074 - MUL_4063;
+        auto ADD_4082 = ADD_1377 + SUB_4079;
+        auto MUL_4076 = MUL_4014 * 0.022;
+        auto MUL_4067 = SUB_4005 * 0.015;
+        auto SUB_4080 = MUL_4076 - MUL_4067;
+        auto ADD_4083 = ADD_1378 + SUB_4080;
+        auto MUL_4078 = SUB_4021 * 0.022;
+        auto MUL_4071 = MUL_4008 * 0.015;
+        auto SUB_4081 = MUL_4078 - MUL_4071;
+        auto ADD_4084 = ADD_1379 + SUB_4081;
+        auto MUL_4104 = MUL_4011 * 0.044;
+        auto MUL_4093 = MUL_3998 * 0.008;
+        auto SUB_4109 = MUL_4104 - MUL_4093;
+        auto ADD_4112 = ADD_1377 + SUB_4109;
+        auto MUL_4106 = MUL_4014 * 0.044;
+        auto MUL_4097 = SUB_4005 * 0.008;
+        auto SUB_4110 = MUL_4106 - MUL_4097;
+        auto ADD_4113 = ADD_1378 + SUB_4110;
+        auto MUL_4108 = SUB_4021 * 0.044;
+        auto MUL_4101 = MUL_4008 * 0.008;
+        auto SUB_4111 = MUL_4108 - MUL_4101;
+        auto ADD_4114 = ADD_1379 + SUB_4111;
+        if (/*panda_link0 vs. panda_rightfinger*/ sphere_sphere_self_collision<decltype(q[0])>(
+            -0.043343, 1.4e-06, 0.0629063, 0.130366, ADD_4052, ADD_4053, ADD_4054, 0.031022))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.05, 0.08, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+        }  // (1107, 1179)
+        if (/*panda_link1 vs. panda_rightfinger*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1636, SUB_1637, 0.2598976, 0.144259, ADD_4052, ADD_4053, ADD_4054, 0.031022))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1650, NEGATE_1654, 0.333, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1674, NEGATE_1678, 0.333, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.213, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    0.0, 0.0, 0.163, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+        }  // (1179, 1179)
+        if (/*panda_link2 vs. panda_rightfinger*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_1835, SUB_1836, ADD_1838, 0.145067, ADD_4052, ADD_4053, ADD_4054, 0.031022))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1852, MUL_1854, ADD_1857, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1871, MUL_1873, ADD_1876, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1885, NEGATE_1889, SUB_1900, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    MUL_1909, NEGATE_1913, SUB_1924, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+        }  // (1179, 1179)
+        if (/*panda_link5 vs. panda_rightfinger*/ sphere_sphere_self_collision<decltype(q[0])>(
+            ADD_2399, ADD_2400, ADD_2401, 0.173531, ADD_4052, ADD_4053, ADD_4054, 0.031022))
+        {
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2420, ADD_2421, ADD_2422, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2441, ADD_2442, ADD_2443, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    SUB_2468, SUB_2469, SUB_2470, 0.06, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2498, ADD_2499, ADD_2500, 0.05, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2531, ADD_2532, ADD_2533, 0.025, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2564, ADD_2565, ADD_2566, 0.025, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2597, ADD_2598, ADD_2599, 0.025, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2630, ADD_2631, ADD_2632, 0.025, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2669, ADD_2670, ADD_2671, 0.025, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2708, ADD_2709, ADD_2710, 0.025, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2747, ADD_2748, ADD_2749, 0.025, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_sphere_self_collision<decltype(q[0])>(
+                    ADD_2786, ADD_2787, ADD_2788, 0.025, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+        }  // (1179, 1179)
+        if (/*panda_rightfinger*/ sphere_environment_in_collision(
+            environment, ADD_4052, ADD_4053, ADD_4054, 0.031022))
+        {
+            if (sphere_environment_in_collision(environment, ADD_4082, ADD_4083, ADD_4084, 0.012))
+            {
+                return false;
+            }
+            if (sphere_environment_in_collision(environment, ADD_4112, ADD_4113, ADD_4114, 0.012))
+            {
+                return false;
+            }
+        }  // (1179, 1179)
+        set_attachment_pose(environment, ADD_969, ADD_970, ADD_971, SUB_1039, ADD_1050, SUB_1063, ADD_1074);
+        if (/*attachment vs. panda_link0*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, 0.0, 0.0, 0.05, 0.08))
+        {
+            return false;
+        }  // (1179, 1180)
+        if (/*attachment vs. panda_link1*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, ADD_1636, SUB_1637, 0.2598976, 0.144259))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, MUL_1650, NEGATE_1654, 0.333, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, MUL_1674, NEGATE_1678, 0.333, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.0, 0.0, 0.213, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, 0.0, 0.0, 0.163, 0.06))
+            {
+                return false;
+            }
+        }  // (1180, 1180)
+        if (/*attachment vs. panda_link2*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, ADD_1835, SUB_1836, ADD_1838, 0.145067))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, MUL_1852, MUL_1854, ADD_1857, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, MUL_1871, MUL_1873, ADD_1876, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(
+                    environment, MUL_1885, NEGATE_1889, SUB_1900, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(
+                    environment, MUL_1909, NEGATE_1913, SUB_1924, 0.06))
+            {
+                return false;
+            }
+        }  // (1180, 1180)
+        if (/*attachment vs. panda_link5*/ attachment_sphere_collision<decltype(q[0])>(
+            environment, ADD_2399, ADD_2400, ADD_2401, 0.173531))
+        {
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2420, ADD_2421, ADD_2422, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2441, ADD_2442, ADD_2443, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, SUB_2468, SUB_2469, SUB_2470, 0.06))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2498, ADD_2499, ADD_2500, 0.05))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2531, ADD_2532, ADD_2533, 0.025))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2564, ADD_2565, ADD_2566, 0.025))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2597, ADD_2598, ADD_2599, 0.025))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2630, ADD_2631, ADD_2632, 0.025))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2669, ADD_2670, ADD_2671, 0.025))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2708, ADD_2709, ADD_2710, 0.025))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2747, ADD_2748, ADD_2749, 0.025))
+            {
+                return false;
+            }
+            if (attachment_sphere_collision<decltype(q[0])>(environment, ADD_2786, ADD_2787, ADD_2788, 0.025))
+            {
+                return false;
+            }
+        }  // (1180, 1180)
+        if (attachment_environment_collision(environment))
+        {
+            return false;
+        }  // (1180, 1180)
+        return true;
+    }
+
+    inline auto eefk(const std::array<float, 7> &q) noexcept -> std::array<float, 7>
+    {
+        auto INPUT_6 = q[6];
+        auto DIV_842 = INPUT_6 * 0.5;
+        auto SIN_843 = std::sin(DIV_842);
+        auto COS_849 = std::cos(DIV_842);
+        auto INPUT_5 = q[5];
+        auto DIV_697 = INPUT_5 * 0.5;
+        auto SIN_698 = std::sin(DIV_697);
+        auto COS_704 = std::cos(DIV_697);
+        auto INPUT_4 = q[4];
+        auto DIV_568 = INPUT_4 * 0.5;
+        auto SIN_569 = std::sin(DIV_568);
+        auto COS_575 = std::cos(DIV_568);
+        auto INPUT_3 = q[3];
+        auto DIV_407 = INPUT_3 * 0.5;
+        auto SIN_408 = std::sin(DIV_407);
+        auto COS_414 = std::cos(DIV_407);
+        auto INPUT_2 = q[2];
+        auto DIV_262 = INPUT_2 * 0.5;
+        auto SIN_263 = std::sin(DIV_262);
+        auto COS_269 = std::cos(DIV_262);
+        auto INPUT_1 = q[1];
+        auto DIV_117 = INPUT_1 * 0.5;
+        auto SIN_118 = std::sin(DIV_117);
+        auto COS_124 = std::cos(DIV_117);
+        auto INPUT_0 = q[0];
+        auto DIV_8 = INPUT_0 * 0.5;
+        auto SIN_9 = std::sin(DIV_8);
+        auto COS_15 = std::cos(DIV_8);
+        auto MUL_46 = COS_15 * 0.7071068;
+        auto MUL_126 = MUL_46 * COS_124;
+        auto MUL_140 = MUL_46 * SIN_118;
+        auto MUL_62 = SIN_9 * 0.7071068;
+        auto MUL_143 = MUL_62 * COS_124;
+        auto SUB_138 = MUL_140 - MUL_143;
+        auto ADD_144 = MUL_140 + MUL_143;
+        auto MUL_128 = MUL_62 * SIN_118;
+        auto SUB_149 = MUL_126 - MUL_128;
+        auto ADD_130 = MUL_126 + MUL_128;
+        auto MUL_182 = SUB_149 * 0.7071068;
+        auto MUL_198 = ADD_144 * 0.7071068;
+        auto MUL_224 = ADD_144 * 0.316;
+        auto MUL_235 = SUB_149 * MUL_224;
+        auto MUL_196 = SUB_138 * 0.7071068;
+        auto SUB_209 = MUL_198 - MUL_196;
+        auto ADD_199 = MUL_196 + MUL_198;
+        auto MUL_284 = SUB_209 * COS_269;
+        auto MUL_289 = SUB_209 * SIN_263;
+        auto MUL_278 = ADD_199 * COS_269;
+        auto MUL_272 = ADD_199 * SIN_263;
+        auto MUL_184 = ADD_130 * 0.7071068;
+        auto SUB_186 = MUL_182 - MUL_184;
+        auto ADD_215 = MUL_182 + MUL_184;
+        auto MUL_286 = ADD_215 * COS_269;
+        auto SUB_290 = MUL_286 - MUL_289;
+        auto MUL_351 = SUB_290 * 0.7071068;
+        auto MUL_281 = ADD_215 * SIN_263;
+        auto ADD_285 = MUL_281 + MUL_284;
+        auto MUL_348 = ADD_285 * 0.7071068;
+        auto MUL_371 = ADD_285 * 0.0825;
+        auto MUL_376 = ADD_285 * MUL_371;
+        auto MUL_271 = SUB_186 * COS_269;
+        auto ADD_273 = MUL_271 + MUL_272;
+        auto MUL_353 = ADD_273 * 0.7071068;
+        auto SUB_354 = MUL_351 - MUL_353;
+        auto ADD_326 = MUL_351 + MUL_353;
+        auto MUL_431 = SUB_354 * COS_414;
+        auto MUL_426 = SUB_354 * SIN_408;
+        auto MUL_416 = ADD_326 * COS_414;
+        auto MUL_421 = ADD_326 * SIN_408;
+        auto MUL_276 = SUB_186 * SIN_263;
+        auto SUB_279 = MUL_278 - MUL_276;
+        auto MUL_345 = SUB_279 * 0.7071068;
+        auto SUB_349 = MUL_348 - MUL_345;
+        auto ADD_339 = MUL_345 + MUL_348;
+        auto MUL_429 = SUB_349 * COS_414;
+        auto ADD_430 = MUL_426 + MUL_429;
+        auto MUL_486 = ADD_430 * 0.7071068;
+        auto MUL_514 = ADD_430 * 0.384;
+        auto MUL_527 = ADD_430 * 0.0825;
+        auto MUL_533 = ADD_430 * MUL_527;
+        auto MUL_434 = SUB_349 * SIN_408;
+        auto SUB_435 = MUL_431 - MUL_434;
+        auto MUL_529 = SUB_435 * MUL_514;
+        auto MUL_469 = SUB_435 * 0.7071068;
+        auto MUL_423 = ADD_339 * COS_414;
+        auto SUB_424 = MUL_423 - MUL_421;
+        auto MUL_483 = SUB_424 * 0.7071068;
+        auto SUB_488 = MUL_483 - MUL_486;
+        auto ADD_499 = MUL_483 + MUL_486;
+        auto MUL_590 = ADD_499 * COS_575;
+        auto MUL_595 = ADD_499 * SIN_569;
+        auto MUL_584 = SUB_488 * COS_575;
+        auto MUL_578 = SUB_488 * SIN_569;
+        auto MUL_520 = SUB_424 * 0.0825;
+        auto MUL_417 = ADD_339 * SIN_408;
+        auto ADD_418 = MUL_416 + MUL_417;
+        auto MUL_472 = ADD_418 * 0.7071068;
+        auto SUB_473 = MUL_472 - MUL_469;
+        auto ADD_506 = MUL_469 + MUL_472;
+        auto MUL_592 = ADD_506 * COS_575;
+        auto SUB_596 = MUL_592 - MUL_595;
+        auto MUL_657 = SUB_596 * 0.7071068;
+        auto MUL_587 = ADD_506 * SIN_569;
+        auto ADD_591 = MUL_587 + MUL_590;
+        auto MUL_654 = ADD_591 * 0.7071068;
+        auto MUL_577 = SUB_473 * COS_575;
+        auto ADD_579 = MUL_577 + MUL_578;
+        auto MUL_659 = ADD_579 * 0.7071068;
+        auto SUB_660 = MUL_657 - MUL_659;
+        auto ADD_632 = MUL_657 + MUL_659;
+        auto MUL_716 = SUB_660 * SIN_698;
+        auto MUL_721 = SUB_660 * COS_704;
+        auto MUL_711 = ADD_632 * SIN_698;
+        auto MUL_706 = ADD_632 * COS_704;
+        auto MUL_582 = SUB_473 * SIN_569;
+        auto SUB_585 = MUL_584 - MUL_582;
+        auto MUL_651 = SUB_585 * 0.7071068;
+        auto SUB_655 = MUL_654 - MUL_651;
+        auto ADD_645 = MUL_651 + MUL_654;
+        auto MUL_724 = SUB_655 * SIN_698;
+        auto SUB_725 = MUL_721 - MUL_724;
+        auto MUL_758 = SUB_725 * 0.7071068;
+        auto MUL_719 = SUB_655 * COS_704;
+        auto ADD_720 = MUL_716 + MUL_719;
+        auto MUL_773 = ADD_720 * 0.7071068;
+        auto MUL_806 = ADD_720 * 0.088;
+        auto MUL_811 = ADD_720 * MUL_806;
+        auto MUL_707 = ADD_645 * SIN_698;
+        auto ADD_708 = MUL_706 + MUL_707;
+        auto MUL_760 = ADD_708 * 0.7071068;
+        auto SUB_789 = MUL_758 - MUL_760;
+        auto ADD_761 = MUL_758 + MUL_760;
+        auto MUL_866 = SUB_789 * COS_849;
+        auto MUL_861 = SUB_789 * SIN_843;
+        auto MUL_851 = ADD_761 * COS_849;
+        auto MUL_856 = ADD_761 * SIN_843;
+        auto MUL_713 = ADD_645 * COS_704;
+        auto SUB_714 = MUL_713 - MUL_711;
+        auto MUL_771 = SUB_714 * 0.7071068;
+        auto SUB_784 = MUL_773 - MUL_771;
+        auto ADD_774 = MUL_771 + MUL_773;
+        auto MUL_864 = SUB_784 * COS_849;
+        auto ADD_865 = MUL_861 + MUL_864;
+        auto MUL_869 = SUB_784 * SIN_843;
+        auto SUB_870 = MUL_866 - MUL_869;
+        auto MUL_858 = ADD_774 * COS_849;
+        auto SUB_859 = MUL_858 - MUL_856;
+        auto MUL_931 = SUB_859 * 0.107;
+        auto MUL_942 = SUB_870 * MUL_931;
+        auto MUL_852 = ADD_774 * SIN_843;
+        auto ADD_853 = MUL_851 + MUL_852;
+        auto MUL_939 = ADD_853 * 0.107;
+        auto MUL_944 = ADD_865 * MUL_939;
+        auto ADD_945 = MUL_942 + MUL_944;
+        auto MUL_947 = ADD_945 * 2.0;
+        auto MUL_801 = SUB_714 * 0.088;
+        auto MUL_809 = SUB_714 * MUL_801;
+        auto ADD_813 = MUL_809 + MUL_811;
+        auto MUL_816 = ADD_813 * 2.0;
+        auto SUB_819 = 0.088 - MUL_816;
+        auto MUL_517 = ADD_418 * 0.384;
+        auto ADD_522 = MUL_517 + MUL_520;
+        auto MUL_531 = SUB_424 * ADD_522;
+        auto SUB_532 = MUL_531 - MUL_529;
+        auto ADD_534 = SUB_532 + MUL_533;
+        auto MUL_536 = ADD_534 * 2.0;
+        auto SUB_539 = MUL_536 - 0.0825;
+        auto MUL_366 = SUB_279 * 0.0825;
+        auto MUL_374 = SUB_279 * MUL_366;
+        auto ADD_378 = MUL_374 + MUL_376;
+        auto MUL_381 = ADD_378 * 2.0;
+        auto SUB_384 = 0.0825 - MUL_381;
+        auto MUL_228 = ADD_130 * 0.316;
+        auto MUL_236 = SUB_138 * MUL_228;
+        auto ADD_237 = MUL_235 + MUL_236;
+        auto MUL_240 = ADD_237 * 2.0;
+        auto ADD_403 = MUL_240 + SUB_384;
+        auto ADD_564 = ADD_403 + SUB_539;
+        auto ADD_838 = ADD_564 + SUB_819;
+        auto ADD_969 = ADD_838 + MUL_947;
+        auto MUL_950 = SUB_870 * MUL_939;
+        auto MUL_953 = ADD_865 * MUL_931;
+        auto SUB_954 = MUL_953 - MUL_950;
+        auto MUL_956 = SUB_954 * 2.0;
+        auto MUL_821 = SUB_725 * MUL_806;
+        auto MUL_822 = ADD_708 * MUL_801;
+        auto ADD_824 = MUL_821 + MUL_822;
+        auto MUL_827 = ADD_824 * 2.0;
+        auto MUL_541 = SUB_435 * MUL_527;
+        auto MUL_546 = ADD_430 * MUL_514;
+        auto MUL_543 = ADD_418 * ADD_522;
+        auto ADD_544 = MUL_541 + MUL_543;
+        auto ADD_548 = ADD_544 + MUL_546;
+        auto MUL_551 = ADD_548 * 2.0;
+        auto SUB_554 = 0.384 - MUL_551;
+        auto MUL_386 = SUB_290 * MUL_371;
+        auto MUL_387 = ADD_273 * MUL_366;
+        auto ADD_389 = MUL_386 + MUL_387;
+        auto MUL_392 = ADD_389 * 2.0;
+        auto MUL_246 = ADD_144 * MUL_224;
+        auto MUL_244 = ADD_130 * MUL_228;
+        auto ADD_247 = MUL_244 + MUL_246;
+        auto MUL_249 = ADD_247 * 2.0;
+        auto SUB_252 = MUL_249 - 0.316;
+        auto ADD_404 = SUB_252 + MUL_392;
+        auto ADD_565 = ADD_404 + SUB_554;
+        auto ADD_839 = ADD_565 + MUL_827;
+        auto ADD_970 = ADD_839 + MUL_956;
+        auto MUL_961 = SUB_859 * MUL_931;
+        auto MUL_959 = ADD_853 * MUL_939;
+        auto ADD_962 = MUL_959 + MUL_961;
+        auto MUL_965 = ADD_962 * 2.0;
+        auto SUB_968 = 0.107 - MUL_965;
+        auto MUL_829 = SUB_725 * MUL_801;
+        auto MUL_831 = ADD_708 * MUL_806;
+        auto SUB_833 = MUL_831 - MUL_829;
+        auto MUL_836 = SUB_833 * 2.0;
+        auto MUL_555 = SUB_435 * ADD_522;
+        auto MUL_558 = SUB_424 * MUL_514;
+        auto MUL_556 = ADD_418 * MUL_527;
+        auto SUB_557 = MUL_555 - MUL_556;
+        auto ADD_560 = SUB_557 + MUL_558;
+        auto MUL_562 = ADD_560 * 2.0;
+        auto MUL_394 = SUB_290 * MUL_366;
+        auto MUL_396 = ADD_273 * MUL_371;
+        auto SUB_398 = MUL_396 - MUL_394;
+        auto MUL_401 = SUB_398 * 2.0;
+        auto MUL_253 = SUB_149 * MUL_228;
+        auto MUL_255 = SUB_138 * MUL_224;
+        auto SUB_256 = MUL_253 - MUL_255;
+        auto MUL_258 = SUB_256 * 2.0;
+        auto ADD_260 = 0.333 + MUL_258;
+        auto ADD_405 = ADD_260 + MUL_401;
+        auto ADD_566 = ADD_405 + MUL_562;
+        auto ADD_840 = ADD_566 + MUL_836;
+        auto ADD_971 = ADD_840 + SUB_968;
+        auto MUL_1034 = ADD_853 * 0.9238795;
+        auto MUL_1037 = SUB_859 * 0.3826834;
+        auto SUB_1039 = MUL_1034 - MUL_1037;
+        auto MUL_1049 = SUB_859 * 0.9238795;
+        auto MUL_1046 = ADD_853 * 0.3826834;
+        auto ADD_1050 = MUL_1046 + MUL_1049;
+        auto MUL_1055 = SUB_870 * 0.3826834;
+        auto MUL_1062 = ADD_865 * 0.9238795;
+        auto SUB_1063 = MUL_1062 - MUL_1055;
+        auto MUL_1065 = SUB_870 * 0.9238795;
+        auto MUL_1072 = ADD_865 * 0.3826834;
+        auto ADD_1074 = MUL_1065 + MUL_1072;
+        return {ADD_969, ADD_970, ADD_971, SUB_1039, ADD_1050, SUB_1063, ADD_1074};
+    }
 }  // namespace vamp::robots::panda
 
 // NOLINTEND(*-magic-numbers)

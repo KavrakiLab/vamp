@@ -207,6 +207,12 @@ These objects can be created with the following:
 - Pointclouds via `add_pointcloud()` in `vamp.Environment`. This will construct a CAPT from the provided list of points, the minimum and maximum robot sphere radii, and radius for each point in the pointcloud.
 See the `src/impl/vamp/collision/` folder for more information.
 
+Some robots (currently, the UR5, Panda, and Fetch) support attaching custom geometry (a collection of spheres) to the end-effector via `vamp.Attachment(relative_position, relative_quaternion_xyzw)`.
+Spheres can be added (in the attachment's frame) with `add_sphere(...)`.
+The attachment can be added to the environment with `vamp.Environment.attach(...)`, and removed with `vamp.Environment.detach()`.
+An example use of attachments with the Panda arm is available in `scripts/attachments.py`.
+
+
 ## Code Overview
 
 The code lives in the `src` folder, split into `impl` (the C++ core) and `vamp` (the Python interface).
@@ -246,7 +252,7 @@ Inside `impl/vamp`, the code is divided into the following directories:
 - [ ] Improved Python API
 - [ ] Batch configuration validation
 - [ ] Planning subgroups
-- [ ] Object attachment at end-effector
+- [X] Object attachment at end-effector
 - [ ] Mesh collision checking
 - [X] Pointcloud collision checking
 - [ ] Manifold-constrained planning

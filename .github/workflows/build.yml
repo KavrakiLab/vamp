@@ -41,12 +41,10 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
-
     - name: Install packages (Linux)
       if: runner.os == 'Linux'
       run: >
         sudo apt-get install -y libeigen3-dev llvm
-
 
     - name: Install packages (MacOS)
       if: runner.os == 'macOS'
@@ -58,6 +56,10 @@ jobs:
       run: >
         brew install gcc
 
+    - name: Setup Python ${{ matrix.python }}
+      uses: actions/setup-python@v5
+      with:
+        cache: 'pip'
 
     - name: Install Python packages
       run: >

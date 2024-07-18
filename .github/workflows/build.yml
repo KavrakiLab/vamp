@@ -30,26 +30,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, macos-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang]
-        include:
-          - os: ubuntu-20.04
-            c_compiler: gcc
-            cpp_compiler: g++
-          - os: ubuntu-20.04
-            c_compiler: clang
-            cpp_compiler: clang++
-          - os: ubuntu-22.04
-            c_compiler: gcc
-            cpp_compiler: g++
-          - os: ubuntu-22.04
-            c_compiler: clang
-            cpp_compiler: clang++
-          - os: macos-latest
-            c_compiler: clang
-            cpp_compiler: clang++
-          - os: macos-latest
-            c_compiler: gcc
-            cpp_compiler: g++
+        compiler: [{cpp: g++, c: gcc}, {cpp: clang++, c: clang}]
 
     steps:
     - uses: actions/checkout@v4
@@ -73,7 +54,7 @@ jobs:
         brew install eigen
 
     - name: Install GCC (MacOS)
-      if: runner.os == 'macOS' && matrix.c_compiler == 'gcc'
+      if: runner.os == 'macOS' && matrix.compiler.c == 'gcc'
       run: >
         brew install gcc
 
@@ -85,8 +66,8 @@ jobs:
     - name: Configure CMake
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cpp }}
+        -DCMAKE_C_COMPILER=${{ matrix.compiler.c }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 

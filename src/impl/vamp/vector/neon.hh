@@ -216,7 +216,7 @@ namespace vamp
         template <unsigned int i>
         inline static constexpr auto lshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vreinterpretq_u32_f32(vshlq_n_u32(vreinterpretq_u32_f32(v), i));
+            return vreinterpretq_f32_u32(vshlq_n_u32(vreinterpretq_u32_f32(v), i));
         }
 
         template <unsigned int = 0>
@@ -240,7 +240,7 @@ namespace vamp
         template <unsigned int i>
         inline static constexpr auto rshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vreinterpretq_u32_f32(vshrq_n_u32(vreinterpretq_u32_f32(v), i));
+            return vreinterpretq_f32_u32(vshrq_n_u32(vreinterpretq_u32_f32(v), i));
         }
 
         template <unsigned int = 0>

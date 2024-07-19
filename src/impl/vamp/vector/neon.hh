@@ -435,7 +435,7 @@ namespace vamp
         template <ScalarT i>
         inline static constexpr auto lshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vshlq_n_u32(v, i);
+            return vshlq_n_s32(v, i);
         }
 
         template <unsigned int = 0>
@@ -459,7 +459,7 @@ namespace vamp
         template <ScalarT i>
         inline static constexpr auto rshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vshrq_n_u32(v, i);
+            return vshrq_n_s32(v, i);
         }
 
         template <unsigned int = 0>

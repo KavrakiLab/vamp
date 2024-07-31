@@ -131,7 +131,7 @@ namespace vamp::collision
         return ((x - min) / (max - min)) * static_cast<float>(MORTON_FACTOR);
     }
 
-    auto morton_lut(uint32_t x, uint32_t y, uint32_t z) -> uint32_t
+    inline auto morton_lut(uint32_t x, uint32_t y, uint32_t z) -> uint32_t
     {
         uint32_t answer = 0;
         for (auto i = 4u; i > 0; --i)
@@ -146,7 +146,7 @@ namespace vamp::collision
     }
 
 #if defined(__x86_64__)
-    auto morton_pdep(uint32_t x, uint32_t y, uint32_t z) -> uint32_t
+    inline auto morton_pdep(uint32_t x, uint32_t y, uint32_t z) -> uint32_t
     {
         return _pdep_u32(x, MORTON_X_MASK) | _pdep_u32(y, MORTON_Y_MASK) | _pdep_u32(z, MORTON_Z_MASK);
     }
@@ -275,7 +275,7 @@ namespace vamp::collision
     }
 
     template <>
-    auto filter_pointcloud(
+    inline auto filter_pointcloud(
         const std::vector<Point> &pc,
         float min_dist,
         float max_range,

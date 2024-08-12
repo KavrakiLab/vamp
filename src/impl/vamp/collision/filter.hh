@@ -131,7 +131,7 @@ namespace vamp::collision
         return ((x - min) / (max - min)) * static_cast<float>(MORTON_FACTOR);
     }
 
-    auto morton_lut(uint32_t x, uint32_t y, uint32_t z) -> uint32_t
+    inline auto morton_lut(uint32_t x, uint32_t y, uint32_t z) -> uint32_t
     {
         uint32_t answer = 0;
         for (auto i = 4u; i > 0; --i)
@@ -146,7 +146,7 @@ namespace vamp::collision
     }
 
 #if defined(__x86_64__)
-    auto morton_pdep(uint32_t x, uint32_t y, uint32_t z) -> uint32_t
+    inline auto morton_pdep(uint32_t x, uint32_t y, uint32_t z) -> uint32_t
     {
         return _pdep_u32(x, MORTON_X_MASK) | _pdep_u32(y, MORTON_Y_MASK) | _pdep_u32(z, MORTON_Z_MASK);
     }
@@ -172,8 +172,9 @@ namespace vamp::collision
     // - If there exists `p1`, `p2` in `pc`, such that `d(p1, p2) <= min_dist`, then one of `p1` or `p2` _may_
     //   be removed.
     // - If `d(p, origin) >= max_range`, `p` will be removed.
+    template <typename PointCloud>
     auto filter_pointcloud(
-        const std::vector<Point> &pc,
+        const PointCloud &pc,
         float min_dist,
         float max_range,
         Point origin,
@@ -181,9 +182,9 @@ namespace vamp::collision
         Point workspace_max,
         bool cull) -> std::vector<Point>
     {
-        if (pc.empty())
+        if (pc.shape(0) == 0)
         {
-            return pc;
+            return std::vector<Point>();
         }
 
         const auto sqdist = min_dist * min_dist;
@@ -192,19 +193,18 @@ namespace vamp::collision
         auto max = std::min({origin[0] + max_range, origin[1] + max_range, origin[2] + max_range});
 
         std::vector<std::pair<uint32_t, uint32_t>> morton;
-        morton.resize(pc.size());
+        morton.resize(pc.shape(0));
 
         auto hi = 0U;
         // Step 1: filter out any points so far from the origin that we wouldn't collide with them anyway.
-        for (auto i = 0U; i < pc.size(); ++i)
+        for (auto i = 0U; i < pc.shape(0); ++i)
         {
-            auto &&p = pc[i];
-
             if (cull)
             {
-                if (sql2_3(p[0], p[1], p[2], origin[0], origin[1], origin[2]) < sqrange and
-                    workspace_min[0] <= p[0] and p[0] <= workspace_max[0] and workspace_min[1] <= p[1] and
-                    p[1] <= workspace_max[1] and workspace_min[2] <= p[2] and p[2] <= workspace_max[2])
+                if (sql2_3(pc(i, 0), pc(i, 1), pc(i, 2), origin[0], origin[1], origin[2]) < sqrange and
+                    workspace_min[0] <= pc(i, 0) and pc(i, 0) <= workspace_max[0] and
+                    workspace_min[1] <= pc(i, 1) and pc(i, 1) <= workspace_max[1] and
+                    workspace_min[2] <= pc(i, 2) and pc(i, 2) <= workspace_max[2])
                 {
                     morton[hi++].first = i;
                 }
@@ -225,13 +225,12 @@ namespace vamp::collision
             float new_max = min;
             for (auto &h : morton)
             {
-                const auto &p = pc[h.first];
-                auto c0 = remap_point(p[coordinates[0]], min, max);
-                auto c1 = remap_point(p[coordinates[1]], min, max);
-                auto c2 = remap_point(p[coordinates[2]], min, max);
+                auto c0 = remap_point(pc(h.first, coordinates[0]), min, max);
+                auto c1 = remap_point(pc(h.first, coordinates[1]), min, max);
+                auto c2 = remap_point(pc(h.first, coordinates[2]), min, max);
 
-                new_min = std::min({new_min, p[0], p[1], p[2]});
-                new_max = std::max({new_max, p[0], p[1], p[2]});
+                new_min = std::min({new_min, pc(h.first, 0), pc(h.first, 1), pc(h.first, 2)});
+                new_max = std::max({new_max, pc(h.first, 0), pc(h.first, 1), pc(h.first, 2)});
 
                 h.second = morton_encode(c0, c1, c2);
             }
@@ -248,10 +247,10 @@ namespace vamp::collision
             // Step 3: Any adjacent pair of points in the sort which are too close get eliminated.
             for (auto i = 1u; i < morton.size(); ++i)
             {
-                const auto &h1 = pc[morton[i].first];
-                const auto &h2 = pc[filtered.back().first];
+                const auto h1 = morton[i].first;
+                const auto h2 = filtered.back().first;
 
-                if (sql2_3(h1[0], h1[1], h1[2], h2[0], h2[1], h2[2]) > sqdist)
+                if (sql2_3(pc(h1, 0), pc(h1, 1), pc(h1, 2), pc(h2, 0), pc(h2, 1), pc(h2, 2)) > sqdist)
                 {
                     filtered.emplace_back(morton[i]);
                 }
@@ -269,9 +268,54 @@ namespace vamp::collision
 
         for (const auto &h : morton)
         {
-            filtered.emplace_back(pc[h.first]);
+            filtered.emplace_back(Point{pc(h.first, 0), pc(h.first, 1), pc(h.first, 2)});
         }
 
         return filtered;
+    }
+
+    template <>
+    inline auto filter_pointcloud(
+        const std::vector<Point> &pc,
+        float min_dist,
+        float max_range,
+        Point origin,
+        Point workspace_min,
+        Point workspace_max,
+        bool cull) -> std::vector<Point>
+    {
+        struct PointcloudWrapper
+        {
+            inline auto shape(std::size_t dim) const noexcept -> std::size_t
+            {
+                if (dim == 0)
+                {
+                    return pc.size();
+                }
+
+                if (dim == 1)
+                {
+                    return 3;
+                }
+
+                return -1;
+            }
+
+            inline auto operator()(std::size_t i, std::size_t j) const noexcept -> typename Point::value_type
+            {
+                return pc[i][j];
+            }
+
+            const std::vector<Point> &pc;
+        };
+
+        return filter_pointcloud(
+            PointcloudWrapper{pc},
+            min_dist,
+            max_range,
+            std::move(origin),
+            std::move(workspace_min),
+            std::move(workspace_max),
+            cull);
     }
 }  // namespace vamp::collision

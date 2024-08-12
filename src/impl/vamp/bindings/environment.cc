@@ -8,6 +8,7 @@
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/array.h>
 #include <nanobind/stl/vector.h>
+#include <nanobind/ndarray.h>
 
 namespace nb = nanobind;
 namespace vc = vamp::collision;
@@ -30,9 +31,7 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
         .def_ro("r", &vc::Sphere<float>::r)
         .def_prop_ro(
             "position",
-            [](vc::Sphere<float> &sphere) {
-                return std::array<float, 3>{sphere.x, sphere.y, sphere.z};
-            })
+            [](vc::Sphere<float> &sphere) { return std::array<float, 3>{sphere.x, sphere.y, sphere.z}; })
         .def_ro("min_distance", &vc::Sphere<float>::min_distance)
         .def_rw("name", &vc::Sphere<float>::name);
 
@@ -166,6 +165,22 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
     pymodule.def(
         "filter_pointcloud",
         [](const std::vector<collision::Point> &pc,
+           float min_dist,
+           float max_range,
+           const collision::Point &origin,
+           const collision::Point &workcell_min,
+           const collision::Point &workcell_max,
+           bool cull) -> std::pair<std::vector<collision::Point>, std::size_t>
+        {
+            auto start_time = std::chrono::steady_clock::now();
+            auto filtered =
+                vc::filter_pointcloud(pc, min_dist, max_range, origin, workcell_min, workcell_max, cull);
+            return {filtered, vamp::utils::get_elapsed_nanoseconds(start_time)};
+        });
+
+    pymodule.def(
+        "filter_pointcloud",
+        [](const nb::ndarray<float, nb::shape<-1, 3>, nb::device::cpu> &pc,
            float min_dist,
            float max_range,
            const collision::Point &origin,

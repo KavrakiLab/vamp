@@ -235,7 +235,7 @@ namespace vamp::planning
                             }
                         }
                     }
-                    if (!settings.force_max_iters and goal_reached)
+                    if (not settings.force_max_iters and goal_reached)
                     {
                         break;
                     }

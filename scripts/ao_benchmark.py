@@ -33,10 +33,13 @@ problem = [
     [0.35, -0.35, 0.8],
     ]
 
-
 def main(
     radius: float = 0.2,
     planner: str = "rrt_star",
+    force_max_iters: bool = True,
+    range: float = 3.0,
+    plot: bool = False,
+    save_path: str = 'plot.png'
     **kwargs,
     ):
 
@@ -54,8 +57,8 @@ def main(
     for sphere in spheres:
         env.add_sphere(vamp.Sphere(sphere, radius))
 
-    plan_settings.force_max_iters = True
-    plan_settings.range = 3.0
+    plan_settings.force_max_iters = force_max_iters
+    plan_settings.range = range
     for iters in max_iters:
         plan_settings.max_iterations = iters
         plan_settings.max_samples = iters
@@ -77,13 +80,14 @@ def main(
     print(df)
 
     # Create the plot
-    plt.figure(figsize = (10, 6))
-    plt.plot(df['planning_iterations'], df['initial_path_cost'], marker = 'o')
-    plt.title('Iterations vs Initial Path Cost')
-    plt.xlabel('Iterations')
-    plt.ylabel('Initial Path Cost')
-    plt.grid(True)
-    plt.savefig('plot.png', dpi = 300, bbox_inches = 'tight')
+    if (plot):
+        plt.figure(figsize = (10, 6))
+        plt.plot(df['planning_iterations'], df['initial_path_cost'], marker = 'o')
+        plt.title('Iterations vs Initial Path Cost')
+        plt.xlabel('Iterations')
+        plt.ylabel('Initial Path Cost')
+        plt.grid(True)
+        plt.savefig(save_path, dpi = 300, bbox_inches = 'tight')
 
 
 if __name__ == "__main__":

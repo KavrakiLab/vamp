@@ -33,13 +33,14 @@ problem = [
     [0.35, -0.35, 0.8],
     ]
 
+
 def main(
     radius: float = 0.2,
     planner: str = "rrt_star",
     force_max_iters: bool = True,
     range: float = 3.0,
     plot: bool = False,
-    save_path: str = 'plot.png'
+    save_path: str = 'plot.png',
     **kwargs,
     ):
 

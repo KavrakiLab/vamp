@@ -21,14 +21,6 @@ namespace vamp::planning
         static constexpr auto dimension = Robot::dimension;
         static constexpr auto space_measure = Robot::space_measure;
 
-        // algorithm specific constants
-        static constexpr float unit_ball_volume =
-            std::pow(std::sqrt(M_PI), dimension) / std::tgamma(dimension / 2.0 + 1.0);
-        static constexpr float free_volume = space_measure();
-        static constexpr float dim_recip = 1.0 / dimension;
-        static constexpr float gamma_rrt =
-            pow(2 * (1.0 + 1.0 / dimension) * (free_volume / unit_ball_volume), dim_recip);
-
         inline static auto solve(
             const Configuration &start,
             const Configuration &goal,
@@ -44,6 +36,14 @@ namespace vamp::planning
             const collision::Environment<FloatVector<rake>> &environment,
             const RRT_star_settings &settings) -> PlanningResult<dimension>
         {
+            // algorithm specific constants
+            static const float unit_ball_volume =
+                std::pow(std::sqrt(M_PI), dimension) / std::tgamma(dimension / 2.0 + 1.0);
+            static const float free_volume = space_measure();
+            static const float dim_recip = 1.0 / dimension;
+            static const float gamma_rrt =
+                std::pow(2 * (1.0 + 1.0 / dimension) * (free_volume / unit_ball_volume), dim_recip);
+
             PlanningResult<dimension> result;
             NN<dimension> tree;
             constexpr const std::size_t start_index = 0;
@@ -230,7 +230,7 @@ namespace vamp::planning
                             }
                             else
                             {
-                                goal_motions.emplace_back({free_index - 1, goal});
+                                goal_motions.emplace_back(free_index - 1, goal);
                                 check_new_best = true;
                             }
                         }

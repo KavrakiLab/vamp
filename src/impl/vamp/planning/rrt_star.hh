@@ -168,14 +168,14 @@ namespace vamp::planning
 
                     // loop through near neighbors, find the one that gives us min cost from root
                     std::vector<bool> collision_free(near.size());
-                    for (std::size_t idx = 0; idx < near.size(); idx++)
+                    for (auto i = 0U; i < near.size(); i++)
                     {
-                        const auto &[node, distance] = near[idx];
+                        const auto &[node, distance] = near[i];
                         auto configuration = node.as_vector();
-                        collision_free[idx] = validate_motion<Robot, rake, resolution>(
+                        collision_free[i] = validate_motion<Robot, rake, resolution>(
                             configuration, new_configuration, environment);
                         float cur_cost = cost[node.index] + distance;
-                        if (collision_free[idx] and (cur_cost < min_cost))
+                        if (collision_free[i] and (cur_cost < min_cost))
                         {
                             min_cost = cur_cost;
                             min_neighbor = node;
@@ -190,10 +190,10 @@ namespace vamp::planning
                     // rewire with our newly added node to if we can use it to get a shorter path to any of
                     // its neighbors
                     bool check_new_best = false;
-                    for (std::size_t idx = 0; idx < near.size(); idx++)
+                    for (auto i = 0U; i < near.size(); i++)
                     {
-                        const auto &[node, distance] = near[idx];
-                        if (collision_free[idx] and (min_cost + distance < cost[node.index]))
+                        const auto &[node, distance] = near[i];
+                        if (collision_free[i] and (min_cost + distance < cost[node.index]))
                         {
                             remove_edge(parent[node.index], node.index);
                             add_edge(free_index, node.index);

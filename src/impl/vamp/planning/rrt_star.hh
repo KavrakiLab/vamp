@@ -58,13 +58,14 @@ namespace vamp::planning
 
             std::vector<std::size_t> parent(settings.max_samples);
             std::vector<std::vector<std::size_t>> children(settings.max_samples, std::vector<std::size_t>());
-            std::vector<float> cost(settings.max_samples, -1.0);
+            std::vector<float> cost(settings.max_samples);
 
             const auto add_edge = [&parent, &children](std::size_t parent_node, std::size_t child_node)
             {
                 parent[child_node] = parent_node;
                 children[parent_node].emplace_back(child_node);
             };
+
             const auto remove_edge = [&parent, &children](std::size_t parent_node, std::size_t child_node)
             {
                 parent[child_node] = -1;
@@ -74,11 +75,12 @@ namespace vamp::planning
                     children[parent_node].erase(it);
                 }
             };
+
             const std::function<void(std::size_t)> update_children =
                 [&cost, &children, &buffer_index, &update_children](std::size_t idx)
             {
                 Configuration cur(buffer_index(idx));
-                for (auto &child : children[idx])
+                for (const auto &child : children[idx])
                 {
                     cost[child] = cost[idx] + cur.distance(buffer_index(child));
                     update_children(child);
@@ -112,6 +114,7 @@ namespace vamp::planning
             std::vector<std::pair<std::size_t, Configuration>> goal_motions;
             float best_path_cost = std::numeric_limits<float>::max();
             std::pair<std::size_t, Configuration> best_goal_motion;
+            
             // main loop
             std::size_t iter = 0;
             std::vector<std::pair<NNNode<dimension>, float>> near;
@@ -124,6 +127,7 @@ namespace vamp::planning
                 sample_config.to_array(sample_config_arr.data());
 
                 const auto nearest = tree.nearest(NNFloatArray<dimension>{sample_config_arr.data()});
+
                 if (not nearest)
                 {
                     continue;
@@ -154,20 +158,19 @@ namespace vamp::planning
                     const std::size_t card =
                         tree.size() + 1;  // plus 1 to account for the new configuration not inserted yet
                     const float rrt_radius = std::fmin(
-                        settings.rewire_factor * gamma_rrt * pow((log(card) / card), dim_recip),
+                        settings.rewire_factor * gamma_rrt * std::pow((std::log(card) / card), dim_recip),
                         settings.range);
                     tree.nearest(near, NNFloatArray<dimension>{new_configuration_ptr}, card, rrt_radius);
 
-                    // initialize variables to keep track of the min cost neighbor and the cost of that
-                    // neighbor
+                    // initialize variables to keep track of the min cost neighbor and the cost of that neighbor
                     auto min_neighbor = nearest_node;
                     float min_cost = cost[nearest_node.index] + nearest_distance;
 
                     // loop through near neighbors, find the one that gives us min cost from root
                     std::vector<bool> collision_free(near.size());
-                    std::size_t idx = 0;
-                    for (auto &[node, distance] : near)
+                    for (std::size_t idx = 0; idx < near.size(); idx++)
                     {
+                        const auto &[node, distance] = near[idx];
                         auto configuration = node.as_vector();
                         collision_free[idx] = validate_motion<Robot, rake, resolution>(
                             configuration, new_configuration, environment);
@@ -177,7 +180,6 @@ namespace vamp::planning
                             min_cost = cur_cost;
                             min_neighbor = node;
                         }
-                        idx++;
                     }
 
                     // add an edge from min cost neighbor to new config
@@ -186,11 +188,11 @@ namespace vamp::planning
                     cost[free_index] = min_cost;
 
                     // rewire with our newly added node to if we can use it to get a shorter path to any of
-                    // it's neighbors
-                    idx = 0;
+                    // its neighbors
                     bool check_new_best = false;
-                    for (auto &[node, distance] : near)
+                    for (std::size_t idx = 0; idx < near.size(); idx++)
                     {
+                        const auto &[node, distance] = near[idx];
                         if (collision_free[idx] and (min_cost + distance < cost[node.index]))
                         {
                             remove_edge(parent[node.index], node.index);
@@ -201,13 +203,12 @@ namespace vamp::planning
                             update_children(node.index);
                             check_new_best = true;
                         }
-                        idx++;
                     }
 
                     free_index++;
 
-                    bool goal_reached = false;
                     // check if we can reach a goal
+                    bool goal_reached = false;
                     for (const auto &goal : goals)
                     {
                         if (validate_motion<Robot, rake, resolution>(new_configuration, goal, environment))
@@ -235,14 +236,16 @@ namespace vamp::planning
                             }
                         }
                     }
+
                     if (not settings.force_max_iters and goal_reached)
                     {
                         break;
                     }
+
                     if (settings.force_max_iters and check_new_best)
                     {
                         // loop through goal nodes to find the best solution
-                        for (auto &[end_node_idx, goal] : goal_motions)
+                        for (const auto &[end_node_idx, goal] : goal_motions)
                         {
                             float cur_cost = cost[end_node_idx] + goal.distance(buffer_index(end_node_idx));
                             if (cur_cost < best_path_cost)

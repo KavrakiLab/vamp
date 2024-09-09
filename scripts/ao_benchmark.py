@@ -81,7 +81,7 @@ def main(
     print(df)
 
     # Create the plot
-    if (plot):
+    if plot:
         plt.figure(figsize = (10, 6))
         plt.plot(df['planning_iterations'], df['initial_path_cost'], marker = 'o')
         plt.title('Iterations vs Initial Path Cost')

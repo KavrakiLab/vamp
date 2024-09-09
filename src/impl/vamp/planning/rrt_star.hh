@@ -87,6 +87,19 @@ namespace vamp::planning
                 }
             };
 
+            const auto build_path = [&result, &buffer_index, &parent](const Configuration &goal, const std::size_t last_config_idx)
+            {
+                result.path.emplace_back(goal);
+                result.path.emplace_back(buffer_index(last_config_idx));
+                auto current = last_config_idx;
+                while (parent[current] != current) {
+                    auto parent_idx = parent[current];
+                    result.path.emplace_back(buffer_index(parent_idx));
+                    current = parent_idx;
+                }
+                std::reverse(result.path.begin(), result.path.end());
+            };
+
             auto start_time = std::chrono::steady_clock::now();
 
             for (const auto &goal : goals)
@@ -174,7 +187,7 @@ namespace vamp::planning
                         auto configuration = node.as_vector();
                         collision_free[i] = validate_motion<Robot, rake, resolution>(
                             configuration, new_configuration, environment);
-                        float cur_cost = cost[node.index] + distance;
+                        const float cur_cost = cost[node.index] + distance;
                         if (collision_free[i] and (cur_cost < min_cost))
                         {
                             min_cost = cur_cost;
@@ -216,16 +229,8 @@ namespace vamp::planning
                             if (not settings.force_max_iters)
                             {  // found a solution, exit the algorithm
                                 auto current = free_index - 1;
-                                result.path.emplace_back(goal);
-                                result.path.emplace_back(new_configuration);
+                                build_path(goal, current);
                                 result.cost = cost[current] + goal.distance(buffer_index(current));
-                                while (parent[current] != current)  // build path
-                                {
-                                    auto parent_node = parent[current];
-                                    result.path.emplace_back(buffer_index(parent_node));
-                                    current = parent_node;
-                                }
-                                std::reverse(result.path.begin(), result.path.end());
                                 goal_reached = true;
                                 break;
                             }
@@ -247,7 +252,7 @@ namespace vamp::planning
                         // loop through goal nodes to find the best solution
                         for (const auto &[end_node_idx, goal] : goal_motions)
                         {
-                            float cur_cost = cost[end_node_idx] + goal.distance(buffer_index(end_node_idx));
+                            const float cur_cost = cost[end_node_idx] + goal.distance(buffer_index(end_node_idx));
                             if (cur_cost < best_path_cost)
                             {
                                 best_path_cost = cur_cost;
@@ -257,6 +262,7 @@ namespace vamp::planning
                     }
                 }
             }
+            
             if (not settings.force_max_iters)
             {
                 result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
@@ -267,17 +273,8 @@ namespace vamp::planning
             if (goal_motions.size() > 0)
             {
                 result.cost = best_path_cost;
-                auto &[best_end_node_idx, best_goal] = best_goal_motion;
-                result.path.emplace_back(best_goal);
-                result.path.emplace_back(buffer_index(best_end_node_idx));
-                auto current = best_end_node_idx;
-                while (parent[current] != current)  // build path
-                {
-                    auto parent_node = parent[current];
-                    result.path.emplace_back(buffer_index(parent_node));
-                    current = parent_node;
-                }
-                std::reverse(result.path.begin(), result.path.end());
+                const auto &[best_end_node_idx, best_goal] = best_goal_motion;
+                build_path(best_goal, best_end_node_idx);
             }
             result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
             result.iterations = iter;

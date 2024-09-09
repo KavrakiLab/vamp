@@ -87,12 +87,14 @@ namespace vamp::planning
                 }
             };
 
-            const auto build_path = [&result, &buffer_index, &parent](const Configuration &goal, const std::size_t last_config_idx)
+            const auto build_path = [&result, &buffer_index, &parent](
+                                        const Configuration &goal, const std::size_t last_config_idx)
             {
                 result.path.emplace_back(goal);
                 result.path.emplace_back(buffer_index(last_config_idx));
                 auto current = last_config_idx;
-                while (parent[current] != current) {
+                while (parent[current] != current)
+                {
                     auto parent_idx = parent[current];
                     result.path.emplace_back(buffer_index(parent_idx));
                     current = parent_idx;
@@ -127,7 +129,7 @@ namespace vamp::planning
             std::vector<std::pair<std::size_t, Configuration>> goal_motions;
             float best_path_cost = std::numeric_limits<float>::max();
             std::pair<std::size_t, Configuration> best_goal_motion;
-            
+
             // main loop
             std::size_t iter = 0;
             std::vector<std::pair<NNNode<dimension>, float>> near;
@@ -175,7 +177,8 @@ namespace vamp::planning
                         settings.range);
                     tree.nearest(near, NNFloatArray<dimension>{new_configuration_ptr}, card, rrt_radius);
 
-                    // initialize variables to keep track of the min cost neighbor and the cost of that neighbor
+                    // initialize variables to keep track of the min cost neighbor and the cost of that
+                    // neighbor
                     auto min_neighbor = nearest_node;
                     float min_cost = cost[nearest_node.index] + nearest_distance;
 
@@ -252,7 +255,8 @@ namespace vamp::planning
                         // loop through goal nodes to find the best solution
                         for (const auto &[end_node_idx, goal] : goal_motions)
                         {
-                            const float cur_cost = cost[end_node_idx] + goal.distance(buffer_index(end_node_idx));
+                            const float cur_cost =
+                                cost[end_node_idx] + goal.distance(buffer_index(end_node_idx));
                             if (cur_cost < best_path_cost)
                             {
                                 best_path_cost = cur_cost;
@@ -262,7 +266,7 @@ namespace vamp::planning
                     }
                 }
             }
-            
+
             if (not settings.force_max_iters)
             {
                 result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);

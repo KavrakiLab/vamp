@@ -128,7 +128,7 @@ def problem_to_pointcloud(problem, n):
 
 def problem_dict_to_pointcloud(
         robot: str,
-        problem: Dict[str, List[Dict[str, Union[float, NDArray[np.float_]]]]],
+        problem: Dict[str, List[Dict[str, Union[float, NDArray[np.float32]]]]],
         samples_per_object: int,
         filter_radius: float,
         filter_cull: bool

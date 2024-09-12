@@ -25,7 +25,7 @@ __all__ = [
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union, List
 
-from numpy import float_
+from numpy import float32
 from numpy.typing import NDArray
 
 from .constants import *
@@ -123,7 +123,7 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
 
 
 def problem_dict_to_vamp(
-        problem: Dict[str, List[Dict[str, Union[float, NDArray[float_]]]]],
+        problem: Dict[str, List[Dict[str, Union[float, NDArray[float32]]]]],
         ignore_names: List[str] = []
     ) -> Environment:
     env = Environment()

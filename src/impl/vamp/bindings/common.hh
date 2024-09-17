@@ -266,7 +266,26 @@ namespace vamp::binding
         using RH = Helper<Robot>;
         auto submodule = pymodule.def_submodule(Robot::name, "Robot-specific submodule");
 
-        nb::class_<typename RH::RNG::Ptr>(submodule, "RNG", "RNG for robot configurations.");
+        nb::class_<typename RH::RNG::Ptr>(submodule, "RNG", "RNG for robot configurations.")
+            .def(
+                "next",
+                [](typename RH::RNG::Ptr &rng)
+                {
+                    auto x = rng->next();
+                    Robot::scale_configuration(x);
+                    return x;
+                },
+                "Sample the next configuration.")
+            .def(
+                "skip",
+                [](typename RH::RNG::Ptr &rng, std::size_t n)
+                {
+                    for (auto i = 0U; i < n; ++i)
+                    {
+                        auto x = rng->next();
+                    }
+                },
+                "Skip the next n iterations.");
 
         submodule.def(
             "dimension",

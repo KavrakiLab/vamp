@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <vamp/random/rng.hh>
 
 namespace vamp::rng
@@ -7,6 +8,8 @@ namespace vamp::rng
     template <std::size_t dim>
     struct Halton : public ConfigurationRNG<dim>
     {
+        static constexpr const std::size_t max_iterations = 100000U;
+
         static constexpr const std::array<float, 16> primes{
             3.F,
             5.F,
@@ -24,7 +27,6 @@ namespace vamp::rng
             47.F,
             53.F,
             59.F};
-
 
         explicit Halton(FloatVector<dim> b_in, std::size_t skip_iterations = 0) noexcept : b(b_in)
         {
@@ -56,12 +58,30 @@ namespace vamp::rng
             }
         }
 
+        inline auto rotate_bases() noexcept
+        {
+            alignas(FloatVectorAlignment) std::array<float, dim> a;
+            b.to_array(a.data());
+            std::rotate(a.begin(), a.begin() + 1, a.end());
+            b = FloatVector<dim>(a);
+        }
+
+        std::size_t iterations = 0;
         FloatVector<dim> b;
         FloatVector<dim> n = FloatVector<dim>::fill(0);
         FloatVector<dim> d = FloatVector<dim>::fill(1);
 
         inline auto next() noexcept -> FloatVector<dim> override
         {
+            iterations++;
+            if (iterations > max_iterations)
+            {
+                n = FloatVector<dim>::fill(0);
+                d = FloatVector<dim>::fill(1);
+                iterations = 0;
+                rotate_bases();
+            }
+
             auto xf = d - n;
             auto x_eq_1 = xf == 1.;
             auto x_neq_1 = ~x_eq_1;

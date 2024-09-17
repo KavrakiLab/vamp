@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vamp/random/rng.hh>
 #include <vamp/collision/sphere_sphere.hh>
 #include <vamp/collision/validity.hh>
 #include <vamp/planning/validate.hh>
@@ -86,12 +87,19 @@ namespace vamp::binding
         using EnvironmentInput = vamp::collision::Environment<float>;
         using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
 
+        using RNG = vamp::rng::ConfigurationRNG<Robot::dimension>;
         using Halton = vamp::rng::Halton<Robot::dimension>;
-        using PRM = vamp::planning::PRM<Robot, Halton, rake, Robot::resolution>;
-        using RRTC = vamp::planning::RRTC<Robot, Halton, rake, Robot::resolution>;
 
-        inline static auto fk(const ConfigurationArray &configuration)
-            -> std::vector<vamp::collision::Sphere<float>>
+        using PRM = vamp::planning::PRM<Robot, rake, Robot::resolution>;
+        using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
+
+        inline static auto halton() -> typename RNG::Ptr
+        {
+            return std::make_shared<Halton>();
+        }
+
+        inline static auto
+        fk(const ConfigurationArray &configuration) -> std::vector<vamp::collision::Sphere<float>>
         {
             typename Robot::template Spheres<1> out;
             typename Robot::template ConfigurationBlock<1> block;
@@ -112,9 +120,9 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto
-        sphere_validate(const ConfigurationArray &configuration, const EnvironmentInput &environment)
-            -> std::vector<std::vector<std::string>>
+        inline static auto sphere_validate(
+            const ConfigurationArray &configuration,
+            const EnvironmentInput &environment) -> std::vector<std::vector<std::string>>
         {
             auto spheres = fk(configuration);
             std::vector<std::vector<std::string>> result;
@@ -130,9 +138,9 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto
-        validate_configuration(const Configuration &configuration, const EnvironmentInput &environment)
-            -> bool
+        inline static auto validate_configuration(
+            const Configuration &configuration,
+            const EnvironmentInput &environment) -> bool
         {
             return vamp::planning::validate_motion<Robot, rake, 1>(
                 configuration, configuration, EnvironmentVector(environment));
@@ -150,17 +158,19 @@ namespace vamp::binding
             const ConfigurationArray &start,
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
-            const vamp::planning::RRTCSettings &settings) -> PlanningResult
+            const vamp::planning::RRTCSettings &settings,
+            const typename RNG::Ptr &rng) -> PlanningResult
         {
             return RRTC::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings);
+                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto rrtc(
             const ConfigurationArray &start,
             const std::vector<ConfigurationArray> &goals,
             const EnvironmentInput &environment,
-            const vamp::planning::RRTCSettings &settings) -> PlanningResult
+            const vamp::planning::RRTCSettings &settings,
+            const typename RNG::Ptr &rng) -> PlanningResult
         {
             std::vector<Configuration> goals_v;
             goals_v.reserve(goals.size());
@@ -171,27 +181,27 @@ namespace vamp::binding
             }
 
             const Configuration start_v(start);
-            return RRTC::solve(start_v, goals_v, EnvironmentVector(environment), settings);
+            return RRTC::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto prm_single(
             const ConfigurationArray &start,
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings)
-            -> PlanningResult
+            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
+            const typename RNG::Ptr &rng) -> PlanningResult
         {
             ;
             return PRM::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings);
+                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto
         prm(const ConfigurationArray &start,
             const std::vector<ConfigurationArray> &goals,
             const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings)
-            -> PlanningResult
+            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
+            const typename RNG::Ptr &rng) -> PlanningResult
         {
             std::vector<Configuration> goals_v;
             goals_v.reserve(goals.size());
@@ -202,17 +212,18 @@ namespace vamp::binding
             }
 
             const Configuration start_v(start);
-            return PRM::solve(start_v, goals_v, EnvironmentVector(environment), settings);
+            return PRM::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto roadmap(
             const ConfigurationArray &start,
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings) -> Roadmap
+            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
+            const typename RNG::Ptr &rng) -> Roadmap
         {
             return PRM::build_roadmap(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings);
+                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto simplify(
@@ -233,8 +244,8 @@ namespace vamp::binding
             return filter_robot_from_pointcloud<Robot>(pc, start, environment, point_radius);
         }
 
-        inline static auto eefk(const ConfigurationArray &start)
-            -> std::pair<std::array<float, 3>, std::array<float, 4>>
+        inline static auto
+        eefk(const ConfigurationArray &start) -> std::pair<std::array<float, 3>, std::array<float, 4>>
         {
             const auto &result = Robot::eefk(start);
 
@@ -255,6 +266,8 @@ namespace vamp::binding
         using RH = Helper<Robot>;
         auto submodule = pymodule.def_submodule(Robot::name, "Robot-specific submodule");
 
+        nb::class_<typename RH::RNG::Ptr>(submodule, "RNG", "RNG for robot configurations.");
+
         submodule.def(
             "dimension",
             []() { return Robot::dimension; },
@@ -265,8 +278,7 @@ namespace vamp::binding
             "Collision checking resolution for this robot.");
         submodule.def(
             "n_spheres", []() { return Robot::n_spheres; }, "Number of spheres in robot collision model.");
-        submodule.def(
-            "space_measure", []() { return Robot::space_measure(); }, "Measure ");
+        submodule.def("space_measure", []() { return Robot::space_measure(); }, "Measure ");
 
         nb::class_<typename RH::Configuration>(submodule, "Configuration", "Robot configuration.")
             .def(nb::init<>(), "Empty constructor. Zero initialized.")
@@ -424,6 +436,8 @@ namespace vamp::binding
             .def_ro(
                 "iterations", &RH::Roadmap::iterations, "Number of iterations taken to construct roadmap.");
 
+        submodule.def("halton", RH::halton, "Creates a new Halton sampler.");
+
         submodule.def(
             "rrtc",
             RH::rrtc_single,
@@ -431,6 +445,7 @@ namespace vamp::binding
             "goal"_a,
             "environment"_a,
             "settings"_a = vamp::planning::RRTCSettings(),
+            "rng"_a,
             "Solve the motion planning problem with RRTConnect.");
 
         submodule.def(
@@ -440,6 +455,7 @@ namespace vamp::binding
             "goal"_a,
             "environment"_a,
             "settings"_a = vamp::planning::RRTCSettings(),
+            "rng"_a,
             "Solve the motion planning problem with RRTConnect.");
 
         submodule.def(
@@ -450,6 +466,7 @@ namespace vamp::binding
             "environment"_a,
             "settings"_a = vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams>(
                 vamp::planning::PRMStarNeighborParams(Robot::dimension, Robot::space_measure())),
+            "rng"_a,
             "Solve the motion planning problem with PRM.");
 
         submodule.def(
@@ -460,6 +477,7 @@ namespace vamp::binding
             "environment"_a,
             "settings"_a = vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams>(
                 vamp::planning::PRMStarNeighborParams(Robot::dimension, Robot::space_measure())),
+            "rng"_a,
             "Solve the motion planning problem with PRM.");
 
         submodule.def(
@@ -470,6 +488,7 @@ namespace vamp::binding
             nb::arg("environment"),
             nb::arg("settings") = vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams>(
                 vamp::planning::PRMStarNeighborParams(Robot::dimension, Robot::space_measure())),
+            "rng"_a,
             "PRM roadmap construction.");
 
         submodule.def(

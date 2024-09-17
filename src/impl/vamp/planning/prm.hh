@@ -12,7 +12,7 @@
 #include <vamp/planning/utils.hh>
 #include <vamp/planning/roadmap.hh>
 #include <vamp/planning/validate.hh>
-#include <vamp/random/halton.hh>
+#include <vamp/random/rng.hh>
 #include <vamp/utils.hh>
 #include <vamp/vector.hh>
 #include <vector>
@@ -22,7 +22,6 @@ namespace vamp::planning
 
     template <
         typename Robot,
-        typename RNG,
         std::size_t rake,
         std::size_t resolution,
         typename NeighborParamsT = PRMStarNeighborParams,
@@ -36,16 +35,18 @@ namespace vamp::planning
             const Configuration &start,
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RoadmapSettings<NeighborParamsT> &settings) noexcept -> PlanningResult<dimension>
+            const RoadmapSettings<NeighborParamsT> &settings,
+            const typename vamp::rng::ConfigurationRNG<dimension>::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
-            return solve(start, std::vector<Configuration>{goal}, environment, settings);
+            return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
 
         inline static auto solve(
             const Configuration &start,
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RoadmapSettings<NeighborParamsT> &settings) noexcept -> PlanningResult<dimension>
+            const RoadmapSettings<NeighborParamsT> &settings,
+            const typename vamp::rng::ConfigurationRNG<dimension>::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
             PlanningResult<dimension> result;
 
@@ -69,7 +70,6 @@ namespace vamp::planning
                 }
             }
 
-            RNG rng;
             std::size_t iter = 0;
             std::vector<std::pair<NNNode<dimension>, float>> neighbors;
             typename Robot::template ConfigurationBlock<rake> temp_block;
@@ -109,7 +109,7 @@ namespace vamp::planning
 
             while (iter++ < settings.max_iterations and nodes.size() < settings.max_samples)
             {
-                auto temp = rng.next();
+                auto temp = rng->next();
                 Robot::scale_configuration(temp);
                 // TODO: This is a gross hack to get around the instruction cache issue...I realized
                 // that edge sampling, while valid, wastes too much effort with our current
@@ -200,7 +200,8 @@ namespace vamp::planning
             const Configuration &start,
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RoadmapSettings<NeighborParamsT> &settings) noexcept -> Roadmap<dimension>
+            const RoadmapSettings<NeighborParamsT> &settings,
+            const typename vamp::rng::ConfigurationRNG<dimension>::Ptr &rng) noexcept -> Roadmap<dimension>
         {
             NN<dimension> roadmap;
 
@@ -209,7 +210,6 @@ namespace vamp::planning
 
             auto start_time = std::chrono::steady_clock::now();
 
-            RNG rng;
             std::size_t iter = 0;
             std::vector<std::pair<NNNode<dimension>, float>> neighbors;
             typename Robot::template ConfigurationBlock<rake> temp_block;
@@ -236,7 +236,7 @@ namespace vamp::planning
 
             while (iter++ < settings.max_iterations and nodes.size() < settings.max_samples)
             {
-                auto temp = rng.next();
+                auto temp = rng->next();
                 Robot::scale_configuration(temp);
 
                 // TODO: This is a gross hack to get around the instruction cache issue...I realized

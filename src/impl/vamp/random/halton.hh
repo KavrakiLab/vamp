@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vamp/vector.hh>
+#include <vamp/random/rng.hh>
 
 namespace vamp::rng
 {
     template <std::size_t dim>
-    struct Halton
+    struct Halton : public ConfigurationRNG<dim>
     {
         static constexpr const std::array<float, 16> primes{
             3.F,
@@ -24,6 +24,7 @@ namespace vamp::rng
             47.F,
             53.F,
             59.F};
+
 
         explicit Halton(FloatVector<dim> b_in, std::size_t skip_iterations = 0) noexcept : b(b_in)
         {
@@ -59,7 +60,7 @@ namespace vamp::rng
         FloatVector<dim> n = FloatVector<dim>::fill(0);
         FloatVector<dim> d = FloatVector<dim>::fill(1);
 
-        inline auto next() noexcept -> FloatVector<dim>
+        inline auto next() noexcept -> FloatVector<dim> override
         {
             auto xf = d - n;
             auto x_eq_1 = xf == 1.;

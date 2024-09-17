@@ -7,13 +7,13 @@
 #include <vamp/planning/plan.hh>
 #include <vamp/planning/validate.hh>
 #include <vamp/planning/rrtc_settings.hh>
-#include <vamp/random/halton.hh>
+#include <vamp/random/rng.hh>
 #include <vamp/utils.hh>
 #include <vamp/vector.hh>
 
 namespace vamp::planning
 {
-    template <typename Robot, typename RNG, std::size_t rake, std::size_t resolution>
+    template <typename Robot, std::size_t rake, std::size_t resolution>
     struct RRTC
     {
         using Configuration = typename Robot::Configuration;
@@ -23,16 +23,18 @@ namespace vamp::planning
             const Configuration &start,
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RRTCSettings &settings) noexcept -> PlanningResult<dimension>
+            const RRTCSettings &settings,
+            const typename vamp::rng::ConfigurationRNG<dimension>::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
-            return solve(start, std::vector<Configuration>{goal}, environment, settings);
+            return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
 
         inline static auto solve(
             const Configuration &start,
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RRTCSettings &settings) noexcept -> PlanningResult<dimension>
+            const RRTCSettings &settings,
+            const typename vamp::rng::ConfigurationRNG<dimension>::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
             PlanningResult<dimension> result;
 
@@ -75,7 +77,6 @@ namespace vamp::planning
             auto *tree_a = (settings.start_tree_first) ? &goal_tree : &start_tree;
             auto *tree_b = (settings.start_tree_first) ? &start_tree : &goal_tree;
 
-            RNG rng(settings.rng_skip_iterations);
             std::size_t iter = 0;
             std::size_t free_index = start_index + 1;
 
@@ -106,7 +107,7 @@ namespace vamp::planning
                     tree_a_is_start = not tree_a_is_start;
                 }
 
-                auto temp = rng.next();
+                auto temp = rng->next();
                 Robot::scale_configuration(temp);
 
                 typename Robot::ConfigurationBuffer temp_array;

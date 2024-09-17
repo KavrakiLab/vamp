@@ -88,8 +88,9 @@ def main(
             else:
                 env = vamp.problem_dict_to_vamp(data)
 
+            rng = vamp_module.halton()
             for _ in range(trials):
-                result = planner_func(data['start'], data['goals'], env, plan_settings)
+                result = planner_func(data['start'], data['goals'], env, plan_settings, rng)
                 if not result.solved:
                     failures.append(i)
                     break

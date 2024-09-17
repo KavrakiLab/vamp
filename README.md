@@ -75,6 +75,13 @@ python scripts/sphere_cage_example.py --visualize
 Which will benchmark a simple scenario of the Franka Emika Panda in a cage of spheres and visualize one of the results.
 See the [README in the scripts directory](scripts/README.md) for more details.
 
+#### Incremental Rebuilds
+Rather than building the entire library from scratch each time, `nanobind` supports [incremental rebuilds](https://nanobind.readthedocs.io/en/latest/packaging.html#step-5-incremental-rebuilds):
+```bash
+cd vamp
+pip install --no-build-isolation -Ceditable.rebuild=true -ve .
+```
+
 ### C++
 If you wish to extend `vamp` via C++, please build directly with CMake, e.g.:
 ```

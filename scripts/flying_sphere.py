@@ -8,12 +8,13 @@ goal_pos = [-23.25229835510254, -9.870399475097656, 2.1933717727661133]
 
 
 def main(
-        visualize: bool = False,
-        x: float = 20,
-        y: float = 20,
-        z: float = 1,
-        radius: float = 0.1,
-        iterations: int = 10000
+    visualize: bool = False,
+    x: float = 20,
+    y: float = 20,
+    z: float = 1,
+    radius: float = 0.1,
+    iterations: int = 10000,
+    sampler: str = "halton",
     ):
 
     env = vamp.Environment()
@@ -33,7 +34,8 @@ def main(
     settings = vamp.PRMSettings(vamp.PRMNeighborParams(vamp.sphere.dimension(), vamp.sphere.space_measure()))
     settings.max_iterations = iterations
 
-    roadmap = vamp.sphere.roadmap(robot_initial_pos, goal_pos, env, settings)
+    sampler = getattr(vamp.sphere, sampler)()
+    roadmap = vamp.sphere.roadmap(robot_initial_pos, goal_pos, env, settings, sampler)
 
     print(f"Created roadmap with {len(roadmap)} nodes in {roadmap.nanoseconds / 1e9} seconds!")
 

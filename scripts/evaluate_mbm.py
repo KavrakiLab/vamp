@@ -18,6 +18,7 @@ def main(
     problem: Union[str, List[str]] = [],   # Problem name or list of problems to evaluate
     trials: int = 1,                       # Number of trials to evaluate each instance
     sampler: str = "halton",               # Sampler to use.
+    skip_rng_iterations: int = 0,          # Skip a number of RNG iterations
     print_failures: bool = False,          # Print out failures and invalid problems
     pointcloud: bool = False,              # Use pointcloud rather than primitive geometry
     samples_per_object: int = 10000,       # If pointcloud, samples per object to use
@@ -92,6 +93,7 @@ def main(
                 env = vamp.problem_dict_to_vamp(data)
 
             sampler.reset()
+            sampler.skip(skip_rng_iterations)
             for _ in range(trials):
                 result = planner_func(data['start'], data['goals'], env, plan_settings, sampler)
                 if not result.solved:

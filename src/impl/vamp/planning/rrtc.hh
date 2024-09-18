@@ -25,8 +25,7 @@ namespace vamp::planning
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const RRTCSettings &settings,
-            const RNG::Ptr &rng) noexcept
-            -> PlanningResult<dimension>
+            typename RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
             return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
@@ -36,8 +35,7 @@ namespace vamp::planning
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
             const RRTCSettings &settings,
-            const RNG::Ptr &rng) noexcept
-            -> PlanningResult<dimension>
+            typename RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
             PlanningResult<dimension> result;
 

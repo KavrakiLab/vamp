@@ -17,6 +17,7 @@ def main(
     dataset: str = "problems.pkl",         # Pickled dataset to use
     problem: Union[str, List[str]] = [],   # Problem name or list of problems to evaluate
     trials: int = 1,                       # Number of trials to evaluate each instance
+    sampler: str = "halton",               # Sampler to use.
     print_failures: bool = False,          # Print out failures and invalid problems
     pointcloud: bool = False,              # Use pointcloud rather than primitive geometry
     samples_per_object: int = 10000,       # If pointcloud, samples per object to use
@@ -47,6 +48,8 @@ def main(
 
     (vamp_module, planner_func, plan_settings,
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs(robot, planner, **kwargs)
+
+    sampler = getattr(vamp_module, sampler)()
 
     total_problems = 0
     valid_problems = 0
@@ -88,14 +91,14 @@ def main(
             else:
                 env = vamp.problem_dict_to_vamp(data)
 
-            rng = vamp_module.halton()
+            sampler.reset()
             for _ in range(trials):
-                result = planner_func(data['start'], data['goals'], env, plan_settings, rng)
+                result = planner_func(data['start'], data['goals'], env, plan_settings, sampler)
                 if not result.solved:
                     failures.append(i)
                     break
 
-                simple = vamp_module.simplify(result.path, env, simp_settings, rng)
+                simple = vamp_module.simplify(result.path, env, simp_settings, sampler)
 
                 trial_result = vamp.results_to_dict(result, simple)
                 if pointcloud:

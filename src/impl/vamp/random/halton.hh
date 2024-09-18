@@ -8,7 +8,7 @@ namespace vamp::rng
     template <std::size_t dim>
     struct Halton : public RNG<dim>
     {
-        static constexpr const std::size_t max_iterations = 100000U;
+        static constexpr const std::size_t max_iterations = 1000000U;
 
         static constexpr const std::array<float, 16> primes{
             3.F,
@@ -28,37 +28,26 @@ namespace vamp::rng
             53.F,
             59.F};
 
-        explicit Halton(FloatVector<dim> b_in, std::size_t skip_iterations = 0) noexcept : b(b_in)
-        {
-            initialize(skip_iterations);
-        }
-
-        Halton(std::initializer_list<FloatT> v, std::size_t skip_iterations = 0) noexcept
-          : Halton(FloatVector<dim>::pack_and_pad(v), skip_iterations)
+        explicit Halton(FloatVector<dim> b_in) noexcept : b_init(b_in), b(b_in)
         {
         }
 
-        explicit Halton(std::size_t skip_iterations = 0)
-          : Halton(
-                []()
-                {
-                    alignas(FloatVectorAlignment) std::array<float, dim> a;
-                    std::copy_n(primes.cbegin(), dim, a.begin());
-                    return a;
-                }(),
-                skip_iterations)
+        Halton(std::initializer_list<FloatT> v) noexcept : Halton(FloatVector<dim>::pack_and_pad(v))
         {
         }
 
-        inline auto initialize(std::size_t n) noexcept
+        explicit Halton() : Halton(bases())
         {
-            for (auto i = 0U; i < n; ++i)
-            {
-                next();
-            }
         }
 
-        inline auto rotate_bases() noexcept
+        inline constexpr auto bases() noexcept -> FloatVector<dim>
+        {
+            alignas(FloatVectorAlignment) std::array<float, dim> a;
+            std::copy_n(primes.cbegin(), dim, a.begin());
+            return FloatVector<dim>(a);
+        }
+
+        auto rotate_bases() noexcept
         {
             alignas(FloatVectorAlignment) std::array<float, dim> a;
             b.to_array(a.data());
@@ -67,9 +56,18 @@ namespace vamp::rng
         }
 
         std::size_t iterations = 0;
+        FloatVector<dim> b_init;
         FloatVector<dim> b;
         FloatVector<dim> n = FloatVector<dim>::fill(0);
         FloatVector<dim> d = FloatVector<dim>::fill(1);
+
+        inline void reset() noexcept override
+        {
+            iterations = 0;
+            b = b_init;
+            n = FloatVector<dim>::fill(0);
+            d = FloatVector<dim>::fill(1);
+        }
 
         inline auto next() noexcept -> FloatVector<dim> override
         {

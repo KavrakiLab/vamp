@@ -38,11 +38,16 @@ def main(
     radius: float = 0.2,
     visualize: bool = False,
     planner: str = "rrtc",
+    sampler: str = "halton",               # Sampler to use.
+    skip_rng_iterations: int = 0,          # Skip a number of RNG iterations
     **kwargs,
     ):
 
     (vamp_module, planner_func, plan_settings,
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda", planner, **kwargs)
+
+    sampler = getattr(vamp_module, sampler)()
+    sampler.skip(skip_rng_iterations)
 
     if benchmark:
         random.seed(0)
@@ -60,8 +65,8 @@ def main(
                 e.add_sphere(vamp.Sphere(sphere, radius))
 
             if vamp.panda.validate(a, e) and vamp.panda.validate(b, e):
-                result = planner_func(a, b, e, plan_settings)
-                simple = vamp_module.simplify(result.path, e, simp_settings)
+                result = planner_func(a, b, e, plan_settings, sampler)
+                simple = vamp_module.simplify(result.path, e, simp_settings, sampler)
                 results.append(vamp.results_to_dict(result, simple))
 
         df = pd.DataFrame.from_dict(results)
@@ -94,8 +99,8 @@ def main(
             e.add_sphere(vamp.Sphere(sphere, radius))
             sim.add_sphere(radius, sphere)
 
-        result = planner_func(a, b, e, plan_settings)
-        simple = vamp_module.simplify(result.path, e, simp_settings)
+        result = planner_func(a, b, e, plan_settings, sampler)
+        simple = vamp_module.simplify(result.path, e, simp_settings, sampler)
 
         simple.path.interpolate(vamp.panda.resolution())
 

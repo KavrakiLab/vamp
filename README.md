@@ -142,13 +142,17 @@ For the flying sphere in $\mathbb{R}^3$, additional operations are available to 
 - `vamp.sphere.set_lows()` and `vamp.sphere.set_highs()` to set bounding box of space
 - `vamp.sphere.set_radius()` to set the sphere's radius
 
+## Supported RNG
+We ship implementations of the following pseudorandom number generators (PRNGs):
+- `halton`: An implementation of a [multi-dimensional Halton sequence](https://en.wikipedia.org/wiki/Halton_sequence) [[12-13]](#12).
+- `xorshift`: An implementation an [XOR shift](https://en.wikipedia.org/wiki/Xorshift) generator, only available on x86 machines.
+
 ## Supported Planners
 We currently ship two planners:
 - `rrtc`, which is an implementation of a dynamic-domain [[6]](#6) balanced [[7]](#7) RRT-Connect [[1]](#1).
 - `prm`, which is an implementation of basic PRM [[2]](#2) (i.e., PRM without the bounce heuristic, etc.).
 
 Note that these planners support planning to a set of goals, not just a single goal.
-Also, all planners use a multi-dimensional Halton sequence for deterministic planning [[12-13]](#12).
 
 We also ship a number of heuristic simplification routines:
 - randomized and deterministic shortcutting [[8, 9]](#8) (`REDUCE` and `SHORTCUT`)

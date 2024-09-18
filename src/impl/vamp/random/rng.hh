@@ -6,9 +6,9 @@
 namespace vamp::rng
 {
     template <std::size_t dim>
-    struct ConfigurationRNG
+    struct RNG
     {
-        using Ptr = std::shared_ptr<ConfigurationRNG<dim>>;
+        using Ptr = std::shared_ptr<RNG<dim>>;
         virtual inline auto next() noexcept -> FloatVector<dim> = 0;
     };
 }  // namespace vamp::rng

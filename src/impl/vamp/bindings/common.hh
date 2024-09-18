@@ -17,6 +17,9 @@
 #include <nanobind/stl/vector.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/ndarray.h>
+#include <utility>
+#include <string>
+#include <vector>
 
 namespace vamp::binding
 {
@@ -87,7 +90,7 @@ namespace vamp::binding
         using EnvironmentInput = vamp::collision::Environment<float>;
         using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
 
-        using RNG = vamp::rng::ConfigurationRNG<Robot::dimension>;
+        using RNG = vamp::rng::RNG<Robot::dimension>;
         using Halton = vamp::rng::Halton<Robot::dimension>;
 
         using PRM = vamp::planning::PRM<Robot, rake, Robot::resolution>;
@@ -98,8 +101,8 @@ namespace vamp::binding
             return std::make_shared<Halton>();
         }
 
-        inline static auto
-        fk(const ConfigurationArray &configuration) -> std::vector<vamp::collision::Sphere<float>>
+        inline static auto fk(const ConfigurationArray &configuration)
+            -> std::vector<vamp::collision::Sphere<float>>
         {
             typename Robot::template Spheres<1> out;
             typename Robot::template ConfigurationBlock<1> block;
@@ -120,9 +123,9 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto sphere_validate(
-            const ConfigurationArray &configuration,
-            const EnvironmentInput &environment) -> std::vector<std::vector<std::string>>
+        inline static auto
+        sphere_validate(const ConfigurationArray &configuration, const EnvironmentInput &environment)
+            -> std::vector<std::vector<std::string>>
         {
             auto spheres = fk(configuration);
             std::vector<std::vector<std::string>> result;
@@ -138,9 +141,9 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto validate_configuration(
-            const Configuration &configuration,
-            const EnvironmentInput &environment) -> bool
+        inline static auto
+        validate_configuration(const Configuration &configuration, const EnvironmentInput &environment)
+            -> bool
         {
             return vamp::planning::validate_motion<Robot, rake, 1>(
                 configuration, configuration, EnvironmentVector(environment));
@@ -229,10 +232,11 @@ namespace vamp::binding
         inline static auto simplify(
             const Path &path,
             const EnvironmentInput &environment,
-            const vamp::planning::SimplifySettings &settings) -> PlanningResult
+            const vamp::planning::SimplifySettings &settings,
+            const typename RNG::Ptr &rng) -> PlanningResult
         {
             return vamp::planning::simplify<Robot, rake, Robot::resolution>(
-                path, EnvironmentVector(environment), settings);
+                path, EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto filter_self_from_pointcloud(
@@ -244,8 +248,8 @@ namespace vamp::binding
             return filter_robot_from_pointcloud<Robot>(pc, start, environment, point_radius);
         }
 
-        inline static auto
-        eefk(const ConfigurationArray &start) -> std::pair<std::array<float, 3>, std::array<float, 4>>
+        inline static auto eefk(const ConfigurationArray &start)
+            -> std::pair<std::array<float, 3>, std::array<float, 4>>
         {
             const auto &result = Robot::eefk(start);
 
@@ -297,7 +301,8 @@ namespace vamp::binding
             "Collision checking resolution for this robot.");
         submodule.def(
             "n_spheres", []() { return Robot::n_spheres; }, "Number of spheres in robot collision model.");
-        submodule.def("space_measure", []() { return Robot::space_measure(); }, "Measure ");
+        submodule.def(
+            "space_measure", []() { return Robot::space_measure(); }, "Measure ");
 
         nb::class_<typename RH::Configuration>(submodule, "Configuration", "Robot configuration.")
             .def(nb::init<>(), "Empty constructor. Zero initialized.")
@@ -516,6 +521,7 @@ namespace vamp::binding
             "path"_a,
             "environment"_a,
             "settings"_a = vamp::planning::SimplifySettings(),
+            "rng"_a,
             "Simplification heuristics to post-process a path.");
 
         submodule.def(

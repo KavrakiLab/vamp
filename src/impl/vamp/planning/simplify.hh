@@ -67,7 +67,7 @@ namespace vamp::planning
         const auto max_steps = (not settings.max_steps) ? path.size() : settings.max_steps;
         const auto max_empty_steps = (not settings.max_empty_steps) ? path.size() : settings.max_empty_steps;
 
-        rng::RNG rng;
+        rng::Random random;
 
         bool result = false;
         for (auto i = 0U, no_change = 0U; i < max_steps or no_change < max_empty_steps; ++i, ++no_change)
@@ -78,9 +78,9 @@ namespace vamp::planning
             int range = 1 + static_cast<int>(
                                 std::floor(0.5F + static_cast<float>(initial_size) * settings.range_ratio));
 
-            auto point_0 = rng.uniform_integer(0, max_n);
+            auto point_0 = random.uniform_integer(0, max_n);
             auto point_1 =
-                rng.uniform_integer(std::max(point_0 - range, 0), std::min(max_n, point_0 + range));
+                random.uniform_integer(std::max(point_0 - range, 0), std::min(max_n, point_0 + range));
 
             if (std::abs(point_0 - point_1) < 2)
             {
@@ -146,6 +146,7 @@ namespace vamp::planning
     inline static auto perturb_path(
         Path<Robot::dimension> &path,
         const collision::Environment<FloatVector<rake>> &environment,
+        const typename vamp::rng::RNG<Robot::dimension>::Ptr &rng,
         const PerturbSettings &settings) -> bool
     {
         if (path.size() < 3)
@@ -156,14 +157,13 @@ namespace vamp::planning
         const auto max_steps = (not settings.max_steps) ? path.size() : settings.max_steps;
         const auto max_empty_steps = (not settings.max_empty_steps) ? path.size() : settings.max_empty_steps;
 
-        rng::RNG rng;
-        rng::Halton<Robot::dimension> halton;
+        rng::Random random;
 
         bool changed = false;
         for (auto step = 0U, no_change = 0U; step < max_steps and no_change < max_empty_steps;
              ++step, ++no_change)
         {
-            auto to_perturb_idx = rng.uniform_integer(1UL, path.size() - 2);
+            auto to_perturb_idx = random.uniform_integer(1UL, path.size() - 2);
             auto perturb_state = path[to_perturb_idx];
             auto before_state = path[to_perturb_idx - 1];
             auto after_state = path[to_perturb_idx + 1];
@@ -172,7 +172,7 @@ namespace vamp::planning
 
             for (auto attempt = 0U; attempt < settings.perturbation_attempts; ++attempt)
             {
-                auto perturbation = halton.next();
+                auto perturbation = rng->next();
                 Robot::scale_configuration(perturbation);
 
                 const auto new_state = perturb_state.interpolate(perturbation, settings.range);
@@ -197,7 +197,8 @@ namespace vamp::planning
     inline auto simplify(
         const Path<Robot::dimension> &path,
         const collision::Environment<FloatVector<rake>> &environment,
-        const SimplifySettings &settings) -> PlanningResult<Robot::dimension>
+        const SimplifySettings &settings,
+        const typename vamp::rng::RNG<Robot::dimension>::Ptr &rng) -> PlanningResult<Robot::dimension>
     {
         auto start_time = std::chrono::steady_clock::now();
 
@@ -209,8 +210,8 @@ namespace vamp::planning
         { return reduce_path_vertices<Robot, rake, resolution>(result.path, environment, settings.reduce); };
         const auto shortcut = [&result, &environment, settings]()
         { return shortcut_path<Robot, rake, resolution>(result.path, environment, settings.shortcut); };
-        const auto perturb = [&result, &environment, settings]()
-        { return perturb_path<Robot, rake, resolution>(result.path, environment, settings.perturb); };
+        const auto perturb = [&result, &environment, rng, settings]()
+        { return perturb_path<Robot, rake, resolution>(result.path, environment, rng, settings.perturb); };
 
         const std::map<SimplifyRoutine, std::function<bool()>> operations = {
             {BSPLINE, bspline},

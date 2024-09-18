@@ -6,7 +6,7 @@
 namespace vamp::rng
 {
     template <std::size_t dim>
-    struct Halton : public ConfigurationRNG<dim>
+    struct Halton : public RNG<dim>
     {
         static constexpr const std::size_t max_iterations = 100000U;
 

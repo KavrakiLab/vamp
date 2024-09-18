@@ -30,13 +30,14 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
+        using RNG = typename vamp::rng::RNG<Robot::dimension>;
 
         inline static auto solve(
             const Configuration &start,
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            const typename vamp::rng::ConfigurationRNG<dimension>::Ptr &rng) noexcept -> PlanningResult<dimension>
+            const RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
             return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
@@ -46,7 +47,7 @@ namespace vamp::planning
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            const typename vamp::rng::ConfigurationRNG<dimension>::Ptr &rng) noexcept -> PlanningResult<dimension>
+            const RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
             PlanningResult<dimension> result;
 
@@ -201,7 +202,7 @@ namespace vamp::planning
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            const typename vamp::rng::ConfigurationRNG<dimension>::Ptr &rng) noexcept -> Roadmap<dimension>
+            const RNG::Ptr &rng) noexcept -> Roadmap<dimension>
         {
             NN<dimension> roadmap;
 

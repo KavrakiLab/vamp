@@ -7,9 +7,9 @@
 
 namespace vamp::rng
 {
-    struct RNG
+    struct Random
     {
-        RNG() noexcept : rng(0)
+        Random() noexcept : rng(0)
         {
         }
 

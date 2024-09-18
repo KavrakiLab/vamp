@@ -95,7 +95,7 @@ def main(
                     failures.append(i)
                     break
 
-                simple = vamp_module.simplify(result.path, env, simp_settings)
+                simple = vamp_module.simplify(result.path, env, simp_settings, rng)
 
                 trial_result = vamp.results_to_dict(result, simple)
                 if pointcloud:

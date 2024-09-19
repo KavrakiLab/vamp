@@ -30,8 +30,8 @@ jobs:
       run: |
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
-        yes | sudo ./llvm.sh 16 || true
-        sudo apt-get install -y clang-format-16 python3-pip
+        yes | sudo ./llvm.sh 18 || true
+        sudo apt-get install -y clang-format-18 python3-pip
         pip install yapf
 
     - name: Run clang-format style check.

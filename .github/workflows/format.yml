@@ -36,7 +36,7 @@ jobs:
 
     - name: Run clang-format style check.
       run: >
-        find . -iname *.hh -o -iname *.cc | xargs -I{} clang-format-16 --dry-run -Werror {}
+        find . -iname *.hh -o -iname *.cc | xargs -I{} clang-format-18 --dry-run -Werror {}
 
     - name: Run yapf style check.
       run: >

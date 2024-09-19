@@ -106,6 +106,7 @@ namespace vamp::binding
 
 #if defined(__x86_64__)
         using XORShift = vamp::rng::XORShift<Robot::dimension>;
+
         inline static auto xorshift() -> typename RNG::Ptr
         {
             return std::make_shared<XORShift>();

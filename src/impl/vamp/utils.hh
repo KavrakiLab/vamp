@@ -32,14 +32,14 @@ namespace vamp::utils
     }
 
     // Same deal with div()...
-    inline constexpr auto c_div(std::size_t idx, std::size_t dim) noexcept
-        -> std::pair<std::size_t, std::size_t>
+    inline constexpr auto
+    c_div(std::size_t idx, std::size_t dim) noexcept -> std::pair<std::size_t, std::size_t>
     {
         return {idx / dim, idx % dim};
     }
 
-    inline auto get_elapsed_nanoseconds(const std::chrono::time_point<std::chrono::steady_clock> &start)
-        -> std::size_t
+    inline auto
+    get_elapsed_nanoseconds(const std::chrono::time_point<std::chrono::steady_clock> &start) -> std::size_t
     {
         return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start)
             .count();

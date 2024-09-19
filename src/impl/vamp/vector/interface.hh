@@ -59,8 +59,8 @@ namespace vamp
         inline static constexpr std::size_t num_rows = Sig::num_rows;
         using DataT = typename Sig::DataT;
 
-        inline constexpr auto to_array() const noexcept
-            -> std::array<typename S::ScalarT, num_scalars_rounded>
+        inline constexpr auto
+        to_array() const noexcept -> std::array<typename S::ScalarT, num_scalars_rounded>
         {
             alignas(S::Alignment) std::array<typename S::ScalarT, num_scalars_rounded> result = {};
             to_array(result);

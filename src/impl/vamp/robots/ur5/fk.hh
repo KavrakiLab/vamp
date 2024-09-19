@@ -4432,7 +4432,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (555, 583)
+        }  // (555, 583)
         if (/*forearm_link vs. robotiq_85_left_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_1667, ADD_1668, ADD_1669, 0.02))
@@ -4467,7 +4467,7 @@ namespace vamp::robots::ur5
             environment, ADD_1667, ADD_1668, ADD_1669, 0.02))
         {
             return false;
-        }   // (583, 583)
+        }  // (583, 583)
         if (/*shoulder_link vs. robotiq_85_left_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 0.0, 0.0, 1.003559, 0.08, ADD_1667, ADD_1668, ADD_1669, 0.02))
@@ -4477,7 +4477,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (583, 583)
+        }  // (583, 583)
         if (/*upper_arm_link vs. robotiq_85_left_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 SUB_2869, ADD_2870, ADD_2871, 0.29, ADD_1667, ADD_1668, ADD_1669, 0.02))
@@ -4571,7 +4571,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (583, 627)
+        }  // (583, 627)
         if (/*forearm_link vs. robotiq_85_left_finger_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_4157, ADD_4158, ADD_4159, 0.035))
@@ -4667,7 +4667,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (627, 627)
+        }  // (627, 627)
         if (/*shoulder_link vs. robotiq_85_left_finger_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 0.0, 0.0, 1.003559, 0.08, ADD_4157, ADD_4158, ADD_4159, 0.035))
@@ -4687,7 +4687,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (627, 627)
+        }  // (627, 627)
         if (/*upper_arm_link vs. robotiq_85_left_finger_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 SUB_2869, ADD_2870, ADD_2871, 0.29, ADD_4157, ADD_4158, ADD_4159, 0.035))
@@ -4831,7 +4831,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (627, 681)
+        }  // (627, 681)
         if (/*forearm_link vs. robotiq_85_left_inner_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_4321, ADD_4322, ADD_4323, 0.02))
@@ -4866,7 +4866,7 @@ namespace vamp::robots::ur5
             environment, ADD_4321, ADD_4322, ADD_4323, 0.02))
         {
             return false;
-        }   // (681, 681)
+        }  // (681, 681)
         if (/*shoulder_link vs. robotiq_85_left_inner_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 0.0, 0.0, 1.003559, 0.08, ADD_4321, ADD_4322, ADD_4323, 0.02))
@@ -4876,7 +4876,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (681, 681)
+        }  // (681, 681)
         if (/*upper_arm_link vs. robotiq_85_left_inner_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 SUB_2869, ADD_2870, ADD_2871, 0.29, ADD_4321, ADD_4322, ADD_4323, 0.02))
@@ -4965,7 +4965,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (681, 725)
+        }  // (681, 725)
         if (/*forearm_link vs. robotiq_85_left_finger_tip_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_4392, ADD_4393, ADD_4394, 0.033))
@@ -5032,7 +5032,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (725, 725)
+        }  // (725, 725)
         if (/*shoulder_link vs. robotiq_85_left_finger_tip_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 0.0, 0.0, 1.003559, 0.08, ADD_4392, ADD_4393, ADD_4394, 0.033))
@@ -5047,7 +5047,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (725, 725)
+        }  // (725, 725)
         if (/*upper_arm_link vs. robotiq_85_left_finger_tip_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 SUB_2869, ADD_2870, ADD_2871, 0.29, ADD_4392, ADD_4393, ADD_4394, 0.033))
@@ -5163,7 +5163,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (725, 776)
+        }  // (725, 776)
         if (/*forearm_link vs. robotiq_85_right_inner_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_4543, ADD_4544, ADD_4545, 0.02))
@@ -5198,7 +5198,7 @@ namespace vamp::robots::ur5
             environment, ADD_4543, ADD_4544, ADD_4545, 0.02))
         {
             return false;
-        }   // (776, 776)
+        }  // (776, 776)
         if (/*shoulder_link vs. robotiq_85_right_inner_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 0.0, 0.0, 1.003559, 0.08, ADD_4543, ADD_4544, ADD_4545, 0.02))
@@ -5208,7 +5208,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (776, 776)
+        }  // (776, 776)
         if (/*upper_arm_link vs. robotiq_85_right_inner_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 SUB_2869, ADD_2870, ADD_2871, 0.29, ADD_4543, ADD_4544, ADD_4545, 0.02))
@@ -5297,7 +5297,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (776, 820)
+        }  // (776, 820)
         if (/*forearm_link vs. robotiq_85_right_finger_tip_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_4622, ADD_4623, ADD_4624, 0.033))
@@ -5364,7 +5364,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (820, 820)
+        }  // (820, 820)
         if (/*shoulder_link vs. robotiq_85_right_finger_tip_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 0.0, 0.0, 1.003559, 0.08, ADD_4622, ADD_4623, ADD_4624, 0.033))
@@ -5379,7 +5379,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (820, 820)
+        }  // (820, 820)
         if (/*upper_arm_link vs. robotiq_85_right_finger_tip_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 SUB_2869, ADD_2870, ADD_2871, 0.29, ADD_4622, ADD_4623, ADD_4624, 0.033))
@@ -5462,7 +5462,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (820, 838)
+        }  // (820, 838)
         if (/*forearm_link vs. robotiq_85_right_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_2504, ADD_2505, ADD_2506, 0.02))
@@ -5497,7 +5497,7 @@ namespace vamp::robots::ur5
             environment, ADD_2504, ADD_2505, ADD_2506, 0.02))
         {
             return false;
-        }   // (838, 838)
+        }  // (838, 838)
         if (/*shoulder_link vs. robotiq_85_right_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 0.0, 0.0, 1.003559, 0.08, ADD_2504, ADD_2505, ADD_2506, 0.02))
@@ -5507,7 +5507,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (838, 838)
+        }  // (838, 838)
         if (/*upper_arm_link vs. robotiq_85_right_knuckle_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 SUB_2869, ADD_2870, ADD_2871, 0.29, ADD_2504, ADD_2505, ADD_2506, 0.02))
@@ -5601,7 +5601,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (838, 882)
+        }  // (838, 882)
         if (/*forearm_link vs. robotiq_85_right_finger_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 ADD_3067, ADD_3068, ADD_3069, 0.265, ADD_4838, ADD_4839, ADD_4840, 0.035))
@@ -5697,7 +5697,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (882, 882)
+        }  // (882, 882)
         if (/*shoulder_link vs. robotiq_85_right_finger_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 0.0, 0.0, 1.003559, 0.08, ADD_4838, ADD_4839, ADD_4840, 0.035))
@@ -5717,7 +5717,7 @@ namespace vamp::robots::ur5
             {
                 return false;
             }
-        }   // (882, 882)
+        }  // (882, 882)
         if (/*upper_arm_link vs. robotiq_85_right_finger_link*/
             sphere_sphere_self_collision<decltype(q[0])>(
                 SUB_2869, ADD_2870, ADD_2871, 0.29, ADD_4838, ADD_4839, ADD_4840, 0.035))

@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <limits>
 #include <vector>
+#include <set>
 
 #include <vamp/constants.hh>
 #include <vamp/utils.hh>
@@ -76,6 +77,35 @@ namespace vamp::planning
         double gamma_scale = 2.0;
     };
 
+    struct FCITStarNeighborParams
+    {
+        explicit FCITStarNeighborParams(std::size_t dim, double space_measure) noexcept
+          : dim(dim), space_measure(space_measure)
+        {
+        }
+
+        [[nodiscard]] inline constexpr auto max_neighbors(std::size_t num_states) const noexcept
+            -> std::size_t
+        {
+            return std::numeric_limits<size_t>::max();
+        }
+
+        [[nodiscard]] inline auto neighbor_radius(std::size_t num_states) const noexcept -> float
+        {
+            return std::numeric_limits<float>::infinity();
+        }
+
+        [[nodiscard]] inline constexpr auto dimension() const noexcept -> double
+        {
+            return static_cast<double>(dim);
+        }
+
+        std::size_t dim;
+        double space_measure;
+        double gamma_scale = 2.0;
+        bool offset_halton = false;
+    };
+
     struct FMTStarNeighborParams
     {
         explicit FMTStarNeighborParams(std::size_t dim, double space_measure)
@@ -137,6 +167,7 @@ namespace vamp::planning
         }
 
         std::size_t max_iterations = 100000;
+        std::size_t max_time = 10; // seconds
         std::size_t max_samples = 100000;
         NeighborParams neighbor_params;
     };
@@ -162,6 +193,35 @@ namespace vamp::planning
         };
 
         std::vector<Neighbor> neighbors;
+    };
+
+    struct FCITRoadmapNode
+    {
+        public:
+            FCITRoadmapNode(
+                unsigned int index,
+                float g = std::numeric_limits<float>::infinity(),
+                unsigned int sampleIdx = 0
+            ) : index(index),
+                g(g),
+                sampleIdx(sampleIdx)
+            {
+            }
+
+            unsigned int index;
+            float g;
+            unsigned int sampleIdx;
+
+
+        struct Neighbor
+        {
+            unsigned int index;
+            float distance;
+        };
+
+        std::vector<Neighbor> neighbors;
+        std::vector<Neighbor>::iterator neighbor_iterator;
+        std::set<int> invalidList;
     };
 
 }  // namespace vamp::planning

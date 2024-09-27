@@ -58,7 +58,6 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("max_iterations", &FCITStarSettings::max_iterations)
         .def_rw("max_time", &FCITStarSettings::max_time)
         .def_rw("max_samples", &FCITStarSettings::max_samples)
-        .def_rw("rng_skip_iterations", &FCITStarSettings::rng_skip_iterations)
         .def_rw("neighbor_params", &FCITStarSettings::neighbor_params)
         .def("max_neighbors", &FCITStarSettings::max_neighbors)
         .def("neighbor_radius", &FCITStarSettings::neighbor_radius);

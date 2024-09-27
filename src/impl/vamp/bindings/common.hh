@@ -236,20 +236,20 @@ namespace vamp::binding
             const ConfigurationArray &start,
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings)
-            -> PlanningResult
+            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings,
+            typename RNG::Ptr &rng) -> PlanningResult
         {
             ;
             return FCIT::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings);
+                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto fcit(
             const ConfigurationArray &start,
             const std::vector<ConfigurationArray> &goals,
             const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings)
-            -> PlanningResult
+            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings,
+            typename RNG::Ptr &rng) -> PlanningResult
         {
             std::vector<Configuration> goals_v;
             goals_v.reserve(goals.size());
@@ -260,7 +260,7 @@ namespace vamp::binding
             }
 
             const Configuration start_v(start);
-            return FCIT::solve(start_v, goals_v, EnvironmentVector(environment), settings);
+            return FCIT::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto roadmap(
@@ -558,8 +558,8 @@ namespace vamp::binding
             "start"_a,
             "goal"_a,
             "environment"_a,
-            "settings"_a = vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams>(
-                vamp::planning::FCITStarNeighborParams(Robot::dimension, Robot::space_measure())),
+            "settings"_a,
+            "rng"_a,
             "Solve the motion planning problem with FCIT*.");
 
         submodule.def(
@@ -568,8 +568,8 @@ namespace vamp::binding
             "start"_a,
             "goal"_a,
             "environment"_a,
-            "settings"_a = vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams>(
-                vamp::planning::FCITStarNeighborParams(Robot::dimension, Robot::space_measure())),
+            "settings"_a,
+            "rng"_a,
             "Solve the motion planning problem with FCIT*.");
 
         submodule.def(

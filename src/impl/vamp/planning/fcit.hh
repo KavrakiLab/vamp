@@ -27,7 +27,6 @@ namespace vamp::planning
 
     template <
         typename Robot,
-        typename RNG,
         std::size_t rake,
         std::size_t resolution,
         typename NeighborParamsT = FCITStarNeighborParams,
@@ -36,21 +35,24 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
+        using RNG = typename vamp::rng::RNG<Robot::dimension>;
 
         inline static auto solve(
             const Configuration &start,
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RoadmapSettings<NeighborParamsT> &settings) noexcept -> PlanningResult<dimension>
+            const RoadmapSettings<NeighborParamsT> &settings,
+            typename RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
-            return solve(start, std::vector<Configuration>{goal}, environment, settings);
+            return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
 
         inline static auto solve(
             const Configuration &start,
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RoadmapSettings<NeighborParamsT> &settings) noexcept -> PlanningResult<dimension>
+            const RoadmapSettings<NeighborParamsT> &settings,
+            typename RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
         {
             auto start_time = std::chrono::steady_clock::now();
 
@@ -58,22 +60,6 @@ namespace vamp::planning
             NN<dimension> roadmap;
 
             int batch_size = 100;
-            // Whether to use the standard halton sequence, or one offset by a random vector
-            bool offset_halton = false;
-
-            // Generate offest vector to offset halton sequence by a random (constant) value in each dimension
-            RNG rng;
-            // Each value in the offset vector will be in the range [0, 1/rng_offset]
-            int rng_offset = 5;
-            // Seed rng
-            srand(std::clock());
-            std::vector<float> offset_vec;
-            for (int i = 0; i < 7; i++)
-            {
-                auto x = ((static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) / (rng_offset));
-                offset_vec.push_back(x);
-            }
-            offset_vec.push_back(0);
 
             std::size_t iter = 0;
             typename Robot::template ConfigurationBlock<rake> temp_block;
@@ -122,7 +108,7 @@ namespace vamp::planning
             while (parents[1] == std::numeric_limits<unsigned int>::max())
             {
                 // ASAO Search
-                while (vamp::utils::get_elapsed_nanoseconds(start_time) < stop_time)
+                // while (vamp::utils::get_elapsed_nanoseconds(start_time) < stop_time)
                 {
                     for (auto i = 0; i < goals.size(); ++i)
                     {
@@ -332,24 +318,7 @@ namespace vamp::planning
                     int new_samples = 0;
                     for (int i = 0; new_samples < batch_size && nodes.size() < settings.max_samples; i++)
                     {
-                        auto rng_temp = rng.next();
-
-                        // If offsetting the halton sequence, add a random (constant) offset in each
-                        // dimension, then wrap to fit within [0,1]
-                        if (settings.neighbor_params.offset_halton)
-                        {
-                            rng_temp = rng_temp * (1 + (1 / rng_offset));
-                            rng_temp[0] = rng_temp[0] - offset_vec;
-
-                            for (int i = 0; i < 7; i++)
-                            {
-                                if (rng_temp.data[0][i] < 0)
-                                {
-                                    rng_temp.data[0][i] = rng_temp.data[0][i] + 1;
-                                }
-                            }
-                        }
-
+                        auto rng_temp = rng->next();
                         Robot::scale_configuration(rng_temp);
 
                         // TODO: This is a gross hack to get around the instruction cache issue...I realized

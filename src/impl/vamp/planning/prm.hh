@@ -24,8 +24,7 @@ namespace vamp::planning
         typename Robot,
         std::size_t rake,
         std::size_t resolution,
-        typename NeighborParamsT = PRMStarNeighborParams,
-        std::size_t batch = 128>
+        typename NeighborParamsT = PRMStarNeighborParams>
     struct PRM
     {
         using Configuration = typename Robot::Configuration;

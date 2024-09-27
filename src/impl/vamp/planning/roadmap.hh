@@ -103,7 +103,6 @@ namespace vamp::planning
         std::size_t dim;
         double space_measure;
         double gamma_scale = 2.0;
-        bool offset_halton = false;
     };
 
     struct FMTStarNeighborParams
@@ -167,8 +166,9 @@ namespace vamp::planning
         }
 
         std::size_t max_iterations = 100000;
-        std::size_t max_time = 10;  // seconds
         std::size_t max_samples = 100000;
+        std::size_t batch_size = 1000;
+        bool optimize = false;
         NeighborParams neighbor_params;
     };
 

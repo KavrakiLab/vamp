@@ -97,7 +97,7 @@ namespace vamp::planning
             // Search until Initial Solution
             while (nodes.size() < settings.max_samples and iter++ < settings.max_iterations)
             {
-                for (auto i = 0; i < goals.size(); ++i)
+                for (auto i = 0U; i < goals.size(); ++i)
                 {
                     const auto &goal = goals[i];
                     const auto &goal_node = nodes[i + 1];
@@ -120,8 +120,7 @@ namespace vamp::planning
                         if (neighbor_distance < (*it).g)
                         {
                             // f^(c) = g(p) + c^(p,c) + h^(c)
-                            auto cost = neighbor_distance + goal.distance(temp_config);
-
+                            const auto cost = neighbor_distance + goal.distance(temp_config);
                             start_node.neighbors.emplace_back(
                                 typename FCITRoadmapNode::Neighbor{neighbor_index, cost});
                         }
@@ -151,16 +150,16 @@ namespace vamp::planning
                         const auto current = open_set.back();
                         open_set.pop_back();
 
-                        const int current_index = current.index;
+                        const auto current_index = current.index;
                         auto &current_node = nodes[current_index];
                         auto current_g = current_node.g;
-                        int current_p = current.parent;
+                        auto current_p = current.parent;
 
                         auto &parent_node = nodes[current_p];
                         // +++++++++++++++++++++++++++++++++++++++++++
                         while (parent_node.neighbor_iterator != parent_node.neighbors.end())
                         {
-                            auto &node = nodes[(*parent_node.neighbor_iterator).index];
+                            const auto &node = nodes[(*parent_node.neighbor_iterator).index];
 
                             if ((*parent_node.neighbor_iterator).distance <
                                 node.g + goal.distance(state_index(node.index)))
@@ -170,20 +169,17 @@ namespace vamp::planning
                                     current_p,
                                     (*parent_node.neighbor_iterator).distance});
                                 parent_node.neighbor_iterator++;
-
                                 break;
                             }
-                            else
-                            {
-                                parent_node.neighbor_iterator++;
-                            }
+
+                            parent_node.neighbor_iterator++;
                         }
                         // ===========================================
 
                         if (parents[current_index] != current_p)
                         {
                             temp_config_self = state_index(current_index);
-                            auto dist_to_goal = goal.distance(temp_config_self);
+                            const auto dist_to_goal = goal.distance(temp_config_self);
 
                             if (current.cost <= goal_node.g)
                             {
@@ -222,14 +218,6 @@ namespace vamp::planning
                                             continue;
                                         }
                                     }
-                                    else
-                                    {
-                                        continue;
-                                    }
-                                }
-                                else
-                                {
-                                    continue;
                                 }
                             }
                             else
@@ -238,10 +226,9 @@ namespace vamp::planning
                             }
                         }
 
-                        int counter = 0;
-
-                        // +++++++++++++++++++++++++++++++++++++++++++
                         current_node.neighbors.reserve(nodes.size());
+
+                        bool added_neighbors = false;
                         // Iterate through neighbors and add all outgoing neighbors
                         for (auto it = nodes.begin() + current_node.sampleIdx; it != nodes.end(); it++)
                         {
@@ -261,13 +248,13 @@ namespace vamp::planning
 
                             current_node.neighbors.emplace_back(
                                 typename FCITRoadmapNode::Neighbor{neighbor_index, cost});
-                            counter++;
                             current_node.sampleIdx++;
+
+                            added_neighbors = true;
                         }
-                        // ===========================================
 
                         // If I added any new neighbours
-                        if (counter > 0)
+                        if (added_neighbors)
                         {
                             pdqsort_branchless(
                                 current_node.neighbors.begin(),

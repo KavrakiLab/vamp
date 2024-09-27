@@ -95,9 +95,7 @@ namespace vamp::planning
             std::vector<utils::QueueEdge> open_set;
 
             // Search until Initial Solution
-            while (parents[1] == std::numeric_limits<unsigned int>::max() or
-                   (settings.optimize and nodes.size() < settings.max_samples and
-                    iter < settings.max_iterations))
+            while (nodes.size() < settings.max_samples and iter++ < settings.max_iterations)
             {
                 for (auto i = 0; i < goals.size(); ++i)
                 {
@@ -182,16 +180,7 @@ namespace vamp::planning
                         }
                         // ===========================================
 
-                        bool skip_to_neighbors = false;
-
-                        // +++++++++++++++++++++++++++++++++++++++++++
-                        if (parents[current_index] == current_p)
-                        {
-                            skip_to_neighbors = true;
-                        }
-                        // ===========================================
-
-                        if (!skip_to_neighbors)
+                        if (parents[current_index] != current_p)
                         {
                             temp_config_self = state_index(current_index);
                             auto dist_to_goal = goal.distance(temp_config_self);
@@ -201,7 +190,7 @@ namespace vamp::planning
                                 // If this edge could improve the path through this node
                                 if (current.cost < current_g + dist_to_goal)
                                 {
-                                    bool valid = !current_node.invalidList.count(current_p);
+                                    bool valid = not current_node.invalidList.count(current_p);
 
                                     // If this edge hasn't already been found as invalid
                                     if (valid)
@@ -295,16 +284,17 @@ namespace vamp::planning
                     }
                 }
 
-                iter++;
-                int new_samples = 0;
-                for (int i = 0; new_samples < settings.batch_size && nodes.size() < settings.max_samples; i++)
+                // If we have a solution and just want an initial solution, break
+                if (not settings.optimize and parents[1] != std::numeric_limits<unsigned int>::max())
+                {
+                    break;
+                }
+
+                for (auto new_samples = 0U;
+                     new_samples < settings.batch_size and nodes.size() < settings.max_samples;)
                 {
                     auto rng_temp = rng->next();
                     Robot::scale_configuration(rng_temp);
-
-                    // TODO: This is a gross hack to get around the instruction cache issue...I realized
-                    // that edge sampling, while valid, wastes too much effort with our current
-                    // validation API
 
                     // Check sample validity
                     for (auto i = 0U; i < dimension; ++i)

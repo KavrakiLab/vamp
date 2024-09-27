@@ -244,8 +244,8 @@ namespace vamp::binding
                 Configuration(start), Configuration(goal), EnvironmentVector(environment), settings);
         }
 
-        inline static auto
-        fcit(const ConfigurationArray &start,
+        inline static auto fcit(
+            const ConfigurationArray &start,
             const std::vector<ConfigurationArray> &goals,
             const EnvironmentInput &environment,
             const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings)

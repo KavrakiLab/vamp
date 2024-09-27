@@ -84,8 +84,8 @@ namespace vamp::planning
         {
         }
 
-        [[nodiscard]] inline constexpr auto max_neighbors(std::size_t num_states) const noexcept
-            -> std::size_t
+        [[nodiscard]] inline constexpr auto
+        max_neighbors(std::size_t num_states) const noexcept -> std::size_t
         {
             return std::numeric_limits<size_t>::max();
         }
@@ -167,7 +167,7 @@ namespace vamp::planning
         }
 
         std::size_t max_iterations = 100000;
-        std::size_t max_time = 10; // seconds
+        std::size_t max_time = 10;  // seconds
         std::size_t max_samples = 100000;
         NeighborParams neighbor_params;
     };
@@ -197,21 +197,18 @@ namespace vamp::planning
 
     struct FCITRoadmapNode
     {
-        public:
-            FCITRoadmapNode(
-                unsigned int index,
-                float g = std::numeric_limits<float>::infinity(),
-                unsigned int sampleIdx = 0
-            ) : index(index),
-                g(g),
-                sampleIdx(sampleIdx)
-            {
-            }
+    public:
+        FCITRoadmapNode(
+            unsigned int index,
+            float g = std::numeric_limits<float>::infinity(),
+            unsigned int sampleIdx = 0)
+          : index(index), g(g), sampleIdx(sampleIdx)
+        {
+        }
 
-            unsigned int index;
-            float g;
-            unsigned int sampleIdx;
-
+        unsigned int index;
+        float g;
+        unsigned int sampleIdx;
 
         struct Neighbor
         {

@@ -1,11 +1,9 @@
 #pragma once
 #include <algorithm>
-#include <array>
 #include <chrono>
 #include <limits>
 #include <memory>
 
-#include <utility>
 #include <vamp/collision/environment.hh>
 #include <vamp/planning/nn.hh>
 #include <vamp/planning/plan.hh>
@@ -18,9 +16,7 @@
 #include <vamp/vector.hh>
 #include <vector>
 
-#include <iostream>
-#include <fstream>
-#include <string.h>
+#include <pdqsort.h>
 
 namespace vamp::planning
 {
@@ -144,7 +140,7 @@ namespace vamp::planning
                         }
                         // ===========================================
 
-                        pdqsort(
+                        pdqsort_branchless(
                             start_node.neighbors.begin(),
                             start_node.neighbors.end(),
                             [&goal, &state_index](const auto &a, const auto &b)
@@ -160,7 +156,7 @@ namespace vamp::planning
                         while (not open_set.empty())
                         {
                             // +++++++++++++++++++++++++++++++++++++++++++
-                            pdqsort(
+                            pdqsort_branchless(
                                 open_set.begin(),
                                 open_set.end(),
                                 [](const auto &a, const auto &b) { return a.cost > b.cost; });
@@ -296,7 +292,7 @@ namespace vamp::planning
                             // If I added any new neighbours
                             if (counter > 0)
                             {
-                                pdqsort(
+                                pdqsort_branchless(
                                     current_node.neighbors.begin(),
                                     current_node.neighbors.end(),
                                     [&goal, &state_index](const auto &a, const auto &b)

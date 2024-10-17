@@ -1,6 +1,5 @@
 #pragma once
 #include <algorithm>
-#include <array>
 #include <chrono>
 #include <limits>
 #include <memory>
@@ -37,7 +36,7 @@ namespace vamp::planning
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            typename RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
         {
             return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
@@ -47,7 +46,7 @@ namespace vamp::planning
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            typename RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
         {
             PlanningResult<dimension> result;
 
@@ -202,7 +201,7 @@ namespace vamp::planning
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            typename RNG::Ptr &rng) noexcept -> Roadmap<dimension>
+            typename RNG::Ptr rng) noexcept -> Roadmap<dimension>
         {
             NN<dimension> roadmap;
 

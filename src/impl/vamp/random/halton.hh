@@ -8,6 +8,7 @@ namespace vamp::rng
     template <std::size_t dim>
     struct Halton : public RNG<dim>
     {
+        // Numerical precision degrades around 1.4M iterations, this value can be increased up to that point.
         static constexpr const std::size_t max_iterations = 1000000U;
 
         static constexpr const std::array<float, 16> primes{
@@ -55,13 +56,13 @@ namespace vamp::rng
             b = FloatVector<dim>(a);
         }
 
-        std::size_t iterations = 0;
-        FloatVector<dim> b_init;
+        const FloatVector<dim> b_init;
         FloatVector<dim> b;
         FloatVector<dim> n = FloatVector<dim>::fill(0);
         FloatVector<dim> d = FloatVector<dim>::fill(1);
+        std::size_t iterations = 0;
 
-        inline void reset() noexcept override
+        inline void reset() noexcept override final
         {
             iterations = 0;
             b = b_init;
@@ -69,7 +70,7 @@ namespace vamp::rng
             d = FloatVector<dim>::fill(1);
         }
 
-        inline auto next() noexcept -> FloatVector<dim> override
+        inline auto next() noexcept -> FloatVector<dim> override final
         {
             iterations++;
             if (iterations > max_iterations)

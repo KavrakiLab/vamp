@@ -17,7 +17,7 @@ def main(
     dataset: str = "problems.pkl",         # Pickled dataset to use
     problem: Union[str, List[str]] = [],   # Problem name or list of problems to evaluate
     trials: int = 1,                       # Number of trials to evaluate each instance
-    sampler: str = "halton",               # Sampler to use.
+    sampler_name: str = "halton",               # Sampler to use.
     skip_rng_iterations: int = 0,          # Skip a number of RNG iterations
     print_failures: bool = False,          # Print out failures and invalid problems
     pointcloud: bool = False,              # Use pointcloud rather than primitive geometry
@@ -50,7 +50,7 @@ def main(
     (vamp_module, planner_func, plan_settings,
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs(robot, planner, **kwargs)
 
-    sampler = getattr(vamp_module, sampler)()
+    sampler = getattr(vamp_module, sampler_name)()
 
     total_problems = 0
     valid_problems = 0

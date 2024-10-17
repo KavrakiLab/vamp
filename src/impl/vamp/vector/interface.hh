@@ -459,8 +459,8 @@ namespace vamp
         template <typename OtherT, typename BoundsT>
         inline static constexpr auto map_to_range(OtherT v, BoundsT min_v, BoundsT max_v) noexcept -> D
         {
-            constexpr float lo = -0.5F;
-            constexpr float hi = 0.5F;
+            constexpr typename S::ScalarT lo = -0.5F;
+            constexpr typename S::ScalarT hi = 0.5F;
             const auto normalized = D(apply<S::template map_to_range<typename OtherT::S::VectorT>>(v.data));
 
             return min_v + ((normalized - lo) / (hi - lo)) * (max_v - min_v);

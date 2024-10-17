@@ -14,7 +14,7 @@ def main(
     z: float = 1,
     radius: float = 0.1,
     iterations: int = 10000,
-    sampler: str = "halton",
+    sampler_name: str = "halton",
     ):
 
     env = vamp.Environment()
@@ -34,7 +34,7 @@ def main(
     settings = vamp.PRMSettings(vamp.PRMNeighborParams(vamp.sphere.dimension(), vamp.sphere.space_measure()))
     settings.max_iterations = iterations
 
-    sampler = getattr(vamp.sphere, sampler)()
+    sampler = getattr(vamp.sphere, sampler_name)()
     roadmap = vamp.sphere.roadmap(robot_initial_pos, goal_pos, env, settings, sampler)
 
     print(f"Created roadmap with {len(roadmap)} nodes in {roadmap.nanoseconds / 1e9} seconds!")

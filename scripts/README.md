@@ -39,8 +39,8 @@ These scripts support standard planner and simplifier configuration arguments (s
 In addition, they both support the following arguments:
 - `problem`: which takes in either a single problem name (e.g., `table_pick`) or a list (e.g., `table_pick,table_under_pick`) to evaluate against a specific set of problems.
 - `dataset`: which describes the specific dataset of problems that should be loaded and inspected. See [Datasets](../resources/README.md#supported-planners) for more information.
-- `sampler`: specify which PRNG sampler to use for generating random configurations (see [supported RNGs](../README.md#supported-rng)).
-- `seed`: seed for the PRNG sampler.
+- `sampler_name`: specify which PRNG sampler to use for generating random configurations (see [supported RNGs](../README.md#supported-rng)).
+- `skip_rng_iterations`: skip _n_ PRNG iterations. Can be used to "seed" trials differently.
 - `pointcloud`: construct a pointcloud approximation of the problem's scene geometry and plan against this representation using the CAPT datastructure.
 - `samples_per_object`: number of samples per each object for pointcloud generation.
 - `filter_radius`: pointcloud filtering radius. Will remove all redundant points that are within the specified radius.

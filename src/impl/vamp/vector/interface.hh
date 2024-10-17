@@ -461,8 +461,11 @@ namespace vamp
         {
             constexpr typename S::ScalarT lo = -0.5F;
             constexpr typename S::ScalarT hi = 0.5F;
+
+            // maps [-INT_MAX, INT_MAX] to [-0.5, 0.5]
             const auto normalized = D(apply<S::template map_to_range<typename OtherT::S::VectorT>>(v.data));
 
+            // adjust to desired range
             return min_v + ((normalized - lo) / (hi - lo)) * (max_v - min_v);
         }
 

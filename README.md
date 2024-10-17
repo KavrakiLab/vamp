@@ -145,7 +145,7 @@ For the flying sphere in $\mathbb{R}^3$, additional operations are available to 
 ## Supported RNG
 We ship implementations of the following pseudorandom number generators (PRNGs):
 - `halton`: An implementation of a [multi-dimensional Halton sequence](https://en.wikipedia.org/wiki/Halton_sequence) [[12-13]](#12).
-- `xorshift`: An implementation an [XOR shift](https://en.wikipedia.org/wiki/Xorshift) generator, only available on x86 machines.
+- `xorshift`: A SIMD-accelerated implementation of an [XOR shift](https://en.wikipedia.org/wiki/Xorshift) generator, only available on x86 machines. Uses the [`SIMDxorshift`](https://github.com/lemire/SIMDxorshift) library.
 
 ## Supported Planners
 We currently ship two planners:

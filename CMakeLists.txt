@@ -46,8 +46,6 @@ include(FetchInitCPM)
 include(Dependencies)
 
 list(APPEND VAMP_INCLUDES
-  ${NIGH_INCLUDE_DIRS}
-  ${PDQSORT_INCLUDE_DIRS}
   src/impl
 )
 
@@ -56,13 +54,11 @@ include(GNUInstallDirs)
 add_library(vamp INTERFACE)
 target_include_directories(vamp INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/impl>
-  ${NIGH_INCLUDE_DIRS}
-  ${PDQSORT_INCLUDE_DIRS}
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 target_compile_features(vamp INTERFACE cxx_std_17)
-target_link_libraries(vamp INTERFACE Eigen3::Eigen)
+target_link_libraries(vamp INTERFACE Eigen3::Eigen nigh::nigh pdqsort::pdqsort)
 install(TARGETS vamp
   EXPORT ${PROJECT_NAME}_Targets
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

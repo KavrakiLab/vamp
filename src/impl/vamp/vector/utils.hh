@@ -84,8 +84,8 @@ namespace vamp
             }
 
             template <std::size_t... I>
-            inline static auto run(std::index_sequence<I...>, const DataT l_data, const DataT r_data) noexcept
-                -> RetT
+            inline static auto
+            run(std::index_sequence<I...>, const DataT l_data, const DataT r_data) noexcept -> RetT
             {
                 RetT result;
                 (..., void(result[I] = fn(std::get<I>(l_data), std::get<I>(r_data))));
@@ -122,8 +122,9 @@ namespace vamp
 
             template <typename IndexT, typename... FixedArgT, std::size_t... I>
             inline static auto
-            run(std::index_sequence<I...>, const IndexT i_data, const FixedArgT... fixed_args) noexcept
-                -> RetT
+            run(std::index_sequence<I...>,
+                const IndexT i_data,
+                const FixedArgT... fixed_args) noexcept -> RetT
             {
                 RetT result;
                 (..., void(result[I] = fn(std::get<I>(i_data), fixed_args...)));

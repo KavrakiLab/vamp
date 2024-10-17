@@ -31,9 +31,7 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
         .def_ro("r", &vc::Sphere<float>::r)
         .def_prop_ro(
             "position",
-            [](vc::Sphere<float> &sphere) {
-                return std::array<float, 3>{sphere.x, sphere.y, sphere.z};
-            })
+            [](vc::Sphere<float> &sphere) { return std::array<float, 3>{sphere.x, sphere.y, sphere.z}; })
         .def_ro("min_distance", &vc::Sphere<float>::min_distance)
         .def_rw("name", &vc::Sphere<float>::name);
 

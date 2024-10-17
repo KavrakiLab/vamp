@@ -21,8 +21,7 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("tree_ratio", &vp::RRTCSettings::tree_ratio)
         .def_rw("max_iterations", &vp::RRTCSettings::max_iterations)
         .def_rw("max_samples", &vp::RRTCSettings::max_samples)
-        .def_rw("start_tree_first", &vp::RRTCSettings::start_tree_first)
-        .def_rw("rng_skip_iterations", &vp::RRTCSettings::rng_skip_iterations);
+        .def_rw("start_tree_first", &vp::RRTCSettings::start_tree_first);
 
     // TODO: Redesign a neater form of RoadmapSettings/NeighborParams
     // TODO: Expose the other NeighborParams types
@@ -39,7 +38,6 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def(nb::init<vp::PRMStarNeighborParams>())
         .def_rw("max_iterations", &PRMStarSettings::max_iterations)
         .def_rw("max_samples", &PRMStarSettings::max_samples)
-        .def_rw("rng_skip_iterations", &PRMStarSettings::rng_skip_iterations)
         .def_rw("neighbor_params", &PRMStarSettings::neighbor_params)
         .def("max_neighbors", &PRMStarSettings::max_neighbors)
         .def("neighbor_radius", &PRMStarSettings::neighbor_radius);

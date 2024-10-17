@@ -79,8 +79,8 @@ namespace vamp::planning
     template <std::size_t dimension>
     struct NNNodeKey
     {
-        inline auto operator()(const NNNode<dimension> &node) const noexcept
-            -> const NNFloatArray<dimension> &
+        inline auto
+        operator()(const NNNode<dimension> &node) const noexcept -> const NNFloatArray<dimension> &
         {
             return node.array;
         }

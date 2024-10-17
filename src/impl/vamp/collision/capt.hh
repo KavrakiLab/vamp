@@ -12,7 +12,6 @@
 #include <pdqsort.h>
 
 #include <vamp/collision/math.hh>
-#include <vamp/random/fastrand.hh>
 #include <vamp/vector.hh>
 
 namespace vamp::collision
@@ -134,8 +133,6 @@ namespace vamp::collision
                 return true;
             }
         };
-
-        rng::FastRNG rng;
 
         inline auto median_partition(
             const std::vector<Point> &points,

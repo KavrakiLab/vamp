@@ -1,15 +1,14 @@
 #pragma once
 
 #include <cmath>
-#include <cstddef>
 #include <random>
 #include <algorithm>
 
 namespace vamp::rng
 {
-    struct RNG
+    struct Distribution
     {
-        RNG() noexcept : rng(0)
+        Distribution() noexcept : rng(0)
         {
         }
 

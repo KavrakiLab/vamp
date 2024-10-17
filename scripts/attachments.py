@@ -70,8 +70,9 @@ def main(
         sim.update_object_position(attachment_sphere, sphere.position)
 
     # Plan and display
-    result = planner_func(a, b, e, plan_settings)
-    simple = vamp_module.simplify(result.path, e, simp_settings)
+    sampler = vamp_module.halton()
+    result = planner_func(a, b, e, plan_settings, sampler)
+    simple = vamp_module.simplify(result.path, e, simp_settings, sampler)
     simple.path.interpolate(vamp.panda.resolution())
 
     sim.animate(simple.path, callback)

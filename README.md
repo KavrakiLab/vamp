@@ -75,6 +75,13 @@ python scripts/sphere_cage_example.py --visualize
 Which will benchmark a simple scenario of the Franka Emika Panda in a cage of spheres and visualize one of the results.
 See the [README in the scripts directory](scripts/README.md) for more details.
 
+#### Incremental Rebuilds
+Rather than building the entire library from scratch each time, `nanobind` supports [incremental rebuilds](https://nanobind.readthedocs.io/en/latest/packaging.html#step-5-incremental-rebuilds):
+```bash
+cd vamp
+pip install --no-build-isolation -Ceditable.rebuild=true -ve .
+```
+
 ### C++
 If you wish to extend `vamp` via C++, please build directly with CMake, e.g.:
 ```
@@ -135,13 +142,17 @@ For the flying sphere in $\mathbb{R}^3$, additional operations are available to 
 - `vamp.sphere.set_lows()` and `vamp.sphere.set_highs()` to set bounding box of space
 - `vamp.sphere.set_radius()` to set the sphere's radius
 
+## Supported RNG
+We ship implementations of the following pseudorandom number generators (PRNGs):
+- `halton`: An implementation of a [multi-dimensional Halton sequence](https://en.wikipedia.org/wiki/Halton_sequence) [[12-13]](#12).
+- `xorshift`: A SIMD-accelerated implementation of an [XOR shift](https://en.wikipedia.org/wiki/Xorshift) generator, only available on x86 machines. Uses the [`SIMDxorshift`](https://github.com/lemire/SIMDxorshift) library.
+
 ## Supported Planners
 We currently ship two planners:
 - `rrtc`, which is an implementation of a dynamic-domain [[6]](#6) balanced [[7]](#7) RRT-Connect [[1]](#1).
 - `prm`, which is an implementation of basic PRM [[2]](#2) (i.e., PRM without the bounce heuristic, etc.).
 
 Note that these planners support planning to a set of goals, not just a single goal.
-Also, all planners use a multi-dimensional Halton sequence for deterministic planning [[12-13]](#12).
 
 We also ship a number of heuristic simplification routines:
 - randomized and deterministic shortcutting [[8, 9]](#8) (`REDUCE` and `SHORTCUT`)

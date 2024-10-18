@@ -35,3 +35,4 @@ cmake.build-type = "Release"
 [tool.scikit-build.cmake.define]
 VAMP_LTO = "ON"
 # VAMP_FORCE_CLANG = "ON"
+VAMP_BUILD_PYTHON_BINDINGS = ON

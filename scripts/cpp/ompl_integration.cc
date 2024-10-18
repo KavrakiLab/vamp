@@ -130,8 +130,8 @@ struct VAMPMotionValidator : public ob::MotionValidator
             ompl_to_vamp(s1), ompl_to_vamp(s2), env_v);
     }
 
-    auto checkMotion(const ob::State *, const ob::State *, std::pair<ob::State *, double> &) const
-        -> bool override
+    auto
+    checkMotion(const ob::State *, const ob::State *, std::pair<ob::State *, double> &) const -> bool override
     {
         throw ompl::Exception("Not implemented!");
     }

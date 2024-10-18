@@ -59,8 +59,8 @@ namespace vamp
         inline static constexpr std::size_t num_rows = Sig::num_rows;
         using DataT = typename Sig::DataT;
 
-        inline constexpr auto to_array() const noexcept
-            -> std::array<typename S::ScalarT, num_scalars_rounded>
+        inline constexpr auto
+        to_array() const noexcept -> std::array<typename S::ScalarT, num_scalars_rounded>
         {
             alignas(S::Alignment) std::array<typename S::ScalarT, num_scalars_rounded> result = {};
             to_array(result);
@@ -459,8 +459,14 @@ namespace vamp
         template <typename OtherT, typename BoundsT>
         inline static constexpr auto map_to_range(OtherT v, BoundsT min_v, BoundsT max_v) noexcept -> D
         {
+            constexpr typename S::ScalarT lo = -0.5F;
+            constexpr typename S::ScalarT hi = 0.5F;
+
+            // maps [-INT_MAX, INT_MAX] to [-0.5, 0.5]
             const auto normalized = D(apply<S::template map_to_range<typename OtherT::S::VectorT>>(v.data));
-            return min_v + (normalized * (max_v - min_v));
+
+            // adjust to desired range
+            return min_v + ((normalized - lo) / (hi - lo)) * (max_v - min_v);
         }
 
         template <

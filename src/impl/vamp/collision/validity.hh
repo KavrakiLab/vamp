@@ -249,8 +249,8 @@ namespace vamp
     }
 
     template <typename DataT>
-    inline constexpr auto attachment_environment_collision(const collision::Environment<DataT> &e) noexcept
-        -> bool
+    inline constexpr auto
+    attachment_environment_collision(const collision::Environment<DataT> &e) noexcept -> bool
     {
         for (const auto &s : e.attachments->posed_spheres)
         {

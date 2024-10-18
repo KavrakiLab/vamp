@@ -38,7 +38,7 @@ def main(
     radius: float = 0.2,
     visualize: bool = False,
     planner: str = "rrtc",
-    sampler_name: str = "halton",       # Sampler to use.
+    sampler_name: str = "halton",  # Sampler to use.
     skip_rng_iterations: int = 0,  # Skip a number of RNG iterations
     **kwargs,
     ):

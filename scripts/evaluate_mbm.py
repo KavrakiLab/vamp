@@ -17,7 +17,7 @@ def main(
     dataset: str = "problems.pkl",         # Pickled dataset to use
     problem: Union[str, List[str]] = [],   # Problem name or list of problems to evaluate
     trials: int = 1,                       # Number of trials to evaluate each instance
-    sampler_name: str = "halton",               # Sampler to use.
+    sampler_name: str = "halton",          # Sampler to use.
     skip_rng_iterations: int = 0,          # Skip a number of RNG iterations
     print_failures: bool = False,          # Print out failures and invalid problems
     pointcloud: bool = False,              # Use pointcloud rather than primitive geometry

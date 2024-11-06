@@ -33,12 +33,12 @@ namespace vamp::rng
         using IntVector = Vector<SIMDVector<__m256i>, 1, dim>;
         IntVector buffer;
 
-        inline void reset() noexcept override
+        inline void reset() noexcept override final
         {
             avx_xorshift128plus_init(key1_init, key2_init, &key);
         }
 
-        inline auto next() noexcept -> FloatVector<dim> override
+        inline auto next() noexcept -> FloatVector<dim> override final
         {
             for (auto i = 0U; i < IntVector::num_vectors; ++i)
             {

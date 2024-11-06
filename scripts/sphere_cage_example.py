@@ -38,7 +38,7 @@ def main(
     radius: float = 0.2,
     visualize: bool = False,
     planner: str = "rrtc",
-    sampler: str = "halton",       # Sampler to use.
+    sampler_name: str = "halton",  # Sampler to use.
     skip_rng_iterations: int = 0,  # Skip a number of RNG iterations
     **kwargs,
     ):
@@ -46,7 +46,7 @@ def main(
     (vamp_module, planner_func, plan_settings,
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda", planner, **kwargs)
 
-    sampler = getattr(vamp_module, sampler)()
+    sampler = getattr(vamp_module, sampler_name)()
     sampler.skip(skip_rng_iterations)
 
     if benchmark:

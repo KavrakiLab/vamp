@@ -5,6 +5,8 @@
 
 #if defined(__x86_64__)
 #include <vamp/random/xorshift.hh>
+#else
+#include <stdexcept>
 #endif
 
 #include <vamp/collision/sphere_sphere.hh>
@@ -96,10 +98,12 @@ namespace vamp::binding
 
         using RNG = vamp::rng::RNG<Robot::dimension>;
         using Halton = vamp::rng::Halton<Robot::dimension>;
+#if defined(__x86_64__)
+        using XORShift = vamp::rng::XORShift<Robot::dimension>;
+#endif
 
         using PRM = vamp::planning::PRM<Robot, rake, Robot::resolution>;
         using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
-        using FCIT = vamp::planning::FCIT<Robot, rake, Robot::resolution>;
 
         inline static auto halton() -> typename RNG::Ptr
         {
@@ -107,8 +111,6 @@ namespace vamp::binding
         }
 
 #if defined(__x86_64__)
-        using XORShift = vamp::rng::XORShift<Robot::dimension>;
-
         inline static auto xorshift() -> typename RNG::Ptr
         {
             return std::make_shared<XORShift>();
@@ -176,7 +178,7 @@ namespace vamp::binding
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
             const vamp::planning::RRTCSettings &settings,
-            typename RNG::Ptr &rng) -> PlanningResult
+            typename RNG::Ptr rng) -> PlanningResult
         {
             return RRTC::solve(
                 Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
@@ -187,7 +189,7 @@ namespace vamp::binding
             const std::vector<ConfigurationArray> &goals,
             const EnvironmentInput &environment,
             const vamp::planning::RRTCSettings &settings,
-            typename RNG::Ptr &rng) -> PlanningResult
+            typename RNG::Ptr rng) -> PlanningResult
         {
             std::vector<Configuration> goals_v;
             goals_v.reserve(goals.size());
@@ -206,7 +208,7 @@ namespace vamp::binding
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
             const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
-            typename RNG::Ptr &rng) -> PlanningResult
+            typename RNG::Ptr rng) -> PlanningResult
         {
             ;
             return PRM::solve(
@@ -218,7 +220,7 @@ namespace vamp::binding
             const std::vector<ConfigurationArray> &goals,
             const EnvironmentInput &environment,
             const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
-            typename RNG::Ptr &rng) -> PlanningResult
+            typename RNG::Ptr rng) -> PlanningResult
         {
             std::vector<Configuration> goals_v;
             goals_v.reserve(goals.size());
@@ -232,43 +234,12 @@ namespace vamp::binding
             return PRM::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
         }
 
-        inline static auto fcit_single(
-            const ConfigurationArray &start,
-            const ConfigurationArray &goal,
-            const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings,
-            typename RNG::Ptr &rng) -> PlanningResult
-        {
-            ;
-            return FCIT::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
-        }
-
-        inline static auto fcit(
-            const ConfigurationArray &start,
-            const std::vector<ConfigurationArray> &goals,
-            const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings,
-            typename RNG::Ptr &rng) -> PlanningResult
-        {
-            std::vector<Configuration> goals_v;
-            goals_v.reserve(goals.size());
-
-            for (const auto &goal : goals)
-            {
-                goals_v.emplace_back(goal);
-            }
-
-            const Configuration start_v(start);
-            return FCIT::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
-        }
-
         inline static auto roadmap(
             const ConfigurationArray &start,
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
             const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
-            typename RNG::Ptr &rng) -> Roadmap
+            typename RNG::Ptr rng) -> Roadmap
         {
             return PRM::build_roadmap(
                 Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
@@ -278,7 +249,7 @@ namespace vamp::binding
             const Path &path,
             const EnvironmentInput &environment,
             const vamp::planning::SimplifySettings &settings,
-            typename RNG::Ptr &rng) -> PlanningResult
+            typename RNG::Ptr rng) -> PlanningResult
         {
             return vamp::planning::simplify<Robot, rake, Robot::resolution>(
                 path, EnvironmentVector(environment), settings, rng);
@@ -317,19 +288,21 @@ namespace vamp::binding
 
         nb::class_<typename RH::RNG::Ptr>(submodule, "RNG", "RNG for robot configurations.")
             .def(
-                "reset", [](typename RH::RNG::Ptr &rng) { rng->reset(); }, "Reset the RNG.")
+                "reset",
+                [](typename RH::RNG::Ptr rng) { rng->reset(); },
+                "Reset the RNG to initial state and seed.")
             .def(
                 "next",
-                [](typename RH::RNG::Ptr &rng)
+                [](typename RH::RNG::Ptr rng)
                 {
                     auto x = rng->next();
                     Robot::scale_configuration(x);
                     return x;
                 },
-                "Sample the next configuration.")
+                "Sample the next configuration. Modifies internal RNG state.")
             .def(
                 "skip",
-                [](typename RH::RNG::Ptr &rng, std::size_t n)
+                [](typename RH::RNG::Ptr rng, std::size_t n)
                 {
                     for (auto i = 0U; i < n; ++i)
                     {
@@ -510,6 +483,9 @@ namespace vamp::binding
 
 #if defined(__x86_64__)
         submodule.def("xorshift", RH::xorshift, "Creates a new XORShift sampler.");
+#else
+        submodule.def(
+            "xorshift", []() { throw std::runtime_error("XORShift is not supported on non-x86 systems!"); });
 #endif
 
         submodule.def(

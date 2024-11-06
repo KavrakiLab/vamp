@@ -166,8 +166,6 @@ namespace vamp::planning
 
         std::size_t max_iterations = 100000;
         std::size_t max_samples = 100000;
-        std::size_t batch_size = 1000;
-        bool optimize = false;
         NeighborParams neighbor_params;
     };
 

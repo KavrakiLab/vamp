@@ -15,7 +15,7 @@ def main(
     dataset: str = "problems.pkl",         # Pickled dataset to use
     problem: str = "",                     # Problem name
     index: int = 1,                        # Problem index
-    sampler: str = "halton",               # Sampler to use.
+    sampler_name: str = "halton",          # Sampler to use.
     skip_rng_iterations: int = 0,          # Skip a number of RNG iterations
     display_object_names: bool = False,    # Display object names over geometry
     pointcloud: bool = False,              # Use pointcloud rather than primitive geometry
@@ -79,7 +79,7 @@ CAPT Construction Time: {build_time * 1e-6:5.3f}ms
     goals = problem_data['goals']
     valid = problem_data['valid']
 
-    sampler = getattr(vamp_module, sampler)()
+    sampler = getattr(vamp_module, sampler_name)()
     sampler.skip(skip_rng_iterations)
 
     if valid:

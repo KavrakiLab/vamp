@@ -38,7 +38,6 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def(nb::init<vp::PRMStarNeighborParams>())
         .def_rw("max_iterations", &PRMStarSettings::max_iterations)
         .def_rw("max_samples", &PRMStarSettings::max_samples)
-        .def_rw("optimize", &PRMStarSettings::optimize)
         .def_rw("neighbor_params", &PRMStarSettings::neighbor_params)
         .def("max_neighbors", &PRMStarSettings::max_neighbors)
         .def("neighbor_radius", &PRMStarSettings::neighbor_radius);

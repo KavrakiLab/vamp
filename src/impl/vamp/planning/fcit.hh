@@ -10,8 +10,7 @@
 #include <vamp/planning/utils.hh>
 #include <vamp/planning/roadmap.hh>
 #include <vamp/planning/validate.hh>
-#include <vamp/random/halton.hh>
-#include <vamp/random/uniform.hh>
+#include <vamp/random/rng.hh>
 #include <vamp/utils.hh>
 #include <vamp/vector.hh>
 #include <vector>

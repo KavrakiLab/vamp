@@ -104,6 +104,7 @@ namespace vamp::binding
 
         using PRM = vamp::planning::PRM<Robot, rake, Robot::resolution>;
         using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
+        using FCIT = vamp::planning::FCIT<Robot, rake, Robot::resolution>;
 
         inline static auto halton() -> typename RNG::Ptr
         {
@@ -232,6 +233,36 @@ namespace vamp::binding
 
             const Configuration start_v(start);
             return PRM::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
+        }
+
+        inline static auto fcit_single(
+            const ConfigurationArray &start,
+            const ConfigurationArray &goal,
+            const EnvironmentInput &environment,
+            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings,
+            typename RNG::Ptr rng) -> PlanningResult
+        {
+            return FCIT::solve(
+                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
+        }
+
+        inline static auto fcit(
+            const ConfigurationArray &start,
+            const std::vector<ConfigurationArray> &goals,
+            const EnvironmentInput &environment,
+            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings,
+            typename RNG::Ptr rng) -> PlanningResult
+        {
+            std::vector<Configuration> goals_v;
+            goals_v.reserve(goals.size());
+
+            for (const auto &goal : goals)
+            {
+                goals_v.emplace_back(goal);
+            }
+
+            const Configuration start_v(start);
+            return FCIT::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto roadmap(

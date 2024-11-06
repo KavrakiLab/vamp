@@ -88,7 +88,9 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
     elif planner_name == "prm":
         plan_settings = PRMSettings(PRMNeighborParams(robot_module.dimension(), robot_module.space_measure()))
     elif planner_name == "fcit":
-        plan_settings = FCITSettings(FCITNeighborParams(robot_module.dimension(), robot_module.space_measure()))
+        plan_settings = FCITSettings(
+            FCITNeighborParams(robot_module.dimension(), robot_module.space_measure())
+            )
     else:
         raise NotImplementedError(f"Automatic setup for planner {planner_name} is not implemented yet!")
 

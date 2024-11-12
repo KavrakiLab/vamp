@@ -9,7 +9,7 @@
 This repository hosts the code for:
 - the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545),
 - an implementation of the Collision-Affording Point Tree (CAPT) from the RSS 2024 paper [“Collision-Affording Point Trees: SIMD-Amenable Nearest Neighbors for Fast Collision Checking”](http://arxiv.org/abs/2406.02807),
-- an implementation of the Fully Connected Informed Trees (FCIT*) algorithm from the ICRA 2025 submission [“Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)”]().
+- an implementation of the Fully Connected Informed Trees (FCIT*) algorithm from the ICRA 2025 submission [“Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)”](https://robotic-esp.com/papers/wilson_arxiv24).
 
 **TL;DR**: By exploiting ubiquitous [CPU SIMD instructions](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) to accelerate collision checking and forward kinematics (FK), `vamp`'s RRT-Connect [[1]](#1) solves problems for the Franka Emika Panda from the MotionBenchMaker dataset [[3]](#3) at a median speed of 35 microseconds (on one core of a consumer desktop PC).
 This approach to hardware-accelerated parallel sampling-based motion planning extends to other planning algorithms without modification (e.g., PRM [[2]](#2)) and also works on low-power systems (e.g., an ARM-based [OrangePi](http://www.orangepi.org/)).

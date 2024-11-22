@@ -235,7 +235,7 @@ namespace vamp::binding
             return PRM::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
         }
 
-        inline static auto fcit_single(
+        inline static auto fcit(
             const ConfigurationArray &start,
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
@@ -246,7 +246,7 @@ namespace vamp::binding
                 Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
         }
 
-        inline static auto fcit(
+        inline static auto fcit_multi_goal(
             const ConfigurationArray &start,
             const std::vector<ConfigurationArray> &goals,
             const EnvironmentInput &environment,
@@ -561,7 +561,7 @@ namespace vamp::binding
 
         submodule.def(
             "fcit",
-            RH::fcit_single,
+            RH::fcit,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -571,7 +571,7 @@ namespace vamp::binding
 
         submodule.def(
             "fcit",
-            RH::fcit,
+            RH::fcit_multi_goal,
             "start"_a,
             "goal"_a,
             "environment"_a,

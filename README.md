@@ -214,8 +214,8 @@ For `fcit`, there are also the settings:
 
 For simplification:
 - `--simplification_operations`: sequence of shortcutting heuristics to apply each iteration. By default, `[SHORTCUT,BSPLINE]`. Can specify any sequence of the above keys.
-- `--simplificiation_max_iterations`: maximum iterations of simplification. If no heuristics do any work, then early terminates from simplification.
-- `--simplificiation_interpolation`: if non-zero, will interpolate the path before simplification heuristics are applied to the desired resolution.
+- `--simplification_max_iterations`: maximum iterations of simplification. If no heuristics do any work, then early terminates from simplification.
+- `--simplification_interpolate`: if non-zero, will interpolate the path before simplification heuristics are applied to the desired resolution.
 - `--bspline_max_steps`: maximum iterations of B-spline smoothing.
 - `--bspline_min_change`: minimum change before smoothing is done.
 - `--bspline_midpoint_interpolation`: point along each axis B-spline interpolation is done from.

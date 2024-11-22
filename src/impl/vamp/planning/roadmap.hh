@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <limits>
 #include <vector>
-#include <set>
+#include <unordered_set>
 
 #include <vamp/constants.hh>
 #include <vamp/utils.hh>
@@ -217,7 +217,7 @@ namespace vamp::planning
 
         std::vector<Neighbor> neighbors;
         std::vector<Neighbor>::iterator neighbor_iterator;
-        std::set<int> invalidList;
+        std::unordered_set<int> invalidList;
     };
 
 }  // namespace vamp::planning

@@ -20,6 +20,18 @@
 namespace vamp::planning
 {
 
+    struct QueueEdge
+    {
+        unsigned int index;
+        unsigned int parent;
+        float cost;
+
+        inline constexpr auto operator==(const QueueEdge &o) const noexcept -> bool
+        {
+            return index == o.index;
+        }
+    };
+
     template <
         typename Robot,
         std::size_t rake,
@@ -91,7 +103,7 @@ namespace vamp::planning
 
             Configuration temp_config;
             Configuration temp_config_self;
-            std::vector<utils::QueueEdge> open_set;
+            std::vector<QueueEdge> open_set;
 
             // Search until Initial Solution
             while (nodes.size() < settings.max_samples and iter++ < settings.max_iterations)
@@ -104,19 +116,19 @@ namespace vamp::planning
                     // Iterate through neighbors and add all outgoing neighbors
                     for (auto it = nodes.begin() + start_node.sampleIdx; it != nodes.end(); it++)
                     {
-                        if ((*it).index == start_index)
+                        if (it->index == start_index)
                         {
                             start_node.sampleIdx++;
                             continue;
                         }
 
-                        const auto neighbor_index = (*it).index;
+                        const auto neighbor_index = it->index;
                         temp_config = state_index(neighbor_index);
                         const auto neighbor_distance = start.distance(temp_config);
                         start_node.sampleIdx = std::max(neighbor_index, start_node.sampleIdx);
 
                         // g(p) + c^(p,c) < g(c)
-                        if (neighbor_distance < (*it).g)
+                        if (neighbor_distance < it->g)
                         {
                             // f^(c) = g(p) + c^(p,c) + h^(c)
                             const auto cost = neighbor_distance + goal.distance(temp_config);
@@ -133,7 +145,7 @@ namespace vamp::planning
                         [](const auto &a, const auto &b) { return a.distance < b.distance; });
                     start_node.neighbor_iterator = start_node.neighbors.begin();
 
-                    open_set.emplace_back(utils::QueueEdge{
+                    open_set.emplace_back(QueueEdge{
                         (*start_node.neighbor_iterator).index,
                         start_index,
                         (*start_node.neighbor_iterator).distance});
@@ -163,7 +175,7 @@ namespace vamp::planning
                             if ((*parent_node.neighbor_iterator).distance <
                                 node.g + goal.distance(state_index(node.index)))
                             {
-                                open_set.emplace_back(utils::QueueEdge{
+                                open_set.emplace_back(QueueEdge{
                                     (*parent_node.neighbor_iterator).index,
                                     current_p,
                                     (*parent_node.neighbor_iterator).distance});
@@ -231,13 +243,13 @@ namespace vamp::planning
                         // Iterate through neighbors and add all outgoing neighbors
                         for (auto it = nodes.begin() + current_node.sampleIdx; it != nodes.end(); it++)
                         {
-                            if ((*it).index == current_index)
+                            if (it->index == current_index)
                             {
                                 current_node.sampleIdx++;
                                 continue;
                             }
 
-                            const auto neighbor_index = (*it).index;
+                            const auto neighbor_index = it->index;
                             temp_config = state_index(neighbor_index);
                             const auto neighbor_distance = temp_config_self.distance(temp_config);
                             current_node.sampleIdx = std::max(neighbor_index, current_node.sampleIdx);
@@ -261,7 +273,7 @@ namespace vamp::planning
                                 [](const auto &a, const auto &b) { return a.distance < b.distance; });
                             current_node.neighbor_iterator = current_node.neighbors.begin();
 
-                            open_set.emplace_back(utils::QueueEdge{
+                            open_set.emplace_back(QueueEdge{
                                 (*current_node.neighbor_iterator).index,
                                 current_index,
                                 (*current_node.neighbor_iterator).distance});

@@ -105,16 +105,14 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
     simp_settings = SimplifySettings()
 
     for k, v in kwargs.items():
-        if "simplification_" not in k:
-            continue
+        if "simplification_" in k:
+            sk = k.replace("simplification_", "")
+            if hasattr(simp_settings, sk):
+                print(f"Setting simplification - {sk}: {v}")
+                if sk == "operations":
+                    v = [getattr(SimplifyRoutine, r) for r in v]
 
-        sk = k.replace("simplification_", "")
-        if hasattr(simp_settings, sk):
-            print(f"Setting simplification - {sk}: {v}")
-            if sk == "operations":
-                v = [getattr(SimplifyRoutine, r) for r in v]
-
-            setattr(simp_settings, sk, v)
+                setattr(simp_settings, sk, v)
 
         subs = ["reduce", "shortcut", "bspline", "perturb"]
         for sub in subs:

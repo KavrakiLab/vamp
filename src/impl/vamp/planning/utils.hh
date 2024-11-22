@@ -72,18 +72,6 @@ namespace vamp::planning::utils
         }
     };
 
-    struct QueueEdge
-    {
-        unsigned int index;
-        unsigned int parent;
-        float cost;
-
-        inline constexpr auto operator==(const QueueEdge &o) const noexcept -> bool
-        {
-            return index == o.index;
-        }
-    };
-
     template <typename Configuration, typename StateLookupFn>
     inline auto astar(
         std::vector<RoadmapNode> &graph,

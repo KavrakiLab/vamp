@@ -194,30 +194,4 @@ namespace vamp::planning
         std::vector<Neighbor> neighbors;
     };
 
-    struct FCITRoadmapNode
-    {
-    public:
-        FCITRoadmapNode(
-            unsigned int index,
-            float g = std::numeric_limits<float>::infinity(),
-            unsigned int sampleIdx = 0)
-          : index(index), g(g), sampleIdx(sampleIdx)
-        {
-        }
-
-        unsigned int index;
-        float g;
-        unsigned int sampleIdx;
-
-        struct Neighbor
-        {
-            unsigned int index;
-            float distance;
-        };
-
-        std::vector<Neighbor> neighbors;
-        std::vector<Neighbor>::iterator neighbor_iterator;
-        std::unordered_set<int> invalidList;
-    };
-
 }  // namespace vamp::planning

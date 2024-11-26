@@ -121,11 +121,10 @@ def main(robot: str = "panda"):
         data['problems'][k] = [
             {
                 **s, **r
-                } for s,
-            r in zip(
-                sorted(scenes[k], key = lambda e: e['index']),
-                sorted(requests[k], key = lambda e: e['index'])
-                )
+                } for (s, r) in zip(
+                    sorted(scenes[k], key = lambda e: e['index']),
+                    sorted(requests[k], key = lambda e: e['index'])
+                    )
             ]
 
         for problem in data['problems'][k]:

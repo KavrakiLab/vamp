@@ -167,7 +167,7 @@ We ship implementations of the following pseudorandom number generators (PRNGs):
 We currently ship two planners:
 - `rrtc`, which is an implementation of a dynamic-domain [[6]](#6) balanced [[7]](#7) RRT-Connect [[1]](#1).
 - `prm`, which is an implementation of basic PRM [[2]](#2) (i.e., PRM without the bounce heuristic, etc.).
-- `fcit`, which is an asymptotically-optimal planner, described in the [linked paper](https://robotic-esp.com/papers/wilson_arxiv24).
+- `fcit`, which is an asymptotically optimal planner, described in the [linked paper](https://robotic-esp.com/papers/wilson_arxiv24).
 
 Note that these planners support planning to a set of goals, not just a single goal.
 

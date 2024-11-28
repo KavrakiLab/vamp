@@ -2,7 +2,7 @@
 
 [![arXiv VAMP](https://img.shields.io/badge/arXiv-2309.14545-b31b1b.svg)](https://arxiv.org/abs/2309.14545)
 [![arXiv CAPT](https://img.shields.io/badge/arXiv-2406.02807-b31b1b.svg)](https://arxiv.org/abs/2406.02807)
-[![arXiv FCIT](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)]()
+[![arXiv FCIT](https://img.shields.io/badge/arXiv-2411.17902-b31b1b.svg)](https://arxiv.org/abs/2411.17902)
 [![Build Check](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml)
 [![Format Check](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml)
 
@@ -45,8 +45,8 @@ If you use FCIT*, please use the following citation:
 @misc{fcit_2024,
   title = {Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)},
   author = {Wilson, Tyler S. and Thomason, Wil and Kingston, Zachary  and Kavraki, Lydia E. and Gammell, Jonathan D.},
-  date = {2024},
-  url = {},
+  url = {https://arxiv.org/abs/2411.17902},
+  date = {2024}
 }
 ```
 

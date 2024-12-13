@@ -17,6 +17,8 @@ __all__ = [
     "RRTCSettings",
     "PRMSettings",
     "PRMNeighborParams",
+    "FCITSettings",
+    "FCITNeighborParams",
     "SimplifySettings",
     "SimplifyRoutine",
     "filter_pointcloud"
@@ -37,6 +39,8 @@ from ._core import Environment as Environment
 from ._core import PRMNeighborParams as PRMNeighborParams
 from ._core import PRMSettings as PRMSettings
 from ._core import RRTCSettings as RRTCSettings
+from ._core import FCITNeighborParams as FCITNeighborParams
+from ._core import FCITSettings as FCITSettings
 from ._core import SimplifyRoutine as SimplifyRoutine
 from ._core import SimplifySettings as SimplifySettings
 from ._core import Sphere as Sphere
@@ -83,6 +87,10 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
         plan_settings.range = ROBOT_RRT_RANGES[robot_name]
     elif planner_name == "prm":
         plan_settings = PRMSettings(PRMNeighborParams(robot_module.dimension(), robot_module.space_measure()))
+    elif planner_name == "fcit":
+        plan_settings = FCITSettings(
+            FCITNeighborParams(robot_module.dimension(), robot_module.space_measure())
+            )
     else:
         raise NotImplementedError(f"Automatic setup for planner {planner_name} is not implemented yet!")
 
@@ -97,16 +105,14 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
     simp_settings = SimplifySettings()
 
     for k, v in kwargs.items():
-        if "simplification_" not in k:
-            continue
+        if "simplification_" in k:
+            sk = k.replace("simplification_", "")
+            if hasattr(simp_settings, sk):
+                print(f"Setting simplification - {sk}: {v}")
+                if sk == "operations":
+                    v = [getattr(SimplifyRoutine, r) for r in v]
 
-        sk = k.replace("simplification_", "")
-        if hasattr(simp_settings, sk):
-            print(f"Setting simplification - {sk}: {v}")
-            if sk == "operations":
-                v = [getattr(SimplifyRoutine, r) for r in v]
-
-            setattr(simp_settings, sk, v)
+                setattr(simp_settings, sk, v)
 
         subs = ["reduce", "shortcut", "bspline", "perturb"]
         for sub in subs:

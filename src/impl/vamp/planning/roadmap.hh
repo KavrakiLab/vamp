@@ -1,10 +1,10 @@
 #pragma once
 
-#include <array>
 #include <cmath>
 #include <cstddef>
 #include <limits>
 #include <vector>
+#include <unordered_set>
 
 #include <vamp/constants.hh>
 #include <vamp/utils.hh>
@@ -64,6 +64,34 @@ namespace vamp::planning
                 2.0 * std::pow(1.0 + inverse_dim, inverse_dim) * std::pow(space_measure_ratio, inverse_dim);
             return gamma_scale * prm_constant *
                    std::pow(std::log(num_states) / static_cast<double>(num_states), inverse_dim);
+        }
+
+        [[nodiscard]] inline constexpr auto dimension() const noexcept -> double
+        {
+            return static_cast<double>(dim);
+        }
+
+        std::size_t dim;
+        double space_measure;
+        double gamma_scale = 2.0;
+    };
+
+    struct FCITStarNeighborParams
+    {
+        explicit FCITStarNeighborParams(std::size_t dim, double space_measure) noexcept
+          : dim(dim), space_measure(space_measure)
+        {
+        }
+
+        [[nodiscard]] inline constexpr auto
+        max_neighbors(std::size_t num_states) const noexcept -> std::size_t
+        {
+            return std::numeric_limits<size_t>::max();
+        }
+
+        [[nodiscard]] inline auto neighbor_radius(std::size_t num_states) const noexcept -> float
+        {
+            return std::numeric_limits<float>::infinity();
         }
 
         [[nodiscard]] inline constexpr auto dimension() const noexcept -> double
@@ -138,6 +166,8 @@ namespace vamp::planning
 
         std::size_t max_iterations = 100000;
         std::size_t max_samples = 100000;
+        std::size_t batch_size = 1000;
+        bool optimize = false;
         NeighborParams neighbor_params;
     };
 

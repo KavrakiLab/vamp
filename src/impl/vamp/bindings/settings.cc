@@ -42,6 +42,25 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def("max_neighbors", &PRMStarSettings::max_neighbors)
         .def("neighbor_radius", &PRMStarSettings::neighbor_radius);
 
+    nb::class_<vp::FCITStarNeighborParams>(pymodule, "FCITNeighborParams")
+        .def(nb::init<std::size_t, double>())
+        .def_rw("dim", &vp::FCITStarNeighborParams::dim)
+        .def_rw("space_measure", &vp::FCITStarNeighborParams::space_measure)
+        .def_rw("gamma_scale", &vp::FCITStarNeighborParams::gamma_scale)
+        .def("max_neighbors", &vp::FCITStarNeighborParams::max_neighbors)
+        .def("neighbor_radius", &vp::FCITStarNeighborParams::neighbor_radius);
+
+    using FCITStarSettings = vp::RoadmapSettings<vp::FCITStarNeighborParams>;
+    nb::class_<FCITStarSettings>(pymodule, "FCITSettings")
+        .def(nb::init<vp::FCITStarNeighborParams>())
+        .def_rw("max_iterations", &FCITStarSettings::max_iterations)
+        .def_rw("max_samples", &FCITStarSettings::max_samples)
+        .def_rw("batch_size", &FCITStarSettings::batch_size)
+        .def_rw("optimize", &FCITStarSettings::optimize)
+        .def_rw("neighbor_params", &FCITStarSettings::neighbor_params)
+        .def("max_neighbors", &FCITStarSettings::max_neighbors)
+        .def("neighbor_radius", &FCITStarSettings::neighbor_radius);
+
     nb::enum_<vp::SimplifyRoutine>(pymodule, "SimplifyRoutine")
         .value("BSPLINE", vp::SimplifyRoutine::BSPLINE)
         .value("REDUCE", vp::SimplifyRoutine::REDUCE)
@@ -73,6 +92,7 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
     nb::class_<vp::SimplifySettings>(pymodule, "SimplifySettings")
         .def(nb::init<>())
         .def_rw("max_iterations", &vp::SimplifySettings::max_iterations)
+        .def_rw("interpolate", &vp::SimplifySettings::interpolate)
         .def_rw("operations", &vp::SimplifySettings::operations)
         .def_rw("reduce", &vp::SimplifySettings::reduce)
         .def_rw("shortcut", &vp::SimplifySettings::shortcut)

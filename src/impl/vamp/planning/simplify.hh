@@ -229,16 +229,25 @@ namespace vamp::planning
         }
 
         result.path = path;
+
+        if (settings.interpolate)
+        {
+            result.path.interpolate(settings.interpolate);
+        }
+
         if (path.size() > 2)
         {
             for (auto i = 0U; i < settings.max_iterations; ++i)
             {
                 result.iterations++;
 
-                if (not std::all_of(
-                        settings.operations.cbegin(),
-                        settings.operations.cend(),
-                        [&](const auto &op) { return operations.find(op)->second(); }))
+                bool any = false;
+                for (const auto &op : settings.operations)
+                {
+                    any |= operations.find(op)->second();
+                }
+
+                if (not any)
                 {
                     break;
                 }

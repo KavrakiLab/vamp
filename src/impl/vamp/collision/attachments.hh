@@ -114,9 +114,9 @@ namespace vamp::collision
             {
                 const auto &s = spheres[i];
                 // Pose each center
-                const auto s_x = s.x * b_xx + s.x * b_yx + s.x * b_zx + tx;
-                const auto s_y = s.y * b_xy + s.y * b_yy + s.y * b_zy + ty;
-                const auto s_z = s.z * b_xz + s.z * b_yz + s.z * b_zz + tz;
+                const auto s_x = s.x * b_xx + s.y * b_yx + s.z * b_zx + tx;
+                const auto s_y = s.x * b_xy + s.y * b_yy + s.z * b_zy + ty;
+                const auto s_z = s.x * b_xz + s.y * b_yz + s.z * b_zz + tz;
                 posed_spheres[i] = Sphere<DataT>(s_x, s_y, s_z, s.r);
             }
         }

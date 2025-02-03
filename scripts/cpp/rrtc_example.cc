@@ -2,6 +2,7 @@
 #include <array>
 #include <utility>
 #include <iostream>
+#include <iomanip>
 
 #include <vamp/collision/factory.hh>
 #include <vamp/planning/validate.hh>
@@ -11,16 +12,15 @@
 #include <vamp/random/halton.hh>
 
 using Robot = vamp::robots::Panda;
-static constexpr std::size_t dimension = Robot::dimension;
-using Configuration = Robot::Configuration;
 static constexpr const std::size_t rake = vamp::FloatVectorWidth;
 using EnvironmentInput = vamp::collision::Environment<float>;
 using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
 using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
+using Simplify = vamp::planning::simplify<Robot, rake, Robot::resolution>;
 
 // Start and goal configurations
-static constexpr std::array<float, dimension> start = {0., -0.785, 0., -2.356, 0., 1.571, 0.785};
-static constexpr std::array<float, dimension> goal = {2.35, 1., 0., -0.8, 0, 2.5, 0.785};
+static constexpr Robot::ConfigurationArray start = {0., -0.785, 0., -2.356, 0., 1.571, 0.785};
+static constexpr Robot::ConfigurationArray goal = {2.35, 1., 0., -0.8, 0, 2.5, 0.785};
 
 // Spheres for the cage problem - (x, y, z) center coordinates with fixed, common radius defined below
 static const std::vector<std::array<float, 3>> problem = {
@@ -55,21 +55,34 @@ auto main(int, char **) -> int
     environment.sort();
     auto env_v = EnvironmentVector(environment);
 
+    // Create RNG for planning
     auto rng = std::make_shared<vamp::rng::Halton<Robot::dimension>>();
 
+    // Setup RRTC and plan
     vamp::planning::RRTCSettings rrtc_settings;
     rrtc_settings.range = 1.0;
-    auto result = RRTC::solve(Configuration(start), Configuration(goal), env_v, rrtc_settings, rng);
 
+    auto result =
+        RRTC::solve(Robot::Configuration(start), Robot::Configuration(goal), env_v, rrtc_settings, rng);
+
+    // If successful
     if (result.path.size() > 0)
     {
+        // Simplify path with default settings
         vamp::planning::SimplifySettings simplify_settings;
-        auto simplify_result = vamp::planning::simplify<Robot, rake, Robot::resolution>(
-            result.path, EnvironmentVector(environment), simplify_settings, rng);
+        auto simplify_result = Simplify(result.path, env_v, simplify_settings, rng);
 
-        for (const auto &configuration : simplify_result.path)
+        // Output configurations of simplified path
+        std::cout << std::fixed << std::setprecision(3);
+        for (const auto &config : simplify_result.path)
         {
-            std::cout << configuration << std::endl;
+            const auto &array = config.to_array();
+            for (auto i = 0U; i < Robot::dimension; ++i)
+            {
+                std::cout << array[i] << ", ";
+            }
+
+            std::cout << std::endl;
         }
     }
 

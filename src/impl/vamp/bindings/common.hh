@@ -162,7 +162,9 @@ namespace vamp::binding
         validate_configuration(const Configuration &configuration, const EnvironmentInput &environment)
             -> bool
         {
-            return vamp::planning::validate_motion<Robot, rake, 1>(
+            auto copy = configuration;
+            Robot::descale_configuration(copy);
+            return (copy <= 1.F).all() and (copy >= 0.F).all() and vamp::planning::validate_motion<Robot, rake, 1>(
                 configuration, configuration, EnvironmentVector(environment));
         }
 
@@ -170,8 +172,7 @@ namespace vamp::binding
         validate(const ConfigurationArray &configuration, const EnvironmentInput &environment) -> bool
         {
             const Configuration configuration_v(configuration);
-            return vamp::planning::validate_motion<Robot, rake, 1>(
-                configuration_v, configuration_v, EnvironmentVector(environment));
+            return validate_configuration(configuration_v, environment);
         }
 
         inline static auto rrtc_single(

@@ -16,7 +16,6 @@ static constexpr const std::size_t rake = vamp::FloatVectorWidth;
 using EnvironmentInput = vamp::collision::Environment<float>;
 using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
 using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
-using Simplify = vamp::planning::simplify<Robot, rake, Robot::resolution>;
 
 // Start and goal configurations
 static constexpr Robot::ConfigurationArray start = {0., -0.785, 0., -2.356, 0., 1.571, 0.785};
@@ -70,7 +69,8 @@ auto main(int, char **) -> int
     {
         // Simplify path with default settings
         vamp::planning::SimplifySettings simplify_settings;
-        auto simplify_result = Simplify(result.path, env_v, simplify_settings, rng);
+        auto simplify_result = vamp::planning::simplify<Robot, rake, Robot::resolution>(
+            result.path, env_v, simplify_settings, rng);
 
         // Output configurations of simplified path
         std::cout << std::fixed << std::setprecision(3);

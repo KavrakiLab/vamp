@@ -118,8 +118,8 @@ namespace vamp::binding
         }
 #endif
 
-        inline static auto
-        fk(const ConfigurationArray &configuration) -> std::vector<vamp::collision::Sphere<float>>
+        inline static auto fk(const ConfigurationArray &configuration)
+            -> std::vector<vamp::collision::Sphere<float>>
         {
             typename Robot::template Spheres<1> out;
             typename Robot::template ConfigurationBlock<1> block;
@@ -140,9 +140,9 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto sphere_validate(
-            const ConfigurationArray &configuration,
-            const EnvironmentInput &environment) -> std::vector<std::vector<std::string>>
+        inline static auto
+        sphere_validate(const ConfigurationArray &configuration, const EnvironmentInput &environment)
+            -> std::vector<std::vector<std::string>>
         {
             auto spheres = fk(configuration);
             std::vector<std::vector<std::string>> result;
@@ -158,9 +158,9 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto validate_configuration(
-            const Configuration &configuration,
-            const EnvironmentInput &environment) -> bool
+        inline static auto
+        validate_configuration(const Configuration &configuration, const EnvironmentInput &environment)
+            -> bool
         {
             return vamp::planning::validate_motion<Robot, rake, 1>(
                 configuration, configuration, EnvironmentVector(environment));
@@ -172,6 +172,75 @@ namespace vamp::binding
             const Configuration configuration_v(configuration);
             return vamp::planning::validate_motion<Robot, rake, 1>(
                 configuration_v, configuration_v, EnvironmentVector(environment));
+        }
+
+        // TODO: nb::ndarray overload
+        inline static auto validate_batch(
+            const EnvironmentInput &environment,
+            const std::vector<ConfigurationArray> &configurations,
+            bool is_sequence = true) noexcept -> std::vector<float>
+        {
+            EnvironmentVector environment_v(environment);
+            std::vector<float> result(configurations.size(), 0.0);
+            // TODO: Figure out if cache blocking can help here, given the double-indirection of a vector of
+            // arrays
+            std::array<float, Robot::dimension * rake> block_scalars;
+            bool sequence_valid = true;
+            unsigned int num_residual_elements = configurations.size() % rake;
+            for (auto i = 0U; sequence_valid and i < configurations.size() - num_residual_elements; i += rake)
+            {
+                for (auto j = 0U; j < rake; ++j)
+                {
+                    const auto &q = configurations[i + j];
+                    for (auto k = 0U; k < Robot::dimension; ++k)
+                    {
+                        block_scalars[k * rake + j] = q[k];
+                    }
+                }
+
+                typename Robot::template ConfigurationBlock<rake> block(block_scalars);
+                auto block_validation = vamp::planning::validate_block<Robot, rake>(environment_v, block);
+                for (auto j = 0U; j < rake; ++j)
+                {
+                    const auto config_valid = block_validation[{0, j}];
+                    if (is_sequence and config_valid == 0.0)
+                    {
+                        sequence_valid = false;
+                        break;
+                    }
+
+                    result[i + j] = is_sequence ? static_cast<float>(sequence_valid) : config_valid;
+                }
+            }
+
+            if (sequence_valid)
+            {
+                const auto offset = configurations.size() - num_residual_elements;
+                for (auto i = 0U; i < num_residual_elements; ++i)
+                {
+                    const auto &q = configurations[i + offset];
+                    for (auto k = 0U; k < Robot::dimension; ++k)
+                    {
+                        block_scalars[k * rake + i] = q[k];
+                    }
+                }
+
+                typename Robot::template ConfigurationBlock<rake> block(block_scalars);
+                auto block_validation = vamp::planning::validate_block<Robot, rake>(environment_v, block);
+                for (auto i = 0U; i < num_residual_elements; ++i)
+                {
+                    const auto config_valid = block_validation[{0, i}];
+                    if (is_sequence and config_valid == 0.0)
+                    {
+                        sequence_valid = false;
+                        break;
+                    }
+
+                    result[offset + i] = is_sequence ? static_cast<float>(sequence_valid) : config_valid;
+                }
+            }
+
+            return result;
         }
 
         inline static auto rrtc_single(
@@ -295,8 +364,8 @@ namespace vamp::binding
             return filter_robot_from_pointcloud<Robot>(pc, start, environment, point_radius);
         }
 
-        inline static auto
-        eefk(const ConfigurationArray &start) -> std::pair<std::array<float, 3>, std::array<float, 4>>
+        inline static auto eefk(const ConfigurationArray &start)
+            -> std::pair<std::array<float, 3>, std::array<float, 4>>
         {
             const auto &result = Robot::eefk(start);
 
@@ -352,7 +421,8 @@ namespace vamp::binding
             "Collision checking resolution for this robot.");
         submodule.def(
             "n_spheres", []() { return Robot::n_spheres; }, "Number of spheres in robot collision model.");
-        submodule.def("space_measure", []() { return Robot::space_measure(); }, "Measure ");
+        submodule.def(
+            "space_measure", []() { return Robot::space_measure(); }, "Measure ");
 
         nb::class_<typename RH::Configuration>(submodule, "Configuration", "Robot configuration.")
             .def(nb::init<>(), "Empty constructor. Zero initialized.")

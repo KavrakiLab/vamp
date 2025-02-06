@@ -59,8 +59,8 @@ namespace vamp
         inline static constexpr std::size_t num_rows = Sig::num_rows;
         using DataT = typename Sig::DataT;
 
-        inline constexpr auto
-        to_array() const noexcept -> std::array<typename S::ScalarT, num_scalars_rounded>
+        inline constexpr auto to_array() const noexcept
+            -> std::array<typename S::ScalarT, num_scalars_rounded>
         {
             alignas(S::Alignment) std::array<typename S::ScalarT, num_scalars_rounded> result = {};
             to_array(result);
@@ -718,9 +718,10 @@ namespace vamp
             return S::template constant<0>(s);
         }
 
+        template <bool is_aligned = true>
         inline constexpr void pack(const typename S::ScalarT *const scalar_data) noexcept
         {
-            load_vector(scalar_data, std::make_index_sequence<num_vectors>());
+            load_vector<is_aligned>(scalar_data, std::make_index_sequence<num_vectors>());
         }
 
         template <auto fn, std::size_t stride = 1, std::size_t... I>
@@ -737,13 +738,21 @@ namespace vamp
             (..., fn(base + I * stride, std::get<I>(data)));
         }
 
-        template <std::size_t... I>
+        template <bool is_aligned, std::size_t... I>
         inline constexpr void
         load_vector(const typename S::ScalarT *const scalar_array, std::index_sequence<I...>) noexcept
         {
             // TODO: This might segfault if we had to over-allocate vectors and the scalar data isn't
             // full for the over-allocated size
-            (..., (std::get<I>(d()->data) = S::template load<0>(scalar_array + I * S::VectorWidth)));
+            if constexpr (is_aligned)
+            {
+                (..., (std::get<I>(d()->data) = S::template load<0>(scalar_array + I * S::VectorWidth)));
+            }
+            else
+            {
+                (...,
+                 (std::get<I>(d()->data) = S::template load_unaligned<0>(scalar_array + I * S::VectorWidth)));
+            }
         }
 
         template <std::size_t... I>
@@ -813,6 +822,20 @@ namespace vamp
 
         constexpr Vector(DataT data_) noexcept : data(std::move(data_))
         {
+        }
+
+        // TODO: Enable unaligned load for other constructors too
+        constexpr Vector(const typename S::ScalarT *const scalar_data, bool is_aligned) noexcept
+        {
+            // NOTE: assumes that scalar_data is a multiple of VectorWidth of valid data
+            if (is_aligned)
+            {
+                Interface::pack(scalar_data);
+            }
+            else
+            {
+                Interface::pack<false>(scalar_data);
+            }
         }
 
         constexpr Vector(const typename S::ScalarT *const scalar_data) noexcept

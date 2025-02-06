@@ -32,6 +32,12 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static constexpr auto load_unaligned(const ScalarT *const f) noexcept -> VectorT
+        {
+            return _mm256_loadu_ps(f);
+        }
+
+        template <unsigned int = 0>
         inline static constexpr auto store(ScalarT *f, VectorT v) noexcept -> void
         {
             _mm256_store_ps(f, v);
@@ -408,6 +414,12 @@ namespace vamp
 
         template <unsigned int = 0>
         inline static constexpr auto load(const ScalarT *const i) noexcept -> VectorT
+        {
+            return _mm256_load_si256((const __m256i *const)i);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto load_unaligned(const ScalarT *const i) noexcept -> VectorT
         {
             return _mm256_loadu_si256((const __m256i *const)i);
         }

@@ -130,6 +130,10 @@ foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
   )
 endforeach()
 
+add_executable(vamp_rrtc_example scripts/cpp/rrtc_example.cc)
+target_link_libraries(vamp_rrtc_example PRIVATE Eigen3::Eigen)
+target_include_directories(vamp_rrtc_example SYSTEM PRIVATE ${VAMP_EXT_INCLUDES})
+
 if(VAMP_BUILD_OMPL_DEMO)
   find_package(ompl QUIET PATHS ${VAMP_OMPL_PATH})
 

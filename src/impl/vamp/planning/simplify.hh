@@ -202,7 +202,8 @@ namespace vamp::planning
 
         const auto bspline = [&result, &environment, settings]()
         { return smooth_bspline<Robot, rake, resolution>(result.path, environment, settings.bspline); };
-        const auto reduce = [&result, &environment, settings, rng]() {
+        const auto reduce = [&result, &environment, settings, rng]()
+        {
             return reduce_path_vertices<Robot, rake, resolution>(
                 result.path, environment, settings.reduce, rng);
         };
@@ -219,8 +220,8 @@ namespace vamp::planning
         };
 
         // Check if straight line is valid
-        if (path.size() == 2 or
-            validate_motion<Robot, rake, resolution>(path.front(), path.back(), environment))
+        if (path.size() == 2 or (path.size() > 2 and validate_motion<Robot, rake, resolution>(
+                                                         path.front(), path.back(), environment)))
         {
             result.path.emplace_back(path.front());
             result.path.emplace_back(path.back());

@@ -51,6 +51,12 @@ namespace vamp::planning
         inline auto interpolate(std::size_t resolution) noexcept
         {
             Path<dim> new_path;
+
+            if (this->size() < 2)
+            {
+                return;
+            }
+
             float path_cost = cost();
             auto n_states = static_cast<std::size_t>(path_cost * static_cast<float>(resolution));
             new_path.reserve(n_states);

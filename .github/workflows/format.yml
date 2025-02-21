@@ -30,13 +30,13 @@ jobs:
       run: |
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
-        yes | sudo ./llvm.sh 18 || true
-        sudo apt-get install -y clang-format-18 python3-pip
+        yes | sudo ./llvm.sh 19 || true
+        sudo apt-get install -y clang-format-19 python3-pip
         pip install yapf
 
     - name: Run clang-format style check.
       run: >
-        find . -iname *.hh -o -iname *.cc | xargs -I{} clang-format-18 --dry-run -Werror {}
+        find . -iname *.hh -o -iname *.cc | xargs -I{} clang-format-19 --dry-run -Werror {}
 
     - name: Run yapf style check.
       run: >

@@ -22,8 +22,8 @@ namespace vamp::planning::utils
 
     // Basic union-find
     // TODO: We may be able to improve these implementations
-    inline auto
-    find_root(std::vector<ConnectedComponent> &components, unsigned int c_idx) noexcept -> unsigned int
+    inline auto find_root(std::vector<ConnectedComponent> &components, unsigned int c_idx) noexcept
+        -> unsigned int
     {
         while (c_idx != components[c_idx].parent)
         {
@@ -180,8 +180,8 @@ namespace vamp::planning::utils
         std::reverse(path.begin(), path.end());
     }
 
-    inline auto
-    recover_path_indices(const std::unique_ptr<unsigned int[]> parents) noexcept -> std::vector<unsigned int>
+    inline auto recover_path_indices(const std::unique_ptr<unsigned int[]> parents) noexcept
+        -> std::vector<unsigned int>
     {
         // NOTE: Assumes that the start is the first element of the graph and the goal is the second
         constexpr const unsigned int start_index = 0;

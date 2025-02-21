@@ -118,8 +118,8 @@ namespace vamp::binding
         }
 #endif
 
-        inline static auto
-        fk(const ConfigurationArray &configuration) -> std::vector<vamp::collision::Sphere<float>>
+        inline static auto fk(const ConfigurationArray &configuration)
+            -> std::vector<vamp::collision::Sphere<float>>
         {
             typename Robot::template Spheres<1> out;
             typename Robot::template ConfigurationBlock<1> block;
@@ -140,9 +140,9 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto sphere_validate(
-            const ConfigurationArray &configuration,
-            const EnvironmentInput &environment) -> std::vector<std::vector<std::string>>
+        inline static auto
+        sphere_validate(const ConfigurationArray &configuration, const EnvironmentInput &environment)
+            -> std::vector<std::vector<std::string>>
         {
             auto spheres = fk(configuration);
             std::vector<std::vector<std::string>> result;
@@ -158,9 +158,9 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto validate_configuration(
-            const Configuration &configuration,
-            const EnvironmentInput &environment) -> bool
+        inline static auto
+        validate_configuration(const Configuration &configuration, const EnvironmentInput &environment)
+            -> bool
         {
             return vamp::planning::validate_motion<Robot, rake, 1>(
                 configuration, configuration, EnvironmentVector(environment));
@@ -295,8 +295,8 @@ namespace vamp::binding
             return filter_robot_from_pointcloud<Robot>(pc, start, environment, point_radius);
         }
 
-        inline static auto
-        eefk(const ConfigurationArray &start) -> std::pair<std::array<float, 3>, std::array<float, 4>>
+        inline static auto eefk(const ConfigurationArray &start)
+            -> std::pair<std::array<float, 3>, std::array<float, 4>>
         {
             const auto &result = Robot::eefk(start);
 

@@ -60,10 +60,9 @@ namespace vamp::collision::factory
                 half_extent_z);
         }
 
-        inline static auto eigen(
-            ConstEigenRef center,
-            ConstEigenRef euler_xyz,
-            ConstEigenRef half_extents) noexcept -> collision::Cuboid<float>
+        inline static auto
+        eigen(ConstEigenRef center, ConstEigenRef euler_xyz, ConstEigenRef half_extents) noexcept
+            -> collision::Cuboid<float>
         {
             return flat(
                 center[0],
@@ -77,19 +76,17 @@ namespace vamp::collision::factory
                 half_extents[2]);
         };
 
-        inline static auto eigen_rot(
-            ConstEigenRef center,
-            ConstEigenRotationRef rotation,
-            ConstEigenRef half_extents) noexcept -> collision::Cuboid<float>
+        inline static auto
+        eigen_rot(ConstEigenRef center, ConstEigenRotationRef rotation, ConstEigenRef half_extents) noexcept
+            -> collision::Cuboid<float>
         {
             auto euler = rotation.toRotationMatrix().eulerAngles(0, 1, 2);
             return eigen(center, euler, half_extents);
         };
 
-        inline static auto array(
-            ConstArrayRef center,
-            ConstArrayRef euler_xyz,
-            ConstArrayRef half_extents) noexcept -> collision::Cuboid<float>
+        inline static auto
+        array(ConstArrayRef center, ConstArrayRef euler_xyz, ConstArrayRef half_extents) noexcept
+            -> collision::Cuboid<float>
         {
             return flat(
                 center[0],

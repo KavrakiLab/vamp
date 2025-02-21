@@ -52,8 +52,8 @@ namespace vamp::collision
     }
 
     template <typename DataT>
-    inline constexpr auto
-    sphere_z_aligned_cuboid(const Cuboid<DataT> &c, const Sphere<DataT> &s) noexcept -> DataT
+    inline constexpr auto sphere_z_aligned_cuboid(const Cuboid<DataT> &c, const Sphere<DataT> &s) noexcept
+        -> DataT
     {
         return sphere_z_aligned_cuboid(c, s.x, s.y, s.z, s.r * s.r);
     }

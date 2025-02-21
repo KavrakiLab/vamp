@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.16...3.22)
 
-option(VAMP_LTO "Use LTO." ON)
 option(VAMP_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output." ON)
-option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
 
+option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
+option(VAMP_LTO "Use LTO." OFF)
+option(VAMP_USE_NATIVE "Use native acceleration." OFF)
+
+option(VAMP_PYTHON_BINDINGS "Build VAMP Python Bindings" OFF)
 option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" OFF)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
 option(VAMP_OMPL_PATH "Search Path for OMPL Installation - Only Needed for Demo Script" "")
@@ -26,7 +29,7 @@ endif()
 
 project(
     vamp
-    VERSION 0.2
+    VERSION 0.4
     LANGUAGES C CXX
 )
 
@@ -70,66 +73,74 @@ list(APPEND VAMP_EXT_INCLUDES
   src/impl
 )
 
-nanobind_add_module(_core_ext
+add_library(vamplib INTERFACE)
+target_include_directories(vamplib INTERFACE ${VAMP_EXT_INCLUDES})
+target_link_libraries(vamplib INTERFACE Eigen3::Eigen)
+separate_arguments(VAMP_ARCH_FLAGS NATIVE_COMMAND ${VAMP_ARCH})
+target_compile_options(vamplib INTERFACE ${VAMP_ARCH_FLAGS})
+
+if(VAMP_PYTHON_BINDINGS)
+  nanobind_add_module(_core_ext
     NB_STATIC
     STABLE_ABI
     NOMINSIZE
     ${VAMP_EXT_SOURCES}
-)
+  )
 
-target_include_directories(_core_ext
+  target_include_directories(_core_ext
     SYSTEM PRIVATE
     ${VAMP_EXT_INCLUDES}
-)
+  )
 
-target_link_libraries(_core_ext
+  target_link_libraries(_core_ext
     PRIVATE
     Eigen3::Eigen
-)
+  )
 
-if($ENV{GITHUB_ACTIONS})
-  set(STUB_PREFIX "")
-else()
-  set(STUB_PREFIX "${CMAKE_BINARY_DIR}/stubs/")
-endif()
+  if($ENV{GITHUB_ACTIONS})
+    set(STUB_PREFIX "")
+  else()
+    set(STUB_PREFIX "${CMAKE_BINARY_DIR}/stubs/")
+  endif()
 
-nanobind_add_stub(
-  vamp_stub
-  MODULE _core_ext
-  OUTPUT "${STUB_PREFIX}__init__.pyi"
-  PYTHON_PATH $<TARGET_FILE_DIR:_core_ext>
-  DEPENDS _core_ext
-  VERBOSE
-)
-
-foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
   nanobind_add_stub(
-    "vamp_${robot_name}_stub"
-    MODULE "_core_ext.${robot_name}"
-    OUTPUT "${STUB_PREFIX}${robot_name}.pyi"
+    vamp_stub
+    MODULE _core_ext
+    OUTPUT "${STUB_PREFIX}__init__.pyi"
     PYTHON_PATH $<TARGET_FILE_DIR:_core_ext>
     DEPENDS _core_ext
     VERBOSE
   )
-endforeach()
 
-install(
-  TARGETS _core_ext
-  LIBRARY
-  DESTINATION vamp/_core
-)
+  foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
+    nanobind_add_stub(
+      "vamp_${robot_name}_stub"
+      MODULE "_core_ext.${robot_name}"
+      OUTPUT "${STUB_PREFIX}${robot_name}.pyi"
+      PYTHON_PATH $<TARGET_FILE_DIR:_core_ext>
+      DEPENDS _core_ext
+      VERBOSE
+    )
+  endforeach()
 
-install(
-  FILES "${STUB_PREFIX}__init__.pyi"
-  DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
-)
-
-foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
   install(
-    FILES "${STUB_PREFIX}${robot_name}.pyi"
+    TARGETS _core_ext
+    LIBRARY
+    DESTINATION vamp/_core
+  )
+
+  install(
+    FILES "${STUB_PREFIX}__init__.pyi"
     DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
   )
-endforeach()
+
+  foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
+    install(
+      FILES "${STUB_PREFIX}${robot_name}.pyi"
+      DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
+    )
+  endforeach()
+endif()
 
 if(VAMP_BUILD_CPP_DEMO)
   add_executable(vamp_rrtc_example scripts/cpp/rrtc_example.cc)

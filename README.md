@@ -8,7 +8,7 @@
 
 ![Demo video](resources/capt_demo.gif)
 
-_For a full demonstration of VAMP running in real-time, see ![this video](https://www.youtube.com/watch?v=BzDKdrU1VpM)_.
+_For a full demonstration of VAMP running in real-time, see [this video](https://www.youtube.com/watch?v=BzDKdrU1VpM)_.
 
 This repository hosts the code for:
 - the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545),

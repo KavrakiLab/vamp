@@ -6,6 +6,8 @@
 [![Build Check](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml)
 [![Format Check](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml)
 
+![Demo video](resources/capt_demo.gif)
+
 This repository hosts the code for:
 - the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545),
 - an implementation of the Collision-Affording Point Tree (CAPT) from the RSS 2024 paper [“Collision-Affording Point Trees: SIMD-Amenable Nearest Neighbors for Fast Collision Checking”](http://arxiv.org/abs/2406.02807),

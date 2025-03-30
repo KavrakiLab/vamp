@@ -162,7 +162,7 @@ namespace vamp::binding
         validate_configuration(const Configuration &configuration, const EnvironmentInput &environment)
             -> bool
         {
-            auto copy = configuration;
+            auto copy = configuration.trim();
             Robot::descale_configuration(copy);
             return (copy <= 1.F).all() and (copy >= 0.F).all() and vamp::planning::validate_motion<Robot, rake, 1>(
                 configuration, configuration, EnvironmentVector(environment));

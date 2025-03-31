@@ -164,8 +164,10 @@ namespace vamp::binding
         {
             auto copy = configuration.trim();
             Robot::descale_configuration(copy);
-            return (copy <= 1.F).all() and (copy >= 0.F).all() and vamp::planning::validate_motion<Robot, rake, 1>(
-                configuration, configuration, EnvironmentVector(environment));
+
+            return (copy <= 1.F).all() and (copy >= 0.F).all() and
+                   vamp::planning::validate_motion<Robot, rake, 1>(
+                       configuration, configuration, EnvironmentVector(environment));
         }
 
         inline static auto

@@ -44,6 +44,20 @@ ROBOT_JOINTS = {
         "left_w1",
         "left_w2",
         ],
+    "stretch" : [
+        "joint_lift",
+        "joint_arm_l3",
+        "joint_arm_l2",
+        "joint_arm_l1",
+        "joint_arm_l0",
+        "joint_wrist_yaw",
+        "joint_head_pan",
+        "joint_head_tilt",
+        "joint_wrist_pitch",
+        "joint_wrist_roll",
+        "joint_gripper_finger_right",
+        "joint_gripper_finger_left",
+    ],
     }
 
 ROBOT_RRT_RANGES = {
@@ -52,6 +66,7 @@ ROBOT_RRT_RANGES = {
     "panda": 1.0,
     "fetch": 1.0,
     "baxter": 0.5,
+    "stretch": 1.0,
     }
 
 ROBOT_RADII_RANGES = {
@@ -60,18 +75,21 @@ ROBOT_RADII_RANGES = {
     "panda": (0.012, 0.06),
     "sphere": (0.2, 0.2),
     "ur5": (0.015, 0.08),
+    "stretch": (0.006, 0.105)
     }
 
 ROBOT_FIRST_JOINT_LOCATIONS = {
     "fetch": [0.0, 0.0, 0.4],
     "ur5": [0.0, 0.0, 0.91],
     "panda": [0.0, 0.0, 0.0],
+    "stretch": [-0.037385, 0.1666, 0.0],
     }
 
 ROBOT_MAX_RADII = {
     "ur5": 1.2,
     "fetch": 1.5,
     "panda": 1.19,
+    "stretch": 0.55,
     }
 
 POINT_RADIUS = 0.0025

@@ -9,6 +9,7 @@ __all__ = [
     "panda",
     "fetch",
     "baxter",
+    "stretch",
     "Environment",
     "Attachment",
     "Sphere",
@@ -49,6 +50,7 @@ from ._core import fetch as fetch
 from ._core import panda as panda
 from ._core import sphere as sphere
 from ._core import ur5 as ur5
+from ._core import stretch as stretch
 from ._core import filter_pointcloud as filter_pointcloud
 
 AnyPlanningResult = Union[
@@ -57,6 +59,7 @@ AnyPlanningResult = Union[
     panda.PlanningResult,
     fetch.PlanningResult,
     baxter.PlanningResult,
+    stretch.PlanningResult,
     ]
 
 

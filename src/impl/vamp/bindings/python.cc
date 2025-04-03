@@ -11,4 +11,5 @@ NB_MODULE(_core_ext, pymodule)
     vb::init_panda(pymodule);
     vb::init_fetch(pymodule);
     vb::init_baxter(pymodule);
+    vb::init_stretch(pymodule);
 }

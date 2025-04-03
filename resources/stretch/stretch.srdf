@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<robot name="some robot">
+    <disable_collisions link1="base_link" link2="link_right_wheel" />
+    <disable_collisions link1="base_link" link2="link_left_wheel" />
+    <disable_collisions link1="base_link" link2="caster_link" />
+    <disable_collisions link1="base_link" link2="link_mast" />
+    <disable_collisions link1="base_link" link2="link_lift" />
+    <disable_collisions link1="base_link" link2="laser" />
+
+    <disable_collisions link1="link_mast" link2="link_lift" />
+    <disable_collisions link1="link_mast" link2="link_arm_l4" />
+    <disable_collisions link1="link_mast" link2="link_arm_l3" />
+    <disable_collisions link1="link_mast" link2="link_arm_l2" />
+    <disable_collisions link1="link_mast" link2="link_arm_l1" />
+    <disable_collisions link1="link_mast" link2="link_arm_l0" />
+    <disable_collisions link1="link_mast" link2="link_head" />
+    <disable_collisions link1="link_mast" link2="link_head_nav_cam" />
+    <disable_collisions link1="link_mast" link2="link_head_pan" />
+    <disable_collisions link1="link_mast" link2="link_head_tilt" />
+
+    <disable_collisions link1="link_lift" link2="link_arm_l4" />
+    <disable_collisions link1="link_lift" link2="link_arm_l3" />
+    <disable_collisions link1="link_lift" link2="link_arm_l2" />
+    <disable_collisions link1="link_lift" link2="link_arm_l1" />
+    <disable_collisions link1="link_lift" link2="link_arm_l0" />
+    <disable_collisions link1="link_lift" link2="link_head" />
+    <disable_collisions link1="link_lift" link2="link_head_nav_cam" />
+    <disable_collisions link1="link_lift" link2="link_head_pan" />
+    <disable_collisions link1="link_lift" link2="link_head_tilt" />
+
+    <disable_collisions link1="link_arm_l4" link2="link_arm_l3" />
+    <disable_collisions link1="link_arm_l4" link2="link_arm_l2" />
+    <disable_collisions link1="link_arm_l4" link2="link_arm_l1" />
+    <disable_collisions link1="link_arm_l4" link2="link_arm_l0" />
+    <disable_collisions link1="link_arm_l4" link2="link_head" />
+    <disable_collisions link1="link_arm_l4" link2="link_head_nav_cam" />
+    <disable_collisions link1="link_arm_l4" link2="link_head_pan" />
+    <disable_collisions link1="link_arm_l4" link2="link_head_tilt" />
+    <disable_collisions link1="link_arm_l4" link2="link_wrist_yaw" />
+    <disable_collisions link1="link_arm_l4" link2="link_wrist_yaw_bottom" />
+
+    <disable_collisions link1="link_arm_l3" link2="link_arm_l2" />
+    <disable_collisions link1="link_arm_l3" link2="link_arm_l1" />
+    <disable_collisions link1="link_arm_l3" link2="link_arm_l0" />
+    <disable_collisions link1="link_arm_l3" link2="link_head" />
+    <disable_collisions link1="link_arm_l3" link2="link_head_nav_cam" />
+    <disable_collisions link1="link_arm_l3" link2="link_head_pan" />
+    <disable_collisions link1="link_arm_l3" link2="link_head_tilt" />
+    <disable_collisions link1="link_arm_l3" link2="link_wrist_yaw" />
+    <disable_collisions link1="link_arm_l3" link2="link_wrist_yaw_bottom" />
+
+    <disable_collisions link1="link_arm_l2" link2="link_arm_l1" />
+    <disable_collisions link1="link_arm_l2" link2="link_arm_l0" />
+    <disable_collisions link1="link_arm_l2" link2="link_head" />
+    <disable_collisions link1="link_arm_l2" link2="link_head_nav_cam" />
+    <disable_collisions link1="link_arm_l2" link2="link_head_pan" />
+    <disable_collisions link1="link_arm_l2" link2="link_head_tilt" />
+    <disable_collisions link1="link_arm_l2" link2="link_wrist_yaw" />
+    <disable_collisions link1="link_arm_l2" link2="link_wrist_yaw_bottom" />
+
+    <disable_collisions link1="link_arm_l1" link2="link_arm_l0" />
+    <disable_collisions link1="link_arm_l1" link2="link_head" />
+    <disable_collisions link1="link_arm_l1" link2="link_head_nav_cam" />
+    <disable_collisions link1="link_arm_l1" link2="link_head_pan" />
+    <disable_collisions link1="link_arm_l1" link2="link_head_tilt" />
+    <disable_collisions link1="link_arm_l1" link2="link_wrist_yaw" />
+    <disable_collisions link1="link_arm_l1" link2="link_wrist_yaw_bottom" />
+
+    <disable_collisions link1="link_arm_l0" link2="link_wrist_yaw" />
+    <disable_collisions link1="link_arm_l0" link2="link_wrist_yaw_bottom" />
+    <disable_collisions link1="link_arm_l0" link2="link_head" />
+    <disable_collisions link1="link_arm_l0" link2="link_head_nav_cam" />
+    <disable_collisions link1="link_arm_l0" link2="link_head_pan" />
+    <disable_collisions link1="link_arm_l0" link2="link_head_tilt" />
+
+    <disable_collisions link1="link_wrist_yaw" link2="link_wrist_pitch" />
+    <disable_collisions link1="link_wrist_yaw" link2="link_wrist_yaw_bottom" />
+    <disable_collisions link1="link_wrist_yaw" link2="link_gripper_s3_body" />
+
+    <disable_collisions link1="link_wrist_yaw_bottom" link2="link_wrist_pitch" />
+    <disable_collisions link1="link_wrist_yaw_bottom" link2="link_gripper_s3_body" />
+    
+    <disable_collisions link1="link_wrist_pitch" link2="link_gripper_s3_body" />
+
+    <disable_collisions link1="link_gripper_s3_body" link2="link_gripper_finger_right" />
+    <disable_collisions link1="link_gripper_s3_body" link2="link_gripper_finger_left" />
+
+    <disable_collisions link1="link_gripper_finger_right" link2="link_gripper_fingertip_right" />
+    <disable_collisions link1="link_gripper_finger_left" link2="link_gripper_fingertip_left" />
+</robot>

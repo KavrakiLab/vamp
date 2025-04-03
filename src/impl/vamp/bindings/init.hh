@@ -9,4 +9,5 @@ namespace vamp::binding
     void init_panda(nanobind::module_ &pymodule);
     void init_fetch(nanobind::module_ &pymodule);
     void init_baxter(nanobind::module_ &pymodule);
+    void init_stretch(nanobind::module_ &pymodule);
 }  // namespace vamp::binding

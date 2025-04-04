@@ -791,7 +791,7 @@ namespace vamp
 
         inline static constexpr auto all_true(unsigned int v) noexcept -> bool
         {
-            return v == 0xffffffff;
+            return v == (static_cast<unsigned int>(1) << S::VectorWidth) - 1;
         }
 
         template <std::size_t... I>

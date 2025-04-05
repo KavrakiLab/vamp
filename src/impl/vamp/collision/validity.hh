@@ -150,6 +150,111 @@ namespace vamp
     }
 
     template <typename DataT, typename ArgT1, typename ArgT2, typename ArgT3, typename ArgT4>
+    inline constexpr auto sphere_block_environment_validate(
+        const collision::Environment<DataT> &e,  //
+        ArgT1 sx_,
+        ArgT2 sy_,
+        ArgT3 sz_,
+        ArgT4 sr_) noexcept -> DataT
+    {
+        // TODO: Figure out a way to avoid needing to upcast floats to vectors
+        auto sx = static_cast<DataT>(sx_);
+        auto sy = static_cast<DataT>(sy_);
+        auto sz = static_cast<DataT>(sz_);
+        auto sr = static_cast<DataT>(sr_);
+        const auto max_extent = collision::sqrt(collision::dot_3(sx, sy, sz, sx, sy, sz)) + sr;
+
+        DataT result(0.5);
+        const DataT offset(0.5);
+        constexpr float SIGN_MASK = -0.0;
+        for (const auto &es : e.spheres)
+        {
+            const auto diff = es.min_distance - max_extent;
+            if (diff.test_zero())
+            {
+                break;
+            }
+
+            result = result | collision::sphere_sphere_sql2(es, sx, sy, sz, sr) & SIGN_MASK;
+            if (result.all())
+            {
+                return result + offset;
+            }
+        }
+
+        for (const auto &ec : e.capsules)
+        {
+            const auto diff = ec.min_distance - max_extent;
+            if (diff.test_zero())
+            {
+                break;
+            }
+
+            result = result | collision::sphere_capsule(ec, sx, sy, sz, sr) & SIGN_MASK;
+            if (result.all())
+            {
+                return result + offset;
+            }
+        }
+
+        for (const auto &ec : e.z_aligned_capsules)
+        {
+            const auto diff = ec.min_distance - max_extent;
+            if (diff.test_zero())
+            {
+                break;
+            }
+            result = result | collision::sphere_z_aligned_capsule(ec, sx, sy, sz, sr) & SIGN_MASK;
+            if (result.all())
+            {
+                return result + offset;
+            }
+        }
+
+        const auto rsq = sr * sr;
+        for (const auto &ec : e.cuboids)
+        {
+            const auto diff = ec.min_distance - max_extent;
+            if (diff.test_zero())
+            {
+                break;
+            }
+
+            result = result | collision::sphere_cuboid(ec, sx, sy, sz, rsq) & SIGN_MASK;
+            if (result.all())
+            {
+                return result + offset;
+            }
+        }
+
+        for (const auto &ec : e.z_aligned_cuboids)
+        {
+            const auto diff = ec.min_distance - max_extent;
+            if (diff.test_zero())
+            {
+                break;
+            }
+
+            result = result | collision::sphere_z_aligned_cuboid(ec, sx, sy, sz, rsq) & SIGN_MASK;
+            if (result.all())
+            {
+                return result + offset;
+            }
+        }
+
+        for (const auto &eh : e.heightfields)
+        {
+            result = result | collision::sphere_heightfield(eh, sx, sy, sz, sr) & SIGN_MASK;
+            if (result.all())
+            {
+                return result + offset;
+            }
+        }
+
+        return result + offset;
+    }
+
+    template <typename DataT, typename ArgT1, typename ArgT2, typename ArgT3, typename ArgT4>
     inline auto sphere_environment_get_collisions(
         const collision::Environment<DataT> &e,  //
         ArgT1 sx_,
@@ -291,4 +396,13 @@ namespace vamp
 
         return false;
     }
+
+    template <typename Robot, std::size_t rake>
+    inline constexpr auto validate_block(
+        const collision::Environment<FloatVector<rake>> &environment,
+        const typename Robot::template ConfigurationBlock<rake> &block) -> FloatVector<rake>
+    {
+        return Robot::template validate_block<rake>(environment, block);
+    }
+
 }  // namespace vamp

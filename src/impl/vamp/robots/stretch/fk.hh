@@ -5968,5 +5968,6 @@ namespace vamp::robots::stretch
         if(/*link_gripper_s3_body vs. link_head_nav_cam*/ sphere_sphere_self_collision<decltype(q[0])>(ADD_14150, ADD_14151, ADD_14152, 0.08, ADD_16680, ADD_16681, ADD_16682, 0.050857)){ if(sphere_sphere_self_collision<decltype(q[0])>(ADD_14179, ADD_14180, ADD_14181, 0.04, ADD_16713, ADD_16714, ADD_16715, 0.050857)){ return false; }
         if(sphere_sphere_self_collision<decltype(q[0])>(ADD_14200, ADD_14201, ADD_14202, 0.056, ADD_16713, ADD_16714, ADD_16715, 0.050857)){ return false; }
         if(sphere_sphere_self_collision<decltype(q[0])>(ADD_14221, ADD_14222, ADD_14223, 0.05, ADD_16713, ADD_16714, ADD_16715, 0.050857)){ return false; } } // (2658, 2658)
+        return true;
     }
 }

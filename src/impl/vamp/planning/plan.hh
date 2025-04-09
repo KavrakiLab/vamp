@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <vamp/planning/validate.hh>
 #include <vamp/planning/nn.hh>
 #include <vamp/vector.hh>
 #include <vector>
@@ -85,6 +86,21 @@ namespace vamp::planning
 
             new_path.emplace_back(this->back());
             this->swap(new_path);
+        }
+
+        template <typename Robot, std::size_t rake>
+        inline auto validate(const collision::Environment<FloatVector<rake>> &environment) noexcept -> bool
+        {
+            for (auto i = 0U; i < this->size() - 1; ++i)
+            {
+                const auto &current = this->operator[](i);
+                const auto &next = this->operator[](i + 1);
+                if (not validate_motion<Robot, rake, Robot::resolution>(current, next, environment))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     };
 

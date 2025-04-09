@@ -455,6 +455,14 @@ namespace vamp::binding
                 &RH::Path::interpolate,
                 "Refine the path by interpolating all segments up to the resolution provided.")
             .def(
+                "validate",
+                [](typename RH::Path &p, const typename RH::EnvironmentInput &e)
+                {
+                    const typename RH::EnvironmentVector ev(e);
+                    return p.template validate<Robot, rake>(ev);
+                },
+                "Validate the path in an environment.")
+            .def(
                 "numpy",
                 [](const typename RH::Path &p) noexcept
                 {

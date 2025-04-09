@@ -8,7 +8,7 @@ namespace vamp::robots
     struct Stretch
     {
         static constexpr auto name = "stretch";
-        static constexpr auto dimension = 12;
+        static constexpr auto dimension = 13;
         static constexpr auto resolution = 32;
         static constexpr auto n_spheres = stretch::n_spheres;
         static constexpr auto space_measure = stretch::space_measure;

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot name="stretch">
+	<link name="world"></link>
+	<link name="link_y"></link>
+	<link name="link_theta"></link>
 	<link name="base_link">
 		<inertial>
 			<origin rpy="0 0 0" xyz="-0.087526 -0.001626 0.081009"></origin>
@@ -1447,7 +1450,27 @@
 	<link name="gripper_camera_color_frame"></link>
 	<link name="gripper_camera_color_optical_frame"></link>
 
-
+	<joint name="joint_x" type="prismatic">
+		<parent link="world"/>
+		<child link="link_y"/>
+		<axis xyz="1 0 0"/> <!-- Movement along the X-axis -->
+		<origin rpy="0 0 0" xyz="0 0 0"/> <!-- Move base_link in X -->
+		<limit effort="100" lower="-5.0" upper="5.0" velocity="1.0"/>
+	</joint>
+	<joint name="joint_y" type="prismatic">
+		<parent link="link_y"/>
+		<child link="link_theta"/>
+		<axis xyz="0 1 0"/> <!-- Movement along the X-axis -->
+		<origin rpy="0 0 0" xyz="0 0 0"/> <!-- Move base_link in X -->
+		<limit effort="100" lower="-5.0" upper="5.0" velocity="1.0"/>
+	</joint>
+	<joint name="joint_theta" type="revolute">
+		<parent link="link_theta"/>
+		<child link="base_link"/>
+		<axis xyz="0 0 1"/> <!-- Rotation around the Z-axis -->
+    	<origin rpy="0 0 0" xyz="0 0 0"/>
+    	<limit effort="100" lower="-3.14159" upper="3.14159" velocity="1.0"/>
+	</joint>
 	<joint name="joint_right_wheel" type="fixed">
 		<origin rpy="-1.5708 1.2717E-16 4.8006E-17" xyz="0 -0.17035 0.0508"></origin>
 		<parent link="base_link"></parent>
@@ -1692,8 +1715,8 @@
 		<child link="link_gripper_s3_body"></child>
 		<axis xyz="0 0 0"></axis>
 	</joint>
-	<joint name="joint_gripper_finger_right" type="revolute">
-		<origin rpy="-1.57079632679513 1.48789318732515 3.14159265358956" xyz="-0.0246929393014972 0 0.0371909405167257"></origin>
+	<joint name="joint_gripper_finger_right" type="fixed">
+		<origin rpy="-1.57079632679513 1.68789318732515 3.14159265358956" xyz="-0.0246929393014972 0 0.0371909405167257"></origin>
 		<parent link="link_gripper_s3_body"></parent>
 		<child link="link_gripper_finger_right"></child>
 		<axis xyz="0 0 1"></axis>
@@ -1711,8 +1734,8 @@
 		<child link="link_aruco_fingertip_right"></child>
 		<axis xyz="0 0 0"></axis>
 	</joint>
-	<joint name="joint_gripper_finger_left" type="revolute">
-		<origin rpy="-1.57079632679523 -1.48789318734672 -3.14159265358946" xyz="0.0245029393015013 0 0.0371909405167127"></origin>
+	<joint name="joint_gripper_finger_left" type="fixed">
+		<origin rpy="-1.57079632679523 -1.68789318734672 -3.14159265358946" xyz="0.0245029393015013 0 0.0371909405167127"></origin>
 		<parent link="link_gripper_s3_body"></parent>
 		<child link="link_gripper_finger_left"></child>
 		<axis xyz="0 0 -1"></axis>

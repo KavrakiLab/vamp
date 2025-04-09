@@ -45,6 +45,9 @@ ROBOT_JOINTS = {
         "left_w2",
         ],
     "stretch" : [
+        "joint_x",
+        "joint_y",
+        "joint_theta",
         "joint_lift",
         "joint_arm_l3",
         "joint_arm_l2",
@@ -55,8 +58,6 @@ ROBOT_JOINTS = {
         "joint_head_tilt",
         "joint_wrist_pitch",
         "joint_wrist_roll",
-        "joint_gripper_finger_right",
-        "joint_gripper_finger_left",
     ],
     }
 

@@ -71,18 +71,11 @@ namespace vamp::robots::stretch
     }
 
     template <std::size_t rake>
-    inline bool interleaved_sphere_fk_attachment(
-        const vamp::collision::Environment<FloatVector<rake>> &environment,
-        const ConfigurationBlock<rake> &q) noexcept
-    {
-        return false;
-    }
-
-    template <std::size_t rake>
     inline bool interleaved_sphere_fk(
         const vamp::collision::Environment<FloatVector<rake>> &environment,
         const ConfigurationBlock<rake> &q) noexcept
     {
+        //return true;
         auto INPUT_2 = q[2];
         auto DIV_107 = INPUT_2 * 0.5;
         auto SIN_108 = DIV_107.sin();

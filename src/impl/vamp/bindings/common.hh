@@ -214,17 +214,19 @@ namespace vamp::binding
             const ConfigurationArray &start,
             const ConfigurationArray &goal,
             const EnvironmentInput &environment,
-            const vamp::planning::RRT_star_settings &settings) -> PlanningResult
+            const vamp::planning::RRT_star_settings &settings,
+            typename RNG::Ptr rng) -> PlanningResult
         {
             return RRT_star::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings);
+                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto rrt_star(
             const ConfigurationArray &start,
             const std::vector<ConfigurationArray> &goals,
             const EnvironmentInput &environment,
-            const vamp::planning::RRT_star_settings &settings) -> PlanningResult
+            const vamp::planning::RRT_star_settings &settings,
+            typename RNG::Ptr rng) -> PlanningResult
         {
             std::vector<Configuration> goals_v;
             goals_v.reserve(goals.size());
@@ -235,7 +237,7 @@ namespace vamp::binding
             }
 
             const Configuration start_v(start);
-            return RRT_star::solve(start_v, goals_v, EnvironmentVector(environment), settings);
+            return RRT_star::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto prm_single(
@@ -580,14 +582,15 @@ namespace vamp::binding
             "settings"_a,
             "rng"_a,
             "Solve the motion planning problem with RRTConnect.");
-        
+
         submodule.def(
             "rrt_star",
             RH::rrt_star_single,
             "start"_a,
             "goal"_a,
             "environment"_a,
-            "settings"_a = vamp::planning::RRT_star_settings(),
+            "settings"_a,
+            "rng"_a,
             "Solve the motion planning problem with RRT*.");
 
         submodule.def(
@@ -596,7 +599,8 @@ namespace vamp::binding
             "start"_a,
             "goal"_a,
             "environment"_a,
-            "settings"_a = vamp::planning::RRT_star_settings(),
+            "settings"_a,
+            "rng"_a,
             "Solve the motion planning problem with RRT*.");
 
         submodule.def(

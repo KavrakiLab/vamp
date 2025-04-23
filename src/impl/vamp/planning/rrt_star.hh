@@ -6,11 +6,9 @@
 #include <vamp/planning/plan.hh>
 #include <vamp/planning/validate.hh>
 #include <vamp/planning/rrt_star_settings.hh>
-#include <vamp/random/halton.hh>
 #include <vamp/utils.hh>
 #include <vamp/vector.hh>
 #include <cmath>
-#include <iostream>
 
 namespace vamp::planning
 {
@@ -19,29 +17,30 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
-        static constexpr auto space_measure = Robot::space_measure;
 
         inline static auto solve(
             const Configuration &start,
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RRT_star_settings &settings) noexcept -> PlanningResult<dimension>
+            const RRT_star_settings &settings,
+            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
         {
-            return solve(start, std::vector<Configuration>{goal}, environment, settings);
+            return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
 
         inline static auto solve(
             const Configuration &start,
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
-            const RRT_star_settings &settings) -> PlanningResult<dimension>
+            const RRT_star_settings &settings,
+            typename RNG::Ptr rng) -> PlanningResult<dimension>
         {
             // algorithm specific constants
-            static const float unit_ball_volume =
+            const auto unit_ball_volume =
                 std::pow(std::sqrt(M_PI), dimension) / std::tgamma(dimension / 2.0 + 1.0);
-            static const float free_volume = space_measure();
-            static const float dim_recip = 1.0 / dimension;
-            static const float gamma_rrt =
+            const auto free_volume = Robot::space_measure();
+            const auto dim_recip = 1.0 / dimension;
+            const auto gamma_rrt =
                 std::pow(2 * (1.0 + 1.0 / dimension) * (free_volume / unit_ball_volume), dim_recip);
 
             PlanningResult<dimension> result;
@@ -117,7 +116,6 @@ namespace vamp::planning
                 }
             }
 
-            RNG rng(settings.rng_skip_iterations);
             std::size_t free_index = start_index + 1;
 
             // add start to tree
@@ -136,7 +134,7 @@ namespace vamp::planning
             while (iter++ < settings.max_iterations and free_index < settings.max_samples)
             {
                 // sample random config
-                auto sample_config = rng.next();
+                auto sample_config = rng->next();
                 Robot::scale_configuration(sample_config);
                 typename Robot::ConfigurationBuffer sample_config_arr;
                 sample_config.to_array(sample_config_arr.data());
@@ -274,12 +272,14 @@ namespace vamp::planning
                 result.size.emplace_back(tree.size());
                 return result;
             }
+
             if (goal_motions.size() > 0)
             {
                 result.cost = best_path_cost;
                 const auto &[best_end_node_idx, best_goal] = best_goal_motion;
                 build_path(best_goal, best_end_node_idx);
             }
+
             result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
             result.iterations = iter;
             result.size.emplace_back(tree.size());

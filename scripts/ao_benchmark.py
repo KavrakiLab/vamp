@@ -1,13 +1,9 @@
 import numpy as np
-from pathlib import Path
 import pandas as pd
 import random
-import copy
 import vamp
 from fire import Fire
 import matplotlib.pyplot as plt
-
-pd.set_option('display.max_columns', None)
 
 # Starting configuration
 start = [0., -0.785, 0., -2.356, 0., 1.571, 0.785]
@@ -38,7 +34,7 @@ def main(
     radius: float = 0.2,
     planner: str = "rrt_star",
     force_max_iters: bool = True,
-    range: float = 3.0,
+    sampler: str = "halton",       # Sampler to use.
     plot: bool = False,
     save_path: str = 'plot.png',
     **kwargs,
@@ -52,25 +48,31 @@ def main(
 
     all_results = []
     spheres = [np.array(sphere) for sphere in problem]
-    max_iters = np.arange(1, 100000, 1000)
+    max_iters = np.arange(1, 10000, 1000)
 
     env = vamp.Environment()
     for sphere in spheres:
         env.add_sphere(vamp.Sphere(sphere, radius))
 
+
+    if not (vamp.panda.validate(start, env) and vamp.panda.validate(goal, env)):
+        return
+
+    sampler = getattr(vamp_module, sampler)()
     plan_settings.force_max_iters = force_max_iters
-    plan_settings.range = range
     for iters in max_iters:
+        sampler.reset()
         plan_settings.max_iterations = iters
         plan_settings.max_samples = iters
-        if vamp.panda.validate(start, env) and vamp.panda.validate(goal, env):
-            result = planner_func(start, goal, env, plan_settings)
-            # print(result.solved)
-            if not result.solved: continue
-            simple = vamp_module.simplify(result.path, env, simp_settings)
-            results = vamp.results_to_dict(result, simple)
-            results["iterations"] = iters
-            all_results.append(results)
+
+        result = planner_func(start, goal, env, plan_settings, sampler)
+        if not result.solved:
+            continue
+
+        simple = vamp_module.simplify(result.path, env, simp_settings, sampler)
+        results = vamp.results_to_dict(result, simple)
+        results["iterations"] = iters
+        all_results.append(results)
 
     df = pd.DataFrame.from_dict(all_results)
 

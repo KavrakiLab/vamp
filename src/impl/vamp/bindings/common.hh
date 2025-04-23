@@ -17,6 +17,7 @@
 #include <vamp/planning/prm.hh>
 #include <vamp/planning/fcit.hh>
 #include <vamp/planning/rrtc.hh>
+#include <vamp/planning/rrt_star.hh>
 #include <vamp/vector.hh>
 
 #include <nanobind/nanobind.h>
@@ -98,6 +99,7 @@ namespace vamp::binding
 
         using RNG = vamp::rng::RNG<Robot::dimension>;
         using Halton = vamp::rng::Halton<Robot::dimension>;
+
 #if defined(__x86_64__)
         using XORShift = vamp::rng::XORShift<Robot::dimension>;
 #endif
@@ -105,6 +107,7 @@ namespace vamp::binding
         using PRM = vamp::planning::PRM<Robot, rake, Robot::resolution>;
         using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
         using FCIT = vamp::planning::FCIT<Robot, rake, Robot::resolution>;
+        using RRT_star = vamp::planning::RRT_star<Robot, Halton, rake, Robot::resolution>;
 
         inline static auto halton() -> typename RNG::Ptr
         {
@@ -205,6 +208,36 @@ namespace vamp::binding
 
             const Configuration start_v(start);
             return RRTC::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
+        }
+
+        inline static auto rrt_star_single(
+            const ConfigurationArray &start,
+            const ConfigurationArray &goal,
+            const EnvironmentInput &environment,
+            const vamp::planning::RRT_star_settings &settings,
+            typename RNG::Ptr rng) -> PlanningResult
+        {
+            return RRT_star::solve(
+                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
+        }
+
+        inline static auto rrt_star(
+            const ConfigurationArray &start,
+            const std::vector<ConfigurationArray> &goals,
+            const EnvironmentInput &environment,
+            const vamp::planning::RRT_star_settings &settings,
+            typename RNG::Ptr rng) -> PlanningResult
+        {
+            std::vector<Configuration> goals_v;
+            goals_v.reserve(goals.size());
+
+            for (const auto &goal : goals)
+            {
+                goals_v.emplace_back(goal);
+            }
+
+            const Configuration start_v(start);
+            return RRT_star::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto prm_single(
@@ -549,6 +582,26 @@ namespace vamp::binding
             "settings"_a,
             "rng"_a,
             "Solve the motion planning problem with RRTConnect.");
+
+        submodule.def(
+            "rrt_star",
+            RH::rrt_star_single,
+            "start"_a,
+            "goal"_a,
+            "environment"_a,
+            "settings"_a,
+            "rng"_a,
+            "Solve the motion planning problem with RRT*.");
+
+        submodule.def(
+            "rrt_star",
+            RH::rrt_star,
+            "start"_a,
+            "goal"_a,
+            "environment"_a,
+            "settings"_a,
+            "rng"_a,
+            "Solve the motion planning problem with RRT*.");
 
         submodule.def(
             "prm",

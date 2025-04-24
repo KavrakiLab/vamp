@@ -50,8 +50,9 @@ namespace vamp::rng
 
         auto rotate_bases() noexcept
         {
-            alignas(FloatVectorAlignment) std::array<float, dim> a;
-            b.to_array(a.data());
+            auto ar = b.to_array();
+            std::array<float, dim> a;
+            std::copy(ar.begin(), ar.begin() + dim, a.begin());
             std::rotate(a.begin(), a.begin() + 1, a.end());
             b = FloatVector<dim>(a);
         }

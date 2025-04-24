@@ -31,7 +31,7 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("max_samples", &vp::RRT_star_settings::max_samples)
         .def_rw("rng_skip_iterations", &vp::RRT_star_settings::rng_skip_iterations)
         .def_rw("rewire_factor", &vp::RRT_star_settings::rewire_factor)
-        .def_rw("force_max_iters", &vp::RRT_star_settings::force_max_iters);
+        .def_rw("optimize", &vp::RRT_star_settings::optimize);
 
     // TODO: Redesign a neater form of RoadmapSettings/NeighborParams
     // TODO: Expose the other NeighborParams types

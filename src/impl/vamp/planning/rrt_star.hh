@@ -58,6 +58,7 @@ namespace vamp::planning
             std::vector<std::size_t> parent(settings.max_samples);
             std::vector<std::vector<std::size_t>> children(settings.max_samples, std::vector<std::size_t>());
             std::vector<float> cost(settings.max_samples);
+            std::vector<bool> collision_free(settings.max_samples);
 
             const auto add_edge = [&parent, &children](std::size_t parent_node, std::size_t child_node)
             {
@@ -82,6 +83,10 @@ namespace vamp::planning
                 for (const auto &child : children[idx])
                 {
                     cost[child] = cost[idx] + cur.distance(buffer_index(child));
+                }
+
+                for (const auto &child : children[idx])
+                {
                     update_children(child);
                 }
             };
@@ -131,6 +136,8 @@ namespace vamp::planning
             // main loop
             std::size_t iter = 0;
             std::vector<std::pair<NNNode<dimension>, float>> near;
+            near.reserve(settings.max_samples);
+
             while (iter++ < settings.max_iterations and free_index < settings.max_samples)
             {
                 // sample random config
@@ -181,18 +188,23 @@ namespace vamp::planning
                     float min_cost = cost[nearest_node.index] + nearest_distance;
 
                     // loop through near neighbors, find the one that gives us min cost from root
-                    std::vector<bool> collision_free(near.size());
-                    for (auto i = 0U; i < near.size(); i++)
+                    for (auto i = 0U; i < near.size(); ++i)
                     {
                         const auto &[node, distance] = near[i];
-                        auto configuration = node.as_vector();
-                        collision_free[i] = validate_motion<Robot, rake, resolution>(
-                            configuration, new_configuration, environment);
-                        const float cur_cost = cost[node.index] + distance;
-                        if (collision_free[i] and (cur_cost < min_cost))
+                        auto nbr_configuration = node.as_vector();
+                        const float nbr_cost = cost[node.index] + distance;
+                        if (nbr_cost < min_cost)
                         {
-                            min_cost = cur_cost;
-                            min_neighbor = node;
+                            if ((collision_free[i] = validate_motion<Robot, rake, resolution>(
+                                     nbr_configuration, new_configuration, environment)))
+                            {
+                                min_cost = nbr_cost;
+                                min_neighbor = node;
+                            }
+                        }
+                        else
+                        {
+                            collision_free[i] = false;
                         }
                     }
 
@@ -204,7 +216,7 @@ namespace vamp::planning
                     // rewire with our newly added node to if we can use it to get a shorter path to any of
                     // its neighbors
                     bool check_new_best = false;
-                    for (auto i = 0U; i < near.size(); i++)
+                    for (auto i = 0U; i < near.size(); ++i)
                     {
                         const auto &[node, distance] = near[i];
                         if (collision_free[i] and (min_cost + distance < cost[node.index]))
@@ -222,17 +234,15 @@ namespace vamp::planning
                     free_index++;
 
                     // check if we can reach a goal
-                    bool goal_reached = false;
                     for (const auto &goal : goals)
                     {
                         if (validate_motion<Robot, rake, resolution>(new_configuration, goal, environment))
                         {
-                            if (not settings.force_max_iters)
+                            if (not settings.optimize)
                             {  // found a solution, exit the algorithm
                                 auto current = free_index - 1;
                                 build_path(goal, current);
                                 result.cost = cost[current] + goal.distance(buffer_index(current));
-                                goal_reached = true;
                                 break;
                             }
                             else
@@ -243,12 +253,7 @@ namespace vamp::planning
                         }
                     }
 
-                    if (not settings.force_max_iters and goal_reached)
-                    {
-                        break;
-                    }
-
-                    if (settings.force_max_iters and check_new_best)
+                    if (settings.optimize and check_new_best)
                     {
                         // loop through goal nodes to find the best solution
                         for (const auto &[end_node_idx, goal] : goal_motions)
@@ -265,7 +270,7 @@ namespace vamp::planning
                 }
             }
 
-            if (not settings.force_max_iters)
+            if (not settings.optimize)
             {
                 result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
                 result.iterations = iter;

@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import random
 import vamp
 from fire import Fire
 import matplotlib.pyplot as plt
@@ -33,7 +32,6 @@ problem = [
 def main(
     radius: float = 0.2,
     planner: str = "rrt_star",
-    force_max_iters: bool = True,
     sampler: str = "halton",       # Sampler to use.
     plot: bool = False,
     save_path: str = 'plot.png',
@@ -43,12 +41,9 @@ def main(
     (vamp_module, planner_func, plan_settings,
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda", planner, **kwargs)
 
-    random.seed(0)
-    np.random.seed(0)
-
     all_results = []
     spheres = [np.array(sphere) for sphere in problem]
-    max_iters = np.arange(1, 10000, 1000)
+    max_iters = np.arange(1, 100000, 1000)
 
     env = vamp.Environment()
     for sphere in spheres:
@@ -59,7 +54,7 @@ def main(
         return
 
     sampler = getattr(vamp_module, sampler)()
-    plan_settings.force_max_iters = force_max_iters
+    plan_settings.optimize = True
     for iters in max_iters:
         sampler.reset()
         plan_settings.max_iterations = iters

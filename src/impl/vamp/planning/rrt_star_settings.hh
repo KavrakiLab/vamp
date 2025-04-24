@@ -9,6 +9,6 @@ namespace vamp::planning
         std::size_t max_samples = 100000;
         std::size_t rng_skip_iterations = 0;
         float rewire_factor = 1.0;
-        bool force_max_iters = false;
+        bool optimize = false;
     };
 }

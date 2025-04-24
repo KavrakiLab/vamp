@@ -521,12 +521,17 @@ namespace vamp::binding
                 [](const typename RH::PlanningResult &p) { return p.path.size() >= 2; },
                 "Returns true if solution found.")
             .def_ro("path", &RH::PlanningResult::path, "The solution path, if the path is found.")
+            .def_ro("cost", &RH::PlanningResult::cost, "Cost of the path.")
             .def_ro("nanoseconds", &RH::PlanningResult::nanoseconds, "Nanoseconds taken to find the path.")
             .def_ro(
                 "iterations",
                 &RH::PlanningResult::iterations,
                 "Number of planner iterations used to find the path.")
-            .def_ro("size", &RH::PlanningResult::size, "Size of the internal planner datastructures.");
+            .def_ro("size", &RH::PlanningResult::size, "Size of the internal planner datastructures.")
+            .def_ro(
+                "intermediate",
+                &RH::PlanningResult::intermediate,
+                "Intermediate results for optimizing planners.");
 
         nb::class_<typename RH::Roadmap>(submodule, "Roadmap", "Undirected graph in configuration space.")
             .def(nb::init<>(), "Empty constructor.")

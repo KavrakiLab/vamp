@@ -316,6 +316,12 @@ namespace vamp::planning
                     break;
                 }
 
+                if (result.intermediate.empty() or result.intermediate.back().cost > nodes[1].g)
+                {
+                    result.intermediate.emplace_back(Intermediate{
+                        nodes[1].g, iter, vamp::utils::get_elapsed_nanoseconds(start_time), roadmap.size()});
+                }
+
                 for (auto new_samples = 0U;
                      new_samples < settings.batch_size and nodes.size() < settings.max_samples;)
                 {
@@ -353,6 +359,7 @@ namespace vamp::planning
             result.size.emplace_back(roadmap.size());
             result.size.emplace_back(0);
 
+            result.intermediate.emplace_back(Intermediate{nodes[1].g, iter, result.nanoseconds, roadmap.size()});
             return result;
         }
     };

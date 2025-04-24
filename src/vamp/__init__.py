@@ -185,6 +185,7 @@ def problem_dict_to_vamp(
 def results_to_dict(
     planning_result: AnyPlanningResult,
     simplification_result: Optional[AnyPlanningResult] = None,
+    include_intermediate_results: bool = False
     ) -> Dict[str, Any]:
 
     try:
@@ -200,6 +201,16 @@ def results_to_dict(
         "initial_path_vertices": len(planning_result.path),
         "initial_path_cost": planning_result.path.cost(),
         }
+
+    if include_intermediate_results:
+        data["intermediate_results"] = [
+            {
+                "planning_time": pd.Timedelta(nanoseconds = intermediate.nanoseconds),
+                "planning_iterations": intermediate.iterations,
+                "planning_graph_size": intermediate.size,
+                "path_cost": intermediate.cost,
+                } for intermediate in planning_result.intermediate
+            ]
 
     if simplification_result:
         simp_data = {

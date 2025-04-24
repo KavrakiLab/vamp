@@ -122,18 +122,18 @@ def main(
     df = pd.DataFrame.from_dict(results)
 
     # Convert to microseconds
-    df["planning_time"] = df["planning_time"].dt.microseconds
-    df["simplification_time"] = df["simplification_time"].dt.microseconds
+    df["planning_time"] = df["planning_time"].astype('int64') // 1000
+    df["simplification_time"] = df["simplification_time"].astype('int64') // 1000
     df["avg_time_per_iteration"] = df["planning_iterations"] / df["planning_time"]
 
     # Pointcloud data
     if pointcloud:
         df["total_build_and_plan_time"] = df["total_time"] + df["filter_time"] + df["capt_build_time"]
-        df["filter_time"] = df["filter_time"].dt.microseconds / 1e3
-        df["capt_build_time"] = df["capt_build_time"].dt.microseconds / 1e3
-        df["total_build_and_plan_time"] = df["total_build_and_plan_time"].dt.microseconds / 1e3
+        df["filter_time"] = df["filter_time"].astype('int64') // 1000 / 1e3
+        df["capt_build_time"] = df["capt_build_time"].astype('int64') // 1000 / 1e3
+        df["total_build_and_plan_time"] = df["total_build_and_plan_time"].astype('int64') // 1000 / 1e3
 
-    df["total_time"] = df["total_time"].dt.microseconds
+    df["total_time"] = df["total_time"].astype('int64') // 1000
 
     # Get summary statistics
     time_stats = df[[

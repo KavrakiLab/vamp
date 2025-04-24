@@ -94,11 +94,15 @@ CAPT Construction Time: {build_time * 1e-6:5.3f}ms
         simplify = vamp_module.simplify(result.path, env, simp_settings, sampler)
 
         stats = vamp.results_to_dict(result, simplify)
+        for key in stats.keys():
+            if 'time' in key:
+                stats[key] = int(stats[key].total_seconds() * 1_000_000)
+
         print(
             f"""
-Planning Time: {stats['planning_time'].microseconds:8d}μs
-Simplify Time: {stats['simplification_time'].microseconds:8d}μs
-   Total Time: {stats['total_time'].microseconds:8d}μs
+Planning Time: {stats['planning_time']:8d}μs
+Simplify Time: {stats['simplification_time']:8d}μs
+   Total Time: {stats['total_time']:8d}μs
 
 Planning Iters: {stats['planning_iterations']}
 n Graph States: {stats['planning_graph_size']}

@@ -256,6 +256,7 @@ namespace vamp::planning
                     if (settings.optimize and check_new_best)
                     {
                         // loop through goal nodes to find the best solution
+                        bool updated = false;
                         for (const auto &[end_node_idx, goal] : goal_motions)
                         {
                             const float cur_cost =
@@ -264,7 +265,17 @@ namespace vamp::planning
                             {
                                 best_path_cost = cur_cost;
                                 best_goal_motion = {end_node_idx, goal};
+                                updated = true;
                             }
+                        }
+
+                        if (updated)
+                        {
+                            result.intermediate.emplace_back(Intermediate{
+                                best_path_cost,
+                                iter,
+                                vamp::utils::get_elapsed_nanoseconds(start_time),
+                                tree.size()});
                         }
                     }
                 }
@@ -288,6 +299,8 @@ namespace vamp::planning
             result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
             result.iterations = iter;
             result.size.emplace_back(tree.size());
+            result.intermediate.emplace_back(
+                Intermediate{best_path_cost, iter, result.nanoseconds, tree.size()});
             return result;
         }
     };

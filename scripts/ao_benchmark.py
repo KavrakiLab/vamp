@@ -30,59 +30,52 @@ problem = [
 
 
 def main(
-    radius: float = 0.2,
-    planner: str = "rrt_star",
-    sampler: str = "halton",       # Sampler to use.
-    plot: bool = False,
-    save_path: str = 'plot.png',
-    **kwargs,
+        radius: float = 0.2,           # Radius of obstacles
+        planner: str = "fcit",         # Planner to use.
+        sampler: str = "halton",       # Sampler to use.
+        plot: bool = True,             # Plot intermediate results of planning.
+        save_path: str = 'plot.png',   # Where to save plot.
+        iterations: int = 1000,        # Number of iterations. Note that FCIT* has very different iterations than RRT*.
+        samples: int = 100000,         # Max. number of samples.
+        **kwargs,                      # Use `batch_size` to control FCIT* behavior
     ):
 
-    (vamp_module, planner_func, plan_settings,
-     simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda", planner, **kwargs)
+    if planner not in ["fcit", "rrt_star"]:
+        print(f"{planner} is not an ASAO planner!")
+        return
 
-    all_results = []
+    (vamp_module, planner_func, plan_settings,
+     _) = vamp.configure_robot_and_planner_with_kwargs("panda", planner, **kwargs)
+
     spheres = [np.array(sphere) for sphere in problem]
-    max_iters = np.arange(1, 100000, 1000)
 
     env = vamp.Environment()
     for sphere in spheres:
         env.add_sphere(vamp.Sphere(sphere, radius))
-
 
     if not (vamp.panda.validate(start, env) and vamp.panda.validate(goal, env)):
         return
 
     sampler = getattr(vamp_module, sampler)()
     plan_settings.optimize = True
-    for iters in max_iters:
-        sampler.reset()
-        plan_settings.max_iterations = iters
-        plan_settings.max_samples = iters
+    plan_settings.max_iterations = iterations
+    plan_settings.max_samples = samples
 
-        result = planner_func(start, goal, env, plan_settings, sampler)
-        if not result.solved:
-            continue
+    result = planner_func(start, goal, env, plan_settings, sampler)
+    if not result.solved:
+        return
 
-        simple = vamp_module.simplify(result.path, env, simp_settings, sampler)
-        results = vamp.results_to_dict(result, simple)
-        results["iterations"] = iters
-        all_results.append(results)
+    data = vamp.results_to_dict(result, include_intermediate_results = True)
+    df = pd.DataFrame.from_dict(data["intermediate_results"])
 
-    df = pd.DataFrame.from_dict(all_results)
-
-    # Convert to microseconds
-    df["planning_time"] = df["planning_time"].dt.microseconds
-    df["simplification_time"] = df["simplification_time"].dt.microseconds
-
-    print(df)
+    df["planning_time"] = df['planning_time'].astype('int64') / 1e9
 
     # Create the plot
     if plot:
         plt.figure(figsize = (10, 6))
-        plt.plot(df['planning_iterations'], df['initial_path_cost'], marker = 'o')
-        plt.title('Iterations vs Initial Path Cost')
-        plt.xlabel('Iterations')
+        plt.plot(df["planning_time"], df["path_cost"], marker = 'o')
+        plt.title('Seconds vs Initial Path Cost')
+        plt.xlabel('Seconds')
         plt.ylabel('Initial Path Cost')
         plt.grid(True)
         plt.savefig(save_path, dpi = 300, bbox_inches = 'tight')

@@ -1,3 +1,4 @@
+#include <vamp/planning/plan.hh>
 #include <vamp/planning/roadmap.hh>
 #include <vamp/planning/rrtc_settings.hh>
 #include <vamp/planning/rrt_star_settings.hh>
@@ -108,4 +109,14 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("shortcut", &vp::SimplifySettings::shortcut)
         .def_rw("perturb", &vp::SimplifySettings::perturb)
         .def_rw("bspline", &vp::SimplifySettings::bspline);
+
+    nb::class_<vp::Intermediate>(pymodule, "Intermediate", "Intermediate result in a planning query.")
+        .def(nb::init<>(), "Empty constructor.")
+        .def_ro("cost", &vp::Intermediate::cost, "Cost of the path.")
+        .def_ro("nanoseconds", &vp::Intermediate::nanoseconds, "Nanoseconds taken to find the path.")
+        .def_ro(
+            "iterations",
+            &vp::Intermediate::iterations,
+            "Number of planner iterations used to find the path.")
+        .def_ro("size", &vp::Intermediate::size, "Size of the internal planner datastructures.");
 }

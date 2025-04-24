@@ -243,7 +243,10 @@ namespace vamp::planning
                                 auto current = free_index - 1;
                                 build_path(goal, current);
                                 result.cost = cost[current] + goal.distance(buffer_index(current));
-                                break;
+                                result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
+                                result.iterations = iter;
+                                result.size.emplace_back(tree.size());
+                                return result;
                             }
                             else
                             {
@@ -279,14 +282,6 @@ namespace vamp::planning
                         }
                     }
                 }
-            }
-
-            if (not settings.optimize)
-            {
-                result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
-                result.iterations = iter;
-                result.size.emplace_back(tree.size());
-                return result;
             }
 
             if (goal_motions.size() > 0)

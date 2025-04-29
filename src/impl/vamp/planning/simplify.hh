@@ -233,7 +233,7 @@ namespace vamp::planning
 
         if (settings.interpolate)
         {
-            result.path.interpolate(settings.interpolate);
+            result.path.interpolate_to_n_states(settings.interpolate);
         }
 
         if (path.size() > 2)

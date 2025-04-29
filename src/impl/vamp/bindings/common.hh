@@ -451,9 +451,13 @@ namespace vamp::binding
                 &RH::Path::subdivide,
                 "Subdivide the path by inserting a configuration at the midpoint of all existing segments.")
             .def(
-                "interpolate",
-                &RH::Path::interpolate,
+                "interpolate_to_resolution",
+                &RH::Path::interpolate_to_resolution,
                 "Refine the path by interpolating all segments up to the resolution provided.")
+            .def(
+                "interpolate_to_n_states",
+                &RH::Path::interpolate_to_n_states,
+                "Refine the path by interpolating to n states as even as possible.")
             .def(
                 "validate",
                 [](typename RH::Path &p, const typename RH::EnvironmentInput &e)

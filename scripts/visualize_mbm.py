@@ -109,7 +109,7 @@ Simplified: {stats['simplified_path_cost']:5.3f}"""
             )
 
         plan = simplify.path
-        plan.interpolate(vamp_module.resolution())
+        plan.interpolate_to_resolution(vamp_module.resolution())
 
     if valid and not solved:
         print("Failed to solve problem! Displaying start and goals.")

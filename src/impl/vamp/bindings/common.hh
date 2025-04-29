@@ -17,6 +17,7 @@
 #include <vamp/planning/prm.hh>
 #include <vamp/planning/fcit.hh>
 #include <vamp/planning/rrtc.hh>
+#include <vamp/planning/aorrtc.hh>
 #include <vamp/vector.hh>
 
 #include <nanobind/nanobind.h>
@@ -105,6 +106,8 @@ namespace vamp::binding
         using PRM = vamp::planning::PRM<Robot, rake, Robot::resolution>;
         using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
         using FCIT = vamp::planning::FCIT<Robot, rake, Robot::resolution>;
+        using AORRTC = vamp::planning::AORRTC<Robot, rake, Robot::resolution>;
+        using AOX_RRTC = vamp::planning::AOX_RRTC<Robot, rake, Robot::resolution>;
 
         inline static auto halton() -> typename RNG::Ptr
         {
@@ -266,6 +269,36 @@ namespace vamp::binding
 
             const Configuration start_v(start);
             return FCIT::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
+        }
+
+        inline static auto aorrtc(
+            const ConfigurationArray &start,
+            const ConfigurationArray &goal,
+            const EnvironmentInput &environment,
+            const vamp::planning::AORRTCSettings &settings,
+            typename RNG::Ptr rng) -> PlanningResult
+        {
+            return AORRTC::solve(
+                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
+        }
+
+        inline static auto aorrtc_multi_goal(
+            const ConfigurationArray &start,
+            const std::vector<ConfigurationArray> &goals,
+            const EnvironmentInput &environment,
+            const vamp::planning::AORRTCSettings &settings,
+            typename RNG::Ptr rng) -> PlanningResult
+        {
+            std::vector<Configuration> goals_v;
+            goals_v.reserve(goals.size());
+
+            for (const auto &goal : goals)
+            {
+                goals_v.emplace_back(goal);
+            }
+
+            return AORRTC::solve(
+                Configuration(start), goals_v, EnvironmentVector(environment), settings, rng);
         }
 
         inline static auto roadmap(
@@ -589,6 +622,26 @@ namespace vamp::binding
             "settings"_a,
             "rng"_a,
             "Solve the motion planning problem with FCIT*.");
+
+        submodule.def(
+            "aorrtc",
+            RH::aorrtc,
+            "start"_a,
+            "goal"_a,
+            "environment"_a,
+            "settings"_a,
+            "rng"_a,
+            "Solve the motion planning problem with AORRTC.");
+
+        submodule.def(
+            "aorrtc",
+            RH::aorrtc_multi_goal,
+            "start"_a,
+            "goal"_a,
+            "environment"_a,
+            "settings"_a,
+            "rng"_a,
+            "Solve the motion planning problem with AORRTC.");
 
         submodule.def(
             "roadmap",

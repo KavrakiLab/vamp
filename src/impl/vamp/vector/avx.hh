@@ -12,312 +12,6 @@
 namespace vamp
 {
     template <>
-    struct SIMDVector<__m256>
-    {
-        using VectorT = __m256;
-        using ScalarT = float;
-        static constexpr std::size_t VectorWidth = 8;
-        static constexpr std::size_t Alignment = 32;
-
-        template <unsigned int = 0>
-        inline static constexpr auto constant(ScalarT v) noexcept -> VectorT
-        {
-            return _mm256_set1_ps(v);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto load(const ScalarT *const f) noexcept -> VectorT
-        {
-            return _mm256_load_ps(f);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto load_unaligned(const ScalarT *const f) noexcept -> VectorT
-        {
-            return _mm256_loadu_ps(f);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto store(ScalarT *f, VectorT v) noexcept -> void
-        {
-            _mm256_store_ps(f, v);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto store_unaligned(ScalarT *f, VectorT v) noexcept -> void
-        {
-            _mm256_storeu_ps(f, v);
-        }
-
-        template <unsigned int = 0>
-        inline static auto extract(VectorT v, int idx) noexcept -> ScalarT
-        {
-            return v[idx];
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto broadcast(VectorT v, int idx) noexcept -> VectorT
-        {
-            return _mm256_permutevar8x32_ps(v, _mm256_set1_epi32(idx));
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto bitneg(VectorT l) noexcept -> VectorT
-        {
-            return _mm256_xor_ps(
-                l, _mm256_castsi256_ps(_mm256_cmpeq_epi32(_mm256_castps_si256(l), _mm256_castps_si256(l))));
-        }
-
-        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
-        template <unsigned int = 0>
-        inline static constexpr auto neg(VectorT l) noexcept -> VectorT
-        {
-            return _mm256_xor_ps(l, _mm256_set1_ps(-0.0));
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto add(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_add_ps(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto sub(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_sub_ps(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto mul(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_mul_ps(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto cmp_less_equal(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_cmp_ps(l, r, _CMP_LE_OQ);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto cmp_less_than(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_cmp_ps(l, r, _CMP_LT_OQ);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto cmp_greater_equal(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_cmp_ps(l, r, _CMP_GE_OQ);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto cmp_greater_than(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_cmp_ps(l, r, _CMP_GT_OQ);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto cmp_equal(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_cmp_ps(l, r, _CMP_EQ_OQ);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto cmp_not_equal(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_cmp_ps(l, r, _CMP_NEQ_OQ);
-        }
-
-        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
-        template <unsigned int = 0>
-        inline static auto floor(VectorT v) noexcept -> VectorT
-        {
-            return _mm256_floor_ps(v);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto div(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_div_ps(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto rcp(VectorT l) noexcept -> VectorT
-        {
-            return _mm256_rcp_ps(l);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto mask(VectorT v) noexcept -> unsigned int
-        {
-            return _mm256_movemask_ps(v);
-        }
-
-        template <unsigned int = 0>
-        inline static auto zero_vector() noexcept -> VectorT
-        {
-            return _mm256_setzero_ps();
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto test_zero(VectorT l, VectorT r) noexcept -> unsigned int
-        {
-            return _mm256_testz_ps(l, r);
-        }
-
-        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
-        template <unsigned int = 0>
-        inline static constexpr auto abs(VectorT v) noexcept -> VectorT
-        {
-            const auto abs_mask = _mm256_castsi256_ps(_mm256_set1_epi32(0x7fffffff));
-            return _mm256_and_ps(v, abs_mask);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto and_(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_and_ps(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto or_(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return _mm256_or_ps(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto sqrt(VectorT v) noexcept -> VectorT
-        {
-            return _mm256_mul_ps(v, _mm256_rsqrt_ps(v));
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto shift_left(VectorT v, unsigned int i) noexcept -> VectorT
-        {
-            return _mm256_castsi256_ps(_mm256_slli_epi32(_mm256_castps_si256(v), i));
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto shift_right(VectorT v, unsigned int i) noexcept -> VectorT
-        {
-            return _mm256_castsi256_ps(_mm256_srli_epi32(_mm256_castps_si256(v), i));
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto clamp(VectorT v, VectorT lower, VectorT upper) noexcept -> VectorT
-        {
-            return _mm256_min_ps(_mm256_max_ps(v, lower), upper);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto max(VectorT v, VectorT other) noexcept -> VectorT
-        {
-            return _mm256_max_ps(v, other);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto hsum(VectorT v) noexcept -> ScalarT
-        {
-            auto vhigh = _mm256_extractf128_ps(v, 1);
-            auto vlow = _mm256_castps256_ps128(v);
-            auto sum_1 = _mm_add_ps(vhigh, vlow);
-            auto shuf_1 = _mm_castpd_ps(_mm_permute_pd(_mm_castps_pd(sum_1), 0b01));
-            auto sum_2 = _mm_add_ps(sum_1, shuf_1);
-            auto shuf_2 = _mm_movehdup_ps(sum_2);
-            auto sum_3 = _mm_add_ps(sum_2, shuf_2);
-            return _mm_cvtss_f32(sum_3);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto blend(VectorT a, VectorT b, VectorT blend_mask) noexcept -> VectorT
-        {
-            return _mm256_blendv_ps(a, b, blend_mask);
-        }
-
-        template <unsigned int blend_mask>
-        inline static constexpr auto blend_constant(VectorT a, VectorT b) noexcept -> VectorT
-        {
-            return _mm256_blend_ps(a, b, blend_mask);
-        }
-
-        template <typename OtherVectorT>
-        inline static constexpr auto to(VectorT v) noexcept -> OtherVectorT
-        {
-            if constexpr (std::is_same_v<OtherVectorT, __m256i>)
-            {
-                return _mm256_cvtps_epi32(v);
-            }
-            else if constexpr (std::is_same_v<OtherVectorT, VectorT>)
-            {
-                return v;
-            }
-            else
-            {
-                static_assert("Invalid cast-to type!");
-            }
-        }
-
-        template <typename OtherVectorT>
-        inline static constexpr auto from(OtherVectorT v) noexcept -> VectorT
-        {
-            if constexpr (std::is_same_v<OtherVectorT, __m256i>)
-            {
-                return _mm256_cvtepi32_ps(v);
-            }
-            else
-            {
-                static_assert("Invalid cast-from type!");
-            }
-        }
-
-        template <typename OtherVectorT>
-        inline static constexpr auto as(VectorT v) noexcept -> OtherVectorT
-        {
-            if constexpr (std::is_same_v<OtherVectorT, __m256i>)
-            {
-                return _mm256_castps_si256(v);
-            }
-            else
-            {
-                static_assert("Invalid cast-as type!");
-            }
-        }
-
-        template <typename OtherVectorT>
-        inline static auto map_to_range(OtherVectorT v) -> VectorT
-        {
-            if constexpr (std::is_same_v<OtherVectorT, __m256i>)
-            {
-                const auto v_1 = _mm256_and_si256(v, _mm256_set1_epi32(1));
-                const auto v1_f = _mm256_cvtepi32_ps(v_1);
-                const auto v_scaled = _mm256_add_ps(_mm256_cvtepi32_ps(v), v1_f);
-                return _mm256_mul_ps(
-                    v_scaled,
-                    _mm256_set1_ps(1.F / static_cast<float>(std::numeric_limits<unsigned int>::max())));
-            }
-            else
-            {
-                static_assert("Invalid range-map type!");
-            }
-        }
-
-        template <typename = void>
-        inline static constexpr auto gather(__m256i idxs, const ScalarT *base) noexcept -> VectorT
-        {
-            return _mm256_i32gather_ps(base, idxs, sizeof(ScalarT));
-        }
-
-        template <typename = void>
-        inline static constexpr auto
-        gather_select(__m256i idxs, VectorT mask, VectorT alternative, const ScalarT *base) noexcept
-            -> VectorT
-        {
-            return _mm256_mask_i32gather_ps(alternative, base, idxs, mask, sizeof(ScalarT));
-        }
-    };
-
-    template <>
     struct SIMDVector<__m256i>
     {
         using VectorT = __m256i;
@@ -530,6 +224,380 @@ namespace vamp
             {
                 static_assert("Invalid cast-as type!");
             }
+        }
+    };
+
+    template <>
+    struct SIMDVector<__m256>
+    {
+        using VectorT = __m256;
+        using ScalarT = float;
+        static constexpr std::size_t VectorWidth = 8;
+        static constexpr std::size_t Alignment = 32;
+
+        template <unsigned int = 0>
+        inline static constexpr auto constant(ScalarT v) noexcept -> VectorT
+        {
+            return _mm256_set1_ps(v);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto constant_int(unsigned int v) noexcept -> VectorT
+        {
+            return _mm256_castsi256_ps(_mm256_set1_epi32(v));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto load(const ScalarT *const f) noexcept -> VectorT
+        {
+            return _mm256_load_ps(f);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto load_unaligned(const ScalarT *const f) noexcept -> VectorT
+        {
+            return _mm256_loadu_ps(f);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto store(ScalarT *f, VectorT v) noexcept -> void
+        {
+            _mm256_store_ps(f, v);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto store_unaligned(ScalarT *f, VectorT v) noexcept -> void
+        {
+            _mm256_storeu_ps(f, v);
+        }
+
+        template <unsigned int = 0>
+        inline static auto extract(VectorT v, int idx) noexcept -> ScalarT
+        {
+            return v[idx];
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto broadcast(VectorT v, int idx) noexcept -> VectorT
+        {
+            return _mm256_permutevar8x32_ps(v, _mm256_set1_epi32(idx));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto bitneg(VectorT l) noexcept -> VectorT
+        {
+            return _mm256_xor_ps(
+                l, _mm256_castsi256_ps(_mm256_cmpeq_epi32(_mm256_castps_si256(l), _mm256_castps_si256(l))));
+        }
+
+        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
+        template <unsigned int = 0>
+        inline static constexpr auto neg(VectorT l) noexcept -> VectorT
+        {
+            return _mm256_xor_ps(l, _mm256_set1_ps(-0.0));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto add(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_add_ps(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto sub(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_sub_ps(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto mul(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_mul_ps(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_less_equal(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_cmp_ps(l, r, _CMP_LE_OQ);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_less_than(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_cmp_ps(l, r, _CMP_LT_OQ);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_greater_equal(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_cmp_ps(l, r, _CMP_GE_OQ);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_greater_than(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_cmp_ps(l, r, _CMP_GT_OQ);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_equal(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_cmp_ps(l, r, _CMP_EQ_OQ);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_not_equal(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_cmp_ps(l, r, _CMP_NEQ_OQ);
+        }
+
+        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
+        template <unsigned int = 0>
+        inline static auto floor(VectorT v) noexcept -> VectorT
+        {
+            return _mm256_floor_ps(v);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto div(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_div_ps(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto rcp(VectorT l) noexcept -> VectorT
+        {
+            return _mm256_rcp_ps(l);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto mask(VectorT v) noexcept -> unsigned int
+        {
+            return _mm256_movemask_ps(v);
+        }
+
+        template <unsigned int = 0>
+        inline static auto zero_vector() noexcept -> VectorT
+        {
+            return _mm256_setzero_ps();
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto test_zero(VectorT l, VectorT r) noexcept -> unsigned int
+        {
+            return _mm256_testz_ps(l, r);
+        }
+
+        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
+        template <unsigned int = 0>
+        inline static constexpr auto abs(VectorT v) noexcept -> VectorT
+        {
+            const auto abs_mask = _mm256_castsi256_ps(_mm256_set1_epi32(0x7fffffff));
+            return _mm256_and_ps(v, abs_mask);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto and_(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_and_ps(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto or_(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_or_ps(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto sqrt(VectorT v) noexcept -> VectorT
+        {
+            return _mm256_mul_ps(v, _mm256_rsqrt_ps(v));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto shift_left(VectorT v, unsigned int i) noexcept -> VectorT
+        {
+            return _mm256_castsi256_ps(_mm256_slli_epi32(_mm256_castps_si256(v), i));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto shift_right(VectorT v, unsigned int i) noexcept -> VectorT
+        {
+            return _mm256_castsi256_ps(_mm256_srli_epi32(_mm256_castps_si256(v), i));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto clamp(VectorT v, VectorT lower, VectorT upper) noexcept -> VectorT
+        {
+            return _mm256_min_ps(_mm256_max_ps(v, lower), upper);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto max(VectorT v, VectorT other) noexcept -> VectorT
+        {
+            return _mm256_max_ps(v, other);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto hsum(VectorT v) noexcept -> ScalarT
+        {
+            auto vhigh = _mm256_extractf128_ps(v, 1);
+            auto vlow = _mm256_castps256_ps128(v);
+            auto sum_1 = _mm_add_ps(vhigh, vlow);
+            auto shuf_1 = _mm_castpd_ps(_mm_permute_pd(_mm_castps_pd(sum_1), 0b01));
+            auto sum_2 = _mm_add_ps(sum_1, shuf_1);
+            auto shuf_2 = _mm_movehdup_ps(sum_2);
+            auto sum_3 = _mm_add_ps(sum_2, shuf_2);
+            return _mm_cvtss_f32(sum_3);
+        }
+
+        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
+        template <unsigned int = 0>
+        inline static constexpr auto log(VectorT x) noexcept -> VectorT
+        {
+            using IntVector = SIMDVector<__m256i>;
+
+            const auto half = constant(0.5F);
+            const auto one = constant(1.0F);
+            auto invalid_mask = cmp_less_equal(x, zero_vector());
+
+            // cut off denormalized values
+            x = max(x, constant_int(0x00800000));
+
+            auto emm0 = IntVector::shift_right(as<IntVector::VectorT>(x), 23);
+
+            x = and_(x, constant_int(~0x7f800000));
+            x = or_(x, half);
+
+            // keep only the fractional part
+            emm0 = IntVector::sub(emm0, IntVector::constant(0x7f));
+            auto e = from<IntVector::VectorT>(emm0);
+
+            e = add(e, one);
+
+            // compute approx
+            auto mask = cmp_less_than(x, constant(0.707106781186547524f));
+            auto tmp = and_(x, mask);
+            x = sub(x, one);
+            e = sub(e, and_(one, mask));
+            x = add(x, tmp);
+
+            auto z = mul(x, x);
+
+            auto y = constant(7.0376836292E-2f);
+            y = mul(y, x);
+            y = add(y, constant(-1.1514610310E-1f));
+            y = mul(y, x);
+            y = add(y, constant(1.1676998740E-1f));
+            y = mul(y, x);
+            y = add(y, constant(-1.2420140846E-1f));
+            y = mul(y, x);
+            y = add(y, constant(+1.4249322787E-1f));
+            y = mul(y, x);
+            y = add(y, constant(-1.6668057665E-1f));
+            y = mul(y, x);
+            y = add(y, constant(+2.0000714765E-1f));
+            y = mul(y, x);
+            y = add(y, constant(-2.4999993993E-1f));
+            y = mul(y, x);
+            y = add(y, constant(+3.3333331174E-1f));
+            y = mul(y, mul(x, z));
+            tmp = mul(e, constant(-2.12194440e-4f));
+            y = add(y, tmp);
+            tmp = mul(z, half);
+            y = sub(y, tmp);
+            tmp = mul(e, constant(0.693359375f));
+            x = add(x, add(y, tmp));
+
+            x = or_(x, invalid_mask);  // negative arg will be NAN
+            return x;
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto blend(VectorT a, VectorT b, VectorT blend_mask) noexcept -> VectorT
+        {
+            return _mm256_blendv_ps(a, b, blend_mask);
+        }
+
+        template <unsigned int blend_mask>
+        inline static constexpr auto blend_constant(VectorT a, VectorT b) noexcept -> VectorT
+        {
+            return _mm256_blend_ps(a, b, blend_mask);
+        }
+
+        template <typename OtherVectorT>
+        inline static constexpr auto to(VectorT v) noexcept -> OtherVectorT
+        {
+            if constexpr (std::is_same_v<OtherVectorT, __m256i>)
+            {
+                return _mm256_cvtps_epi32(v);
+            }
+            else if constexpr (std::is_same_v<OtherVectorT, VectorT>)
+            {
+                return v;
+            }
+            else
+            {
+                static_assert("Invalid cast-to type!");
+            }
+        }
+
+        template <typename OtherVectorT>
+        inline static constexpr auto from(OtherVectorT v) noexcept -> VectorT
+        {
+            if constexpr (std::is_same_v<OtherVectorT, __m256i>)
+            {
+                return _mm256_cvtepi32_ps(v);
+            }
+            else
+            {
+                static_assert("Invalid cast-from type!");
+            }
+        }
+
+        template <typename OtherVectorT>
+        inline static constexpr auto as(VectorT v) noexcept -> OtherVectorT
+        {
+            if constexpr (std::is_same_v<OtherVectorT, __m256i>)
+            {
+                return _mm256_castps_si256(v);
+            }
+            else
+            {
+                static_assert("Invalid cast-as type!");
+            }
+        }
+
+        template <typename OtherVectorT>
+        inline static auto map_to_range(OtherVectorT v) -> VectorT
+        {
+            if constexpr (std::is_same_v<OtherVectorT, __m256i>)
+            {
+                const auto v_1 = _mm256_and_si256(v, _mm256_set1_epi32(1));
+                const auto v1_f = _mm256_cvtepi32_ps(v_1);
+                const auto v_scaled = _mm256_add_ps(_mm256_cvtepi32_ps(v), v1_f);
+                return _mm256_mul_ps(
+                    v_scaled,
+                    _mm256_set1_ps(1.F / static_cast<float>(std::numeric_limits<unsigned int>::max())));
+            }
+            else
+            {
+                static_assert("Invalid range-map type!");
+            }
+        }
+
+        template <typename = void>
+        inline static constexpr auto gather(__m256i idxs, const ScalarT *base) noexcept -> VectorT
+        {
+            return _mm256_i32gather_ps(base, idxs, sizeof(ScalarT));
+        }
+
+        template <typename = void>
+        inline static constexpr auto
+        gather_select(__m256i idxs, VectorT mask, VectorT alternative, const ScalarT *base) noexcept
+            -> VectorT
+        {
+            return _mm256_mask_i32gather_ps(alternative, base, idxs, mask, sizeof(ScalarT));
         }
     };
 }  // namespace vamp

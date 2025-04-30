@@ -280,6 +280,70 @@ namespace vamp
             return vaddvq_f32(v);
         }
 
+        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
+        template <unsigned int = 0>
+        inline static constexpr auto log(VectorT x) noexcept -> VectorT
+        {
+            using IntVector = SIMDVector<int32x4_t>;
+
+            const auto half = constant(0.5F);
+            const auto one = constant(1.0F);
+            auto invalid_mask = cmp_less_equal(x, zero_vector());
+
+            // cut off denormalized values
+            x = max(x, constant_int(0x00800000));
+
+            auto emm0 = IntVector::shift_right(as<IntVector::VectorT>(x), 23);
+
+            x = and_(x, constant_int(~0x7f800000));
+            x = or_(x, half);
+
+            // keep only the fractional part
+            emm0 = IntVector::sub(emm0, IntVector::constant(0x7f));
+            auto e = from<IntVector::VectorT>(emm0);
+
+            e = add(e, one);
+
+            // compute approx
+            auto mask = cmp_less_than(x, constant(0.707106781186547524f));
+            auto tmp = and_(x, mask);
+            x = sub(x, one);
+            e = sub(e, and_(one, mask));
+            x = add(x, tmp);
+
+            auto z = mul(x, x);
+
+            auto y = constant(7.0376836292E-2f);
+            y = mul(y, x);
+            y = add(y, constant(-1.1514610310E-1f));
+            y = mul(y, x);
+            y = add(y, constant(1.1676998740E-1f));
+            y = mul(y, x);
+            y = add(y, constant(-1.2420140846E-1f));
+            y = mul(y, x);
+            y = add(y, constant(+1.4249322787E-1f));
+            y = mul(y, x);
+            y = add(y, constant(-1.6668057665E-1f));
+            y = mul(y, x);
+            y = add(y, constant(+2.0000714765E-1f));
+            y = mul(y, x);
+            y = add(y, constant(-2.4999993993E-1f));
+            y = mul(y, x);
+            y = add(y, constant(+3.3333331174E-1f));
+            y = mul(y, mul(x, z));
+            tmp = mul(e, constant(-2.12194440e-4f));
+            y = add(y, tmp);
+            tmp = mul(z, half);
+            y = sub(y, tmp);
+            tmp = mul(e, constant(0.693359375f));
+            x = add(x, add(y, tmp));
+
+            x = or_(x, invalid_mask);  // negative arg will be NAN
+            return x;
+        }
+
+
+
         template <unsigned int = 0>
         inline static constexpr auto blend(VectorT a, VectorT b, VectorT blend_mask) noexcept -> VectorT
         {

@@ -454,6 +454,16 @@ namespace vamp::planning
             const AORRTCSettings &settings,
             typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
         {
+            return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
+        }
+
+        inline static auto solve(
+            const Configuration &start,
+            const std::vector<Configuration> &goals,
+            const collision::Environment<FloatVector<rake>> &environment,
+            const AORRTCSettings &settings,
+            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
+        {
             std::ofstream myfile;
             
             auto start_time = std::chrono::steady_clock::now();
@@ -470,7 +480,7 @@ namespace vamp::planning
             do
             {
                 // Find an initial solution
-                result = RRTC::solve(start, goal, environment, rrtc_settings, rng);
+                result = RRTC::solve(start, goals, environment, rrtc_settings, rng);
                 rrtc_settings.max_time = settings.max_time - vamp::utils::get_elapsed_nanoseconds(start_time);
             } while (result.path.empty() and vamp::utils::get_elapsed_nanoseconds(start_time) < settings.max_time);
             
@@ -492,7 +502,7 @@ namespace vamp::planning
             final_result.path = result.path;
             best_path_cost = result.path.cost();
 
-            ProlateHyperspheroid<dimension> phs(start, goal);
+            ProlateHyperspheroid<dimension> phs(start, goals[0]);
             phs.set_transverse_diameter(best_path_cost);
             auto phs_rng = std::make_shared<ProlateHyperspheroidRNG<Robot>>(phs, rng);
 
@@ -502,8 +512,13 @@ namespace vamp::planning
                 // Update internal maximum time
                 rrtc_settings.max_time = settings.max_time - vamp::utils::get_elapsed_nanoseconds(start_time);
 
-                //                                                                            vvv should be phs_rng
-                result = AOX_RRTC::solve(start, goal, environment, settings, best_path_cost, rng);
+                // If there is a single goal, sample with PHS
+                if (goals.size() == 1)
+                {
+                    result = AOX_RRTC::solve(start, goals, environment, settings, best_path_cost, phs_rng);
+                } else {
+                    result = AOX_RRTC::solve(start, goals, environment, settings, best_path_cost, rng);
+                }
                 
                 // If last search found a solution
                 if (not result.path.empty())

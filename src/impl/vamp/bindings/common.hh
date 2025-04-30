@@ -291,25 +291,6 @@ namespace vamp::binding
                 Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
         }
 
-        inline static auto aorrtc_multi_goal(
-            const ConfigurationArray &start,
-            const std::vector<ConfigurationArray> &goals,
-            const EnvironmentInput &environment,
-            const vamp::planning::AORRTCSettings &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            std::vector<Configuration> goals_v;
-            goals_v.reserve(goals.size());
-
-            for (const auto &goal : goals)
-            {
-                goals_v.emplace_back(goal);
-            }
-
-            return AORRTC::solve(
-                Configuration(start), goals_v, EnvironmentVector(environment), settings, rng);
-        }
-
         inline static auto roadmap(
             const ConfigurationArray &start,
             const ConfigurationArray &goal,
@@ -643,16 +624,6 @@ namespace vamp::binding
         submodule.def(
             "aorrtc",
             RH::aorrtc,
-            "start"_a,
-            "goal"_a,
-            "environment"_a,
-            "settings"_a,
-            "rng"_a,
-            "Solve the motion planning problem with AORRTC.");
-
-        submodule.def(
-            "aorrtc",
-            RH::aorrtc_multi_goal,
             "start"_a,
             "goal"_a,
             "environment"_a,

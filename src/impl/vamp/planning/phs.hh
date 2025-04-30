@@ -165,14 +165,14 @@ namespace vamp::planning
 
         inline auto uniform_in_ball() noexcept -> vamp::FloatVector<Robot::dimension>
         {
-            return std::pow(rng->single.uniform_01(), 1.0 / static_cast<float>(Robot::dimension)) *
+            return std::pow(rng->dist.uniform_01(), 1.0 / static_cast<float>(Robot::dimension)) *
                    uniform_on_ball();
         }
 
         inline void reset() noexcept override
         {
             rng->reset();
-            rng->single.reset();
+            rng->dist.reset();
         }
 
         inline auto next() noexcept -> FloatVector<Robot::dimension> override

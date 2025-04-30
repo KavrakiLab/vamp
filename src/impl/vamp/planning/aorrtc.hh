@@ -454,16 +454,6 @@ namespace vamp::planning
             const AORRTCSettings &settings,
             typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
         {
-            return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
-        }
-
-        inline static auto solve(
-            const Configuration &start,
-            const std::vector<Configuration> &goals,
-            const collision::Environment<FloatVector<rake>> &environment,
-            const AORRTCSettings &settings,
-            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
-        {
             std::ofstream myfile;
             
             auto start_time = std::chrono::steady_clock::now();
@@ -480,7 +470,7 @@ namespace vamp::planning
             do
             {
                 // Find an initial solution
-                result = RRTC::solve(start, goals, environment, rrtc_settings, rng);
+                result = RRTC::solve(start, goal, environment, rrtc_settings, rng);
                 rrtc_settings.max_time = settings.max_time - vamp::utils::get_elapsed_nanoseconds(start_time);
             } while (result.path.empty() and vamp::utils::get_elapsed_nanoseconds(start_time) < settings.max_time);
             
@@ -513,7 +503,7 @@ namespace vamp::planning
                 rrtc_settings.max_time = settings.max_time - vamp::utils::get_elapsed_nanoseconds(start_time);
 
                 //                                                                            vvv should be phs_rng
-                result = AOX_RRTC::solve(start, goals, environment, settings, best_path_cost, rng);
+                result = AOX_RRTC::solve(start, goal, environment, settings, best_path_cost, rng);
                 
                 // If last search found a solution
                 if (not result.path.empty())

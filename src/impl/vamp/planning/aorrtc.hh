@@ -4,7 +4,7 @@
 
 #include <vamp/collision/environment.hh>
 #include <vamp/planning/aox_nn.hh>
-// #include <vamp/planning/phs.hh>
+#include <vamp/planning/phs.hh>
 #include <vamp/planning/plan.hh>
 #include <vamp/planning/simplify.hh>
 #include <vamp/planning/validate.hh>
@@ -502,13 +502,9 @@ namespace vamp::planning
             final_result.path = result.path;
             best_path_cost = result.path.cost();
 
-            // AORRTC should be using PHS sampling
-            // Not currently included in public vamp repo
-            /*
             ProlateHyperspheroid<dimension> phs(start, goal);
             phs.set_transverse_diameter(best_path_cost);
             auto phs_rng = std::make_shared<ProlateHyperspheroidRNG<Robot>>(phs, rng);
-            */
 
             std::size_t iters = result.iterations;
             while (vamp::utils::get_elapsed_nanoseconds(start_time) < settings.max_time)
@@ -536,11 +532,8 @@ namespace vamp::planning
                 }
 
                 iters += result.iterations;
-                // AORRTC should be using PHS sampling
-                // Not currently included in public vamp repo
-                /* 
+
                 phs_rng->phs.set_transverse_diameter(best_path_cost); 
-                */
             }
             
             final_result.iterations = iters;

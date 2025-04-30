@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vamp/planning/phs.hh>
 #include <vamp/random/rng.hh>
 #include <vamp/random/halton.hh>
 
@@ -99,6 +100,7 @@ namespace vamp::binding
 
         using RNG = vamp::rng::RNG<Robot::dimension>;
         using Halton = vamp::rng::Halton<Robot::dimension>;
+        using PHS = vamp::planning::ProlateHyperspheroid<Robot::dimension>;
 #if defined(__x86_64__)
         using XORShift = vamp::rng::XORShift<Robot::dimension>;
 #endif
@@ -108,6 +110,13 @@ namespace vamp::binding
         using FCIT = vamp::planning::FCIT<Robot, rake, Robot::resolution>;
         using AORRTC = vamp::planning::AORRTC<Robot, rake, Robot::resolution>;
         using AOX_RRTC = vamp::planning::AOX_RRTC<Robot, rake, Robot::resolution>;
+
+        inline static auto
+        phs_sampler(const planning::ProlateHyperspheroid<Robot::dimension> &phs, typename RNG::Ptr rng) ->
+            typename RNG::Ptr
+        {
+            return std::make_shared<planning::ProlateHyperspheroidRNG<Robot>>(phs, rng);
+        }
 
         inline static auto halton() -> typename RNG::Ptr
         {
@@ -378,6 +387,13 @@ namespace vamp::binding
                 },
                 "Skip the next n iterations.");
 
+        nb::class_<typename RH::PHS>(submodule, "ProlateHyperspheroid", "Prolate Hyperspheroid for Robot.")
+            .def(
+                nb::init<typename RH::Configuration, typename RH::Configuration>(),
+                "Construct from two loci.")  //
+            .def("set_transverse_diameter", &RH::PHS::set_transverse_diameter)
+            .def("transform", &RH::PHS::transform);
+
         submodule.def(
             "dimension",
             []() { return Robot::dimension; },
@@ -555,6 +571,7 @@ namespace vamp::binding
                 "iterations", &RH::Roadmap::iterations, "Number of iterations taken to construct roadmap.");
 
         submodule.def("halton", RH::halton, "Creates a new Halton sampler.");
+        submodule.def("phs_sampler", RH::phs_sampler, "Creates a new PHS sampler.");
 
 #if defined(__x86_64__)
         submodule.def("xorshift", RH::xorshift, "Creates a new XORShift sampler.");

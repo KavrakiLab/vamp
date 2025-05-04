@@ -113,14 +113,16 @@ namespace vamp::planning
             radii[start_index] = std::numeric_limits<float>::max();
             costs.push_back(0);
 
+            GNATNode<dimension> temp_goal;
+
             // Add goals to tree
             std::vector<GNATNode<dimension>> goal_verts;
             for (const auto &goal : goals)
             {
                 goal.to_array(buffer_index(free_index));
-                auto g = GNATNode<dimension>{start_index, 0, {buffer_index(start_index)}};
-                goal_verts.push_back(g);
-                goal_tree.add(g);
+                temp_goal = GNATNode<dimension>{free_index, 0, {buffer_index(free_index)}};
+                goal_verts.push_back(temp_goal);
+                goal_tree.add(temp_goal);
                 parents[free_index] = free_index;
                 radii[free_index] = std::numeric_limits<float>::max();
                 costs.push_back(0);
@@ -162,6 +164,7 @@ namespace vamp::planning
                     if (temp.distance(v.array) < min_goal_dist)
                     {
                         goal_vert = &v;
+                        min_goal_dist = temp.distance(v.array);
                     }
                 }
 
@@ -268,7 +271,7 @@ namespace vamp::planning
                             // If we have connected:
                             //      to the same parent
                             //      with a worse cost
-                            //      to the best possible parent (crange == 0 \equiv cost == g^)
+                            //      to the best possible parent before this (crange == 0 \equiv cost == g^)
                             // ...then stop spending effort resampling costs
                             if (new_nearest_node->index == nearest_node->index or
                                     new_nearest_node->cost + new_nearest_distance >= new_cost or
@@ -327,7 +330,7 @@ namespace vamp::planning
                 
                     // Once again we must loop over the nearest R neighbours - this time for the other tree
                     //* ------------------ ------ -------------------
-                    rootDist = tree_b->getDistanceFunction()(temp_node, root_vert);
+                    rootDist = tree_b->getDistanceFunction()(temp_node, target_vert);
                     tree_b->nearestR(temp_node, rootDist, near_list);
                     idx = 0;
                     other_nearest_node = &near_list[idx];

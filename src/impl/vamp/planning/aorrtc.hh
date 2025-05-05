@@ -116,7 +116,8 @@ namespace vamp::planning
             for (const auto &goal : goals)
             {
                 goal.to_array(buffer_index(free_index));
-                GNATNode<dimension> temp_goal = GNATNode<dimension>{free_index, 0, {buffer_index(free_index)}};
+                GNATNode<dimension> temp_goal =
+                    GNATNode<dimension>{free_index, 0, {buffer_index(free_index)}};
                 goal_verts.push_back(temp_goal);
                 goal_tree.add(temp_goal);
                 parents[free_index] = free_index;
@@ -131,8 +132,7 @@ namespace vamp::planning
             float cost_sample, c_range, c_rand;
 
             // Search loop
-            while (iter++ < rrtc_settings.max_iterations and free_index < rrtc_settings.max_samples and
-                   vamp::utils::get_elapsed_nanoseconds(start_time) < settings.max_time)
+            while (iter++ < rrtc_settings.max_iterations and free_index < rrtc_settings.max_samples)
             {
                 float asize = tree_a->size();
                 float bsize = tree_b->size();
@@ -289,10 +289,10 @@ namespace vamp::planning
 
                             // Validate edge to newly found parent
                             else if (validate_vector<Robot, rake, resolution>(
-                                        new_nearest_configuration,
-                                        new_nearest_vector,
-                                        new_nearest_distance,
-                                        environment))
+                                         new_nearest_configuration,
+                                         new_nearest_vector,
+                                         new_nearest_distance,
+                                         environment))
                             {
                                 // Congratulations to the new parent
                                 nearest_node = new_nearest_node;
@@ -481,25 +481,24 @@ namespace vamp::planning
             const collision::Environment<FloatVector<rake>> &environment,
             const AORRTCSettings &settings,
             typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
-        {            
+        {
             auto start_time = std::chrono::steady_clock::now();
 
             // Update the settings for internal searches
             RRTCSettings rrtc_settings = settings.rrtc;
             rrtc_settings.max_iterations = settings.max_iterations;
             rrtc_settings.max_samples = settings.max_samples;
-            rrtc_settings.max_time = settings.max_time;
 
             PlanningResult<dimension> result;
             float best_path_cost = std::numeric_limits<float>::infinity();
+            std::size_t iters = 0;
 
             do
             {
                 // Find an initial solution
                 result = RRTC::solve(start, goals, environment, rrtc_settings, rng);
-                rrtc_settings.max_time = settings.max_time - vamp::utils::get_elapsed_nanoseconds(start_time);
-            } while (result.path.empty() and
-                     vamp::utils::get_elapsed_nanoseconds(start_time) < settings.max_time);
+                iters += result.iterations;
+            } while (result.path.empty() and iters < settings.max_iterations);
 
             // Simplify solution
             if (not result.path.empty())
@@ -522,11 +521,10 @@ namespace vamp::planning
             phs.set_transverse_diameter(best_path_cost);
             auto phs_rng = std::make_shared<ProlateHyperspheroidRNG<Robot>>(phs, rng);
 
-            std::size_t iters = result.iterations;
-            while (vamp::utils::get_elapsed_nanoseconds(start_time) < settings.max_time)
+            while (iters < settings.max_iterations)
             {
-                // Update internal maximum time
-                rrtc_settings.max_time = settings.max_time - vamp::utils::get_elapsed_nanoseconds(start_time);
+                // Update internal maximum iterations
+                rrtc_settings.max_iterations = settings.max_iterations - iters;
 
                 // If there is a single goal, sample with PHS
                 if (goals.size() == 1)

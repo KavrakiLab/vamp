@@ -22,8 +22,7 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("tree_ratio", &vp::RRTCSettings::tree_ratio)
         .def_rw("max_iterations", &vp::RRTCSettings::max_iterations)
         .def_rw("max_samples", &vp::RRTCSettings::max_samples)
-        .def_rw("start_tree_first", &vp::RRTCSettings::start_tree_first)
-        .def_rw("max_time", &vp::RRTCSettings::max_time);
+        .def_rw("start_tree_first", &vp::RRTCSettings::start_tree_first);
 
     nb::class_<vp::AORRTCSettings>(pymodule, "AORRTCSettings")
         .def(nb::init<>())
@@ -31,7 +30,6 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("simplify", &vp::AORRTCSettings::simplify)
         .def_rw("optimize", &vp::AORRTCSettings::optimize)
         .def_rw("cost_bound_resample", &vp::AORRTCSettings::cost_bound_resample)
-        .def_rw("max_time", &vp::AORRTCSettings::max_time)
         .def_rw("max_iterations", &vp::AORRTCSettings::max_iterations)
         .def_rw("max_samples", &vp::AORRTCSettings::max_samples);
 

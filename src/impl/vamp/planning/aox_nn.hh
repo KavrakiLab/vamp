@@ -13,7 +13,7 @@ namespace vamp::planning
     struct GNATNode
     {
         int index;
-        double cost;
+        float cost;
         FloatVector<dimension> array;
     };
 
@@ -28,7 +28,7 @@ namespace vamp::planning
     {
     public:
         /** \brief The definition of a distance function */
-        using DistanceFunction = std::function<double(const _T &, const _T &)>;
+        using DistanceFunction = std::function<float(const _T &, const _T &)>;
 
         NearestNeighbors() = default;
 
@@ -81,7 +81,7 @@ namespace vamp::planning
          * All the nearest neighbor structures currently return the neighbors in
          * sorted order, but this is not required.
          */
-        virtual void nearestR(const _T &data, double radius, std::vector<_T> &nbh) const = 0;
+        virtual void nearestR(const _T &data, float radius, std::vector<_T> &nbh) const = 0;
 
         /** \brief Get the number of elements in the datastructure */
         virtual std::size_t size() const = 0;
@@ -106,7 +106,7 @@ namespace vamp::planning
     {
     public:
         /** \brief The definition of a distance function */
-        using DistanceFunction = std::function<double(const _T &, const _T &)>;
+        using DistanceFunction = std::function<float(const _T &, const _T &)>;
         /** \brief A matrix type for storing distances between points and centers */
         using Matrix = Eigen::MatrixXd;
 
@@ -138,7 +138,7 @@ namespace vamp::planning
         {
             // array containing the minimum distance between each data point
             // and the centers computed so far
-            std::vector<double> minDist(data.size(), std::numeric_limits<double>::infinity());
+            std::vector<float> minDist(data.size(), std::numeric_limits<float>::infinity());
             centers.clear();
             centers.reserve(k);
             if ((std::size_t)dists.rows() < data.size() || (std::size_t)dists.cols() < k)
@@ -152,7 +152,7 @@ namespace vamp::planning
             {
                 unsigned ind = 0;
                 const _T &center = data[centers[i - 1]];
-                double maxDist = -std::numeric_limits<double>::infinity();
+                float maxDist = -std::numeric_limits<float>::infinity();
 
                 for (unsigned j = 0; j < data.size(); ++j)
                 {
@@ -168,7 +168,7 @@ namespace vamp::planning
                     }
                 }
                 // no more centers available
-                if (maxDist < std::numeric_limits<double>::epsilon())
+                if (maxDist < std::numeric_limits<float>::epsilon())
                     break;
                 centers.push_back(ind);
             }
@@ -215,12 +215,12 @@ namespace vamp::planning
         /// \cond IGNORE
         // internally, we use a priority queue for nearest neighbors, paired
         // with their distance to the query point
-        using NearQueue = std::priority_queue<std::pair<double, const _T *>>;
+        using NearQueue = std::priority_queue<std::pair<float, const _T *>>;
 
         // another internal data structure is a priority queue of nodes to
         // check next for possible nearest neighbors
         class Node;
-        using NodeDist = std::pair<Node *, double>;
+        using NodeDist = std::pair<Node *, float>;
         struct NodeDistCompare
         {
             bool operator()(const NodeDist &n0, const NodeDist &n1) const
@@ -363,7 +363,7 @@ namespace vamp::planning
         }
 
         /// Return the nearest neighbors within distance \c radius in sorted order
-        void nearestR(const _T &data, double radius, std::vector<_T> &nbh) const override
+        void nearestR(const _T &data, float radius, std::vector<_T> &nbh) const override
         {
             nbh.clear();
             if (size_)
@@ -454,7 +454,7 @@ namespace vamp::planning
         bool nearestKInternal(const _T &data, std::size_t k, NearQueue &nbhQueue) const
         {
             bool isPivot;
-            double dist;
+            float dist;
             NodeDist nodeDist;
             NodeQueue nodeQueue;
 
@@ -474,9 +474,9 @@ namespace vamp::planning
             return isPivot;
         }
         /// \brief Return in nbhQueue the elements that are within distance radius of data.
-        void nearestRInternal(const _T &data, double radius, NearQueue &nbhQueue) const
+        void nearestRInternal(const _T &data, float radius, NearQueue &nbhQueue) const
         {
-            double dist = radius;  // note the difference with nearestKInternal
+            float dist = radius;  // note the difference with nearestKInternal
             NodeQueue nodeQueue;
             NodeDist nodeDist;
 
@@ -511,7 +511,7 @@ namespace vamp::planning
             Node(int degree, int capacity, _T pivot)
               : degree_(degree)
               , pivot_(std::move(pivot))
-              , minRadius_(std::numeric_limits<double>::infinity())
+              , minRadius_(std::numeric_limits<float>::infinity())
               , maxRadius_(-minRadius_)
               , minRange_(degree, minRadius_)
               , maxRange_(degree, maxRadius_)
@@ -528,7 +528,7 @@ namespace vamp::planning
 
             /// \brief Update minRadius_ and maxRadius_, given that an element
             /// was added with distance dist to the pivot.
-            void updateRadius(double dist)
+            void updateRadius(float dist)
             {
                 if (minRadius_ > dist)
                     minRadius_ = dist;
@@ -539,7 +539,7 @@ namespace vamp::planning
             /// \brief Update minRange_[i] and maxRange_[i], given that an
             /// element was added to the i-th child of the parent that has
             /// distance dist to this Node's pivot.
-            void updateRange(unsigned int i, double dist)
+            void updateRange(unsigned int i, float dist)
             {
                 if (minRange_[i] > dist)
                     minRange_[i] = dist;
@@ -572,8 +572,8 @@ namespace vamp::planning
                 }
                 else
                 {
-                    std::vector<double> dist(children_.size());
-                    double minDist = dist[0] = gnat.distFun_(data, children_[0]->pivot_);
+                    std::vector<float> dist(children_.size());
+                    float minDist = dist[0] = gnat.distFun_(data, children_[0]->pivot_);
                     int minInd = 0;
 
                     for (unsigned int i = 1; i < children_.size(); ++i)
@@ -635,7 +635,7 @@ namespace vamp::planning
                                           gnat.minDegree_),
                                  gnat.maxDegree_);
                     // singleton
-                    if (child->minRadius_ >= std::numeric_limits<double>::infinity())
+                    if (child->minRadius_ >= std::numeric_limits<float>::infinity())
                         child->minRadius_ = child->maxRadius_ = 0.;
                 }
 
@@ -650,14 +650,14 @@ namespace vamp::planning
             }
 
             /// Insert data in nbh if it is a near neighbor. Return true iff data was added to nbh.
-            bool insertNeighborK(NearQueue &nbh, std::size_t k, const _T &data, const _T &key, double dist) const
+            bool insertNeighborK(NearQueue &nbh, std::size_t k, const _T &data, const _T &key, float dist) const
             {
                 if (nbh.size() < k)
                 {
                     nbh.emplace(dist, &data);
                     return true;
                 }
-                if (dist < nbh.top().first || (dist < std::numeric_limits<double>::epsilon() && data == key))
+                if (dist < nbh.top().first || (dist < std::numeric_limits<float>::epsilon() && data == key))
                 {
                     nbh.pop();
                     nbh.emplace(dist, &data);
@@ -682,10 +682,10 @@ namespace vamp::planning
                     }
                 if (!children_.empty())
                 {
-                    double dist;
+                    float dist;
                     Node *child;
                     std::size_t sz = children_.size(), offset = gnat.offset_++;
-                    std::vector<double> distToPivot(sz);
+                    std::vector<float> distToPivot(sz);
                     std::vector<int> permutation(sz);
                     for (unsigned int i = 0; i < sz; ++i)
                         permutation[i] = (i + offset) % sz;
@@ -720,7 +720,7 @@ namespace vamp::planning
                 }
             }
             /// Insert data in nbh if it is a near neighbor.
-            void insertNeighborR(NearQueue &nbh, double r, const _T &data, double dist) const
+            void insertNeighborR(NearQueue &nbh, float r, const _T &data, float dist) const
             {
                 if (dist <= r)
                     nbh.emplace(dist, &data);
@@ -728,9 +728,9 @@ namespace vamp::planning
             /// \brief Return all elements that are within distance r in nbh.
             /// The nodeQueue, which contains other Nodes that need to
             /// be checked for nearest neighbors, is updated.
-            void nearestR(const GNAT &gnat, const _T &data, double r, NearQueue &nbh, NodeQueue &nodeQueue) const
+            void nearestR(const GNAT &gnat, const _T &data, float r, NearQueue &nbh, NodeQueue &nodeQueue) const
             {
-                double dist = r;  // note difference with nearestK
+                float dist = r;  // note difference with nearestK
 
                 for (const auto &d : data_)
                     if (!gnat.isRemoved(d))
@@ -739,7 +739,7 @@ namespace vamp::planning
                 {
                     Node *child;
                     std::size_t sz = children_.size(), offset = gnat.offset_++;
-                    std::vector<double> distToPivot(sz);
+                    std::vector<float> distToPivot(sz);
                     std::vector<int> permutation(sz);
                     // Not a random permutation, but processing the children in slightly different order is
                     // "good enough" to get a performance boost. A call to std::shuffle takes too long.
@@ -812,15 +812,15 @@ namespace vamp::planning
             /// Data element stored in this Node
             const _T pivot_;
             /// Minimum distance between the pivot element and the elements stored in data_
-            double minRadius_;
+            float minRadius_;
             /// Maximum distance between the pivot element and the elements stored in data_
-            double maxRadius_;
+            float maxRadius_;
             /// \brief The i-th element in minRange_ is the minimum distance between the
             /// pivot and any data_ element in the i-th child node of this node's parent.
-            std::vector<double> minRange_;
+            std::vector<float> minRange_;
             /// \brief The i-th element in maxRange_ is the maximum distance between the
             /// pivot and any data_ element in the i-th child node of this node's parent.
-            std::vector<double> maxRange_;
+            std::vector<float> maxRange_;
             /// \brief The data elements stored in this node (in addition to the pivot
             /// element). An internal node has no elements stored in data_.
             std::vector<_T> data_;
@@ -849,7 +849,7 @@ namespace vamp::planning
         /// \brief Number of elements stored in the tree.
         std::size_t size_{0};
         /// \brief If size_ exceeds rebuildSize_, the tree will be rebuilt (and
-        /// automatically rebalanced), and rebuildSize_ will be doubled.
+        /// automatically rebalanced), and rebuildSize_ will be floatd.
         std::size_t rebuildSize_;
         /// \brief Maximum number of removed elements that can be stored in the
         /// removed_ cache. If the cache is full, the tree will be rebuilt with

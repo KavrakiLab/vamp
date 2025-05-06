@@ -13,8 +13,6 @@
 #include <vamp/utils.hh>
 #include <vamp/vector.hh>
 
-#include <string>
-
 namespace vamp::planning
 {
     template <typename Robot, std::size_t rake, std::size_t resolution>
@@ -35,15 +33,15 @@ namespace vamp::planning
             return solve(start, std::vector<Configuration>{goal}, environment, settings, max_cost, rng);
         }
 
-        static float standardDistanceFunction(const GNATNode<dimension> &a, const GNATNode<dimension> &b)
+        static float standard_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b)
         {
             return a.array.distance(b.array);
         }
 
-        static float aoxDistanceFunction(const GNATNode<dimension> &a, const GNATNode<dimension> &b)
+        static float aox_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b)
         {
-            //              Configuration space distance        Cost space distance
-            return sqrt(pow(a.array.distance(b.array), 2) + pow(a.cost - b.cost, 2));
+            //               Configuration space distance             Cost space distance
+            return std::sqrt(std::pow(a.array.distance(b.array), 2) + std::pow(a.cost - b.cost, 2));
         }
 
         inline static auto solve(
@@ -61,11 +59,10 @@ namespace vamp::planning
             NearestNeighborsGNAT<GNATNode<dimension>> start_tree;
             NearestNeighborsGNAT<GNATNode<dimension>> goal_tree;
 
-            start_tree.setDistanceFunction(aoxDistanceFunction);
-            goal_tree.setDistanceFunction(aoxDistanceFunction);
+            start_tree.setDistanceFunction(aox_dist_fun);
+            goal_tree.setDistanceFunction(aox_dist_fun);
 
             constexpr const std::size_t start_index = 0;
-            constexpr const std::size_t goal_index = 1;
 
             auto buffer = std::unique_ptr<float, decltype(&free)>(
                 vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
@@ -129,7 +126,7 @@ namespace vamp::planning
             int idx;
             float g_hat, h_hat, f_hat;
             // Vars for sampling cost bounds
-            float cost_sample, c_range, c_rand;
+            float c_range, c_rand;
 
             // Search loop
             while (iter++ < rrtc_settings.max_iterations and free_index < rrtc_settings.max_samples)
@@ -151,7 +148,7 @@ namespace vamp::planning
                 typename Robot::ConfigurationBuffer temp_array;
                 temp.to_array(temp_array.data());
 
-                float cost_sample = ((float)(rand()) / RAND_MAX);
+                float cost_sample = rng->dist.uniform_01();
 
                 // Find closest goal for optimistic f^ in case of multi-goals
                 GNATNode<dimension> *goal_vert = nullptr;
@@ -176,7 +173,7 @@ namespace vamp::planning
                 // - Floating point error can result in a (barely) negative range
                 // - If c_range is 0, only valid connection is to root of tree (sampled upper cost bound ==
                 // g^)
-                c_range = std::max(max_cost - f_hat, 0.0f);
+                c_range = std::max(max_cost - f_hat, 0.0F);
 
                 // Sampled upper cost bound
                 c_rand = (cost_sample * c_range) + g_hat;
@@ -191,15 +188,17 @@ namespace vamp::planning
                 //* ------------------ ------ -------------------
                 // Only need to check nodes that are closer than the root of the tree, since connecting to the
                 // root will always be valid
-                auto rootDist = tree_a->getDistanceFunction()(temp_node, root_vert);
-                tree_a->nearestR(temp_node, rootDist, near_list);
+                auto root_dist = tree_a->getDistanceFunction()(temp_node, root_vert);
+                tree_a->nearestR(temp_node, root_dist, near_list);
                 idx = 0;
                 nearest_node = &near_list[idx];
                 auto nearest_distance = temp.distance(buffer_index(nearest_node->index));
                 // Loop over nearest nodes until one is found that satisfies asymmetric distance function
                 // i.e., look for nearest neighbour in cost-augmented space that doesn't violate the sampled
                 // upper cost bound
-                while (nearest_node->cost > 0 and c_rand < nearest_node->cost + nearest_distance)
+                while (nearest_node->cost > 0 and                          //
+                       c_rand < nearest_node->cost + nearest_distance and  //
+                       idx < near_list.size())
                 {
                     idx++;
                     nearest_node = &near_list[idx];
@@ -233,7 +232,6 @@ namespace vamp::planning
 
                     // Calculate and store actual node cost
                     auto dist = new_configuration.distance(buffer_index(nearest_node->index));
-                    ;
                     auto new_cost = nearest_node->cost + dist;
 
                     // If resampling costs to try and find a better parent...
@@ -248,17 +246,16 @@ namespace vamp::planning
                         temp_node.array = {new_configuration};
 
                         // Continuously resample cost until an invalid connection is found
-                        while (!invalid_connect)
+                        while (not invalid_connect)
                         {
-                            cost_sample = ((float)(rand()) / RAND_MAX);
-                            c_range = std::max(new_cost - g_hat, 0.0f);
+                            cost_sample = rng->dist.uniform_01();
+                            c_range = std::max(new_cost - g_hat, 0.0F);
                             c_rand = (cost_sample * c_range) + g_hat;
-
                             temp_node.cost = c_rand;
 
                             //* ------------------ ------ -------------------
-                            rootDist = tree_a->getDistanceFunction()(temp_node, root_vert);
-                            tree_a->nearestR(temp_node, rootDist, near_list);
+                            root_dist = tree_a->getDistanceFunction()(temp_node, root_vert);
+                            tree_a->nearestR(temp_node, root_dist, near_list);
                             idx = 0;
                             new_nearest_node = &near_list[idx];
                             auto new_nearest_distance =
@@ -338,8 +335,8 @@ namespace vamp::planning
 
                     // Once again we must loop over the nearest R neighbours - this time for the other tree
                     //* ------------------ ------ -------------------
-                    rootDist = tree_b->getDistanceFunction()(temp_node, target_vert);
-                    tree_b->nearestR(temp_node, rootDist, near_list);
+                    root_dist = tree_b->getDistanceFunction()(temp_node, target_vert);
+                    tree_b->nearestR(temp_node, root_dist, near_list);
                     idx = 0;
                     other_nearest_node = &near_list[idx];
                     auto other_nearest_distance =
@@ -348,7 +345,8 @@ namespace vamp::planning
                     //      to the root of the other tree (which will have cost=0), since this will always be
                     //      valid w.r.t. cost with a cost that would satisfy our upper cost bound
                     while (other_nearest_node->cost > 0 and
-                           temp_node.cost < other_nearest_node->cost + other_nearest_distance)
+                           temp_node.cost < other_nearest_node->cost + other_nearest_distance and
+                           idx < near_list.size())
                     {
                         idx++;
                         other_nearest_node = &near_list[idx];

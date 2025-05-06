@@ -395,67 +395,6 @@ namespace vamp::planning
             }
         }
 
-        /// \brief Print a GNAT structure (mostly useful for debugging purposes).
-        friend std::ostream &operator<<(std::ostream &out, const NearestNeighborsGNAT<_T> &gnat)
-        {
-            if (gnat.tree_)
-            {
-                out << *gnat.tree_;
-                if (!gnat.removed_.empty())
-                {
-                    out << "Elements marked for removal:\n";
-                    for (const auto &elt : gnat.removed_)
-                    {
-                        out << *elt << '\t';
-                    }
-                    out << std::endl;
-                }
-            }
-            return out;
-        }
-
-        // for debugging purposes
-        void integrityCheck()
-        {
-            std::vector<_T> lst;
-            std::unordered_set<const _T *> tmp;
-            // get all elements, including those marked for removal
-            removed_.swap(tmp);
-            list(lst);
-            // check if every element marked for removal is also in the tree
-            for (const auto &elt : tmp)
-            {
-                std::size_t i;
-                for (i = 0; i < lst.size(); ++i)
-                {
-                    if (lst[i] == *elt)
-                    {
-                        break;
-                    }
-                }
-                if (i == lst.size())
-                {
-                    // an element marked for removal is not actually in the tree
-                    std::cout << "***** FAIL!! ******\n" << *this << '\n';
-                    for (const auto &l : lst)
-                    {
-                        std::cout << l << '\t';
-                    }
-                    std::cout << std::endl;
-                }
-                assert(i != lst.size());
-            }
-            // restore
-            removed_.swap(tmp);
-            // get elements in the tree with elements marked for removal purged from the list
-            list(lst);
-            if (lst.size() != size_)
-            {
-                std::cout << "#########################################\n" << *this << std::endl;
-            }
-            assert(lst.size() == size_);
-        }
-
     protected:
         using GNAT = NearestNeighborsGNAT<_T>;
 

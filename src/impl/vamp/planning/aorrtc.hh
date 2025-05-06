@@ -33,12 +33,12 @@ namespace vamp::planning
             return solve(start, std::vector<Configuration>{goal}, environment, settings, max_cost, rng);
         }
 
-        static float standard_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b)
+        static auto standard_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b) -> float
         {
             return a.array.distance(b.array);
         }
 
-        static float aox_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b)
+        static auto aox_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b) -> float
         {
             //               Configuration space distance             Cost space distance
             return std::sqrt(std::pow(a.array.distance(b.array), 2) + std::pow(a.cost - b.cost, 2));

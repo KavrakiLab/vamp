@@ -162,8 +162,8 @@ namespace vamp::planning
                     }
                 }
 
-                auto root_vert = tree_a_is_start ? start_vert : *goal_vert;
-                auto target_vert = tree_a_is_start ? *goal_vert : start_vert;
+                const auto root_vert = tree_a_is_start ? start_vert : *goal_vert;
+                const auto target_vert = tree_a_is_start ? *goal_vert : start_vert;
 
                 g_hat = temp.distance(root_vert.array);
                 h_hat = temp.distance(target_vert.array);
@@ -227,11 +227,11 @@ namespace vamp::planning
                         environment))
                 {
                     float *new_configuration_index = buffer_index(free_index);
-                    auto new_configuration = nearest_configuration + extension_vector;
+                    const auto new_configuration = nearest_configuration + extension_vector;
                     new_configuration.to_array(new_configuration_index);
 
                     // Calculate and store actual node cost
-                    auto dist = new_configuration.distance(buffer_index(nearest_node->index));
+                    const auto dist = new_configuration.distance(buffer_index(nearest_node->index));
                     auto new_cost = nearest_node->cost + dist;
 
                     // If resampling costs to try and find a better parent...
@@ -239,14 +239,13 @@ namespace vamp::planning
                     {
                         g_hat = new_configuration.distance(root_vert.array);
 
-                        bool invalid_connect = false;
                         GNATNode<dimension> *new_nearest_node;
 
                         temp_node.index = free_index;
                         temp_node.array = {new_configuration};
 
                         // Continuously resample cost until an invalid connection is found
-                        while (not invalid_connect)
+                        while (true)
                         {
                             cost_sample = rng->dist.uniform_01();
                             c_range = std::max(new_cost - g_hat, 0.0F);
@@ -270,8 +269,8 @@ namespace vamp::planning
                             }
                             // =============================================*/
 
-                            auto new_nearest_configuration = new_nearest_node->array;
-                            auto new_nearest_vector = new_configuration - new_nearest_configuration;
+                            const auto new_nearest_configuration = new_nearest_node->array;
+                            const auto new_nearest_vector = new_configuration - new_nearest_configuration;
 
                             // If we have connected:
                             //      to the same parent
@@ -281,7 +280,7 @@ namespace vamp::planning
                             if (new_nearest_node->index == nearest_node->index or
                                 new_nearest_node->cost + new_nearest_distance >= new_cost or c_range == 0)
                             {
-                                invalid_connect = true;
+                                break;
                             }
 
                             // Validate edge to newly found parent
@@ -299,7 +298,7 @@ namespace vamp::planning
                             // The edge is invalid, we have failed a connection. Stop resampling!
                             else
                             {
-                                invalid_connect = true;
+                                break;
                             }
                         }
                     }
@@ -356,7 +355,7 @@ namespace vamp::planning
                     // =============================================*/
 
                     const auto other_nearest_configuration = other_nearest_node->array;
-                    auto other_nearest_vector = other_nearest_configuration - new_configuration;
+                    const auto other_nearest_vector = other_nearest_configuration - new_configuration;
 
                     // Just to be safe, make sure we've improved upon our best solution
                     if (new_cost + other_nearest_distance + other_nearest_node->cost >= max_cost)
@@ -367,7 +366,7 @@ namespace vamp::planning
                     // Extend incrementally towards other tree
                     const std::size_t n_extensions = std::ceil(other_nearest_distance / rrtc_settings.range);
                     const float increment_length = other_nearest_distance / static_cast<float>(n_extensions);
-                    auto increment = other_nearest_vector * (1.0F / static_cast<float>(n_extensions));
+                    const auto increment = other_nearest_vector * (1.0F / static_cast<float>(n_extensions));
 
                     std::size_t i_extension = 0;
                     auto prior = new_configuration;

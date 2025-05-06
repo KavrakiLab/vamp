@@ -39,7 +39,6 @@
 /* Author: Mark Moll, Bryant Gipson */
 
 #include <algorithm>
-#include <iostream>
 #include <queue>
 #include <utility>
 

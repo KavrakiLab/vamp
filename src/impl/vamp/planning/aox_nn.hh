@@ -48,7 +48,7 @@ namespace vamp::planning
     template <std::size_t dimension>
     struct GNATNode
     {
-        unsigned int index;
+        std::size_t index;
         float cost;
         FloatVector<dimension> array;
     };
@@ -100,11 +100,8 @@ namespace vamp::planning
             \param dists a matrix such that dists(i,j) is the distance
                 between data[i] and data[center[j]]
         */
-        void kcenters(
-            const std::vector<_T> &data,
-            unsigned int k,
-            std::vector<unsigned int> &centers,
-            Matrix &dists)
+        void
+        kcenters(const std::vector<_T> &data, std::size_t k, std::vector<std::size_t> &centers, Matrix &dists)
         {
             // array containing the minimum distance between each data point
             // and the centers computed so far
@@ -117,16 +114,14 @@ namespace vamp::planning
             }
             // first center is picked randomly
 
-            rng_ = vamp::rng::Distribution();
-
-            centers.push_back(rng_.uniform_integer(0, static_cast<int>(data.size()) - 1));
-            for (unsigned i = 1; i < k; ++i)
+            centers.emplace_back(rng_.uniform_integer(0, static_cast<int>(data.size()) - 1));
+            for (std::size_t i = 1; i < k; ++i)
             {
-                unsigned ind = 0;
+                std::size_t ind = 0;
                 const _T &center = data[centers[i - 1]];
                 float maxDist = -std::numeric_limits<float>::infinity();
 
-                for (unsigned j = 0; j < data.size(); ++j)
+                for (std::size_t j = 0; j < data.size(); ++j)
                 {
                     if ((dists(j, i - 1) = distFun_(data[j], center)) < minDist[j])
                     {
@@ -144,13 +139,13 @@ namespace vamp::planning
                 {
                     break;
                 }
-                centers.push_back(ind);
+                centers.emplace_back(ind);
             }
 
             const _T &center = data[centers.back()];
-            unsigned i = centers.size() - 1;
+            std::size_t i = centers.size() - 1;
 
-            for (unsigned j = 0; j < data.size(); ++j)
+            for (std::size_t j = 0; j < data.size(); ++j)
             {
                 dists(j, i) = distFun_(data[j], center);
             }
@@ -209,11 +204,11 @@ namespace vamp::planning
         using DistanceFunction = std::function<float(const _T &, const _T &)>;
 
         NearestNeighborsGNAT(
-            unsigned int degree = 8,
-            unsigned int minDegree = 4,
-            unsigned int maxDegree = 12,
-            unsigned int maxNumPtsPerLeaf = 50,
-            unsigned int removedCacheSize = 500,
+            std::size_t degree = 8,
+            std::size_t minDegree = 4,
+            std::size_t maxDegree = 12,
+            std::size_t maxNumPtsPerLeaf = 50,
+            std::size_t removedCacheSize = 500,
             bool rebalancing = false)
           : degree_(degree)
           , minDegree_(std::min(degree, minDegree))
@@ -430,7 +425,7 @@ namespace vamp::planning
             // check if every element marked for removal is also in the tree
             for (const auto &elt : tmp)
             {
-                unsigned int i;
+                std::size_t i;
                 for (i = 0; i < lst.size(); ++i)
                 {
                     if (lst[i] == *elt)
@@ -576,7 +571,7 @@ namespace vamp::planning
             /// \brief Update minRange_[i] and maxRange_[i], given that an
             /// element was added to the i-th child of the parent that has
             /// distance dist to this Node's pivot.
-            void updateRange(unsigned int i, float dist)
+            void updateRange(std::size_t i, float dist)
             {
                 if (minRange_[i] > dist)
                 {
@@ -593,7 +588,7 @@ namespace vamp::planning
             {
                 if (children_.empty())
                 {
-                    data_.push_back(data);
+                    data_.emplace_back(data);
                     gnat.size_++;
                     if (needToSplit(gnat))
                     {
@@ -618,7 +613,7 @@ namespace vamp::planning
                     float minDist = dist[0] = gnat.distFun_(data, children_[0]->pivot_);
                     int minInd = 0;
 
-                    for (unsigned int i = 1; i < children_.size(); ++i)
+                    for (std::size_t i = 1; i < children_.size(); ++i)
                     {
                         if ((dist[i] = gnat.distFun_(data, children_[i]->pivot_)) < minDist)
                         {
@@ -626,7 +621,7 @@ namespace vamp::planning
                             minInd = i;
                         }
                     }
-                    for (unsigned int i = 0; i < children_.size(); ++i)
+                    for (std::size_t i = 0; i < children_.size(); ++i)
                     {
                         children_[i]->updateRange(minInd, dist[i]);
                     }
@@ -638,7 +633,7 @@ namespace vamp::planning
             /// Return true iff the node needs to be split into child nodes.
             bool needToSplit(const GNAT &gnat) const
             {
-                unsigned int sz = data_.size();
+                std::size_t sz = data_.size();
                 return sz > gnat.maxNumPtsPerLeaf_ && sz > degree_;
             }
 
@@ -648,20 +643,20 @@ namespace vamp::planning
             void split(GNAT &gnat)
             {
                 typename GreedyKCenters<_T>::Matrix dists(data_.size(), degree_);
-                std::vector<unsigned int> pivots;
+                std::vector<std::size_t> pivots;
 
                 children_.reserve(degree_);
                 gnat.pivotSelector_.kcenters(data_, degree_, pivots, dists);
-                for (unsigned int &pivot : pivots)
+                for (std::size_t &pivot : pivots)
                 {
-                    children_.push_back(new Node(degree_, gnat.maxNumPtsPerLeaf_, data_[pivot]));
+                    children_.emplace_back(new Node(degree_, gnat.maxNumPtsPerLeaf_, data_[pivot]));
                 }
                 degree_ = pivots.size();  // in case fewer than degree_ pivots were found
 
-                for (unsigned int j = 0; j < data_.size(); ++j)
+                for (std::size_t j = 0; j < data_.size(); ++j)
                 {
-                    unsigned int k = 0;
-                    for (unsigned int i = 1; i < degree_; ++i)
+                    std::size_t k = 0;
+                    for (std::size_t i = 1; i < degree_; ++i)
                     {
                         if (dists(j, i) < dists(j, k))
                         {
@@ -671,10 +666,10 @@ namespace vamp::planning
                     Node *child = children_[k];
                     if (j != pivots[k])
                     {
-                        child->data_.push_back(data_[j]);
+                        child->data_.emplace_back(data_[j]);
                         child->updateRadius(dists(j, k));
                     }
-                    for (unsigned int i = 0; i < degree_; ++i)
+                    for (std::size_t i = 0; i < degree_; ++i)
                     {
                         children_[i]->updateRange(k, dists(j, i));
                     }
@@ -685,7 +680,7 @@ namespace vamp::planning
                     // make sure degree lies between minDegree_ and maxDegree_
                     child->degree_ = std::min(
                         std::max(
-                            (unsigned int)((degree_ * child->data_.size()) / data_.size()), gnat.minDegree_),
+                            (std::size_t)((degree_ * child->data_.size()) / data_.size()), gnat.minDegree_),
                         gnat.maxDegree_);
                     // singleton
                     if (child->minRadius_ >= std::numeric_limits<float>::infinity())
@@ -756,12 +751,12 @@ namespace vamp::planning
                     std::size_t sz = children_.size(), offset = gnat.offset_++;
                     std::vector<float> distToPivot(sz);
                     std::vector<int> permutation(sz);
-                    for (unsigned int i = 0; i < sz; ++i)
+                    for (std::size_t i = 0; i < sz; ++i)
                     {
                         permutation[i] = (i + offset) % sz;
                     }
 
-                    for (unsigned int i = 0; i < sz; ++i)
+                    for (std::size_t i = 0; i < sz; ++i)
                     {
                         if (permutation[i] >= 0)
                         {
@@ -774,7 +769,7 @@ namespace vamp::planning
                             if (nbh.size() == k)
                             {
                                 dist = nbh.top().first;  // note difference with nearestR
-                                for (unsigned int j = 0; j < sz; ++j)
+                                for (std::size_t j = 0; j < sz; ++j)
                                 {
                                     if (permutation[j] >= 0 && i != j &&
                                         (distToPivot[permutation[i]] - dist >
@@ -837,19 +832,19 @@ namespace vamp::planning
                     std::vector<int> permutation(sz);
                     // Not a random permutation, but processing the children in slightly different order is
                     // "good enough" to get a performance boost. A call to std::shuffle takes too long.
-                    for (unsigned int i = 0; i < sz; ++i)
+                    for (std::size_t i = 0; i < sz; ++i)
                     {
                         permutation[i] = (i + offset) % sz;
                     }
 
-                    for (unsigned int i = 0; i < sz; ++i)
+                    for (std::size_t i = 0; i < sz; ++i)
                     {
                         if (permutation[i] >= 0)
                         {
                             child = children_[permutation[i]];
                             distToPivot[permutation[i]] = gnat.distFun_(data, child->pivot_);
                             insertNeighborR(nbh, r, child->pivot_, distToPivot[permutation[i]]);
-                            for (unsigned int j = 0; j < sz; ++j)
+                            for (std::size_t j = 0; j < sz; ++j)
                             {
                                 if (permutation[j] >= 0 && i != j &&
                                     (distToPivot[permutation[i]] - dist > child->maxRange_[permutation[j]] ||
@@ -880,13 +875,13 @@ namespace vamp::planning
             {
                 if (!gnat.isRemoved(pivot_))
                 {
-                    data.push_back(pivot_);
+                    data.emplace_back(pivot_);
                 }
                 for (const auto &d : data_)
                 {
                     if (!gnat.isRemoved(d))
                     {
-                        data.push_back(d);
+                        data.emplace_back(d);
                     }
                 }
                 for (const auto &child : children_)
@@ -896,7 +891,7 @@ namespace vamp::planning
             }
 
             /// Number of child nodes
-            unsigned int degree_;
+            std::size_t degree_;
             /// Data element stored in this Node
             const _T pivot_;
             /// Minimum distance between the pivot element and the elements stored in data_
@@ -923,20 +918,20 @@ namespace vamp::planning
         /// \brief The data structure containing the elements stored in this structure.
         Node *tree_{nullptr};
         /// The desired degree of each node.
-        unsigned int degree_;
+        std::size_t degree_;
         /// \brief After splitting a Node, each child Node has degree equal to
         /// the default degree times the fraction of data elements from the
         /// original node that got assigned to that child Node. However, its
         /// degree can be no less than minDegree_.
-        unsigned int minDegree_;
+        std::size_t minDegree_;
         /// \brief After splitting a Node, each child Node has degree equal to
         /// the default degree times the fraction of data elements from the
         /// original node that got assigned to that child Node. However, its
         /// degree can be no larger than maxDegree_.
-        unsigned int maxDegree_;
+        std::size_t maxDegree_;
         /// \brief Maximum number of elements allowed to be stored in a Node before
         /// it needs to be split into several nodes.
-        unsigned int maxNumPtsPerLeaf_;
+        std::size_t maxNumPtsPerLeaf_;
         /// \brief Number of elements stored in the tree.
         std::size_t size_{0};
         /// \brief If size_ exceeds rebuildSize_, the tree will be rebuilt (and

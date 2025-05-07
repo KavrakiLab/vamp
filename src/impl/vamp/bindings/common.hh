@@ -109,7 +109,6 @@ namespace vamp::binding
         using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
         using FCIT = vamp::planning::FCIT<Robot, rake, Robot::resolution>;
         using AORRTC = vamp::planning::AORRTC<Robot, rake, Robot::resolution>;
-        using AOX_RRTC = vamp::planning::AOX_RRTC<Robot, rake, Robot::resolution>;
 
         inline static auto
         phs_sampler(const planning::ProlateHyperspheroid<Robot::dimension> &phs, typename RNG::Ptr rng) ->

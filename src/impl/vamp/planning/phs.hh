@@ -54,8 +54,8 @@ namespace vamp::planning
             update_transformation();
         }
 
-        inline auto
-        transform(const vamp::FloatVector<dimension> &sphere) const noexcept -> vamp::FloatVector<dimension>
+        inline auto transform(const vamp::FloatVector<dimension> &sphere) const noexcept
+            -> vamp::FloatVector<dimension>
         {
             alignas(FloatVectorAlignment) auto sphere_data = sphere.to_array();
             vamp::EigenFloatVectorMap<dimension>(sphere_data.data()) =

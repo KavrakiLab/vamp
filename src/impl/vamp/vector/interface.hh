@@ -813,6 +813,7 @@ namespace vamp
         inline static constexpr std::size_t num_scalars = Sig::num_scalars;
         inline static constexpr std::size_t num_vectors_per_row = Sig::num_vectors_per_row;
         inline static constexpr std::size_t num_vectors = Sig::num_vectors;
+        inline static constexpr std::size_t rounded_size = Sig::num_scalars_rounded;
         using DataT = typename Sig::DataT;
         using RowT = Vector<S, 1, num_scalars_per_row>;
 
@@ -848,11 +849,7 @@ namespace vamp
         {
             if constexpr (num_scalars % S::VectorWidth)
             {
-                alignas(S::Alignment) std::array<
-                    typename S::ScalarT,
-
-                    num_scalars + (S::VectorWidth - (num_scalars % S::VectorWidth))>
-                    rounded_size_buffer{0};
+                alignas(S::Alignment) std::array<typename S::ScalarT, rounded_size> rounded_size_buffer{0};
                 std::copy(scalar_data.begin(), scalar_data.end(), rounded_size_buffer.begin());
                 Interface::pack(rounded_size_buffer.data());
             }
@@ -882,10 +879,8 @@ namespace vamp
                 assert(scalar_data.size() == num_scalars);
                 if constexpr (num_scalars % S::VectorWidth)
                 {
-                    alignas(S::Alignment) std::array<
-                        typename S::ScalarT,
-                        num_scalars + (S::VectorWidth - (num_scalars % S::VectorWidth))>
-                        rounded_size_buffer{0};
+                    alignas(S::Alignment) std::array<typename S::ScalarT, rounded_size> rounded_size_buffer{
+                        0};
                     std::copy(scalar_data.begin(), scalar_data.end(), rounded_size_buffer.begin());
                     Interface::pack(rounded_size_buffer.data());
                 }

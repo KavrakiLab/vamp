@@ -93,9 +93,11 @@ namespace vamp::planning
 
             std::size_t iter = 0;
             typename Robot::template ConfigurationBlock<rake> temp_block;
-            auto states = std::unique_ptr<float>(
+            auto states = std::unique_ptr<float, decltype(&free)>(
                 vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
-                    settings.max_samples * Configuration::num_scalars_rounded));
+                    settings.max_samples * Configuration::num_scalars_rounded),
+                &free);
+
             // TODO: Is it better to just use arrays for these since we're reserving full capacity
             // anyway? Test it!
             std::vector<FCITRoadmapNode> nodes;
@@ -314,6 +316,12 @@ namespace vamp::planning
                     break;
                 }
 
+                if (result.intermediate.empty() or result.intermediate.back().cost > nodes[1].g)
+                {
+                    result.intermediate.emplace_back(Intermediate{
+                        nodes[1].g, iter, vamp::utils::get_elapsed_nanoseconds(start_time), roadmap.size()});
+                }
+
                 for (auto new_samples = 0U;
                      new_samples < settings.batch_size and nodes.size() < settings.max_samples;)
                 {
@@ -351,6 +359,7 @@ namespace vamp::planning
             result.size.emplace_back(roadmap.size());
             result.size.emplace_back(0);
 
+            result.intermediate.emplace_back(Intermediate{nodes[1].g, iter, result.nanoseconds, roadmap.size()});
             return result;
         }
     };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <limits>
 #include <vamp/planning/validate.hh>
 #include <vamp/planning/nn.hh>
@@ -168,6 +169,14 @@ namespace vamp::planning
         }
     };
 
+    struct Intermediate
+    {
+        float cost;
+        std::size_t iterations;
+        std::size_t nanoseconds;
+        std::size_t size;
+    };
+
     template <std::size_t dim>
     struct PlanningResult
     {
@@ -176,6 +185,7 @@ namespace vamp::planning
         std::size_t nanoseconds{0};
         std::size_t iterations{0};
         std::vector<std::size_t> size;
+        std::vector<Intermediate> intermediate;
     };
 
     template <std::size_t dim>

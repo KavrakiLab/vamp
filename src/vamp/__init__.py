@@ -15,6 +15,7 @@ __all__ = [
     "Cuboid",
     "Cylinder",
     "RRTCSettings",
+    "RRT_star_settings",
     "PRMSettings",
     "PRMNeighborParams",
     "FCITSettings",
@@ -41,6 +42,7 @@ from ._core import PRMSettings as PRMSettings
 from ._core import RRTCSettings as RRTCSettings
 from ._core import FCITNeighborParams as FCITNeighborParams
 from ._core import FCITSettings as FCITSettings
+from ._core import RRT_star_settings as RRT_star_settings
 from ._core import SimplifyRoutine as SimplifyRoutine
 from ._core import SimplifySettings as SimplifySettings
 from ._core import Sphere as Sphere
@@ -84,6 +86,9 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
 
     if planner_name == "rrtc":
         plan_settings = RRTCSettings()
+        plan_settings.range = ROBOT_RRT_RANGES[robot_name]
+    elif planner_name == "rrt_star":
+        plan_settings = RRT_star_settings()
         plan_settings.range = ROBOT_RRT_RANGES[robot_name]
     elif planner_name == "prm":
         plan_settings = PRMSettings(PRMNeighborParams(robot_module.dimension(), robot_module.space_measure()))
@@ -180,6 +185,7 @@ def problem_dict_to_vamp(
 def results_to_dict(
     planning_result: AnyPlanningResult,
     simplification_result: Optional[AnyPlanningResult] = None,
+    include_intermediate_results: bool = False
     ) -> Dict[str, Any]:
 
     try:
@@ -195,6 +201,16 @@ def results_to_dict(
         "initial_path_vertices": len(planning_result.path),
         "initial_path_cost": planning_result.path.cost(),
         }
+
+    if include_intermediate_results:
+        data["intermediate_results"] = [
+            {
+                "planning_time": pd.Timedelta(nanoseconds = intermediate.nanoseconds),
+                "planning_iterations": intermediate.iterations,
+                "planning_graph_size": intermediate.size,
+                "path_cost": intermediate.cost,
+                } for intermediate in planning_result.intermediate
+            ]
 
     if simplification_result:
         simp_data = {

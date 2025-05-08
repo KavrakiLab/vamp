@@ -1,5 +1,7 @@
+#include <vamp/planning/plan.hh>
 #include <vamp/planning/roadmap.hh>
 #include <vamp/planning/rrtc_settings.hh>
+#include <vamp/planning/rrt_star_settings.hh>
 #include <vamp/planning/simplify_settings.hh>
 #include <vamp/bindings/init.hh>
 
@@ -22,6 +24,14 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("max_iterations", &vp::RRTCSettings::max_iterations)
         .def_rw("max_samples", &vp::RRTCSettings::max_samples)
         .def_rw("start_tree_first", &vp::RRTCSettings::start_tree_first);
+
+    nb::class_<vp::RRT_star_settings>(pymodule, "RRT_star_settings")
+        .def(nb::init<>())
+        .def_rw("range", &vp::RRT_star_settings::range)
+        .def_rw("max_iterations", &vp::RRT_star_settings::max_iterations)
+        .def_rw("max_samples", &vp::RRT_star_settings::max_samples)
+        .def_rw("rewire_factor", &vp::RRT_star_settings::rewire_factor)
+        .def_rw("optimize", &vp::RRT_star_settings::optimize);
 
     // TODO: Redesign a neater form of RoadmapSettings/NeighborParams
     // TODO: Expose the other NeighborParams types
@@ -98,4 +108,14 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("shortcut", &vp::SimplifySettings::shortcut)
         .def_rw("perturb", &vp::SimplifySettings::perturb)
         .def_rw("bspline", &vp::SimplifySettings::bspline);
+
+    nb::class_<vp::Intermediate>(pymodule, "Intermediate", "Intermediate result in a planning query.")
+        .def(nb::init<>(), "Empty constructor.")
+        .def_ro("cost", &vp::Intermediate::cost, "Cost of the path.")
+        .def_ro("nanoseconds", &vp::Intermediate::nanoseconds, "Nanoseconds taken to find the path.")
+        .def_ro(
+            "iterations",
+            &vp::Intermediate::iterations,
+            "Number of planner iterations used to find the path.")
+        .def_ro("size", &vp::Intermediate::size, "Size of the internal planner datastructures.");
 }

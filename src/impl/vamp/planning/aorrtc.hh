@@ -534,6 +534,8 @@ namespace vamp::planning
                     result = AOX_RRTC::solve(start, goals, environment, settings, best_path_cost, rng);
                 }
 
+                iters += result.iterations;
+
                 // If last search found a solution
                 if (not result.path.empty())
                 {
@@ -549,8 +551,6 @@ namespace vamp::planning
                         best_path_cost = result.path.cost();
                     }
                 }
-
-                iters += result.iterations;
 
                 phs_rng->phs.set_transverse_diameter(best_path_cost);
             }

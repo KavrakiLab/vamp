@@ -14,7 +14,7 @@ _For a full demonstration of VAMP running in real-time, see [this video](https:/
 This repository hosts the code for:
 - the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545),
 - an implementation of the Collision-Affording Point Tree (CAPT) from the RSS 2024 paper [“Collision-Affording Point Trees: SIMD-Amenable Nearest Neighbors for Fast Collision Checking”](http://arxiv.org/abs/2406.02807),
-- an implementation of the Fully Connected Informed Trees (FCIT*) algorithm from the ICRA 2025 submission [“Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)”](https://robotic-esp.com/papers/wilson_arxiv24).
+- an implementation of the Fully Connected Informed Trees (FCIT*) algorithm from the ICRA 2025 paper [“Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)”](https://robotic-esp.com/papers/wilson_arxiv24).
 - an implementation of the Asymptotically Optimal RRT-Connect (AORRTC) algorithm from the RA-L submission [“AORRTC: Almost-Surely Asymptotically Optimal Planning with RRT-Connect”](https://robotic-esp.com/papers/wilson_arxiv25).
 
 **TL;DR**: By exploiting ubiquitous [CPU SIMD instructions](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) to accelerate collision checking and forward kinematics (FK), `vamp`'s RRT-Connect [[1]](#1) solves problems for the Franka Emika Panda from the MotionBenchMaker dataset [[3]](#3) at a median speed of 35 microseconds (on one core of a consumer desktop PC).
@@ -24,46 +24,48 @@ We also accelerate collision checking against pointclouds with a novel spatial d
 If you found this research useful for your own work, please use the following citation:
 ```bibtex
 @InProceedings{vamp_2024,
-  title = {Motions in Microseconds via Vectorized Sampling-Based Planning},
   author = {Thomason, Wil and Kingston, Zachary and Kavraki, Lydia E.},
+  title = {Motions in Microseconds via Vectorized Sampling-Based Planning},
   booktitle = {IEEE International Conference on Robotics and Automation},
   pages = {8749--8756},
   url = {http://arxiv.org/abs/2309.14545},
   doi = {10.1109/ICRA57147.2024.10611190},
-  date = {2024},
+  date = {2024}
 }
 ```
 
 If you use CAPTs or the pointcloud collision checking components of this repository, please also use the following citation:
 ```bibtex
 @InProceedings{capt_2024,
-  title = {Collision-Affording Point Trees: {SIMD}-Amenable Nearest Neighbors for Fast Collision Checking},
   author = {Ramsey, Clayton W. and Kingston, Zachary and Thomason, Wil and Kavraki, Lydia E.},
+  title = {Collision-Affording Point Trees: {SIMD}-Amenable Nearest Neighbors for Fast Collision Checking},
   booktitle = {Robotics: Science and Systems},
   url = {http://arxiv.org/abs/2406.02807},
   doi = {10.15607/RSS.2024.XX.038},
-  date = {2024},
+  date = {2024}
 }
 ```
 
 If you use FCIT*, please use the following citation:
 ```bibtex
-@misc{fcit_2024,
-  title = {Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)},
+@InProceedings{fcit_2025,
   author = {Wilson, Tyler S. and Thomason, Wil and Kingston, Zachary  and Kavraki, Lydia E. and Gammell, Jonathan D.},
+  title = {Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees ({FCIT*})},
+  booktitle = {IEEE International Conference on Robotics and Automation},
   url = {https://arxiv.org/abs/2411.17902},
-  date = {2024}
+  date = {2025}
 }
 ```
 
 If you use AORRTC, please use the following citation:
 ```bibtex
 @article{aorrtc_2025,
-  author = {Tyler S Wilson and Wil Thomason and Zachary Kingston and Jonathan D Gammell},
+  author = {Wilson, Tyler S. and Thomason, Wil and Kingston, Zachary and Gammell, Jonathan D.},
   title = {{AORRTC}: Almost-surely asymptotically optimal planning with {RRT-Connect}},
-  journal = {{IEEE} Robotics and Automation Letters ({RA-L})},
+  journal = {IEEE Robotics and Automation Letters},
+  url = {https://arxiv.org/abs/2505.10542},
   year = {2025},
-  note = {Submitted, Manuscript \# 25-1915, {arXiv}:2505.10542 {[cs.RO]}},
+  note = {Under Review}
 }
 ```
 

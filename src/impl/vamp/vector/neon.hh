@@ -15,6 +15,242 @@
 namespace vamp
 {
     template <>
+    struct SIMDVector<int32x4_t>
+    {
+        using VectorT = int32x4_t;
+        using ScalarT = int32_t;
+        static constexpr std::size_t VectorWidth = 4;
+        static constexpr std::size_t Alignment = 16;
+
+        template <unsigned int = 0>
+        inline static auto extract(VectorT v, int idx) noexcept -> ScalarT
+        {
+            return ((int *)(&v))[idx];
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto constant(ScalarT v) noexcept -> VectorT
+        {
+            return vdupq_n_s32(v);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto sub(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vsubq_s32(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto add(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vaddq_s32(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto mul(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vmulq_s32(l, r);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto bitneg(VectorT l) noexcept -> VectorT
+        {
+            return vreinterpretq_s32_u32(vmvnq_u32(vreinterpretq_u32_s32(l)));  // maybe a reverse is needed
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_equal(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vreinterpretq_s32_u32(vceqq_s32(l, r));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_greater_than(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vreinterpretq_s32_u32(vcgeq_s32(l, r));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto and_(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vreinterpretq_s32_u32(vandq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r)));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto or_(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vreinterpretq_s32_u32(vorrq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r)));
+        }
+
+        template <std::size_t... I>
+        inline static constexpr auto
+        lshift_lookup(VectorT v, ScalarT shift, std::index_sequence<I...>) noexcept -> VectorT
+        {
+            VectorT ret = zero_vector();
+            std::initializer_list<int>(
+                {(shift == I ? (ret = lshift_dispatch<std::integral_constant<int, I>{}>(v)), 0 : 0)...});
+            return ret;
+        }
+
+        template <ScalarT i>
+        inline static constexpr auto lshift_dispatch(VectorT v) noexcept -> VectorT
+        {
+            return vshlq_n_s32(v, i);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto shift_left(VectorT v, ScalarT i) noexcept -> VectorT
+        {
+            return lshift_lookup(v, i, std::make_index_sequence<32>());
+        }
+
+        template <std::size_t... I>
+        inline static constexpr auto
+        rshift_lookup(VectorT v, ScalarT shift, std::index_sequence<I...>) noexcept -> VectorT
+        {
+            VectorT ret = zero_vector();
+            std::initializer_list<int>(
+                {(shift == I + 1 ? (ret = rshift_dispatch<std::integral_constant<int, I + 1>{}>(v)),
+                  0 :
+                                   0)...});
+            return ret;
+        }
+
+        template <ScalarT i>
+        inline static constexpr auto rshift_dispatch(VectorT v) noexcept -> VectorT
+        {
+            return vshrq_n_s32(v, i);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto shift_right(VectorT v, ScalarT i) noexcept -> VectorT
+        {
+            return rshift_lookup(v, i, std::make_index_sequence<32>());
+        }
+
+        template <unsigned int = 0>
+        inline static auto zero_vector() noexcept -> VectorT
+        {
+            return vmovq_n_s32(0);
+        }
+
+        template <unsigned int = 0>
+        inline static auto test_zero(VectorT l, VectorT r) noexcept -> unsigned int
+        {
+            auto andlr = vandq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r));
+            auto horizor = vorr_u32(vget_low_u32(andlr), vget_high_u32(andlr));
+            uint32x2_t mask = {0x80000000, 0x80000000};
+            auto test = vand_u32(horizor, mask);
+            return (vget_lane_u32(test, 0) || vget_lane_u32(test, 1)) == 0;
+        }
+
+        template <unsigned int = 0>
+        inline static auto load(const ScalarT *const i) noexcept -> VectorT
+        {
+            return vld1q_s32((const int32_t *const)i);
+        }
+
+        template <unsigned int = 0>
+        inline static auto load_unaligned(const ScalarT *const i) noexcept -> VectorT
+        {
+            // NOTE: The same instruction seems to do double-duty for ARM?
+            return vld1q_s32((const int32_t *const)i);
+        }
+
+        template <unsigned int = 0>
+        inline static auto store(ScalarT *i, VectorT v) noexcept -> void
+        {
+            return vst1q_s32(i, v);
+        }
+
+        template <unsigned int = 0>
+        inline static auto store_unaligned(ScalarT *i, VectorT v) noexcept -> void
+        {
+            return vst1q_s32(i, v);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto blend(VectorT a, VectorT b, VectorT blend_mask) noexcept -> VectorT
+        {
+            return vbslq_s32(vreinterpretq_u32_s32(blend_mask), b, a);
+        }
+
+        template <unsigned int = 0>
+        inline static auto mask(VectorT v) noexcept -> unsigned int
+        {
+            auto MSB = vsliq_n_u32(vdupq_n_u32(0), vreinterpretq_u32_s32(v), 16);
+            auto sumtwo = vreinterpret_u32_u16(
+                vpadd_u16(vreinterpret_u16_u32(vget_low_u32(MSB)), vreinterpret_u16_u32(vget_high_u32(MSB))));
+            auto attempt = vreinterpret_u16_u32(sumtwo);
+            auto attempt2 = vreinterpret_u8_u16(attempt);
+            auto reorg = vshrn_n_u16(vreinterpretq_u16_u8(vcombine_u8(attempt2, attempt2)), 8);
+            return vget_lane_u32(vreinterpret_u32_u8(reorg), 0);
+            // IT MAY NEED A REVERSE vrev32_u8
+            // vget_lane_u32(vreinterpret_u32_u8(vrev32_u8(reorg)), 0);
+        }
+
+        template <typename = void>
+        inline static constexpr auto gather(int32x4_t idxs, const ScalarT *base) noexcept -> VectorT
+        {
+            // Pretty sure there isn't a better way to do a 32-bit lookup table...
+            int32x4_t result = vdupq_n_s32(0);
+            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 0)], result, 0);
+            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 1)], result, 1);
+            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 2)], result, 2);
+            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 3)], result, 3);
+            return result;
+        }
+
+        template <typename = void>
+        inline static constexpr auto
+        gather_select(int32x4_t idxs, VectorT mask, VectorT alternative, const ScalarT *base) noexcept
+            -> VectorT
+        {
+            auto overlay = gather(idxs, base);
+            return blend(overlay, alternative, mask);
+        }
+
+        template <typename OtherVectorT>
+        inline static constexpr auto to(VectorT v) noexcept -> OtherVectorT
+        {
+            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
+            {
+                return vcvtq_f32_s32(v);
+            }
+            else
+            {
+                static_assert("Invalid cast-as type!");
+            }
+        }
+
+        template <typename OtherVectorT>
+        inline static constexpr auto from(OtherVectorT v) noexcept -> VectorT
+        {
+            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
+            {
+                return vcvtq_s32_f32(v);
+            }
+            else
+            {
+                static_assert("Invalid cast-as type!");
+            }
+        }
+
+        template <typename OtherVectorT>
+        inline static constexpr auto as(VectorT v) noexcept -> OtherVectorT
+        {
+            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
+            {
+                return vreinterpretq_f32_s32(v);
+            }
+            else
+            {
+                static_assert("Invalid cast-as type!");
+            }
+        }
+    };
+
+    template <>
     struct SIMDVector<float32x4_t>
     {
         using VectorT = float32x4_t;
@@ -26,6 +262,12 @@ namespace vamp
         inline static auto constant(ScalarT v) noexcept -> VectorT
         {
             return vdupq_n_f32(v);
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto constant_int(unsigned int v) noexcept -> VectorT
+        {
+            return vcvtq_s32_f32(vdupq_n_s32(v));
         }
 
         template <unsigned int = 0>
@@ -121,6 +363,12 @@ namespace vamp
         inline static constexpr auto cmp_less_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
             return vreinterpretq_f32_u32(vcleq_f32(l, r));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto cmp_less_than(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vreinterpretq_f32_u32(vcltq_f32(l, r));
         }
 
         template <unsigned int = 0>
@@ -422,242 +670,6 @@ namespace vamp
         {
             auto overlay = gather(idxs, base);
             return blend(overlay, alternative, mask);
-        }
-    };
-
-    template <>
-    struct SIMDVector<int32x4_t>
-    {
-        using VectorT = int32x4_t;
-        using ScalarT = int32_t;
-        static constexpr std::size_t VectorWidth = 4;
-        static constexpr std::size_t Alignment = 16;
-
-        template <unsigned int = 0>
-        inline static auto extract(VectorT v, int idx) noexcept -> ScalarT
-        {
-            return ((int *)(&v))[idx];
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto constant(ScalarT v) noexcept -> VectorT
-        {
-            return vdupq_n_s32(v);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto sub(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return vsubq_s32(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto add(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return vaddq_s32(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto mul(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return vmulq_s32(l, r);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto bitneg(VectorT l) noexcept -> VectorT
-        {
-            return vreinterpretq_s32_u32(vmvnq_u32(vreinterpretq_u32_s32(l)));  // maybe a reverse is needed
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto cmp_equal(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return vreinterpretq_s32_u32(vceqq_s32(l, r));
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto cmp_greater_than(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return vreinterpretq_s32_u32(vcgeq_s32(l, r));
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto and_(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return vreinterpretq_s32_u32(vandq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r)));
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto or_(VectorT l, VectorT r) noexcept -> VectorT
-        {
-            return vreinterpretq_s32_u32(vorrq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r)));
-        }
-
-        template <std::size_t... I>
-        inline static constexpr auto
-        lshift_lookup(VectorT v, ScalarT shift, std::index_sequence<I...>) noexcept -> VectorT
-        {
-            VectorT ret = zero_vector();
-            std::initializer_list<int>(
-                {(shift == I ? (ret = lshift_dispatch<std::integral_constant<int, I>{}>(v)), 0 : 0)...});
-            return ret;
-        }
-
-        template <ScalarT i>
-        inline static constexpr auto lshift_dispatch(VectorT v) noexcept -> VectorT
-        {
-            return vshlq_n_s32(v, i);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto shift_left(VectorT v, ScalarT i) noexcept -> VectorT
-        {
-            return lshift_lookup(v, i, std::make_index_sequence<32>());
-        }
-
-        template <std::size_t... I>
-        inline static constexpr auto
-        rshift_lookup(VectorT v, ScalarT shift, std::index_sequence<I...>) noexcept -> VectorT
-        {
-            VectorT ret = zero_vector();
-            std::initializer_list<int>(
-                {(shift == I + 1 ? (ret = rshift_dispatch<std::integral_constant<int, I + 1>{}>(v)),
-                  0 :
-                                   0)...});
-            return ret;
-        }
-
-        template <ScalarT i>
-        inline static constexpr auto rshift_dispatch(VectorT v) noexcept -> VectorT
-        {
-            return vshrq_n_s32(v, i);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto shift_right(VectorT v, ScalarT i) noexcept -> VectorT
-        {
-            return rshift_lookup(v, i, std::make_index_sequence<32>());
-        }
-
-        template <unsigned int = 0>
-        inline static auto zero_vector() noexcept -> VectorT
-        {
-            return vmovq_n_s32(0);
-        }
-
-        template <unsigned int = 0>
-        inline static auto test_zero(VectorT l, VectorT r) noexcept -> unsigned int
-        {
-            auto andlr = vandq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r));
-            auto horizor = vorr_u32(vget_low_u32(andlr), vget_high_u32(andlr));
-            uint32x2_t mask = {0x80000000, 0x80000000};
-            auto test = vand_u32(horizor, mask);
-            return (vget_lane_u32(test, 0) || vget_lane_u32(test, 1)) == 0;
-        }
-
-        template <unsigned int = 0>
-        inline static auto load(const ScalarT *const i) noexcept -> VectorT
-        {
-            return vld1q_s32((const int32_t *const)i);
-        }
-
-        template <unsigned int = 0>
-        inline static auto load_unaligned(const ScalarT *const i) noexcept -> VectorT
-        {
-            // NOTE: The same instruction seems to do double-duty for ARM?
-            return vld1q_s32((const int32_t *const)i);
-        }
-
-        template <unsigned int = 0>
-        inline static auto store(ScalarT *i, VectorT v) noexcept -> void
-        {
-            return vst1q_s32(i, v);
-        }
-
-        template <unsigned int = 0>
-        inline static auto store_unaligned(ScalarT *i, VectorT v) noexcept -> void
-        {
-            return vst1q_s32(i, v);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto blend(VectorT a, VectorT b, VectorT blend_mask) noexcept -> VectorT
-        {
-            return vbslq_s32(vreinterpretq_u32_s32(blend_mask), b, a);
-        }
-
-        template <unsigned int = 0>
-        inline static auto mask(VectorT v) noexcept -> unsigned int
-        {
-            auto MSB = vsliq_n_u32(vdupq_n_u32(0), vreinterpretq_u32_s32(v), 16);
-            auto sumtwo = vreinterpret_u32_u16(
-                vpadd_u16(vreinterpret_u16_u32(vget_low_u32(MSB)), vreinterpret_u16_u32(vget_high_u32(MSB))));
-            auto attempt = vreinterpret_u16_u32(sumtwo);
-            auto attempt2 = vreinterpret_u8_u16(attempt);
-            auto reorg = vshrn_n_u16(vreinterpretq_u16_u8(vcombine_u8(attempt2, attempt2)), 8);
-            return vget_lane_u32(vreinterpret_u32_u8(reorg), 0);
-            // IT MAY NEED A REVERSE vrev32_u8
-            // vget_lane_u32(vreinterpret_u32_u8(vrev32_u8(reorg)), 0);
-        }
-
-        template <typename = void>
-        inline static constexpr auto gather(int32x4_t idxs, const ScalarT *base) noexcept -> VectorT
-        {
-            // Pretty sure there isn't a better way to do a 32-bit lookup table...
-            int32x4_t result = vdupq_n_s32(0);
-            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 0)], result, 0);
-            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 1)], result, 1);
-            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 2)], result, 2);
-            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 3)], result, 3);
-            return result;
-        }
-
-        template <typename = void>
-        inline static constexpr auto
-        gather_select(int32x4_t idxs, VectorT mask, VectorT alternative, const ScalarT *base) noexcept
-            -> VectorT
-        {
-            auto overlay = gather(idxs, base);
-            return blend(overlay, alternative, mask);
-        }
-
-        template <typename OtherVectorT>
-        inline static constexpr auto to(VectorT v) noexcept -> OtherVectorT
-        {
-            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
-            {
-                return vcvtq_f32_s32(v);
-            }
-            else
-            {
-                static_assert("Invalid cast-as type!");
-            }
-        }
-
-        template <typename OtherVectorT>
-        inline static constexpr auto from(OtherVectorT v) noexcept -> VectorT
-        {
-            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
-            {
-                return vcvtq_s32_f32(v);
-            }
-            else
-            {
-                static_assert("Invalid cast-as type!");
-            }
-        }
-
-        template <typename OtherVectorT>
-        inline static constexpr auto as(VectorT v) noexcept -> OtherVectorT
-        {
-            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
-            {
-                return vreinterpretq_f32_s32(v);
-            }
-            else
-            {
-                static_assert("Invalid cast-as type!");
-            }
         }
     };
 }  // namespace vamp

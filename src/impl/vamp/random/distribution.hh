@@ -36,6 +36,11 @@ namespace vamp::rng
             std::shuffle(iterable.begin(), iterable.end(), rng);
         }
 
+        inline void reset() noexcept
+        {
+            rng.seed(0);
+        }
+
         std::mt19937 rng;
         std::uniform_real_distribution<float> uniform{0, 1};
     };

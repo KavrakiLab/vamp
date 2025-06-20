@@ -3,6 +3,7 @@
 [![arXiv VAMP](https://img.shields.io/badge/arXiv-2309.14545-b31b1b.svg)](https://arxiv.org/abs/2309.14545)
 [![arXiv CAPT](https://img.shields.io/badge/arXiv-2406.02807-b31b1b.svg)](https://arxiv.org/abs/2406.02807)
 [![arXiv FCIT](https://img.shields.io/badge/arXiv-2411.17902-b31b1b.svg)](https://arxiv.org/abs/2411.17902)
+[![arXiv AORRTC](https://img.shields.io/badge/arXiv-2505.10542-b31b1b.svg)](https://arxiv.org/abs/2505.10542)
 [![Build Check](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml)
 [![Format Check](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml)
 
@@ -14,6 +15,7 @@ This repository hosts the code for:
 - the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545),
 - an implementation of the Collision-Affording Point Tree (CAPT) from the RSS 2024 paper [“Collision-Affording Point Trees: SIMD-Amenable Nearest Neighbors for Fast Collision Checking”](http://arxiv.org/abs/2406.02807),
 - an implementation of the Fully Connected Informed Trees (FCIT*) algorithm from the ICRA 2025 submission [“Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)”](https://robotic-esp.com/papers/wilson_arxiv24).
+- an implementation of the Asymptotically Optimal RRT-Connect (AORRTC) algorithm from the RA-L submission [“AORRTC: Almost-Surely Asymptotically Optimal Planning with RRT-Connect”](https://robotic-esp.com/papers/wilson_arxiv25).
 
 **TL;DR**: By exploiting ubiquitous [CPU SIMD instructions](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) to accelerate collision checking and forward kinematics (FK), `vamp`'s RRT-Connect [[1]](#1) solves problems for the Franka Emika Panda from the MotionBenchMaker dataset [[3]](#3) at a median speed of 35 microseconds (on one core of a consumer desktop PC).
 This approach to hardware-accelerated parallel sampling-based motion planning extends to other planning algorithms without modification (e.g., PRM [[2]](#2)) and also works on low-power systems (e.g., an ARM-based [OrangePi](http://www.orangepi.org/)).
@@ -51,6 +53,17 @@ If you use FCIT*, please use the following citation:
   author = {Wilson, Tyler S. and Thomason, Wil and Kingston, Zachary  and Kavraki, Lydia E. and Gammell, Jonathan D.},
   url = {https://arxiv.org/abs/2411.17902},
   date = {2024}
+}
+```
+
+If you use AORRTC, please use the following citation:
+```bibtex
+@article{aorrtc_2025,
+  author = {Tyler S Wilson and Wil Thomason and Zachary Kingston and Jonathan D Gammell},
+  title = {{AORRTC}: Almost-surely asymptotically optimal planning with {RRT-Connect}},
+  journal = {{IEEE} Robotics and Automation Letters ({RA-L})},
+  year = {2025},
+  note = {Submitted, Manuscript \# 25-1915, {arXiv}:2505.10542 {[cs.RO]}},
 }
 ```
 
@@ -168,10 +181,11 @@ We ship implementations of the following pseudorandom number generators (PRNGs):
 - `xorshift`: A SIMD-accelerated implementation of an [XOR shift](https://en.wikipedia.org/wiki/Xorshift) generator, only available on x86 machines. Uses the [`SIMDxorshift`](https://github.com/lemire/SIMDxorshift) library.
 
 ## Supported Planners
-We currently ship two planners:
+We currently ship four planners:
 - `rrtc`, which is an implementation of a dynamic-domain [[6]](#6) balanced [[7]](#7) RRT-Connect [[1]](#1).
 - `prm`, which is an implementation of basic PRM [[2]](#2) (i.e., PRM without the bounce heuristic, etc.).
 - `fcit`, which is an asymptotically optimal planner, described in the [linked paper](https://robotic-esp.com/papers/wilson_arxiv24).
+- `aorrtc`, which is an asymptotically optimal planner, described in the [linked paper](https://robotic-esp.com/papers/wilson_arxiv25).
 
 Note that these planners support planning to a set of goals, not just a single goal.
 
@@ -277,6 +291,7 @@ Inside `impl/vamp`, the code is divided into the following directories:
   `rrtc.hh` and `rrtc_settings.hh` are for our RRT-Connect implementation.
   `prm.hh` and `roadmap.hh` are for our PRM implementation.
   `fcit.hh` is for the FCIT* implementation.
+  `aorrtc.hh` is for the AORRTC implementation.
   `simplify.hh` and `simplify_settings.hh` are for simplification heuristics.
   `validate.hh` contains the raked motion validator.
 

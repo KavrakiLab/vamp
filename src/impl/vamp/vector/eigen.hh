@@ -23,4 +23,26 @@ namespace vamp
     template <std::size_t dim>
     using EigenFloatVectorMap =
         Eigen::Map<Eigen::Matrix<float, dim, 1>, get_eigen_alignment<FloatVectorAlignment>()>;
+
+    template <std::size_t dim>
+    using EigenConstFloatVectorMap =
+        Eigen::Map<const Eigen::Matrix<float, dim, 1>, get_eigen_alignment<FloatVectorAlignment>()>;
+
+    template <std::size_t dim>
+    inline constexpr auto eigen_to_vector(const Eigen::Vector<float, dim> &vector) noexcept
+        -> vamp::FloatVector<dim>
+    {
+        alignas(FloatVectorAlignment) std::array<float, dim> array;
+        EigenFloatVectorMap<dim>(array.data()) = vector;
+        return vamp::FloatVector<dim>(array.data());
+    }
+
+    template <std::size_t dim>
+    inline constexpr auto vector_to_eigen(const vamp::FloatVector<dim> &vector) noexcept
+        -> Eigen::Vector<float, dim>
+    {
+        const auto &array = vector.to_array();
+        return EigenConstFloatVectorMap<dim>(array.data());
+    }
+
 }  // namespace vamp

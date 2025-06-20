@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 
+#include <vamp/constants.hh>
 #include <vamp/vector/utils.hh>
 
 namespace vamp
@@ -421,6 +422,17 @@ namespace vamp
         inline constexpr auto interpolate(D other, typename S::ScalarT alpha) const noexcept -> D
         {
             return *d() + (other - *d()) * alpha;
+        }
+
+        inline constexpr auto log() const noexcept -> D
+        {
+            return D(apply<S::template log<0>>(d()->data));
+        }
+
+        inline constexpr auto remove_corrupted() const noexcept -> D
+        {
+            auto mask = sub(*d());
+            return blend(zero_vector(), mask);
         }
 
         template <

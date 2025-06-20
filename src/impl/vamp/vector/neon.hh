@@ -590,8 +590,6 @@ namespace vamp
             return x;
         }
 
-
-
         template <unsigned int = 0>
         inline static constexpr auto blend(VectorT a, VectorT b, VectorT blend_mask) noexcept -> VectorT
         {

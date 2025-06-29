@@ -170,19 +170,21 @@ namespace vamp::binding
         }
 
         inline static auto
-        validate_configuration(const Configuration &configuration, const EnvironmentInput &environment)
+        validate_configuration(const Configuration &configuration, const EnvironmentInput &environment, bool check_bounds = false)
             -> bool
         {
             auto copy = configuration.trim();
             Robot::descale_configuration(copy);
 
-            return (copy <= 1.F).all() and (copy >= 0.F).all() and
+            const bool in_bounds = (copy <= 1.F).all() and (copy >= 0.F).all();
+
+            return (not check_bounds or in_bounds) and
                    vamp::planning::validate_motion<Robot, rake, 1>(
                        configuration, configuration, EnvironmentVector(environment));
         }
 
         inline static auto
-        validate(const ConfigurationArray &configuration, const EnvironmentInput &environment) -> bool
+        validate(const ConfigurationArray &configuration, const EnvironmentInput &environment, bool check_bounds = false) -> bool
         {
             const Configuration configuration_v(configuration);
             return validate_configuration(configuration_v, environment);
@@ -687,6 +689,7 @@ namespace vamp::binding
             RH::validate_configuration,
             "configuration"_a,
             "environment"_a = vamp::collision::Environment<float>(),
+            "check_bounds"_a = false,
             "Check if a configuration is valid. Returns true if valid.");
 
         submodule.def(
@@ -694,6 +697,7 @@ namespace vamp::binding
             RH::validate,
             "configuration"_a,
             "environment"_a = vamp::collision::Environment<float>(),
+            "check_bounds"_a = false,
             "Check if a configuration is valid. Returns true if valid.");
 
         submodule.def(

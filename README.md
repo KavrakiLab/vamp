@@ -81,6 +81,7 @@ VAMP requires the following system dependencies:
   To install on Ubuntu 22.04, `sudo apt install python3-dev`.
 - [`Eigen3`](https://eigen.tuxfamily.org/index.php?title=Main_Page) for some vector/matrix operations.
   To install on Ubuntu 22.04, `sudo apt install libeigen3-dev`.
+  Note that we require at least Eigen 3.4, which is not available by default on Ubuntu 20.04.
 
 VAMP fetches the following external dependencies via [CPM](https://github.com/cpm-cmake/CPM.cmake):
 - [`nanobind`](https://github.com/wjakob/nanobind): for Python bindings

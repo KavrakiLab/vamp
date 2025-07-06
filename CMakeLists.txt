@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.16...3.22)
 option(VAMP_LTO "Use LTO." ON)
 option(VAMP_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output." ON)
 option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
+option(VAMP_BUILD_PYTHON "Force the use of Clang." ON)
 
 option(VAMP_BUILD_PYTHON "Build Python module" ON)
 option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" OFF)
@@ -26,9 +27,9 @@ if(VAMP_FORCE_COLORED_OUTPUT)
 endif()
 
 project(
-    vamp
-    VERSION 0.2
-    LANGUAGES C CXX
+  vamp
+  VERSION 0.2
+  LANGUAGES C CXX
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -45,19 +46,37 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CompilerSettings)
 include(FetchInitCPM)
-include(Dependencies)
+
+find_package(Eigen3 REQUIRED NO_MODULE)
+
+CPMAddPackage("gh:kavrakilab/nigh#97130999440647c204e0265d05a997dbd8da4e70")
+set(NIGH_INCLUDE_DIRS ${nigh_SOURCE_DIR}/src)
+
+CPMAddPackage("gh:orlp/pdqsort#b1ef26a55cdb60d236a5cb199c4234c704f46726")
+set(PDQSORT_INCLUDE_DIRS ${pdqsort_SOURCE_DIR})
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
+  list(APPEND VAMP_SOURCES
+    ${SIMDxorshift_SOURCE_DIR}/src/simdxorshift128plus.c
+    ${SIMDxorshift_SOURCE_DIR}/src/xorshift128plus.c)
+  list(APPEND VAMP_INCLUDES ${SIMDxorshift_SOURCE_DIR}/include)
+endif()
 
 list(APPEND VAMP_INCLUDES
+  ${NIGH_INCLUDE_DIRS}
+  ${PDQSORT_INCLUDE_DIRS}
   src/impl
 )
 
 if(VAMP_BUILD_PYTHON)
-    list(APPEND VAMP_EXT_SOURCES
-      src/impl/vamp/bindings/python.cc
-      src/impl/vamp/bindings/environment.cc
-      src/impl/vamp/bindings/settings.cc
-    )
+  find_package(Python 3.8
+    REQUIRED COMPONENTS Interpreter Development.Module
+    OPTIONAL_COMPONENTS Development.SABIModule)
 
+  CPMAddPackage("gh:wjakob/nanobind#358d452c314dbe8c07026d984ad8d5aa860f26fb")
+
+  if(NOT VAMP_ROBOT_MODULES)
     list(APPEND VAMP_ROBOT_MODULES
       sphere
       ur5
@@ -66,70 +85,114 @@ if(VAMP_BUILD_PYTHON)
       baxter
     )
 
-    foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
-      list(APPEND VAMP_EXT_SOURCES "src/impl/vamp/bindings/${robot_name}.cc")
-    endforeach()
+    list(APPEND VAMP_ROBOT_STRUCTS
+      Sphere
+      UR5
+      Panda
+      Fetch
+      Baxter
+    )
+  endif()
 
-    nanobind_add_module(_core_ext
-        NB_STATIC
-        STABLE_ABI
-        NOMINSIZE
-        ${VAMP_EXT_SOURCES}
-        ${VAMP_SOURCES}
+  foreach(robot ${VAMP_ROBOT_MODULES})
+    string(APPEND VAMP_ROBOT_INITS "    vb::init_${robot}(pymodule);\n")
+    string(APPEND VAMP_ROBOT_DECLS "    void init_${robot}(nanobind::module_ &pymodule);\n")
+    string(APPEND VAMP_ROBOT_QUOTED "\"${robot}\",")
+  endforeach()
+
+  list(JOIN VAMP_ROBOT_QUOTED ", " VAMP_ROBOT_NAMES)
+
+  configure_file(
+    src/impl/vamp/bindings/init.hh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/vamp_python_init.hh
+    @ONLY
+  )
+
+  configure_file(
+    src/impl/vamp/bindings/python.cc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/python.cc
+    @ONLY
+  )
+
+  list(APPEND VAMP_EXT_SOURCES
+    src/impl/vamp/bindings/environment.cc
+    src/impl/vamp/bindings/settings.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/python.cc
+  )
+
+  foreach(robot_name robot_struct IN ZIP_LISTS VAMP_ROBOT_MODULES VAMP_ROBOT_STRUCTS)
+    configure_file(
+      src/impl/vamp/bindings/robot.cc.in
+      ${CMAKE_CURRENT_BINARY_DIR}/${robot_name}.cc
+      @ONLY
     )
 
-    target_include_directories(_core_ext
-        SYSTEM PRIVATE
-        ${VAMP_INCLUDES}
+    list(APPEND VAMP_EXT_SOURCES
+      ${CMAKE_CURRENT_BINARY_DIR}/${robot_name}.cc
     )
+  endforeach()
 
-    target_link_libraries(_core_ext
-        PRIVATE
-        Eigen3::Eigen
-    )
+  nanobind_add_module(_core_ext
+    NB_STATIC
+    STABLE_ABI
+    NOMINSIZE
+    ${VAMP_EXT_SOURCES}
+    ${VAMP_SOURCES}
+  )
 
-    if($ENV{GITHUB_ACTIONS})
-      set(STUB_PREFIX "")
-    else()
-      set(STUB_PREFIX "${CMAKE_BINARY_DIR}/stubs/")
-    endif()
+  target_include_directories(_core_ext
+    SYSTEM PRIVATE
+    ${VAMP_INCLUDES}
+    ${CMAKE_CURRENT_BINARY_DIR}
+  )
 
+  target_link_libraries(_core_ext
+    PRIVATE
+    Eigen3::Eigen
+  )
+
+  if($ENV{GITHUB_ACTIONS})
+    set(STUB_PREFIX "")
+  else()
+    set(STUB_PREFIX "${CMAKE_BINARY_DIR}/stubs/")
+  endif()
+
+  nanobind_add_stub(
+    vamp_stub
+    MODULE _core_ext
+    OUTPUT "${STUB_PREFIX}__init__.pyi"
+    PYTHON_PATH $<TARGET_FILE_DIR:_core_ext>
+    DEPENDS _core_ext
+    VERBOSE
+  )
+
+  foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
     nanobind_add_stub(
-      vamp_stub
-      MODULE _core_ext
-      OUTPUT "${STUB_PREFIX}__init__.pyi"
+      "vamp_${robot_name}_stub"
+      MODULE "_core_ext.${robot_name}"
+      OUTPUT "${STUB_PREFIX}${robot_name}.pyi"
       PYTHON_PATH $<TARGET_FILE_DIR:_core_ext>
       DEPENDS _core_ext
       VERBOSE
     )
+  endforeach()
 
-    foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
-      nanobind_add_stub(
-        "vamp_${robot_name}_stub"
-        MODULE "_core_ext.${robot_name}"
-        OUTPUT "${STUB_PREFIX}${robot_name}.pyi"
-        PYTHON_PATH $<TARGET_FILE_DIR:_core_ext>
-        DEPENDS _core_ext
-        VERBOSE
-      )
-    endforeach()
+  install(
+    TARGETS _core_ext
+    LIBRARY
+    DESTINATION vamp/_core
+  )
 
+  install(
+    FILES "${STUB_PREFIX}__init__.pyi"
+    DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
+  )
+
+  foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
     install(
-      TARGETS _core_ext
-      LIBRARY
-      DESTINATION vamp/_core
-    )
-
-    install(
-      FILES "${STUB_PREFIX}__init__.pyi"
+      FILES "${STUB_PREFIX}${robot_name}.pyi"
       DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
     )
-
-    foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
-      install(
-        FILES "${STUB_PREFIX}${robot_name}.pyi"
-        DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
-      )
     endforeach()
 endif()
 

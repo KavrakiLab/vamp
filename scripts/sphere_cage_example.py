@@ -91,7 +91,7 @@ def main(
 
         robot_dir = Path(__file__).parent.parent / 'resources' / 'panda'
         sim = vpb.PyBulletSimulator(
-            str(robot_dir / f"panda_spherized.urdf"), vamp.ROBOT_JOINTS['panda'], True
+            str(robot_dir / f"panda_spherized.urdf"), vamp_module.joint_names(), True
             )
 
         e = vamp.Environment()

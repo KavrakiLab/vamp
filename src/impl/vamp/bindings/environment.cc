@@ -1,8 +1,9 @@
+#include <vamp_python_init.hh>
+
 #include <vamp/collision/filter.hh>
 #include <vamp/collision/capt.hh>
 #include <vamp/collision/factory.hh>
 #include <vamp/collision/shapes.hh>
-#include <vamp/bindings/init.hh>
 
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/pair.h>

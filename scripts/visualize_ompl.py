@@ -90,7 +90,7 @@ def main(
     index: int = 1,
     ):
 
-    if robot not in vamp.ROBOT_JOINTS:
+    if robot not in vamp.robots:
         raise RuntimeError(f"Robot {robot} does not exist in VAMP!")
 
     robot_dir = Path(__file__).parent.parent / 'resources' / robot
@@ -115,7 +115,7 @@ Existing problems: {list(data['problems'].keys())}"""
     start = problem_data['start']
     goals = problem_data['goals']
 
-    sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp.ROBOT_JOINTS[robot], True)
+    sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), getattr(vamp, robot).joint_names(), True)
     sim.add_environment_from_problem_dict(problem_data, False)
 
     path = solve(start, goals, sim, planner = "RRTConnect", setRange = vamp.ROBOT_RRT_RANGES[robot])

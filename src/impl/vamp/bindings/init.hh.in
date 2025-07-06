@@ -1,0 +1,8 @@
+#include <nanobind/nanobind.h>
+
+namespace vamp::binding
+{
+    void init_environment(nanobind::module_ &pymodule);
+    void init_settings(nanobind::module_ &pymodule);
+    @VAMP_ROBOT_DECLS@
+}  // namespace vamp::binding

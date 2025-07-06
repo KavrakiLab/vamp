@@ -27,7 +27,7 @@ def main(
     **kwargs,
     ):
 
-    if robot not in vamp.ROBOT_JOINTS:
+    if robot not in vamp.robots:
         raise RuntimeError(f"Robot {robot} does not exist in VAMP!")
 
     problems_dir = Path(__file__).parent.parent / 'resources' / robot / 'problems'
@@ -75,8 +75,11 @@ def main(
             valid_problems += 1
 
             if pointcloud:
+                r_min, r_max = vamp_module.min_max_radii()
                 (env, original_pc, filtered_pc, filter_time, build_time) = vpc.problem_dict_to_pointcloud(
                     robot,
+                    r_min,
+                    r_max,
                     data,
                     samples_per_object,
                     filter_radius,

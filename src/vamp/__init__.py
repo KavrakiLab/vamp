@@ -1,14 +1,10 @@
 __all__ = [
+    "robots",
     "AnyPlanningResult",
     "png_to_heightfield",
     "configure_robot_and_planner_with_kwargs",
     "problem_dict_to_vamp",
     "results_to_dict",
-    "sphere",
-    "ur5",
-    "panda",
-    "fetch",
-    "baxter",
     "Environment",
     "Attachment",
     "Sphere",
@@ -22,17 +18,19 @@ __all__ = [
     "AORRTCSettings",
     "SimplifySettings",
     "SimplifyRoutine",
-    "filter_pointcloud"
+    "filter_pointcloud",
     ]
 
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union, List
+import importlib
 
 from numpy import float32
 from numpy.typing import NDArray
 
 from .constants import *
 from . import _core
+from ._core import Sphere as Sphere
 from ._core import Cuboid as Cuboid
 from ._core import Cylinder as Cylinder
 from ._core import Attachment as Attachment
@@ -45,22 +43,15 @@ from ._core import FCITSettings as FCITSettings
 from ._core import AORRTCSettings as AORRTCSettings
 from ._core import SimplifyRoutine as SimplifyRoutine
 from ._core import SimplifySettings as SimplifySettings
-from ._core import Sphere as Sphere
-from ._core import baxter as baxter
-from ._core import fetch as fetch
-from ._core import panda as panda
-from ._core import sphere as sphere
-from ._core import ur5 as ur5
 from ._core import filter_pointcloud as filter_pointcloud
 
-AnyPlanningResult = Union[
-    sphere.PlanningResult,
-    ur5.PlanningResult,
-    panda.PlanningResult,
-    fetch.PlanningResult,
-    baxter.PlanningResult,
-    ]
+robots = _core.robots()
 
+for robot in robots:
+    globals()[robot] = getattr(_core, robot)
+    __all__.append(robot)
+
+AnyPlanningResult = Union[*[globals()[robot].PlanningResult for robot in robots]]
 
 def png_to_heightfield(
     filename: Path,

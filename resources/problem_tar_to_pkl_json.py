@@ -73,23 +73,24 @@ def load_moveit_yaml_request(data, joints):
     jgn, jgp = zip(*[(e['joint_name'], e['position']) for e in data['goal_constraints'][0]['joint_constraints']])
     goal = [jgp[jgn.index(j)] for j in joints]
 
-    return {'start': start, 'goals': [goal]}
+    return {'start': start[:len(joints)], 'goals': [goal[:len(joints)]]}
 
 
-def test_problem(robot, problem):
+def test_problem(vamp_module, problem):
     start = problem['start']
     goals = problem['goals']
     env = vamp.problem_dict_to_vamp(problem)
 
-    vamp_module = getattr(vamp, robot)
     return vamp_module.validate(start, env) and any(vamp_module.validate(goal, env) for goal in goals)
 
 
 def main(robot: str = "panda"):
-    if robot not in vamp.ROBOT_JOINTS:
+    if robot not in vamp.robots:
         raise RuntimeError(f"Robot '{robot}' not valid!")
 
-    joints = vamp.ROBOT_JOINTS[robot]
+    vamp_module = getattr(vamp, robot)
+
+    joints = vamp_module.joint_names()
     scenes = defaultdict(list)
     requests = defaultdict(list)
 
@@ -128,7 +129,7 @@ def main(robot: str = "panda"):
             ]
 
         for problem in data['problems'][k]:
-            problem['valid'] = test_problem(robot, problem)
+            problem['valid'] = test_problem(vamp_module, problem)
 
     with open(problem_dir / 'problems.pkl', 'wb') as f:
         f.write(pickle.dumps(data))

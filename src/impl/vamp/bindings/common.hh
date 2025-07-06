@@ -27,6 +27,7 @@
 #include <nanobind/stl/tuple.h>
 #include <nanobind/stl/vector.h>
 #include <nanobind/stl/string.h>
+#include <nanobind/stl/string_view.h>
 #include <nanobind/ndarray.h>
 
 namespace vamp::binding
@@ -151,27 +152,22 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto
-        sphere_validate(const ConfigurationArray &configuration, const EnvironmentInput &environment)
-            -> std::vector<std::vector<std::string>>
+        inline static auto debug(const ConfigurationArray &configuration, const EnvironmentInput &environment)
+            -> typename Robot::Debug
         {
-            auto spheres = fk(configuration);
-            std::vector<std::vector<std::string>> result;
-            result.reserve(Robot::n_spheres);
-
-            EnvironmentVector ev(environment);
-            for (const auto &sphere : spheres)
+            typename Robot::template ConfigurationBlock<rake> block;
+            for (auto i = 0U; i < Robot::dimension; ++i)
             {
-                result.emplace_back(
-                    sphere_environment_get_collisions<>(ev, sphere.x, sphere.y, sphere.z, sphere.r));
+                block[i] = configuration[i];
             }
 
-            return result;
+            return Robot::fkcc_debug(EnvironmentVector(environment), block);
         }
 
-        inline static auto
-        validate_configuration(const Configuration &configuration, const EnvironmentInput &environment, bool check_bounds = false)
-            -> bool
+        inline static auto validate_configuration(
+            const Configuration &configuration,
+            const EnvironmentInput &environment,
+            bool check_bounds = false) -> bool
         {
             auto copy = configuration.trim();
             Robot::descale_configuration(copy);
@@ -183,8 +179,10 @@ namespace vamp::binding
                        configuration, configuration, EnvironmentVector(environment));
         }
 
-        inline static auto
-        validate(const ConfigurationArray &configuration, const EnvironmentInput &environment, bool check_bounds = false) -> bool
+        inline static auto validate(
+            const ConfigurationArray &configuration,
+            const EnvironmentInput &environment,
+            bool check_bounds = false) -> bool
         {
             const Configuration configuration_v(configuration);
             return validate_configuration(configuration_v, environment);
@@ -372,7 +370,7 @@ namespace vamp::binding
                 "next",
                 [](typename RH::RNG::Ptr rng)
                 {
-                    auto x = rng->next();
+                    typename Robot::Configuration x = rng->next();
                     Robot::scale_configuration(x);
                     return x;
                 },
@@ -405,7 +403,15 @@ namespace vamp::binding
             "Collision checking resolution for this robot.");
         submodule.def(
             "n_spheres", []() { return Robot::n_spheres; }, "Number of spheres in robot collision model.");
-        submodule.def("space_measure", []() { return Robot::space_measure(); }, "Measure ");
+        submodule.def(
+            "space_measure", []() { return Robot::space_measure(); }, "Measure of robot's C-space.");
+        submodule.def(
+            "min_max_radii",
+            []() -> std::pair<float, float> { return {Robot::min_radius, Robot::max_radius}; },
+            "Minimum and maximum radii sizes of robot spheres.");
+        submodule.def(
+            "joint_names", []() { return Robot::joint_names; }, "Joint names for the robot in order of DoF");
+        submodule.def("end_effector", []() { return Robot::end_effector; }, "End-effector frame name.");
 
         nb::class_<typename RH::Configuration>(submodule, "Configuration", "Robot configuration.")
             .def(nb::init<>(), "Empty constructor. Zero initialized.")
@@ -701,8 +707,8 @@ namespace vamp::binding
             "Check if a configuration is valid. Returns true if valid.");
 
         submodule.def(
-            "sphere_validity",
-            RH::sphere_validate,
+            "debug",
+            RH::debug,
             "configuration"_a,
             "environment"_a = vamp::collision::Environment<float>(),
             "Check which spheres of a robot configuration are in collision.");

@@ -23,7 +23,35 @@ namespace vamp::planning
         static constexpr auto dimension = Robot::dimension;
         using RNG = typename vamp::rng::RNG<Robot::dimension>;
 
-        inline static auto solve(
+        std::unique_ptr<float, decltype(&free)> buffer;
+        std::vector<std::size_t> parents;
+        std::vector<float> radii;
+        std::vector<float> costs;
+        std::vector<GNATNode<dimension>> near_list;
+        NearestNeighborsGNAT<GNATNode<dimension>> start_tree;
+        NearestNeighborsGNAT<GNATNode<dimension>> goal_tree;
+
+        inline auto buffer_index(std::size_t index) -> float *
+        {
+            return buffer.get() + index * Configuration::num_scalars_rounded;
+        };
+
+        AOX_RRTC(std::size_t max_samples)
+          : buffer(std::unique_ptr<float, decltype(&free)>(
+                vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
+                    max_samples * Configuration::num_scalars_rounded),
+                &free))
+          , start_tree(max_samples)
+          , goal_tree(max_samples)
+        {
+            parents.resize(max_samples);
+            radii.resize(max_samples);
+            costs.resize(max_samples);
+            start_tree.setDistanceFunction(aox_dist_fun);
+            goal_tree.setDistanceFunction(aox_dist_fun);
+        }
+
+        inline auto solve(
             const Configuration &start,
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
@@ -34,18 +62,19 @@ namespace vamp::planning
             return solve(start, std::vector<Configuration>{goal}, environment, settings, max_cost, rng);
         }
 
-        static auto standard_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b) -> float
+        inline static auto standard_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b)
+            -> float
         {
             return a.array.distance(b.array);
         }
 
-        static auto aox_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b) -> float
+        inline static auto aox_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b) -> float
         {
             //               Configuration space distance             Cost space distance
             return std::sqrt(std::pow(a.array.distance(b.array), 2) + std::pow(a.cost - b.cost, 2));
         }
 
-        inline static auto solve(
+        inline auto solve(
             const Configuration &start,
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
@@ -55,26 +84,12 @@ namespace vamp::planning
         {
             PlanningResult<dimension> result;
 
+            start_tree.clear();
+            goal_tree.clear();
+
             const RRTCSettings &rrtc_settings = settings.rrtc;
 
-            NearestNeighborsGNAT<GNATNode<dimension>> start_tree;
-            NearestNeighborsGNAT<GNATNode<dimension>> goal_tree;
-
-            start_tree.setDistanceFunction(aox_dist_fun);
-            goal_tree.setDistanceFunction(aox_dist_fun);
-
             constexpr const std::size_t start_index = 0;
-
-            auto buffer = std::unique_ptr<float, decltype(&free)>(
-                vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
-                    rrtc_settings.max_samples * Configuration::num_scalars_rounded),
-                &free);
-
-            const auto buffer_index = [&buffer](std::size_t index) -> float *
-            { return buffer.get() + index * Configuration::num_scalars_rounded; };
-
-            std::vector<std::size_t> parents(rrtc_settings.max_samples);
-            std::vector<float> radii(rrtc_settings.max_samples);
 
             auto start_time = std::chrono::steady_clock::now();
 
@@ -99,7 +114,6 @@ namespace vamp::planning
 
             std::size_t iter = 0;
             std::size_t free_index = start_index + 1;
-            std::vector<float> costs;
 
             // Add start to tree
             start.to_array(buffer_index(start_index));
@@ -107,27 +121,24 @@ namespace vamp::planning
             start_tree.add(start_vert);
             parents[start_index] = start_index;
             radii[start_index] = std::numeric_limits<float>::max();
-            costs.push_back(0);
+            costs[start_index] = 0;
 
             // Add goals to tree
             std::vector<GNATNode<dimension>> goal_verts;
+            goal_verts.reserve(goals.size());
+
             for (const auto &goal : goals)
             {
                 goal.to_array(buffer_index(free_index));
                 GNATNode<dimension> temp_goal =
                     GNATNode<dimension>{free_index, 0, {buffer_index(free_index)}};
-                goal_verts.push_back(temp_goal);
+                goal_verts.emplace_back(temp_goal);
                 goal_tree.add(temp_goal);
                 parents[free_index] = free_index;
                 radii[free_index] = std::numeric_limits<float>::max();
-                costs.push_back(0);
+                costs[free_index] = 0;
                 free_index++;
             }
-
-            int idx;
-            float g_hat, h_hat, f_hat;
-            // Vars for sampling cost bounds
-            float c_range, c_rand;
 
             // Search loop
             while (iter++ < rrtc_settings.max_iterations and free_index < rrtc_settings.max_samples)
@@ -163,26 +174,30 @@ namespace vamp::planning
                     }
                 }
 
+                if (not goal_vert)
+                {
+                    continue;
+                }
+
                 const auto root_vert = tree_a_is_start ? start_vert : *goal_vert;
                 const auto target_vert = tree_a_is_start ? *goal_vert : start_vert;
 
-                g_hat = temp.distance(root_vert.array);
-                h_hat = temp.distance(target_vert.array);
-                f_hat = g_hat + h_hat;
+                float g_hat = temp.distance(root_vert.array);
+                float h_hat = temp.distance(target_vert.array);
+                float f_hat = g_hat + h_hat;
 
                 // The range between the minimum possible cost and maximum allowable cost
                 // - Floating point error can result in a (barely) negative range
                 // - If c_range is 0, only valid connection is to root of tree (sampled upper cost bound ==
                 // g^)
-                c_range = std::max(max_cost - f_hat, 0.0F);
+                float c_range = std::max(max_cost - f_hat, 0.0F);
 
                 // Sampled upper cost bound
-                c_rand = (cost_sample * c_range) + g_hat;
-
-                std::vector<GNATNode<dimension>> near_list;
+                float c_rand = (cost_sample * c_range) + g_hat;
 
                 GNATNode<dimension> temp_node{free_index, c_rand, temp_array.data()};
-                GNATNode<dimension> *nearest_node;
+                GNATNode<dimension> *nearest_node_ptr;
+                GNATNode<dimension> nearest_node;
 
                 // Get r-disc neighbours, then iterate through list until a valid connection is found
                 // Necessary workaround given asymmetric cost function
@@ -191,29 +206,29 @@ namespace vamp::planning
                 // root will always be valid
                 auto root_dist = tree_a->getDistanceFunction()(temp_node, root_vert);
                 tree_a->nearestR(temp_node, root_dist, near_list);
-                idx = 0;
-                nearest_node = &near_list[idx];
-                auto nearest_distance = temp.distance(buffer_index(nearest_node->index));
+                std::size_t idx = 0;
+                nearest_node_ptr = &near_list[idx];
+                auto nearest_distance = temp.distance(buffer_index(nearest_node_ptr->index));
                 // Loop over nearest nodes until one is found that satisfies asymmetric distance function
                 // i.e., look for nearest neighbour in cost-augmented space that doesn't violate the sampled
                 // upper cost bound
-                while (nearest_node->cost > 0 and                          //
-                       c_rand < nearest_node->cost + nearest_distance and  //
+                while (nearest_node_ptr->cost > 0 and                          //
+                       c_rand < nearest_node_ptr->cost + nearest_distance and  //
                        idx < near_list.size())
                 {
                     idx++;
-                    nearest_node = &near_list[idx];
-                    nearest_distance = temp.distance(buffer_index(nearest_node->index));
+                    nearest_node_ptr = &near_list[idx];
+                    nearest_distance = temp.distance(buffer_index(nearest_node_ptr->index));
                 }
                 // =============================================*/
 
-                const auto nearest_radius = radii[nearest_node->index];
+                const auto nearest_radius = radii[nearest_node_ptr->index];
                 if (rrtc_settings.dynamic_domain and nearest_radius < nearest_distance)
                 {
                     continue;
                 }
 
-                auto nearest_configuration = nearest_node->array;
+                auto nearest_configuration = nearest_node_ptr->array;
                 auto nearest_vector = temp - nearest_configuration;
 
                 bool reach = nearest_distance < rrtc_settings.range;
@@ -232,8 +247,10 @@ namespace vamp::planning
                     new_configuration.to_array(new_configuration_index);
 
                     // Calculate and store actual node cost
-                    const auto dist = new_configuration.distance(buffer_index(nearest_node->index));
-                    auto new_cost = nearest_node->cost + dist;
+                    const auto dist = new_configuration.distance(buffer_index(nearest_node_ptr->index));
+                    auto new_cost = nearest_node_ptr->cost + dist;
+
+                    nearest_node = *nearest_node_ptr;
 
                     // If resampling costs to try and find a better parent...
                     if (settings.cost_bound_resample)
@@ -278,7 +295,7 @@ namespace vamp::planning
                             //      with a worse cost
                             //      to the best possible parent before this (crange == 0 \equiv cost == g^)
                             // ...then stop spending effort resampling costs
-                            if (new_nearest_node->index == nearest_node->index or
+                            if (new_nearest_node->index == nearest_node.index or
                                 new_nearest_node->cost + new_nearest_distance >= new_cost or c_range == 0)
                             {
                                 break;
@@ -292,7 +309,7 @@ namespace vamp::planning
                                          environment))
                             {
                                 // Congratulations to the new parent
-                                nearest_node = new_nearest_node;
+                                nearest_node = *new_nearest_node;
                                 new_cost = new_nearest_node->cost + new_nearest_distance;
                             }
 
@@ -306,16 +323,16 @@ namespace vamp::planning
 
                     // Add the new vertex with the appropriate cost to the tree
                     tree_a->add(GNATNode<dimension>{free_index, new_cost, {new_configuration}});
-                    costs.push_back(new_cost);
 
-                    parents[free_index] = nearest_node->index;
+                    parents[free_index] = nearest_node.index;
                     radii[free_index] = std::numeric_limits<float>::max();
+                    costs[free_index] = new_cost;
 
                     free_index++;
 
                     if (rrtc_settings.dynamic_domain and nearest_radius != std::numeric_limits<float>::max())
                     {
-                        radii[nearest_node->index] *= (1 + rrtc_settings.alpha);
+                        radii[nearest_node.index] *= (1 + rrtc_settings.alpha);
                     }
 
                     // Extend to goal tree
@@ -382,9 +399,9 @@ namespace vamp::planning
                         next.to_array(next_index);
                         tree_a->add(GNATNode<dimension>{
                             free_index, increment_length + costs[free_index - 1], {next_index}});
-                        costs.push_back(increment_length + costs[free_index - 1]);
                         parents[free_index] = free_index - 1;
                         radii[free_index] = std::numeric_limits<float>::max();
+                        costs[free_index] = increment_length + costs[free_index - 1];
 
                         free_index++;
 
@@ -428,12 +445,12 @@ namespace vamp::planning
                 {
                     if (nearest_radius == std::numeric_limits<float>::max())
                     {
-                        radii[nearest_node->index] = rrtc_settings.radius;
+                        radii[nearest_node.index] = rrtc_settings.radius;
                     }
                     else
                     {
-                        radii[nearest_node->index] = std::max(
-                            radii[nearest_node->index] * (1.F - rrtc_settings.alpha),
+                        radii[nearest_node.index] = std::max(
+                            radii[nearest_node.index] * (1.F - rrtc_settings.alpha),
                             rrtc_settings.min_radius);
                     }
                 }
@@ -519,6 +536,8 @@ namespace vamp::planning
             phs.set_transverse_diameter(best_path_cost);
             auto phs_rng = std::make_shared<ProlateHyperspheroidRNG<Robot>>(phs, rng);
 
+            AOX_RRTC instance(rrtc_settings.max_samples);
+
             while (iters < settings.max_iterations)
             {
                 // Update internal maximum iterations
@@ -527,11 +546,11 @@ namespace vamp::planning
                 // If there is a single goal, sample with PHS
                 if (goals.size() == 1)
                 {
-                    result = AOX_RRTC::solve(start, goals, environment, settings, best_path_cost, phs_rng);
+                    result = instance.solve(start, goals, environment, settings, best_path_cost, phs_rng);
                 }
                 else
                 {
-                    result = AOX_RRTC::solve(start, goals, environment, settings, best_path_cost, rng);
+                    result = instance.solve(start, goals, environment, settings, best_path_cost, rng);
                 }
 
                 iters += result.iterations;

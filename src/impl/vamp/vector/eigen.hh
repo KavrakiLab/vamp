@@ -39,10 +39,12 @@ namespace vamp
 
     template <std::size_t dim>
     inline constexpr auto vector_to_eigen(const vamp::FloatVector<dim> &vector) noexcept
-        -> Eigen::Vector<float, dim>
+        -> Eigen::Matrix<float, dim, 1>
     {
-        const auto &array = vector.to_array();
-        return EigenConstFloatVectorMap<dim>(array.data());
+        alignas(FloatVectorAlignment) std::array<float, vamp::FloatVector<dim>::num_scalars_rounded> array =
+            {};
+        vector.to_array(array);
+        return Eigen::Matrix<float, dim, 1>(array.data());
     }
 
 }  // namespace vamp

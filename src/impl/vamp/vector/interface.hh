@@ -690,8 +690,9 @@ namespace vamp
             const MaskT &mask,
             const D &alternative) noexcept -> D
         {
-            return D(apply_indexed<S::template gather_select<void>>(
-                idxs.data, mask.template to<D>().data, alternative.data, base));
+            return D(
+                apply_indexed<S::template gather_select<void>>(
+                    idxs.data, mask.template to<D>().data, alternative.data, base));
         }
 
     protected:

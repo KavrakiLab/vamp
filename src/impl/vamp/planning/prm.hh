@@ -138,8 +138,9 @@ namespace vamp::planning
                 {
                     if (validate_motion<Robot, rake, resolution>(neighbor.as_vector(), temp, environment))
                     {
-                        node.neighbors.emplace_back(typename RoadmapNode::Neighbor{
-                            static_cast<unsigned int>(neighbor.index), distance});
+                        node.neighbors.emplace_back(
+                            typename RoadmapNode::Neighbor{
+                                static_cast<unsigned int>(neighbor.index), distance});
                         nodes[neighbor.index].neighbors.emplace_back(
                             typename RoadmapNode::Neighbor{node.index, distance});
                     }
@@ -266,8 +267,9 @@ namespace vamp::planning
                 {
                     if (validate_motion<Robot, rake, resolution>(neighbor.as_vector(), temp, environment))
                     {
-                        node.neighbors.emplace_back(typename RoadmapNode::Neighbor{
-                            static_cast<unsigned int>(neighbor.index), distance});
+                        node.neighbors.emplace_back(
+                            typename RoadmapNode::Neighbor{
+                                static_cast<unsigned int>(neighbor.index), distance});
                         nodes[neighbor.index].neighbors.emplace_back(
                             typename RoadmapNode::Neighbor{node.index, distance});
                     }

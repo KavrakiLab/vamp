@@ -171,10 +171,11 @@ namespace vamp::planning
                         [](const auto &a, const auto &b) { return a.distance < b.distance; });
                     start_node.neighbor_iterator = start_node.neighbors.begin();
 
-                    open_set.emplace_back(QueueEdge{
-                        (*start_node.neighbor_iterator).index,
-                        start_index,
-                        (*start_node.neighbor_iterator).distance});
+                    open_set.emplace_back(
+                        QueueEdge{
+                            (*start_node.neighbor_iterator).index,
+                            start_index,
+                            (*start_node.neighbor_iterator).distance});
                     start_node.neighbor_iterator++;
 
                     while (not open_set.empty())
@@ -201,10 +202,11 @@ namespace vamp::planning
                             if ((*parent_node.neighbor_iterator).distance <
                                 node.g + goal.distance(state_index(node.index)))
                             {
-                                open_set.emplace_back(QueueEdge{
-                                    (*parent_node.neighbor_iterator).index,
-                                    current_p,
-                                    (*parent_node.neighbor_iterator).distance});
+                                open_set.emplace_back(
+                                    QueueEdge{
+                                        (*parent_node.neighbor_iterator).index,
+                                        current_p,
+                                        (*parent_node.neighbor_iterator).distance});
                                 parent_node.neighbor_iterator++;
                                 break;
                             }
@@ -299,10 +301,11 @@ namespace vamp::planning
                                 [](const auto &a, const auto &b) { return a.distance < b.distance; });
                             current_node.neighbor_iterator = current_node.neighbors.begin();
 
-                            open_set.emplace_back(QueueEdge{
-                                (*current_node.neighbor_iterator).index,
-                                current_index,
-                                (*current_node.neighbor_iterator).distance});
+                            open_set.emplace_back(
+                                QueueEdge{
+                                    (*current_node.neighbor_iterator).index,
+                                    current_index,
+                                    (*current_node.neighbor_iterator).distance});
                             current_node.neighbor_iterator++;
                         }
                     }

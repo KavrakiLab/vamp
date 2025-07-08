@@ -380,8 +380,9 @@ namespace vamp::planning
                         auto next = prior + increment;
                         float *next_index = buffer_index(free_index);
                         next.to_array(next_index);
-                        tree_a->add(GNATNode<dimension>{
-                            free_index, increment_length + costs[free_index - 1], {next_index}});
+                        tree_a->add(
+                            GNATNode<dimension>{
+                                free_index, increment_length + costs[free_index - 1], {next_index}});
                         costs.push_back(increment_length + costs[free_index - 1]);
                         parents[free_index] = free_index - 1;
                         radii[free_index] = std::numeric_limits<float>::max();

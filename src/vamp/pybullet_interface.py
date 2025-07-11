@@ -314,11 +314,11 @@ class PyBulletSimulator:
                     b = fk_function(roadmap[edge].to_list())[-1]
                     self.client.addUserDebugLine([a.x, a.y, a.z], [b.x, b.y, b.z])
 
-    def draw_pointcloud(self, pc, lifetime: float = 0.):
+    def draw_pointcloud(self, pc, lifetime: float = 0., pointsize: int = 3):
         maxes = np.max(pc, axis = 0)
         colors = 0.8 * (pc / maxes)
         with DisableRendering(self.client), RedirectStream(sys.stdout), RedirectStream(sys.stderr):
-            self.client.addUserDebugPoints(pc, colors, pointSize = 3, lifeTime = lifetime)
+            self.client.addUserDebugPoints(pc, colors, pointSize = pointsize, lifeTime = lifetime)
 
     def clear_pointcloud(self):
         with DisableRendering(self.client), RedirectStream(sys.stdout), RedirectStream(sys.stderr):

@@ -90,13 +90,13 @@ namespace vamp::planning
         }
 
     private:
-        float transverse_diameter{0.};
-        float min_transverse_diameter;
-        float phs_measure;
-
         vamp::FloatVector<dimension> focus_1;
         vamp::FloatVector<dimension> focus_2;
         vamp::FloatVector<dimension> center;
+
+        float transverse_diameter{0.};
+        float min_transverse_diameter;
+        float phs_measure;
 
         using EigenVector = Eigen::Vector<float, dimension>;
         using EigenMatrix = Eigen::Matrix<float, dimension, dimension>;
@@ -114,8 +114,9 @@ namespace vamp::planning
             }
             else
             {
-                const EigenVector transverse_axis =
-                    vamp::vector_to_eigen((focus_2 - focus_1) / min_transverse_diameter);
+                const EigenVector f1 = vamp::vector_to_eigen(focus_1);
+                const EigenVector f2 = vamp::vector_to_eigen(focus_2);
+                const EigenVector transverse_axis = (f2 - f1) / min_transverse_diameter;
                 const EigenMatrix wahba_prob = transverse_axis * EigenMatrix::Identity().col(0).transpose();
 
                 Eigen::JacobiSVD<EigenMatrix, Eigen::NoQRPreconditioner> svd(
@@ -128,6 +129,7 @@ namespace vamp::planning
         }
 
         void update_transformation()
+
         {
             const float conjugate_diamater = std::sqrt(
                 transverse_diameter * transverse_diameter -

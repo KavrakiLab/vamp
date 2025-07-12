@@ -1,6 +1,5 @@
 __all__ = [
     "robots",
-    "AnyPlanningResult",
     "png_to_heightfield",
     "configure_robot_and_planner_with_kwargs",
     "problem_dict_to_vamp",
@@ -51,7 +50,6 @@ for robot in robots:
     globals()[robot] = getattr(_core, robot)
     __all__.append(robot)
 
-AnyPlanningResult = Union[*[globals()[robot].PlanningResult for robot in robots]]
 
 def png_to_heightfield(
     filename: Path,
@@ -173,8 +171,8 @@ def problem_dict_to_vamp(
 
 
 def results_to_dict(
-    planning_result: AnyPlanningResult,
-    simplification_result: Optional[AnyPlanningResult] = None,
+    planning_result,
+    simplification_result = None,
     ) -> Dict[str, Any]:
 
     try:

@@ -92,9 +92,13 @@ namespace vamp::binding
     {
         using Configuration = typename Robot::Configuration;
         using ConfigurationArray = typename Robot::ConfigurationArray;
-        using Path = vamp::planning::Path<Robot::dimension>;
-        using PlanningResult = vamp::planning::PlanningResult<Robot::dimension>;
-        using Roadmap = vamp::planning::Roadmap<Robot::dimension>;
+
+        template <std::size_t rake>
+        using ConfigurationBlock = typename Robot::ConfigurationBlock<rake>;
+
+        using Path = vamp::planning::Path<Robot>;
+        using PlanningResult = vamp::planning::PlanningResult<Robot>;
+        using Roadmap = vamp::planning::Roadmap<Robot>;
 
         using EnvironmentInput = vamp::collision::Environment<float>;
         using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
@@ -106,10 +110,41 @@ namespace vamp::binding
         using XORShift = vamp::rng::XORShift<Robot::dimension>;
 #endif
 
-        using PRM = vamp::planning::PRM<Robot, rake, Robot::resolution>;
-        using RRTC = vamp::planning::RRTC<Robot, rake, Robot::resolution>;
-        using FCIT = vamp::planning::FCIT<Robot, rake, Robot::resolution>;
-        using AORRTC = vamp::planning::AORRTC<Robot, rake, Robot::resolution>;
+        using NDArray = nanobind::ndarray<float, nanobind::shape<Robot::dimension>, nanobind::device::cpu>;
+
+        inline static auto c_to_nd(const Configuration &c) -> NDArray
+        {
+            NDArray a;
+            for (auto i = 0U; i < Robot::dimension; ++i)
+            {
+                a(i) = c[{i, 0}];
+            }
+
+            return a;
+        };
+
+        inline static auto nd_to_c(const NDArray &a) -> Configuration
+        {
+            ConfigurationArray c;
+            for (auto i = 0U; i < Robot::dimension; ++i)
+            {
+                c[i] = a(i);
+            }
+
+            return Configuration(c);
+        };
+
+        template <std::size_t rake>
+        inline static auto nd_to_b(const NDArray &a) -> ConfigurationBlock<rake>
+        {
+            ConfigurationBlock<rake> block;
+            for (auto i = 0U; i < Robot::dimension; ++i)
+            {
+                block[i] = a(i);
+            }
+
+            return block;
+        }
 
         inline static auto
         phs_sampler(const planning::ProlateHyperspheroid<Robot::dimension> &phs, typename RNG::Ptr rng) ->
@@ -130,17 +165,10 @@ namespace vamp::binding
         }
 #endif
 
-        inline static auto fk(const ConfigurationArray &configuration)
-            -> std::vector<vamp::collision::Sphere<float>>
+        inline static auto fk(const NDArray &configuration) -> std::vector<vamp::collision::Sphere<float>>
         {
             typename Robot::template Spheres<1> out;
-            typename Robot::template ConfigurationBlock<1> block;
-            for (auto i = 0U; i < Robot::dimension; ++i)
-            {
-                block[i] = configuration[i];
-            }
-
-            Robot::template sphere_fk<1>(block, out);
+            Robot::template sphere_fk<1>(nd_to_b<1>(configuration), out);
             std::vector<vamp::collision::Sphere<float>> result;
             result.reserve(Robot::n_spheres);
 
@@ -152,23 +180,16 @@ namespace vamp::binding
             return result;
         }
 
-        inline static auto debug(const ConfigurationArray &configuration, const EnvironmentInput &environment)
-            -> typename Robot::Debug
+        inline static auto debug(const NDArray &configuration, const EnvironmentInput &environment) ->
+            typename Robot::Debug
         {
-            typename Robot::template ConfigurationBlock<rake> block;
-            for (auto i = 0U; i < Robot::dimension; ++i)
-            {
-                block[i] = configuration[i];
-            }
-
-            return Robot::fkcc_debug(EnvironmentVector(environment), block);
+            return Robot::fkcc_debug(EnvironmentVector(environment), nd_to_b<rake>(configuration));
         }
 
-        inline static auto validate_configuration(
-            const Configuration &configuration,
-            const EnvironmentInput &environment,
-            bool check_bounds = false) -> bool
+        inline static auto
+        validate(const NDArray &c_in, const EnvironmentInput &environment, bool check_bounds = false) -> bool
         {
+            auto configuration = nd_to_c(c_in);
             auto copy = configuration.trim();
             Robot::descale_configuration(copy);
 
@@ -179,146 +200,64 @@ namespace vamp::binding
                        configuration, configuration, EnvironmentVector(environment));
         }
 
-        inline static auto validate(
-            const ConfigurationArray &configuration,
-            const EnvironmentInput &environment,
-            bool check_bounds = false) -> bool
+        template <typename Planner, typename Settings>
+        struct PlannerHelper
         {
-            const Configuration configuration_v(configuration);
-            return validate_configuration(configuration_v, environment);
-        }
-
-        inline static auto rrtc_single(
-            const ConfigurationArray &start,
-            const ConfigurationArray &goal,
-            const EnvironmentInput &environment,
-            const vamp::planning::RRTCSettings &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            return RRTC::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
-        }
-
-        inline static auto rrtc(
-            const ConfigurationArray &start,
-            const std::vector<ConfigurationArray> &goals,
-            const EnvironmentInput &environment,
-            const vamp::planning::RRTCSettings &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            std::vector<Configuration> goals_v;
-            goals_v.reserve(goals.size());
-
-            for (const auto &goal : goals)
+            inline static auto single(
+                const NDArray &start,
+                const NDArray &goal,
+                const EnvironmentInput &environment,
+                const Settings &settings,
+                typename RNG::Ptr rng) -> PlanningResult
             {
-                goals_v.emplace_back(goal);
+                return Planner::solve(
+                    nd_to_c(start), nd_to_c(goal), EnvironmentVector(environment), settings, rng);
             }
 
-            const Configuration start_v(start);
-            return RRTC::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
-        }
-
-        inline static auto prm_single(
-            const ConfigurationArray &start,
-            const ConfigurationArray &goal,
-            const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            ;
-            return PRM::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
-        }
-
-        inline static auto
-        prm(const ConfigurationArray &start,
-            const std::vector<ConfigurationArray> &goals,
-            const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            std::vector<Configuration> goals_v;
-            goals_v.reserve(goals.size());
-
-            for (const auto &goal : goals)
+            inline static auto multi(
+                const NDArray &start,
+                const std::vector<NDArray> &goals,
+                const EnvironmentInput &environment,
+                const Settings &settings,
+                typename RNG::Ptr rng) -> PlanningResult
             {
-                goals_v.emplace_back(goal);
+                std::vector<Configuration> goals_v;
+                goals_v.reserve(goals.size());
+
+                for (const auto &goal : goals)
+                {
+                    goals_v.emplace_back(nd_to_c(goal));
+                }
+
+                return Planner::solve(nd_to_c(start), goals_v, EnvironmentVector(environment), settings, rng);
             }
 
-            const Configuration start_v(start);
-            return PRM::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
-        }
-
-        inline static auto fcit(
-            const ConfigurationArray &start,
-            const ConfigurationArray &goal,
-            const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            return FCIT::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
-        }
-
-        inline static auto fcit_multi_goal(
-            const ConfigurationArray &start,
-            const std::vector<ConfigurationArray> &goals,
-            const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams> &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            std::vector<Configuration> goals_v;
-            goals_v.reserve(goals.size());
-
-            for (const auto &goal : goals)
+            inline static auto roadmap(
+                const NDArray &start,
+                const NDArray &goal,
+                const EnvironmentInput &environment,
+                const Settings &settings,
+                typename RNG::Ptr rng) -> Roadmap
             {
-                goals_v.emplace_back(goal);
+                return Planner::build_roadmap(
+                    nd_to_c(start), nd_to_c(goal), EnvironmentVector(environment), settings, rng);
             }
+        };
 
-            const Configuration start_v(start);
-            return FCIT::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
-        }
+        using PRM = PlannerHelper<
+            vamp::planning::PRM<Robot, rake, Robot::resolution>,
+            vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams>>;
 
-        inline static auto aorrtc(
-            const ConfigurationArray &start,
-            const ConfigurationArray &goal,
-            const EnvironmentInput &environment,
-            const vamp::planning::AORRTCSettings &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            return AORRTC::solve(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
-        }
+        using RRTC =
+            PlannerHelper<vamp::planning::RRTC<Robot, rake, Robot::resolution>, vamp::planning::RRTCSettings>;
 
-        inline static auto aorrtc_multi_goal(
-            const ConfigurationArray &start,
-            const std::vector<ConfigurationArray> &goals,
-            const EnvironmentInput &environment,
-            const vamp::planning::AORRTCSettings &settings,
-            typename RNG::Ptr rng) -> PlanningResult
-        {
-            std::vector<Configuration> goals_v;
-            goals_v.reserve(goals.size());
+        using FCIT = PlannerHelper<
+            vamp::planning::FCIT<Robot, rake, Robot::resolution>,
+            vamp::planning::RoadmapSettings<vamp::planning::FCITStarNeighborParams>>;
 
-            for (const auto &goal : goals)
-            {
-                goals_v.emplace_back(goal);
-            }
-
-            const Configuration start_v(start);
-            return AORRTC::solve(start_v, goals_v, EnvironmentVector(environment), settings, rng);
-        }
-
-        inline static auto roadmap(
-            const ConfigurationArray &start,
-            const ConfigurationArray &goal,
-            const EnvironmentInput &environment,
-            const vamp::planning::RoadmapSettings<vamp::planning::PRMStarNeighborParams> &settings,
-            typename RNG::Ptr rng) -> Roadmap
-        {
-            return PRM::build_roadmap(
-                Configuration(start), Configuration(goal), EnvironmentVector(environment), settings, rng);
-        }
+        using AORRTC = PlannerHelper<
+            vamp::planning::AORRTC<Robot, rake, Robot::resolution>,
+            vamp::planning::AORRTCSettings>;
 
         inline static auto simplify(
             const Path &path,
@@ -359,6 +298,8 @@ namespace vamp::binding
         using namespace nb::literals;
 
         using RH = Helper<Robot>;
+        using NA = typename RH::NDArray;
+
         auto submodule = pymodule.def_submodule(Robot::name, "Robot-specific submodule");
 
         nb::class_<typename RH::RNG::Ptr>(submodule, "RNG", "RNG for robot configurations.")
@@ -368,11 +309,11 @@ namespace vamp::binding
                 "Reset the RNG to initial state and seed.")
             .def(
                 "next",
-                [](typename RH::RNG::Ptr rng)
+                [](typename RH::RNG::Ptr rng) -> NA
                 {
                     typename Robot::Configuration x = rng->next();
                     Robot::scale_configuration(x);
-                    return x;
+                    return RH::c_to_nd(x);
                 },
                 "Sample the next configuration. Modifies internal RNG state.")
             .def(
@@ -388,8 +329,10 @@ namespace vamp::binding
 
         nb::class_<typename RH::PHS>(submodule, "ProlateHyperspheroid", "Prolate Hyperspheroid for Robot.")
             .def(
-                nb::init<typename RH::Configuration, typename RH::Configuration>(),
-                "Construct from two loci.")  //
+                "__init__",
+                [](typename RH::PHS *t, const NA &a, const NA &b)
+                { new (t) typename RH::PHS(RH::nd_to_c(a), RH::nd_to_c(b)); },
+                "Construct from two loci.")
             .def("set_transverse_diameter", &RH::PHS::set_transverse_diameter)
             .def("transform", &RH::PHS::transform);
 
@@ -413,60 +356,9 @@ namespace vamp::binding
             "joint_names", []() { return Robot::joint_names; }, "Joint names for the robot in order of DoF");
         submodule.def("end_effector", []() { return Robot::end_effector; }, "End-effector frame name.");
 
-        nb::class_<typename RH::Configuration>(submodule, "Configuration", "Robot configuration.")
-            .def(nb::init<>(), "Empty constructor. Zero initialized.")
-            .def(
-                "__init__",
-                [](typename RH::Configuration *q,
-                   const nb::ndarray<const FloatT, nb::shape<Robot::dimension>, nb::device::cpu>
-                       &arr) noexcept { new (q) typename RH::Configuration(arr.data()); },
-                "Constructor from numpy array.")
-            .def(
-                nb::init<std::vector<FloatT>>(),
-                "Constructor from list. Additional entries truncated. Missing values zero padded.")
-            .def(
-                "__len__",
-                [](const typename RH::Configuration & /*c*/) { return Robot::dimension; },
-                "The dimensionality of the configuration space.")
-            .def(
-                "__getitem__",
-                [](const typename RH::Configuration &c, std::size_t i) { return c[i]; },
-                "Return the i-th component of this configuration.")
-            .def(
-                "__setitem__",
-                [](typename RH::Configuration &c, std::size_t i, float v) { c[i] = v; },
-                "Return the i-th component of this configuration.")
-            .def(
-                "interpolate",
-                [](const typename RH::Configuration &c,
-                   const typename RH::Configuration &o,
-                   float interpolate) { return c.interpolate(o, interpolate); },
-                "Interpolate to another configuration.")
-            .def(
-                "to_list",
-                [](const typename RH::Configuration &v)
-                {
-                    const auto a = v.to_array();
-                    return std::vector<float>(a.cbegin(), a.cbegin() + Robot::dimension);
-                },
-                "Converts configuration to list.")
-            .def(
-                "numpy",
-                [](const typename RH::Configuration &v) noexcept
-                {
-                    auto *v_arr = new FloatT[RH::Configuration::num_scalars_rounded];
-                    v.to_array_unaligned(v_arr);
-                    nb::capsule arr_owner(
-                        v_arr, [](void *a) noexcept { delete[] reinterpret_cast<FloatT *>(a); });
-                    return nb::ndarray<nb::numpy, const FloatT, nb::shape<Robot::dimension>, nb::device::cpu>(
-                        v_arr, {Robot::dimension}, arr_owner);
-                },
-                "Converts configuration to numpy array.");
-
         submodule.def(
             "distance",
-            [](const typename RH::Configuration &a, const typename RH::Configuration &b)
-            { return a.distance(b); },
+            [](const NA &a, const NA &b) { return RH::nd_to_c(a).distance(RH::nd_to_c(b)); },
             "a"_a,
             "b"_a,
             "Distance (l2-norm) between two configurations.");
@@ -480,26 +372,25 @@ namespace vamp::binding
                 "Return the number of waypoints in the path.")
             .def(
                 "__getitem__",
-                [](const typename RH::Path &p, std::size_t i) { return p[i]; },
+                [](const typename RH::Path &p, std::size_t i) -> NA { return RH::c_to_nd(p[i]); },
                 "Get the i-th configuration in the path.")
             .def(
                 "__setitem__",
-                [](typename RH::Path &p, std::size_t i, const typename RH::Configuration &c) { p[i] = c; },
+                [](typename RH::Path &p, std::size_t i, const NA &c) { p[i] = RH::nd_to_c(c); },
                 "Set the i-th configuration of the the path.")
-            .def(
-                "__iter__",
-                [](const typename RH::Path &p)
-                { return nb::make_iterator(nb::type<typename RH::Path>(), "iterator", p.begin(), p.end()); },
-                nb::keep_alive<0, 1>(),
-                "Iterate over all configurations in the path.")
+            // .def(
+            //     "__iter__",
+            //     [](const typename RH::Path &p)
+            //     { return nb::make_iterator(nb::type<typename RH::Path>(), "iterator", p.begin(), p.end());
+            //     }, nb::keep_alive<0, 1>(), "Iterate over all configurations in the path.")
             .def(
                 "append",
-                [](typename RH::Path &p, const typename RH::Configuration &c) { p.emplace_back(c); },
+                [](typename RH::Path &p, const NA &c) { p.emplace_back(RH::nd_to_c(c)); },
                 "Append a configuration to the end of this path.")
             .def(
                 "insert",
-                [](typename RH::Path &p, std::size_t i, const typename RH::Configuration &c)
-                { p.insert(p.cbegin() + i, c); },
+                [](typename RH::Path &p, std::size_t i, const NA &c)
+                { p.insert(p.cbegin() + i, RH::nd_to_c(c)); },
                 "Append a configuration to the end of this path.")
             .def("cost", &RH::Path::cost, "Compute the total path length (by the l2-norm) of the path.")
             .def(
@@ -519,7 +410,7 @@ namespace vamp::binding
                 [](typename RH::Path &p, const typename RH::EnvironmentInput &e)
                 {
                     const typename RH::EnvironmentVector ev(e);
-                    return p.template validate<Robot, rake>(ev);
+                    return p.template validate<rake>(ev);
                 },
                 "Validate the path in an environment.")
             .def(
@@ -593,7 +484,7 @@ namespace vamp::binding
 
         submodule.def(
             "rrtc",
-            RH::rrtc_single,
+            RH::RRTC::single,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -603,7 +494,7 @@ namespace vamp::binding
 
         submodule.def(
             "rrtc",
-            RH::rrtc,
+            RH::RRTC::multi,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -613,7 +504,7 @@ namespace vamp::binding
 
         submodule.def(
             "prm",
-            RH::prm_single,
+            RH::PRM::single,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -623,7 +514,7 @@ namespace vamp::binding
 
         submodule.def(
             "prm",
-            RH::prm,
+            RH::PRM::multi,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -633,7 +524,7 @@ namespace vamp::binding
 
         submodule.def(
             "fcit",
-            RH::fcit,
+            RH::FCIT::single,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -643,7 +534,7 @@ namespace vamp::binding
 
         submodule.def(
             "fcit",
-            RH::fcit_multi_goal,
+            RH::FCIT::multi,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -653,7 +544,7 @@ namespace vamp::binding
 
         submodule.def(
             "aorrtc",
-            RH::aorrtc,
+            RH::AORRTC::single,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -663,7 +554,7 @@ namespace vamp::binding
 
         submodule.def(
             "aorrtc",
-            RH::aorrtc_multi_goal,
+            RH::AORRTC::multi,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -673,7 +564,7 @@ namespace vamp::binding
 
         submodule.def(
             "roadmap",
-            RH::roadmap,
+            RH::PRM::roadmap,
             "start"_a,
             "goal"_a,
             "environment"_a,
@@ -689,14 +580,6 @@ namespace vamp::binding
             "settings"_a,
             "rng"_a,
             "Simplification heuristics to post-process a path.");
-
-        submodule.def(
-            "validate",
-            RH::validate_configuration,
-            "configuration"_a,
-            "environment"_a = vamp::collision::Environment<float>(),
-            "check_bounds"_a = false,
-            "Check if a configuration is valid. Returns true if valid.");
 
         submodule.def(
             "validate",

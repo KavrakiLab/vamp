@@ -13,7 +13,7 @@ namespace vamp::planning
 {
     template <typename Robot, std::size_t rake, std::size_t resolution>
     inline static auto smooth_bspline(
-        Path<Robot::dimension> &path,
+        Path<Robot> &path,
         const collision::Environment<FloatVector<rake>> &environment,
         const BSplineSettings &settings) -> bool
     {
@@ -54,7 +54,7 @@ namespace vamp::planning
 
     template <typename Robot, std::size_t rake, std::size_t resolution>
     inline static auto reduce_path_vertices(
-        Path<Robot::dimension> &path,
+        Path<Robot> &path,
         const collision::Environment<FloatVector<rake>> &environment,
         const ReduceSettings &settings,
         const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> bool
@@ -114,7 +114,7 @@ namespace vamp::planning
 
     template <typename Robot, std::size_t rake, std::size_t resolution>
     inline static auto shortcut_path(
-        Path<Robot::dimension> &path,
+        Path<Robot> &path,
         const collision::Environment<FloatVector<rake>> &environment,
         const ShortcutSettings & /*settings*/) -> bool
     {
@@ -142,7 +142,7 @@ namespace vamp::planning
 
     template <typename Robot, std::size_t rake, std::size_t resolution>
     inline static auto perturb_path(
-        Path<Robot::dimension> &path,
+        Path<Robot> &path,
         const collision::Environment<FloatVector<rake>> &environment,
         const PerturbSettings &settings,
         const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> bool
@@ -191,14 +191,14 @@ namespace vamp::planning
 
     template <typename Robot, std::size_t rake, std::size_t resolution>
     inline auto simplify(
-        const Path<Robot::dimension> &path,
+        const Path<Robot> &path,
         const collision::Environment<FloatVector<rake>> &environment,
         const SimplifySettings &settings,
-        const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> PlanningResult<Robot::dimension>
+        const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> PlanningResult<Robot>
     {
         auto start_time = std::chrono::steady_clock::now();
 
-        PlanningResult<Robot::dimension> result;
+        PlanningResult<Robot> result;
 
         const auto bspline = [&result, &environment, settings]()
         { return smooth_bspline<Robot, rake, resolution>(result.path, environment, settings.bspline); };

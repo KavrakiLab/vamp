@@ -35,7 +35,7 @@ namespace vamp::planning
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr rng) noexcept -> PlanningResult<Robot>
         {
             return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
@@ -45,9 +45,9 @@ namespace vamp::planning
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr rng) noexcept -> PlanningResult<Robot>
         {
-            PlanningResult<dimension> result;
+            PlanningResult<Robot> result;
 
             NN<dimension> roadmap;
 
@@ -179,7 +179,7 @@ namespace vamp::planning
                     auto parents = utils::astar(nodes, start, goal, state_index);
                     // NOTE: If the connected component check is correct, we can assume that a solution
                     // was found by A* when we've reached this point
-                    utils::recover_path<Configuration>(std::move(parents), state_index, result.path);
+                    utils::recover_path<Robot>(std::move(parents), state_index, result.path);
                     result.cost = nodes[i].g;
                     result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
                     result.iterations = iter;
@@ -201,7 +201,7 @@ namespace vamp::planning
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            typename RNG::Ptr rng) noexcept -> Roadmap<dimension>
+            typename RNG::Ptr rng) noexcept -> Roadmap<Robot>
         {
             NN<dimension> roadmap;
 
@@ -280,7 +280,7 @@ namespace vamp::planning
                 roadmap.insert(NNNode<dimension>{node.index, {state}});
             }
 
-            Roadmap<dimension> result;
+            Roadmap<Robot> result;
             result.vertices.reserve(nodes.size());
 
             for (const auto &node : nodes)

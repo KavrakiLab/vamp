@@ -141,11 +141,11 @@ namespace vamp::planning::utils
         return parents;
     }
 
-    template <typename Configuration, std::size_t dim, typename StateLookupFn>
+    template <typename Robot, typename StateLookupFn>
     inline void recover_path(
         const std::unique_ptr<unsigned int[]> parents,
         const StateLookupFn &state_index,
-        Path<dim> &path) noexcept
+        Path<Robot> &path) noexcept
     {
         // NOTE: Assumes that the start is the first element of the graph and the goal is the second
         constexpr const unsigned int start_index = 0;
@@ -161,11 +161,11 @@ namespace vamp::planning::utils
         std::reverse(path.begin(), path.end());
     }
 
-    template <typename Configuration, std::size_t dim, typename StateLookupFn>
+    template <typename Robot, typename StateLookupFn>
     inline void recover_path(
         const std::vector<unsigned int> &parents,
         const StateLookupFn &state_index,
-        Path<dim> &path) noexcept
+        Path<Robot> &path) noexcept
     {
         // NOTE: Assumes that the start is the first element of the graph and the goal is the second
         constexpr const unsigned int start_index = 0;

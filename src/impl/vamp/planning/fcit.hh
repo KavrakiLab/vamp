@@ -74,7 +74,7 @@ namespace vamp::planning
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            typename RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr &rng) noexcept -> PlanningResult<Robot>
         {
             return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
@@ -84,11 +84,11 @@ namespace vamp::planning
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
             const RoadmapSettings<NeighborParamsT> &settings,
-            typename RNG::Ptr &rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr &rng) noexcept -> PlanningResult<Robot>
         {
             auto start_time = std::chrono::steady_clock::now();
 
-            PlanningResult<dimension> result;
+            PlanningResult<Robot> result;
             NN<dimension> roadmap;
 
             std::size_t iter = 0;
@@ -347,7 +347,7 @@ namespace vamp::planning
                 }
             }
 
-            utils::recover_path<Configuration>(parents, state_index, result.path);
+            utils::recover_path<Robot>(parents, state_index, result.path);
             result.cost = nodes[1].g;
             result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
             result.iterations = iter;

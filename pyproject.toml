@@ -9,7 +9,7 @@ description = "Vector-Accelerated Motion Planner"
 readme = "README.md"
 requires-python = ">=3.8"
 authors = [
-    { name = "Zachary Kingston", email = "zak@rice.edu" },
+    { name = "Zachary Kingston", email = "zkingston@purdue.edu" },
     { name = "Wil Thomason", email = "wil.thomason@gmail.com" },
     { name = "Clayton Ramsey", email = "claytonwramsey@gmail.com" }
 ]

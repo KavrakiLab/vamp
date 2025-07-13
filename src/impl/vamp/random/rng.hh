@@ -6,12 +6,12 @@
 
 namespace vamp::rng
 {
-    template <std::size_t dim>
+    template <typename Robot>
     struct RNG
     {
-        using Ptr = std::shared_ptr<RNG<dim>>;
+        using Ptr = std::shared_ptr<RNG<Robot>>;
         virtual inline void reset() noexcept = 0;
-        virtual inline auto next() noexcept -> FloatVector<dim> = 0;
+        virtual inline auto next() noexcept -> FloatVector<Robot::dimension> = 0;
 
         Distribution dist;
     };

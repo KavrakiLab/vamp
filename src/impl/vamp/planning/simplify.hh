@@ -57,7 +57,7 @@ namespace vamp::planning
         Path<Robot> &path,
         const collision::Environment<FloatVector<rake>> &environment,
         const ReduceSettings &settings,
-        const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> bool
+        const typename vamp::rng::RNG<Robot>::Ptr rng) -> bool
     {
         if (path.size() < 3)
         {
@@ -145,7 +145,7 @@ namespace vamp::planning
         Path<Robot> &path,
         const collision::Environment<FloatVector<rake>> &environment,
         const PerturbSettings &settings,
-        const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> bool
+        const typename vamp::rng::RNG<Robot>::Ptr rng) -> bool
     {
         if (path.size() < 3)
         {
@@ -194,7 +194,7 @@ namespace vamp::planning
         const Path<Robot> &path,
         const collision::Environment<FloatVector<rake>> &environment,
         const SimplifySettings &settings,
-        const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> PlanningResult<Robot>
+        const typename vamp::rng::RNG<Robot>::Ptr rng) -> PlanningResult<Robot>
     {
         auto start_time = std::chrono::steady_clock::now();
 

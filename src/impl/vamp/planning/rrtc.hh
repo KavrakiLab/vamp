@@ -18,7 +18,7 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
-        using RNG = typename vamp::rng::RNG<Robot::dimension>;
+        using RNG = typename vamp::rng::RNG<Robot>;
 
         inline static auto solve(
             const Configuration &start,
@@ -109,8 +109,6 @@ namespace vamp::planning
                 }
 
                 auto temp = rng->next();
-                Robot::scale_configuration(temp);
-
                 typename Robot::ConfigurationBuffer temp_array;
                 temp.to_array(temp_array.data());
 

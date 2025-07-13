@@ -103,11 +103,11 @@ namespace vamp::binding
         using EnvironmentInput = vamp::collision::Environment<float>;
         using EnvironmentVector = vamp::collision::Environment<vamp::FloatVector<rake>>;
 
-        using RNG = vamp::rng::RNG<Robot::dimension>;
-        using Halton = vamp::rng::Halton<Robot::dimension>;
-        using PHS = vamp::planning::ProlateHyperspheroid<Robot::dimension>;
+        using RNG = vamp::rng::RNG<Robot>;
+        using Halton = vamp::rng::Halton<Robot>;
+        using PHS = vamp::planning::ProlateHyperspheroid<Robot>;
 #if defined(__x86_64__)
-        using XORShift = vamp::rng::XORShift<Robot::dimension>;
+        using XORShift = vamp::rng::XORShift<Robot>;
 #endif
 
         using NDArray = nanobind::ndarray<float, nanobind::shape<Robot::dimension>, nanobind::device::cpu>;
@@ -147,7 +147,7 @@ namespace vamp::binding
         }
 
         inline static auto
-        phs_sampler(const planning::ProlateHyperspheroid<Robot::dimension> &phs, typename RNG::Ptr rng) ->
+        phs_sampler(const planning::ProlateHyperspheroid<Robot> &phs, typename RNG::Ptr rng) ->
             typename RNG::Ptr
         {
             return std::make_shared<planning::ProlateHyperspheroidRNG<Robot>>(phs, rng);
@@ -378,11 +378,6 @@ namespace vamp::binding
                 "__setitem__",
                 [](typename RH::Path &p, std::size_t i, const NA &c) { p[i] = RH::nd_to_c(c); },
                 "Set the i-th configuration of the the path.")
-            // .def(
-            //     "__iter__",
-            //     [](const typename RH::Path &p)
-            //     { return nb::make_iterator(nb::type<typename RH::Path>(), "iterator", p.begin(), p.end());
-            //     }, nb::keep_alive<0, 1>(), "Iterate over all configurations in the path.")
             .def(
                 "append",
                 [](typename RH::Path &p, const NA &c) { p.emplace_back(RH::nd_to_c(c)); },

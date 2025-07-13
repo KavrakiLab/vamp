@@ -1,6 +1,7 @@
 #include <vamp_python_init.hh>
 
-#include <vamp/bindings/common.hh>
+// #include <vamp/bindings/common.hh>
+#include <vamp/bindings/robot_helper.hh>
 #include <vamp/robots/@robot_name@.hh>
 
 void vamp::binding::init_@robot_name@(nanobind::module_ &pymodule)

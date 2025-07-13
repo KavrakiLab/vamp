@@ -28,7 +28,7 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
-        using RNG = typename vamp::rng::RNG<Robot::dimension>;
+        using RNG = typename vamp::rng::RNG<Robot>;
 
         inline static auto solve(
             const Configuration &start,
@@ -109,7 +109,6 @@ namespace vamp::planning
             while (iter++ < settings.max_iterations and nodes.size() < settings.max_samples)
             {
                 auto temp = rng->next();
-                Robot::scale_configuration(temp);
                 // TODO: This is a gross hack to get around the instruction cache issue...I realized
                 // that edge sampling, while valid, wastes too much effort with our current
                 // validation API
@@ -237,7 +236,6 @@ namespace vamp::planning
             while (iter++ < settings.max_iterations and nodes.size() < settings.max_samples)
             {
                 auto temp = rng->next();
-                Robot::scale_configuration(temp);
 
                 // TODO: This is a gross hack to get around the instruction cache issue...I realized
                 // that edge sampling, while valid, wastes too much effort with our current

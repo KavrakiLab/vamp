@@ -21,7 +21,7 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
-        using RNG = typename vamp::rng::RNG<Robot::dimension>;
+        using RNG = typename vamp::rng::RNG<Robot>;
 
         std::unique_ptr<float, decltype(&free)> buffer;
         std::vector<std::size_t> parents;
@@ -155,8 +155,6 @@ namespace vamp::planning
                 }
 
                 auto temp = rng->next();
-                Robot::scale_configuration(temp);
-
                 typename Robot::ConfigurationBuffer temp_array;
                 temp.to_array(temp_array.data());
 
@@ -477,7 +475,7 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
-        using RNG = typename vamp::rng::RNG<Robot::dimension>;
+        using RNG = typename vamp::rng::RNG<Robot>;
         using AOX_RRTC = typename vamp::planning::AOX_RRTC<Robot, rake, resolution>;
         using RRTC = typename vamp::planning::RRTC<Robot, rake, resolution>;
 
@@ -533,7 +531,7 @@ namespace vamp::planning
             final_result.path = result.path;
             best_path_cost = result.path.cost();
 
-            ProlateHyperspheroid<dimension> phs(start, goals[0]);
+            ProlateHyperspheroid<Robot> phs(start, goals[0]);
             phs.set_transverse_diameter(best_path_cost);
             auto phs_rng = std::make_shared<ProlateHyperspheroidRNG<Robot>>(phs, rng);
 

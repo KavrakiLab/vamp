@@ -55,7 +55,7 @@ auto main(int, char **) -> int
     auto env_v = EnvironmentVector(environment);
 
     // Create RNG for planning
-    auto rng = std::make_shared<vamp::rng::Halton<Robot::dimension>>();
+    auto rng = std::make_shared<vamp::rng::Halton<Robot>>();
 
     // Setup RRTC and plan
     vamp::planning::RRTCSettings rrtc_settings;

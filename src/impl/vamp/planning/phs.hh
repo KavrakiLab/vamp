@@ -32,9 +32,10 @@ namespace vamp::planning
 
     }  // namespace utils
 
-    template <std::size_t dimension>
+    template <typename Robot>
     class ProlateHyperspheroid
     {
+        static constexpr auto dimension = Robot::dimension;
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     public:
@@ -144,13 +145,30 @@ namespace vamp::planning
     };
 
     template <typename Robot>
-    struct ProlateHyperspheroidRNG : public rng::RNG<Robot::dimension>
+    struct ProlateHyperspheroidRNG : public rng::RNG<Robot>
     {
         ProlateHyperspheroidRNG(
-            ProlateHyperspheroid<Robot::dimension> phs,
-            typename vamp::rng::RNG<Robot::dimension>::Ptr &rng)
+            ProlateHyperspheroid<Robot> phs,
+            typename vamp::rng::RNG<Robot>::Ptr &rng)
           : phs(phs), rng(rng)
         {
+        }
+
+        inline void reset() noexcept override
+        {
+            rng->reset();
+            rng->dist.reset();
+        }
+
+        inline auto next() noexcept -> FloatVector<Robot::dimension> override
+        {
+            auto x = phs.transform(uniform_in_ball());
+
+            // Clamp values
+            Robot::descale_configuration(x);
+            x.clamp(0.F, 1.F);
+            Robot::scale_configuration(x);
+            return x;
         }
 
         inline auto logit() noexcept -> vamp::FloatVector<Robot::dimension>
@@ -171,23 +189,8 @@ namespace vamp::planning
                    uniform_on_ball();
         }
 
-        inline void reset() noexcept override
-        {
-            rng->reset();
-            rng->dist.reset();
-        }
-
-        inline auto next() noexcept -> FloatVector<Robot::dimension> override
-        {
-            auto x = phs.transform(uniform_in_ball());
-
-            // HACK: Planners expect output to be in unit hypercube...
-            Robot::descale_configuration(x);
-            return x.clamp(0.F, 1.F);
-        }
-
-        ProlateHyperspheroid<Robot::dimension> phs;
-        typename vamp::rng::RNG<Robot::dimension>::Ptr rng;
+        ProlateHyperspheroid<Robot> phs;
+        typename vamp::rng::RNG<Robot>::Ptr rng;
     };
 
 }  // namespace vamp::planning

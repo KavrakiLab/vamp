@@ -47,7 +47,7 @@ namespace vamp::binding
         using Configuration = typename Robot::Configuration;
         using ConfigurationArray = typename Robot::ConfigurationArray;
         template <std::size_t rake>
-        using ConfigurationBlock = typename Robot::ConfigurationBlock<rake>;
+        using ConfigurationBlock = typename Robot::template ConfigurationBlock<rake>;
 
         inline static auto from(const Configuration &c) -> Type
         {
@@ -99,7 +99,7 @@ namespace vamp::binding
         using Configuration = typename Robot::Configuration;
         using ConfigurationArray = typename Robot::ConfigurationArray;
         template <std::size_t rake>
-        using ConfigurationBlock = typename Robot::ConfigurationBlock<rake>;
+        using ConfigurationBlock = typename Robot::template ConfigurationBlock<rake>;
 
         inline static auto from(const Configuration &c) -> Type
         {

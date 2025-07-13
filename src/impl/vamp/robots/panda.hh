@@ -15306,8 +15306,7 @@ namespace vamp::robots
             }
 
             // attaching at panda_grasptarget
-            auto tf = to_isometry(&y[280]);
-            set_attachment_pose(environment, tf);
+            set_attachment_pose(environment, to_isometry(&y[280]));
 
             //
             // attachment vs. environment collisions

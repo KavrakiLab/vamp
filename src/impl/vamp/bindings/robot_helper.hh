@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+
 #include <vamp/planning/phs.hh>
 #include <vamp/random/rng.hh>
 #include <vamp/random/halton.hh>
@@ -28,6 +31,7 @@
 #include <nanobind/stl/vector.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/string_view.h>
+#include <nanobind/eigen/dense.h>
 #include <nanobind/ndarray.h>
 
 namespace vamp::binding
@@ -60,13 +64,18 @@ namespace vamp::binding
 
         inline static auto to(const Type &a) -> Configuration
         {
+            return Configuration(array(a));
+        };
+
+        inline static auto array(const Type &a) -> ConfigurationArray
+        {
             ConfigurationArray c;
             for (auto i = 0U; i < Robot::dimension; ++i)
             {
                 c[i] = a(i);
             }
 
-            return Configuration(c);
+            return c;
         };
 
         template <std::size_t rake>
@@ -88,6 +97,7 @@ namespace vamp::binding
         using Type = typename Robot::ConfigurationArray;
 
         using Configuration = typename Robot::Configuration;
+        using ConfigurationArray = typename Robot::ConfigurationArray;
         template <std::size_t rake>
         using ConfigurationBlock = typename Robot::ConfigurationBlock<rake>;
 
@@ -106,6 +116,11 @@ namespace vamp::binding
         {
             return Configuration(a);
         };
+
+        inline static auto array(const Type &a) -> ConfigurationArray
+        {
+            return a;
+        }
 
         template <std::size_t rake>
         inline static auto block(const Type &a) -> ConfigurationBlock<rake>
@@ -241,15 +256,9 @@ namespace vamp::binding
                 path, EnvironmentVector(environment), settings, rng);
         }
 
-        inline static auto eefk(const Type &start) -> std::pair<std::array<float, 3>, std::array<float, 4>>
+        inline static auto eefk(const Type &start) -> Eigen::Matrix4f
         {
-            const auto &result = Robot::eefk(Input::to(start));
-
-            std::array<float, 3> position = {result[0], result[1], result[2]};
-            // A (x, y, z, w) quaternion
-            std::array<float, 4> orientation = {result[3], result[4], result[5], result[6]};
-
-            return {position, orientation};
+            return Robot::eefk(Input::array(start)).matrix();
         }
 
         inline static auto filter_self_from_pointcloud(
@@ -490,6 +499,11 @@ namespace vamp::binding
         MF("fk",
            fk,
            "Computes the forward kinematics of the robot. Returns array of all collision sphere positions.",
+           "configuration"_a);
+
+        MF("eefk",
+           eefk,
+           "Computes the forward kinematics of the robot's end-effector. Returns XYZ and a XYZW quaternion.",
            "configuration"_a);
 
         MF("debug",

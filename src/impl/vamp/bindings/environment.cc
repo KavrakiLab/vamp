@@ -9,6 +9,7 @@
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/array.h>
 #include <nanobind/stl/vector.h>
+#include <nanobind/eigen/dense.h>
 #include <nanobind/ndarray.h>
 
 namespace nb = nanobind;
@@ -198,30 +199,14 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
     nb::class_<vc::Attachment<float>>(pymodule, "Attachment")
         .def(
             "__init__",
-            [](vc::Attachment<float> *q,
-               const std::array<float, 3> &center,
-               const std::array<float, 4> &quaternion_xyzw) noexcept
+            [](vc::Attachment<float> *q, Eigen::Matrix4f &tf) noexcept
             {
-                new (q) vc::Attachment<float>(
-                    center[0],
-                    center[1],
-                    center[2],
-                    quaternion_xyzw[0],
-                    quaternion_xyzw[1],
-                    quaternion_xyzw[2],
-                    quaternion_xyzw[3]);
+                Eigen::Isometry3f iso;
+                iso.matrix() = tf;
+                new (q) vc::Attachment<float>(iso);
             },
-            "Constructor for an attachment centered at a relative position and XYZW quaternion from the "
-            "end-effector.")
-        .def_prop_ro(
-            "relative_frame",
-            [](vc::Attachment<float> &a)
-            {
-                std::array<float, 3> position = {a.tf_tx, a.tf_ty, a.tf_tz};
-                std::array<float, 4> quaternion_xyzw = {a.tf_rx, a.tf_ry, a.tf_rz, a.tf_rw};
-
-                return std::pair{position, quaternion_xyzw};
-            })
+            "Constructor for an attachment centered at a relative transform from the end-effector.")
+        .def_prop_ro("relative_frame", [](vc::Attachment<float> &a) { return a.tf; })
         .def(
             "add_sphere",
             [](vc::Attachment<float> &a, collision::Sphere<float> &sphere)
@@ -232,20 +217,12 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             { a.spheres.insert(a.spheres.end(), spheres.cbegin(), spheres.cend()); })
         .def(
             "set_ee_pose",
-            [](vc::Attachment<float> &a,
-               const std::array<float, 3> &position,
-               const std::array<float, 4> &quaternion_xyzw)
+            [](vc::Attachment<float> &a, Eigen::Matrix4f &tf)
             {
-                a.pose(
-                    position[0],
-                    position[1],
-                    position[2],
-                    quaternion_xyzw[0],
-                    quaternion_xyzw[1],
-                    quaternion_xyzw[2],
-                    quaternion_xyzw[3]);
+                Eigen::Isometry3f iso;
+                iso.matrix() = tf;
+                a.pose(iso);
             },
-            "position"_a,
-            "quaternion_xyzw"_a)
+            "tf"_a)
         .def_ro("posed_spheres", &vc::Attachment<float>::posed_spheres);
 }

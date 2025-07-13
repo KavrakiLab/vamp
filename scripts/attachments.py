@@ -1,4 +1,5 @@
 from pathlib import Path
+import numpy as np
 
 import vamp
 from vamp import pybullet_interface as vpb
@@ -42,7 +43,9 @@ def main(
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs("panda", planner, **kwargs)
 
     # Create an attachment offset on the Z-axis from the end-effector frame
-    attachment = vamp.Attachment([0, 0, attachment_offset], [0, 0, 0, 1])
+    tf = np.identity(4)
+    tf[:3, 3] = np.array([0, 0, attachment_offset])
+    attachment = vamp.Attachment(tf)
 
     # Add a single sphere to the attachment - spheres are added in the attachment's local frame
     attachment.add_spheres([vamp.Sphere([0, 0, 0], attachment_radius)])
@@ -63,8 +66,7 @@ def main(
 
     # Callback to update sphere's location in PyBullet visualization
     def callback(configuration):
-        position, orientation_xyzw = vamp_module.eefk(configuration)
-        attachment.set_ee_pose(position, orientation_xyzw)
+        attachment.set_ee_pose(vamp_module.eefk(configuration))
         sphere = attachment.posed_spheres[0]
 
         sim.update_object_position(attachment_sphere, sphere.position)

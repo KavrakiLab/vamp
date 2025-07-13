@@ -147,9 +147,7 @@ namespace vamp::planning
     template <typename Robot>
     struct ProlateHyperspheroidRNG : public rng::RNG<Robot>
     {
-        ProlateHyperspheroidRNG(
-            ProlateHyperspheroid<Robot> phs,
-            typename vamp::rng::RNG<Robot>::Ptr &rng)
+        ProlateHyperspheroidRNG(ProlateHyperspheroid<Robot> phs, typename vamp::rng::RNG<Robot>::Ptr &rng)
           : phs(phs), rng(rng)
         {
         }

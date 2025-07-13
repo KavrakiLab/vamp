@@ -37,10 +37,11 @@ namespace vamp::planning
         };
 
         AOX_RRTC(std::size_t max_samples)
-          : buffer(std::unique_ptr<float, decltype(&free)>(
-                vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
-                    max_samples * Configuration::num_scalars_rounded),
-                &free))
+          : buffer(
+                std::unique_ptr<float, decltype(&free)>(
+                    vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
+                        max_samples * Configuration::num_scalars_rounded),
+                    &free))
           , start_tree(max_samples)
           , goal_tree(max_samples)
         {
@@ -396,8 +397,9 @@ namespace vamp::planning
                         float *next_index = buffer_index(free_index);
                         next.to_array(next_index);
 
-                        tree_a->add(GNATNode<dimension>{
-                            free_index, increment_length + costs[free_index - 1], {next_index}});
+                        tree_a->add(
+                            GNATNode<dimension>{
+                                free_index, increment_length + costs[free_index - 1], {next_index}});
                         parents[free_index] = free_index - 1;
                         radii[free_index] = std::numeric_limits<float>::max();
                         costs[free_index] = increment_length + costs[free_index - 1];

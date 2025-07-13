@@ -925,7 +925,8 @@ namespace vamp
 
         // TODO: Make sure we always want filling behavior here
         template <typename DT = typename S::ScalarT, typename = std::enable_if_t<not std::is_same_v<DT, int>>>
-        explicit constexpr Vector(int scalar_data) noexcept : Vector(Interface::fill(typename S::ScalarT(scalar_data)))
+        explicit constexpr Vector(int scalar_data) noexcept
+          : Vector(Interface::fill(typename S::ScalarT(scalar_data)))
         {
         }
 

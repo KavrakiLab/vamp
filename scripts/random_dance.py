@@ -7,18 +7,19 @@ from fire import Fire
 import vamp
 from vamp import pybullet_interface as vpb
 
+
 def sample_valid(vamp_module, rng):
     while True:
-        config = rng.next();
+        config = rng.next()
         if vamp_module.validate(config):
             return config
 
 
 def main(
-    robot: str = "panda",                  # Robot to plan for
-    planner: str = "rrtc",                 # Planner name to use
-    sampler_name: str = "halton",          # Sampler to use.
-    skip_rng_iterations: int = 0,          # Skip a number of RNG iterations
+    robot: str = "panda",          # Robot to plan for
+    planner: str = "rrtc",         # Planner name to use
+    sampler_name: str = "halton",  # Sampler to use.
+    skip_rng_iterations: int = 0,  # Skip a number of RNG iterations
     **kwargs,
     ):
 
@@ -52,7 +53,8 @@ def main(
         if solved:
             simplify = vamp_module.simplify(result.path, env, simp_settings, sampler)
             stats = vamp.results_to_dict(result, simplify)
-            print(f"""
+            print(
+                f"""
 Planning Time: {stats['planning_time'].microseconds:8d}μs
 Simplify Time: {stats['simplification_time'].microseconds:8d}μs
    Total Time: {stats['total_time'].microseconds:8d}μs
@@ -63,8 +65,7 @@ n Graph States: {stats['planning_graph_size']}
 Path Length:
    Initial: {stats['initial_path_cost']:5.3f}
 Simplified: {stats['simplified_path_cost']:5.3f}"""
-            )
-
+                )
 
             plan = simplify.path
             plan.interpolate_to_resolution(vamp_module.resolution())
@@ -77,6 +78,7 @@ Simplified: {stats['simplified_path_cost']:5.3f}"""
         else:
             print("Failed to solve, stopping!")
             break
+
 
 if __name__ == "__main__":
 

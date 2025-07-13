@@ -90,9 +90,7 @@ def main(
         from vamp import pybullet_interface as vpb
 
         robot_dir = Path(__file__).parent.parent / 'resources' / 'panda'
-        sim = vpb.PyBulletSimulator(
-            str(robot_dir / f"panda_spherized.urdf"), vamp_module.joint_names(), True
-            )
+        sim = vpb.PyBulletSimulator(str(robot_dir / f"panda_spherized.urdf"), vamp_module.joint_names(), True)
 
         e = vamp.Environment()
         for sphere in problem:

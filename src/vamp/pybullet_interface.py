@@ -324,7 +324,6 @@ class PyBulletSimulator:
         with DisableRendering(self.client), RedirectStream(sys.stdout), RedirectStream(sys.stderr):
             self.client.removeAllUserDebugItems()
 
-
     def play_once(self, plan):
         if not len(plan):
             print("""Path has no states!
@@ -348,7 +347,7 @@ class PyBulletSimulator:
 
             plan_idx = min(len(plan), plan_idx + 1)
             if plan_idx >= len(plan):
-                break;
+                break
 
             time.sleep(0.016)
 

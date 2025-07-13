@@ -311,6 +311,7 @@ namespace vamp::binding
         using NA = NDArrayInput<Robot>;
         using CA = ArrayInput<Robot>;
         using NDArray = typename NA::Type;
+        using Array = typename CA::Type;
         using HPN = Helper<Robot, NA>;
         using HPA = Helper<Robot, CA>;
 
@@ -409,6 +410,18 @@ namespace vamp::binding
             .def(
                 "insert",
                 [](Path &p, std::size_t i, const NDArray &c) { p.insert(p.cbegin() + i, NA::to(c)); },
+                "Append a configuration to the end of this path.")
+            .def(
+                "__setitem__",
+                [](Path &p, std::size_t i, const Array &c) { p[i] = CA::to(c); },
+                "Set the i-th configuration of the the path.")
+            .def(
+                "append",
+                [](Path &p, const Array &c) { p.emplace_back(CA::to(c)); },
+                "Append a configuration to the end of this path.")
+            .def(
+                "insert",
+                [](Path &p, std::size_t i, const Array &c) { p.insert(p.cbegin() + i, CA::to(c)); },
                 "Append a configuration to the end of this path.")
             .def("cost", &Path::cost, "Compute the total path length (by the l2-norm) of the path.")
             .def(

@@ -37,7 +37,8 @@ namespace vamp::binding
     template <typename Robot>
     struct NDArrayInput
     {
-        using Type = nanobind::ndarray<float, nanobind::shape<Robot::dimension>, nanobind::device::cpu>;
+        using Type = nanobind::
+            ndarray<FloatT, nanobind::numpy, nanobind::shape<Robot::dimension>, nanobind::device::cpu>;
 
         using Configuration = typename Robot::Configuration;
         using ConfigurationArray = typename Robot::ConfigurationArray;
@@ -46,13 +47,15 @@ namespace vamp::binding
 
         inline static auto from(const Configuration &c) -> Type
         {
-            Type a;
+            auto *arr = new FloatT[Robot::dimension];
             for (auto i = 0U; i < Robot::dimension; ++i)
             {
-                a(i) = c[{0, i}];
+                arr[i] = c[{0, i}];
             }
 
-            return a;
+            nanobind::capsule arr_owner(
+                arr, [](void *a) noexcept { delete[] reinterpret_cast<FloatT *>(a); });
+            return Type(arr, {Robot::dimension}, arr_owner);
         };
 
         inline static auto to(const Type &a) -> Configuration

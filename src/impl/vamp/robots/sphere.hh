@@ -140,10 +140,11 @@ namespace vamp::robots
             out.r[0] = radius;
         }
 
-        // Currently not implemented
-        static auto eefk(const std::array<float, 3> &q) noexcept -> std::array<float, 7>
+        static auto eefk(const std::array<float, 3> &q) noexcept -> Eigen::Isometry3f
         {
-            return {q[0], q[1], q[2], 0, 0, 0, 1};
+            auto tf = Eigen::Isometry3f::Identity();
+            tf.translation() = Eigen::Vector3f(q[0], q[1], q[2]);
+            return tf;
         }
     };
 }  // namespace vamp::robots

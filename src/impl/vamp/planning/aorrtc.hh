@@ -179,9 +179,8 @@ namespace vamp::planning
 
                 // Find nearest with asymmetric cost function
                 auto [nearest_node, nearest_distance] = find_nearest(tree_a, root_vert, temp, c_rand);
-                // =============================================*/
-
                 auto nearest_radius = radii[nearest_node.index];
+
                 if (rrtc_settings.dynamic_domain and nearest_radius < nearest_distance)
                 {
                     continue;
@@ -221,9 +220,6 @@ namespace vamp::planning
                             auto [new_nearest_node, new_nearest_distance] =
                                 find_nearest(tree_a, root_vert, new_configuration, c_rand);
 
-                            const auto new_nearest_configuration = new_nearest_node.array;
-                            const auto new_nearest_vector = new_configuration - new_nearest_configuration;
-
                             // If we have connected:
                             //      to the same parent
                             //      with a worse cost
@@ -237,8 +233,8 @@ namespace vamp::planning
 
                             // Validate edge to newly found parent
                             else if (validate_vector<Robot, rake, resolution>(
-                                         new_nearest_configuration,
-                                         new_nearest_vector,
+                                         new_nearest_node.array,
+                                         new_configuration - new_nearest_node.array,
                                          new_nearest_distance,
                                          environment))
                             {
@@ -443,7 +439,7 @@ namespace vamp::planning
                 rrtc_settings.max_iterations = settings.max_iterations - iters;
 
                 // If there is a single goal, sample with PHS
-                if (goals.size() == 1)
+                if (settings.use_phs and goals.size() == 1)
                 {
                     result = instance.solve(start, goals, environment, settings, best_path_cost, phs_rng);
                 }

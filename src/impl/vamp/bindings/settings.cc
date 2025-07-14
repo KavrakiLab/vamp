@@ -31,6 +31,7 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("simplify", &vp::AORRTCSettings::simplify)
         .def_rw("optimize", &vp::AORRTCSettings::optimize)
         .def_rw("cost_bound_resample", &vp::AORRTCSettings::cost_bound_resample)
+        .def_rw("simplify_intermediate", &vp::AORRTCSettings::simplify_intermediate)
         .def_rw("max_iterations", &vp::AORRTCSettings::max_iterations)
         .def_rw("max_samples", &vp::AORRTCSettings::max_samples);
 

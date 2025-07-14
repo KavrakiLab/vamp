@@ -310,8 +310,8 @@ class PyBulletSimulator:
         with DisableRendering(self.client), RedirectStream(sys.stdout), RedirectStream(sys.stderr):
             for i, edge_list in enumerate(roadmap.edges):
                 for edge in edge_list:
-                    a = fk_function(roadmap[i].to_list())[-1]
-                    b = fk_function(roadmap[edge].to_list())[-1]
+                    a = fk_function(roadmap[i])[-1]
+                    b = fk_function(roadmap[edge])[-1]
                     self.client.addUserDebugLine([a.x, a.y, a.z], [b.x, b.y, b.z])
 
     def draw_pointcloud(self, pc, lifetime: float = 0., pointsize: int = 3):

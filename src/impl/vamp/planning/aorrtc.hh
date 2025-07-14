@@ -62,6 +62,9 @@ namespace vamp::planning
         {
             std::vector<NNNode> near_list;
 
+            // Almost always just pulls in the entire graph, but good to be principled.
+            near_list.reserve(nn->size());
+
             auto temp_node = NNNode{0, cost, c};
             nn->nearestR(temp_node, NNNode::distance(temp_node, root), near_list);
 
@@ -69,7 +72,9 @@ namespace vamp::planning
             const auto *new_nearest_node = &near_list[idx];
             float new_nearest_distance = c.distance(new_nearest_node->array);
 
-            while (new_nearest_node->cost > 0 and cost < new_nearest_node->cost + new_nearest_distance)
+            while (new_nearest_node->cost > 0                                //
+                   and cost < new_nearest_node->cost + new_nearest_distance  //
+                   and idx < near_list.size())
             {
                 idx++;
                 new_nearest_node = &near_list[idx];
@@ -230,7 +235,6 @@ namespace vamp::planning
                             {
                                 break;
                             }
-
                             // Validate edge to newly found parent
                             else if (validate_vector<Robot, rake, resolution>(
                                          new_nearest_node.array,
@@ -242,7 +246,6 @@ namespace vamp::planning
                                 nearest_node = new_nearest_node;
                                 new_cost = new_nearest_node.cost + new_nearest_distance;
                             }
-
                             // The edge is invalid, we have failed a connection. Stop resampling!
                             else
                             {

@@ -166,12 +166,14 @@ namespace vamp::planning
             Robot::descale_configuration(x);
             x.clamp(0.F, 1.F);
             Robot::scale_configuration(x);
+
             return x;
         }
 
         inline auto logit() noexcept -> vamp::FloatVector<Robot::dimension>
         {
-            const auto U1 = rng->next();
+            auto U1 = rng->next();
+            Robot::descale_configuration(U1);
             return (U1 * (1 - U1).rcp()).log() * std::sqrt(vamp::utils::constants::pi / 8.F);
         }
 

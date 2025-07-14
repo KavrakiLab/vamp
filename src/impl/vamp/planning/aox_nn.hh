@@ -57,6 +57,13 @@ namespace vamp::planning
         std::size_t index;
         float cost;
         FloatVector<dimension> array;
+
+        // AOX distance function
+        inline static auto distance(const GNATNode<dimension> &a, const GNATNode<dimension> &b) -> float
+        {
+            // Configuration space distance + Cost space distance
+            return std::sqrt(std::pow(a.array.distance(b.array), 2) + std::pow(a.cost - b.cost, 2));
+        }
     };
 
     template <std::size_t dimension>
@@ -132,21 +139,6 @@ namespace vamp::planning
         ~NearestNeighborsGNAT() noexcept
         {
             delete tree_;
-        }
-
-        auto getDistanceFunction() const noexcept -> const DistanceFunction &
-        {
-            return distFun_;
-        }
-
-        void setDistanceFunction(const DistanceFunction &distFun) noexcept
-        {
-            distFun_ = distFun;
-
-            if (tree_)
-            {
-                rebuildDataStructure();
-            }
         }
 
         void clear() noexcept
@@ -324,7 +316,7 @@ namespace vamp::planning
             NodeDist nodeDist;
             NodeQueue nodeQueue;
 
-            const float dist = distFun_(data, tree_->pivot_);
+            const float dist = _T::distance(data, tree_->pivot_);
             bool isPivot = tree_->insertNeighborK(nbhQueue, k, tree_->pivot_, data, dist);
             tree_->nearestK(*this, data, k, nbhQueue, nodeQueue, isPivot);
 
@@ -353,7 +345,7 @@ namespace vamp::planning
             NodeQueue nodeQueue;
             NodeDist nodeDist;
 
-            tree_->insertNeighborR(nbhQueue, radius, tree_->pivot_, distFun_(data, tree_->pivot_));
+            tree_->insertNeighborR(nbhQueue, radius, tree_->pivot_, _T::distance(data, tree_->pivot_));
             tree_->nearestR(*this, data, radius, nbhQueue, nodeQueue);
 
             while (not nodeQueue.empty())
@@ -409,7 +401,7 @@ namespace vamp::planning
 
                 for (auto j = 0U; j < data.size(); ++j)
                 {
-                    if ((dists(j, i - 1) = distFun_(data[j], center)) < minDist[j])
+                    if ((dists(j, i - 1) = _T::distance(data[j], center)) < minDist[j])
                     {
                         minDist[j] = dists(j, i - 1);
                     }
@@ -436,7 +428,7 @@ namespace vamp::planning
 
             for (auto j = 0U; j < data.size(); ++j)
             {
-                dists(j, i) = distFun_(data[j], center);
+                dists(j, i) = _T::distance(data[j], center);
             }
         }
 
@@ -524,12 +516,12 @@ namespace vamp::planning
                 else
                 {
                     std::vector<float> dist(children_.size());
-                    float minDist = dist[0] = gnat.distFun_(data, children_[0]->pivot_);
+                    float minDist = dist[0] = _T::distance(data, children_[0]->pivot_);
                     std::size_t minInd = 0;
 
                     for (auto i = 1U; i < children_.size(); ++i)
                     {
-                        if ((dist[i] = gnat.distFun_(data, children_[i]->pivot_)) < minDist)
+                        if ((dist[i] = _T::distance(data, children_[i]->pivot_)) < minDist)
                         {
                             minDist = dist[i];
                             minInd = i;
@@ -661,7 +653,7 @@ namespace vamp::planning
                 {
                     if (not gnat.isRemoved(d))
                     {
-                        if (insertNeighborK(nbh, k, d, data, gnat.distFun_(data, d)))
+                        if (insertNeighborK(nbh, k, d, data, _T::distance(data, d)))
                         {
                             isPivot = false;
                         }
@@ -685,7 +677,7 @@ namespace vamp::planning
                         if (permutation[i] >= 0)
                         {
                             const auto &child = children_[permutation[i]];
-                            distToPivot[permutation[i]] = gnat.distFun_(data, child->pivot_);
+                            distToPivot[permutation[i]] = _T::distance(data, child->pivot_);
                             if (insertNeighborK(nbh, k, child->pivot_, data, distToPivot[permutation[i]]))
                             {
                                 isPivot = true;
@@ -743,7 +735,7 @@ namespace vamp::planning
                 {
                     if (not gnat.isRemoved(d))
                     {
-                        insertNeighborR(nbh, r, d, gnat.distFun_(data, d));
+                        insertNeighborR(nbh, r, d, _T::distance(data, d));
                     }
                 }
 
@@ -766,7 +758,7 @@ namespace vamp::planning
                         if (permutation[i] >= 0)
                         {
                             const auto &child = children_[permutation[i]];
-                            distToPivot[permutation[i]] = gnat.distFun_(data, child->pivot_);
+                            distToPivot[permutation[i]] = _T::distance(data, child->pivot_);
                             insertNeighborR(nbh, r, child->pivot_, distToPivot[permutation[i]]);
 
                             for (auto j = 0U; j < sz; ++j)
@@ -828,7 +820,6 @@ namespace vamp::planning
             std::vector<Node *> children_;
         };
 
-        DistanceFunction distFun_;
         Node *tree_{nullptr};
         std::size_t degree_;
         std::size_t minDegree_;

@@ -27,9 +27,14 @@ namespace vamp::planning
         std::vector<std::size_t> parents;
         std::vector<float> radii;
         std::vector<float> costs;
-        std::vector<GNATNode<dimension>> near_list;
         NearestNeighborsGNAT<GNATNode<dimension>> start_tree;
         NearestNeighborsGNAT<GNATNode<dimension>> goal_tree;
+
+        inline static auto aox_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b) -> float
+        {
+            //               Configuration space distance             Cost space distance
+            return std::sqrt(std::pow(a.array.distance(b.array), 2) + std::pow(a.cost - b.cost, 2));
+        }
 
         inline auto buffer_index(std::size_t index) -> float *
         {
@@ -63,18 +68,6 @@ namespace vamp::planning
             return solve(start, std::vector<Configuration>{goal}, environment, settings, max_cost, rng);
         }
 
-        inline static auto standard_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b)
-            -> float
-        {
-            return a.array.distance(b.array);
-        }
-
-        inline static auto aox_dist_fun(const GNATNode<dimension> &a, const GNATNode<dimension> &b) -> float
-        {
-            //               Configuration space distance             Cost space distance
-            return std::sqrt(std::pow(a.array.distance(b.array), 2) + std::pow(a.cost - b.cost, 2));
-        }
-
         inline auto solve(
             const Configuration &start,
             const std::vector<Configuration> &goals,
@@ -93,20 +86,6 @@ namespace vamp::planning
             constexpr const std::size_t start_index = 0;
 
             auto start_time = std::chrono::steady_clock::now();
-
-            for (const auto &goal : goals)
-            {
-                if (validate_motion<Robot, rake, resolution>(start, goal, environment))
-                {
-                    result.path.emplace_back(start);
-                    result.path.emplace_back(goal);
-                    result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
-                    result.iterations = 0;
-                    result.size.emplace_back(1);
-
-                    return result;
-                }
-            }
 
             // trees
             bool tree_a_is_start = not rrtc_settings.start_tree_first;
@@ -197,6 +176,8 @@ namespace vamp::planning
                 GNATNode<dimension> temp_node{free_index, c_rand, temp_array.data()};
                 GNATNode<dimension> *nearest_node_ptr;
                 GNATNode<dimension> nearest_node;
+
+                std::vector<GNATNode<dimension>> near_list;
 
                 // Get r-disc neighbours, then iterate through list until a valid connection is found
                 // Necessary workaround given asymmetric cost function
@@ -516,8 +497,8 @@ namespace vamp::planning
                 iters += result.iterations;
             } while (result.path.empty() and iters < settings.max_iterations);
 
-            // Simplify solution
-            if (not result.path.empty())
+            // Simplify solution if enabled
+            if (settings.simplify and not result.path.empty())
             {
                 result = simplify<Robot, rake, resolution>(result.path, environment, settings.simplify, rng);
             }
@@ -535,10 +516,10 @@ namespace vamp::planning
 
             ProlateHyperspheroid<Robot> phs(start, goals[0]);
             phs.set_transverse_diameter(best_path_cost);
+
             auto phs_rng = std::make_shared<ProlateHyperspheroidRNG<Robot>>(phs, rng);
 
             AOX_RRTC instance(rrtc_settings.max_samples);
-
             while (iters < settings.max_iterations)
             {
                 // Update internal maximum iterations
@@ -560,8 +541,11 @@ namespace vamp::planning
                 if (not result.path.empty())
                 {
                     // Simplify
-                    result =
-                        simplify<Robot, rake, resolution>(result.path, environment, settings.simplify, rng);
+                    if (settings.simplify)
+                    {
+                        result = simplify<Robot, rake, resolution>(
+                            result.path, environment, settings.simplify, rng);
+                    }
 
                     // To be safe, ensure new path is actually a better solution
                     if (result.path.cost() < best_path_cost)
@@ -569,10 +553,10 @@ namespace vamp::planning
                         // Update best solution
                         final_result.path = result.path;
                         best_path_cost = result.path.cost();
+
+                        phs_rng->phs.set_transverse_diameter(best_path_cost);
                     }
                 }
-
-                phs_rng->phs.set_transverse_diameter(best_path_cost);
             }
 
             final_result.iterations = iters;

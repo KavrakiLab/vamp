@@ -57,8 +57,7 @@ namespace vamp::planning
         //* ------------------ ------ -------------------
         // Only need to check nodes that are closer than the root of the tree, since connecting to the
         // root will always be valid
-        inline auto
-        find_nearest(NN *nn, const NNNode &root, const Configuration &c, float cost)
+        inline auto find_nearest(NN *nn, const NNNode &root, const Configuration &c, float cost)
             -> std::pair<NNNode, float>
         {
             std::vector<NNNode> near_list;
@@ -144,11 +143,9 @@ namespace vamp::planning
 
                 auto temp = rng->next();
 
-                float cost_sample = rng->dist.uniform_01();
-
                 // Find closest goal for optimistic f^ in case of multi-goals
                 NNNode *goal_vert = nullptr;
-                auto min_goal_dist = std::numeric_limits<double>::max();
+                auto min_goal_dist = std::numeric_limits<float>::max();
                 for (NNNode &v : goal_verts)
                 {
                     const auto d = temp.distance(v.array);
@@ -178,11 +175,10 @@ namespace vamp::planning
                 float c_range = std::max(max_cost - f_hat, 0.0F);
 
                 // Sampled upper cost bound
-                float c_rand = (cost_sample * c_range) + g_hat;
+                float c_rand = (rng->dist.uniform_01() * c_range) + g_hat;
 
                 // Find nearest with asymmetric cost function
-                auto [nearest_node, nearest_distance] =
-                    find_nearest(tree_a, root_vert, temp, c_rand);
+                auto [nearest_node, nearest_distance] = find_nearest(tree_a, root_vert, temp, c_rand);
                 // =============================================*/
 
                 auto nearest_radius = radii[nearest_node.index];
@@ -219,9 +215,8 @@ namespace vamp::planning
                         // Continuously resample cost until an invalid connection is found
                         while (true)
                         {
-                            cost_sample = rng->dist.uniform_01();
                             c_range = std::max(new_cost - g_hat, 0.0F);
-                            c_rand = (cost_sample * c_range) + g_hat;
+                            c_rand = (rng->dist.uniform_01() * c_range) + g_hat;
 
                             //* ------------------ ------ -------------------
 
@@ -279,8 +274,8 @@ namespace vamp::planning
                     // through the current tree, must be lesser than our maximum path cost
                     // Therefore, our maximum allowable cost for a connection through the other tree is
                     // max_cost - vertex_cost
-                    auto [other_nearest_node, other_nearest_distance] = find_nearest(
-                        tree_b, target_vert, new_configuration, max_cost - new_cost);
+                    auto [other_nearest_node, other_nearest_distance] =
+                        find_nearest(tree_b, target_vert, new_configuration, max_cost - new_cost);
 
                     const auto other_nearest_configuration = other_nearest_node.array;
                     const auto other_nearest_vector = other_nearest_configuration - new_configuration;

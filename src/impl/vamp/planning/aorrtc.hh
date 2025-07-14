@@ -213,16 +213,13 @@ namespace vamp::planning
                         g_hat = new_configuration.distance(root_vert.array);
 
                         // Continuously resample cost until an invalid connection is found
-                        while (true)
+                        for (auto i = 0; i < settings.max_cost_bound_resamples; ++i)
                         {
                             c_range = std::max(new_cost - g_hat, 0.0F);
                             c_rand = (rng->dist.uniform_01() * c_range) + g_hat;
 
-                            //* ------------------ ------ -------------------
-
                             auto [new_nearest_node, new_nearest_distance] =
                                 find_nearest(tree_a, root_vert, new_configuration, c_rand);
-                            // =============================================*/
 
                             const auto new_nearest_configuration = new_nearest_node.array;
                             const auto new_nearest_vector = new_configuration - new_nearest_configuration;

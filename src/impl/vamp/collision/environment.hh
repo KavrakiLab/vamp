@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+
 #include <vector>
 #include <optional>
 #include <vamp/collision/shapes.hh>
@@ -84,15 +87,9 @@ namespace vamp::collision
     template <typename DataT>
     inline auto set_attachment_pose(
         const Environment<DataT> &e,
-        DataT tx,
-        DataT ty,
-        DataT tz,
-        DataT rx,
-        DataT ry,
-        DataT rz,
-        DataT rw) noexcept
+        const Eigen::Transform<DataT, 3, Eigen::Isometry> &p_tf) noexcept
     {
-        e.attachments->pose(tx, ty, tz, rx, ry, rz, rw);
+        e.attachments->pose(p_tf);
     }
 
 }  // namespace vamp::collision

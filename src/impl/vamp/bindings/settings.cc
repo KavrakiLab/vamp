@@ -1,8 +1,9 @@
+#include <vamp_python_init.hh>
+
 #include <vamp/planning/roadmap.hh>
 #include <vamp/planning/rrtc_settings.hh>
 #include <vamp/planning/aorrtc_settings.hh>
 #include <vamp/planning/simplify_settings.hh>
-#include <vamp/bindings/init.hh>
 
 #include <nanobind/stl/vector.h>
 

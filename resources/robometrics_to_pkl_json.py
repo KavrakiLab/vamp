@@ -85,7 +85,7 @@ def main(dataset: str = "mpinets"):
     robometric_data = datasets[dataset]()
     print("Loaded!")
 
-    joints = vamp.ROBOT_JOINTS['panda']
+    joints = vamp.panda.joint_names
 
     data = {'robot': 'panda', 'joints': joints, 'problems': {}}
     for problem_name, problems in robometric_data.items():

@@ -65,6 +65,12 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static constexpr auto cmp_not_equal(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vreinterpretq_s32_u32(vmvnq_s32(vceqq_s32(l, r)));
+        }
+
+        template <unsigned int = 0>
         inline static constexpr auto cmp_greater_than(VectorT l, VectorT r) noexcept -> VectorT
         {
             return vreinterpretq_s32_u32(vcgeq_s32(l, r));
@@ -526,6 +532,77 @@ namespace vamp
         inline static constexpr auto hsum(VectorT v) noexcept -> float
         {
             return vaddvq_f32(v);
+        }
+
+        // converted from http://gruntthepeon.free.fr/ssemath/neon_mathfun.html
+        template <unsigned int = 0>
+        inline static constexpr auto sin(VectorT x) noexcept -> VectorT
+        {
+            using IntVector = SIMDVector<int32x4_t>;
+
+            // Constants
+            const auto c_cephes_FOPI = constant(1.27323954473516f);  // 4 / M_PI
+            const auto c_minus_cephes_DP1 = constant(-0.78515625f);
+            const auto c_minus_cephes_DP2 = constant(-2.4187564849853515625e-4f);
+            const auto c_minus_cephes_DP3 = constant(-3.77489497744594108e-8f);
+            const auto c_sincof_p0 = constant(-1.9515295891E-4f);
+            const auto c_sincof_p1 = constant(8.3321608736E-3f);
+            const auto c_sincof_p2 = constant(-1.6666654611E-1f);
+            const auto one = constant(1.0f);
+            const auto half = constant(0.5f);
+
+            auto sign_mask_sin = cmp_less_than(x, zero_vector());
+            x = abs(x);
+
+            auto y = mul(x, c_cephes_FOPI);
+
+            auto emm2 = to<int32x4_t>(y);
+            emm2 = IntVector::add(emm2, IntVector::constant(1));
+            emm2 = IntVector::and_(emm2, IntVector::constant(~1));
+            y = from<int32x4_t>(emm2);
+
+            auto poly_mask = IntVector::and_(emm2, IntVector::constant(2));
+            poly_mask = IntVector::cmp_not_equal(poly_mask, IntVector::zero_vector());
+
+            auto xmm1 = mul(y, c_minus_cephes_DP1);
+            auto xmm2 = mul(y, c_minus_cephes_DP2);
+            auto xmm3 = mul(y, c_minus_cephes_DP3);
+            x = add(x, xmm1);
+            x = add(x, xmm2);
+            x = add(x, xmm3);
+
+            // Update sign mask
+            auto temp_mask = IntVector::and_(emm2, IntVector::constant(4));
+            temp_mask = IntVector::cmp_not_equal(temp_mask, IntVector::zero_vector());
+            sign_mask_sin = vreinterpretq_u32_f32(veorq_u32(
+                vreinterpretq_u32_f32(sign_mask_sin),
+                vreinterpretq_u32_f32(IntVector::template as<VectorT>(temp_mask))));
+
+            // Evaluate polynomials
+            auto z = mul(x, x);
+
+            // First polynomial (cosine)
+            auto y1 = mul(z, constant(2.443315711809948E-005f));
+            y1 = add(y1, constant(-1.388731625493765E-003f));
+            y1 = mul(y1, z);
+            y1 = add(y1, constant(4.166664568298827E-002f));
+            y1 = mul(y1, z);
+            y1 = mul(y1, z);
+            y1 = sub(y1, mul(z, half));
+            y1 = add(y1, one);
+
+            // Second polynomial (sine)
+            auto y2 = mul(z, c_sincof_p0);
+            y2 = add(y2, c_sincof_p1);
+            y2 = mul(y2, z);
+            y2 = add(y2, c_sincof_p2);
+            y2 = mul(y2, z);
+            y2 = mul(y2, x);
+            y2 = add(y2, x);
+
+            auto poly_mask_f = IntVector::template as<VectorT>(poly_mask);
+            auto ys = blend(y2, y1, poly_mask_f);
+            return blend(ys, neg(ys), vreinterpretq_f32_u32(sign_mask_sin));
         }
 
         // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...

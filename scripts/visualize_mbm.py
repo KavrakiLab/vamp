@@ -25,7 +25,7 @@ def main(
     **kwargs,
     ):
 
-    if robot not in vamp.ROBOT_JOINTS:
+    if robot not in vamp.robots:
         raise RuntimeError(f"Robot {robot} does not exist in VAMP!")
 
     robot_dir = Path(__file__).parent.parent / 'resources' / robot
@@ -54,8 +54,11 @@ Existing problems: {list(data['problems'].keys())}"""
         raise RuntimeError(f"No problem in {problem} with index {index}!")
 
     if pointcloud:
+        r_min, r_max = vamp_module.min_max_radii()
         (env, original_pc, filtered_pc, filter_time, build_time) = vpc.problem_dict_to_pointcloud(
             robot,
+            r_min,
+            r_max,
             problem_data,
             samples_per_object,
             filter_radius,
@@ -128,11 +131,11 @@ n Graph States: {result.size}
 
     if not solved:
         plan = vamp_module.Path()
-        plan.append(vamp_module.Configuration(start))
+        plan.append(start)
         for goal in goals:
-            plan.append(vamp_module.Configuration(goal))
+            plan.append(goal)
 
-    sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp.ROBOT_JOINTS[robot], True)
+    sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp_module.joint_names(), True)
     sim.add_environment_from_problem_dict(problem_data, display_object_names)
 
     if pointcloud:
@@ -142,14 +145,20 @@ n Graph States: {result.size}
         for state in [start, *goals]:
             if not vamp_module.validate(state, env):
                 print(f"Displaying colliding spheres for first invalid state: {state}")
+                debug = vamp_module.debug(state, env)
+                invalid = set([x[0] for x in filter(lambda x: x[1], enumerate(debug[0]))])
 
-                validity = vamp_module.sphere_validity(state, env)
-                invalid = [x[0] for x in filter(lambda x: x[1], enumerate(validity))]
+                for (a, b) in debug[1]:
+                    invalid.add(a)
+                    invalid.add(b)
 
                 spheres = vamp_module.fk(state)
-                for inv in invalid:
-                    sphere = spheres[inv]
-                    sim.add_sphere(sphere.r, [sphere.x, sphere.y, sphere.z], color = [1., 0., 0., 1.])
+                for i in range(len(spheres)):
+                    sphere = spheres[i]
+                    if i in invalid:
+                        sim.add_sphere(sphere.r, [sphere.x, sphere.y, sphere.z], color = [1., 0., 0., 1.])
+                    else:
+                        sim.add_sphere(sphere.r, [sphere.x, sphere.y, sphere.z], color = [1., 1., 1., 1.])
 
                 break
 

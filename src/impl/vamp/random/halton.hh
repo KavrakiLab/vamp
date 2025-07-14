@@ -5,11 +5,13 @@
 
 namespace vamp::rng
 {
-    template <std::size_t dim>
-    struct Halton : public RNG<dim>
+    template <typename Robot>
+    struct Halton : public RNG<Robot>
     {
         // Numerical precision degrades around 1.4M iterations, this value can be increased up to that point.
         static constexpr const std::size_t max_iterations = 1000000U;
+
+        using Configuration = typename Robot::Configuration;
 
         static constexpr const std::array<float, 16> primes{
             3.F,
@@ -29,11 +31,11 @@ namespace vamp::rng
             53.F,
             59.F};
 
-        explicit Halton(FloatVector<dim> b_in) noexcept : b_init(b_in), b(b_in)
+        explicit Halton(Configuration b_in) noexcept : b_init(b_in), b(b_in)
         {
         }
 
-        Halton(std::initializer_list<FloatT> v) noexcept : Halton(FloatVector<dim>::pack_and_pad(v))
+        Halton(std::initializer_list<FloatT> v) noexcept : Halton(Configuration::pack_and_pad(v))
         {
         }
 
@@ -41,42 +43,42 @@ namespace vamp::rng
         {
         }
 
-        inline constexpr auto bases() noexcept -> FloatVector<dim>
+        inline constexpr auto bases() noexcept -> Configuration
         {
-            alignas(FloatVectorAlignment) std::array<float, dim> a;
-            std::copy_n(primes.cbegin(), dim, a.begin());
-            return FloatVector<dim>(a);
+            alignas(FloatVectorAlignment) std::array<float, Robot::dimension> a;
+            std::copy_n(primes.cbegin(), Robot::dimension, a.begin());
+            return Configuration(a);
         }
 
         auto rotate_bases() noexcept
         {
-            alignas(FloatVectorAlignment) std::array<float, dim> a;
+            alignas(FloatVectorAlignment) std::array<float, Configuration::num_scalars_rounded> a;
             b.to_array(a.data());
-            std::rotate(a.begin(), a.begin() + 1, a.end());
-            b = FloatVector<dim>(a);
+            std::rotate(a.begin(), a.begin() + 1, a.begin() + Robot::dimension);
+            b = Configuration(a.data());
         }
 
-        const FloatVector<dim> b_init;
-        FloatVector<dim> b;
-        FloatVector<dim> n = FloatVector<dim>::fill(0);
-        FloatVector<dim> d = FloatVector<dim>::fill(1);
+        const Configuration b_init;
+        Configuration b;
+        Configuration n = Configuration::fill(0);
+        Configuration d = Configuration::fill(1);
         std::size_t iterations = 0;
 
         inline void reset() noexcept override final
         {
             iterations = 0;
             b = b_init;
-            n = FloatVector<dim>::fill(0);
-            d = FloatVector<dim>::fill(1);
+            n = Configuration::fill(0);
+            d = Configuration::fill(1);
         }
 
-        inline auto next() noexcept -> FloatVector<dim> override final
+        inline auto next() noexcept -> Configuration override final
         {
             iterations++;
             if (iterations > max_iterations)
             {
-                n = FloatVector<dim>::fill(0);
-                d = FloatVector<dim>::fill(1);
+                n = Configuration::fill(0);
+                d = Configuration::fill(1);
                 iterations = 0;
                 rotate_bases();
             }
@@ -98,8 +100,11 @@ namespace vamp::rng
                 x_le_y = x_le_y & (xf <= y);
             }
 
-            n = (((b + 1.F) * y).floor() - xf).blend(FloatVector<dim>::fill(1), x_eq_1);
-            return (n / d).trim();
+            n = (((b + 1.F) * y).floor() - xf).blend(Configuration::fill(1), x_eq_1);
+
+            auto result = (n / d).trim();
+            Robot::scale_configuration(result);
+            return result;
         }
     };
 }  // namespace vamp::rng

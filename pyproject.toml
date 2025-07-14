@@ -4,12 +4,12 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "vamp"
-version = "0.2"
+version = "0.5"
 description = "Vector-Accelerated Motion Planner"
 readme = "README.md"
 requires-python = ">=3.8"
 authors = [
-    { name = "Zachary Kingston", email = "zak@rice.edu" },
+    { name = "Zachary Kingston", email = "zkingston@purdue.edu" },
     { name = "Wil Thomason", email = "wil.thomason@gmail.com" },
     { name = "Clayton Ramsey", email = "claytonwramsey@gmail.com" }
 ]
@@ -34,4 +34,5 @@ cmake.build-type = "Release"
 
 [tool.scikit-build.cmake.define]
 VAMP_LTO = "OFF"
-# VAMP_FORCE_CLANG = "ON"
+VAMP_ROBOT_MODULES="sphere;ur5;panda;fetch;baxter"
+VAMP_ROBOT_STRUCTS="Sphere;UR5;Panda;Fetch;Baxter"

@@ -4,7 +4,7 @@ from numpy.typing import NDArray
 from typing import Dict, Union, List
 
 from . import Environment, filter_pointcloud
-from .constants import ROBOT_FIRST_JOINT_LOCATIONS, ROBOT_MAX_RADII, ROBOT_RADII_RANGES, POINT_RADIUS
+from .constants import ROBOT_FIRST_JOINT_LOCATIONS, ROBOT_MAX_RADII, POINT_RADIUS
 from .transformations import translation_matrix, quaternion_matrix, concatenate_matrices
 
 # Primitive sampling code taken from https://github.com/fishbotics/geometrout
@@ -128,6 +128,8 @@ def problem_to_pointcloud(problem, n):
 
 def problem_dict_to_pointcloud(
         robot: str,
+        r_min: float,
+        r_max: float,
         problem: Dict[str, List[Dict[str, Union[float, NDArray[np.float32]]]]],
         samples_per_object: int,
         filter_radius: float,
@@ -158,8 +160,6 @@ def problem_dict_to_pointcloud(
         bbox_hi,
         filter_cull
     )
-
-    r_min, r_max = ROBOT_RADII_RANGES[robot]
 
     env = Environment()
     build_time = env.add_pointcloud(filtered_pc, r_min, r_max, POINT_RADIUS)

@@ -7,8 +7,8 @@
 
 namespace vamp::planning
 {
-    template <std::size_t dim>
-    struct Path : public std::vector<FloatVector<dim>>
+    template <typename Robot>
+    struct Path : public std::vector<FloatVector<Robot::dimension>>
     {
         [[nodiscard]] inline auto cost() const noexcept -> float
         {
@@ -33,7 +33,7 @@ namespace vamp::planning
 
         inline auto subdivide() noexcept
         {
-            Path<dim> new_path;
+            Path<Robot> new_path;
             new_path.reserve(this->size() * 2);
 
             for (auto i = 0U; i < this->size() - 1; ++i)
@@ -56,7 +56,7 @@ namespace vamp::planning
                 return;
             }
 
-            Path<dim> new_path;
+            Path<Robot> new_path;
             new_path.reserve(n);
 
             std::vector<float> segment_lengths(n_p - 1);
@@ -122,7 +122,7 @@ namespace vamp::planning
             const float path_cost = cost();
             const auto n_states = static_cast<std::size_t>(path_cost * static_cast<float>(resolution));
 
-            Path<dim> new_path;
+            Path<Robot> new_path;
             new_path.reserve(n_states);
 
             for (auto i = 0U; i < this->size() - 1; ++i)
@@ -152,7 +152,7 @@ namespace vamp::planning
             this->swap(new_path);
         }
 
-        template <typename Robot, std::size_t rake>
+        template <std::size_t rake>
         inline auto validate(const collision::Environment<FloatVector<rake>> &environment) noexcept -> bool
         {
             for (auto i = 0U; i < this->size() - 1; ++i)
@@ -168,20 +168,20 @@ namespace vamp::planning
         }
     };
 
-    template <std::size_t dim>
+    template <typename Robot>
     struct PlanningResult
     {
-        Path<dim> path;
+        Path<Robot> path;
         float cost{0.};
         std::size_t nanoseconds{0};
         std::size_t iterations{0};
         std::vector<std::size_t> size;
     };
 
-    template <std::size_t dim>
+    template <typename Robot>
     struct Roadmap
     {
-        std::vector<FloatVector<dim>> vertices;
+        std::vector<FloatVector<Robot::dimension>> vertices;
         std::vector<std::vector<std::size_t>> edges;
         std::size_t nanoseconds{0};
         std::size_t iterations{0};

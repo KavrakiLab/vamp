@@ -1,0 +1,25 @@
+#include <vamp_python_init.hh>
+
+#include <vector>
+#include <nanobind/stl/vector.h>
+#include <nanobind/stl/string.h>
+
+namespace vb = vamp::binding;
+
+NB_MODULE(_core_ext, pymodule)
+{
+    vb::init_settings(pymodule);
+    vb::init_environment(pymodule);
+
+    @VAMP_ROBOT_INITS@
+
+    pymodule.def(
+        "robots",
+        []() -> std::vector<std::string>
+        {
+            return
+            {
+                @VAMP_ROBOT_NAMES@
+            };
+        });
+}

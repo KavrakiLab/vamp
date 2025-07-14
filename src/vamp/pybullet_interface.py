@@ -310,8 +310,8 @@ class PyBulletSimulator:
         with DisableRendering(self.client), RedirectStream(sys.stdout), RedirectStream(sys.stderr):
             for i, edge_list in enumerate(roadmap.edges):
                 for edge in edge_list:
-                    a = fk_function(roadmap[i].to_list())[-1]
-                    b = fk_function(roadmap[edge].to_list())[-1]
+                    a = fk_function(roadmap[i])[-1]
+                    b = fk_function(roadmap[edge])[-1]
                     self.client.addUserDebugLine([a.x, a.y, a.z], [b.x, b.y, b.z])
 
     def draw_pointcloud(self, pc, lifetime: float = 0., pointsize: int = 3):
@@ -323,6 +323,33 @@ class PyBulletSimulator:
     def clear_pointcloud(self):
         with DisableRendering(self.client), RedirectStream(sys.stdout), RedirectStream(sys.stderr):
             self.client.removeAllUserDebugItems()
+
+    def play_once(self, plan):
+        if not len(plan):
+            print("""Path has no states!
+            """)
+            return
+
+        plan_idx = 0
+        playing = True
+        moved = True
+
+        while True:
+            c = plan[plan_idx]
+            if isinstance(c, list):
+                c_list = c
+            elif isinstance(c, np.ndarray):
+                c_list = c.tolist()
+            else:
+                c_list = c.to_list()
+
+            self.set_joint_positions(c_list)
+
+            plan_idx = min(len(plan), plan_idx + 1)
+            if plan_idx >= len(plan):
+                break
+
+            time.sleep(0.016)
 
     def animate(self, plan, callback = None):
         if not len(plan):

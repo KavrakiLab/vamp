@@ -21,7 +21,7 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
-        using RNG = typename vamp::rng::RNG<Robot::dimension>;
+        using RNG = typename vamp::rng::RNG<Robot>;
 
         std::unique_ptr<float, decltype(&free)> buffer;
         std::vector<std::size_t> parents;
@@ -37,10 +37,11 @@ namespace vamp::planning
         };
 
         AOX_RRTC(std::size_t max_samples)
-          : buffer(std::unique_ptr<float, decltype(&free)>(
-                vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
-                    max_samples * Configuration::num_scalars_rounded),
-                &free))
+          : buffer(
+                std::unique_ptr<float, decltype(&free)>(
+                    vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
+                        max_samples * Configuration::num_scalars_rounded),
+                    &free))
           , start_tree(max_samples)
           , goal_tree(max_samples)
         {
@@ -57,7 +58,7 @@ namespace vamp::planning
             const collision::Environment<FloatVector<rake>> &environment,
             const AORRTCSettings &settings,
             const float max_cost,
-            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr rng) noexcept -> PlanningResult<Robot>
         {
             return solve(start, std::vector<Configuration>{goal}, environment, settings, max_cost, rng);
         }
@@ -80,9 +81,9 @@ namespace vamp::planning
             const collision::Environment<FloatVector<rake>> &environment,
             const AORRTCSettings &settings,
             const float max_cost,
-            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr rng) noexcept -> PlanningResult<Robot>
         {
-            PlanningResult<dimension> result;
+            PlanningResult<Robot> result;
 
             start_tree.clear();
             goal_tree.clear();
@@ -155,8 +156,6 @@ namespace vamp::planning
                 }
 
                 auto temp = rng->next();
-                Robot::scale_configuration(temp);
-
                 typename Robot::ConfigurationBuffer temp_array;
                 temp.to_array(temp_array.data());
 
@@ -397,8 +396,10 @@ namespace vamp::planning
                         auto next = prior + increment;
                         float *next_index = buffer_index(free_index);
                         next.to_array(next_index);
-                        tree_a->add(GNATNode<dimension>{
-                            free_index, increment_length + costs[free_index - 1], {next_index}});
+
+                        tree_a->add(
+                            GNATNode<dimension>{
+                                free_index, increment_length + costs[free_index - 1], {next_index}});
                         parents[free_index] = free_index - 1;
                         radii[free_index] = std::numeric_limits<float>::max();
                         costs[free_index] = increment_length + costs[free_index - 1];
@@ -476,7 +477,7 @@ namespace vamp::planning
     {
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
-        using RNG = typename vamp::rng::RNG<Robot::dimension>;
+        using RNG = typename vamp::rng::RNG<Robot>;
         using AOX_RRTC = typename vamp::planning::AOX_RRTC<Robot, rake, resolution>;
         using RRTC = typename vamp::planning::RRTC<Robot, rake, resolution>;
 
@@ -485,7 +486,7 @@ namespace vamp::planning
             const Configuration &goal,
             const collision::Environment<FloatVector<rake>> &environment,
             const AORRTCSettings &settings,
-            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr rng) noexcept -> PlanningResult<Robot>
         {
             return solve(start, std::vector<Configuration>{goal}, environment, settings, rng);
         }
@@ -495,7 +496,7 @@ namespace vamp::planning
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
             const AORRTCSettings &settings,
-            typename RNG::Ptr rng) noexcept -> PlanningResult<dimension>
+            typename RNG::Ptr rng) noexcept -> PlanningResult<Robot>
         {
             auto start_time = std::chrono::steady_clock::now();
 
@@ -504,7 +505,7 @@ namespace vamp::planning
             rrtc_settings.max_iterations = settings.max_iterations;
             rrtc_settings.max_samples = settings.max_samples;
 
-            PlanningResult<dimension> result;
+            PlanningResult<Robot> result;
             float best_path_cost = std::numeric_limits<float>::infinity();
             std::size_t iters = 0;
 
@@ -528,11 +529,11 @@ namespace vamp::planning
             }
 
             // We have a new best solution
-            PlanningResult<dimension> final_result;
+            PlanningResult<Robot> final_result;
             final_result.path = result.path;
             best_path_cost = result.path.cost();
 
-            ProlateHyperspheroid<dimension> phs(start, goals[0]);
+            ProlateHyperspheroid<Robot> phs(start, goals[0]);
             phs.set_transverse_diameter(best_path_cost);
             auto phs_rng = std::make_shared<ProlateHyperspheroidRNG<Robot>>(phs, rng);
 

@@ -14,8 +14,10 @@ namespace vamp::planning
         bool cost_bound_resample = true;
         bool simplify_intermediate = true;
         bool use_phs = true;
+        bool anytime = false;
 
         std::size_t max_iterations = 100000;
+        std::size_t max_internal_iterations = 10000;
         std::size_t max_samples = 100000;
         std::size_t max_cost_bound_resamples = 1000;
     };

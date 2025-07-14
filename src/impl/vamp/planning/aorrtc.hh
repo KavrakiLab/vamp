@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include <memory>
 
 #include <vamp/collision/environment.hh>
@@ -252,9 +253,8 @@ namespace vamp::planning
                     // through the current tree, must be lesser than our maximum path cost
                     // Therefore, our maximum allowable cost for a connection through the other tree is
                     // max_cost - vertex_cost
-                    auto [other_nearest_node, other_nearest_distance] =
+                    const auto [other_nearest_node, other_nearest_distance] =
                         find_nearest(tree_b, target_vert, new_configuration, max_cost - new_cost);
-
                     const auto other_nearest_vector = other_nearest_node.array - new_configuration;
 
                     // Just to be safe, make sure we've improved upon our best solution
@@ -370,15 +370,20 @@ namespace vamp::planning
             const Configuration &start,
             const std::vector<Configuration> &goals,
             const collision::Environment<FloatVector<rake>> &environment,
-            const AORRTCSettings &settings,
+            const AORRTCSettings &settings_in,
             typename RNG::Ptr rng) noexcept -> PlanningResult<Robot>
         {
             auto start_time = std::chrono::steady_clock::now();
 
             // Update the settings for internal searches
-            RRTCSettings rrtc_settings = settings.rrtc;
-            rrtc_settings.max_iterations = settings.max_iterations;
-            rrtc_settings.max_samples = settings.max_samples;
+            AORRTCSettings settings = settings_in;  // make a mutable copy
+            const std::size_t &max_samples = settings.max_samples;
+            const std::size_t &max_iterations = settings.max_iterations;
+
+            // Configure internal RRTC settings
+            RRTCSettings &rrtc_settings = settings.rrtc;
+            rrtc_settings.max_iterations = max_iterations;
+            rrtc_settings.max_samples = max_samples;
 
             PlanningResult<Robot> result;
             float best_path_cost = std::numeric_limits<float>::max();
@@ -408,25 +413,51 @@ namespace vamp::planning
             final_result.path = result.path;
             best_path_cost = result.path.cost();
 
+            float best_possible_cost = std::numeric_limits<float>::max();
+            for (const auto &goal : goals)
+            {
+                best_possible_cost = std::min(best_possible_cost, start.distance(goal));
+            }
+
             ProlateHyperspheroid<Robot> phs(start, goals[0]);
             phs.set_transverse_diameter(best_path_cost);
 
             auto phs_rng = std::make_shared<ProlateHyperspheroidRNG<Robot>>(phs, rng);
 
-            AOX_RRTC instance(rrtc_settings.max_samples);
-            while (iters < settings.max_iterations)
+            AOX_RRTC instance(max_samples);
+
+            // If we get close to straight line, just call it.
+            // Also handles numerical issues with PHS when too close to straight line...
+            while (iters < max_iterations and (best_path_cost - best_possible_cost) > 1e-8)
             {
                 // Update internal maximum iterations
-                rrtc_settings.max_iterations = settings.max_iterations - iters;
+                rrtc_settings.max_iterations =
+                    std::min(settings.max_iterations - iters, settings.max_internal_iterations);
 
-                // If there is a single goal, sample with PHS
-                if (settings.use_phs and goals.size() == 1)
+                // By default, use AORRTC
+                if (not settings.anytime)
                 {
-                    result = instance.solve(start, goals, environment, settings, best_path_cost, phs_rng);
+                    // If there is a single goal, sample with PHS
+                    if (settings.use_phs and goals.size() == 1)
+                    {
+                        result = instance.solve(start, goals, environment, settings, best_path_cost, phs_rng);
+                    }
+                    else
+                    {
+                        result = instance.solve(start, goals, environment, settings, best_path_cost, rng);
+                    }
                 }
+                // If anytime, use Anytime RRTC
                 else
                 {
-                    result = instance.solve(start, goals, environment, settings, best_path_cost, rng);
+                    if (settings.use_phs and goals.size() == 1)
+                    {
+                        result = RRTC::solve(start, goals, environment, rrtc_settings, phs_rng);
+                    }
+                    else
+                    {
+                        result = RRTC::solve(start, goals, environment, rrtc_settings, rng);
+                    }
                 }
 
                 iters += result.iterations;

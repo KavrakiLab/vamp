@@ -68,15 +68,14 @@ namespace vamp::planning
             auto temp_node = NNNode{0, cost, c};
             nn->nearestR(temp_node, NNNode::distance(temp_node, root), near_list);
 
-            std::size_t idx = 0;
-            const auto *new_nearest_node = &near_list[idx];
+            const auto *new_nearest_node = &near_list[0];
             float new_nearest_distance = c.distance(new_nearest_node->array);
 
-            while (new_nearest_node->cost > 0                                //
-                   and cost < new_nearest_node->cost + new_nearest_distance  //
-                   and idx < near_list.size())
+            for (auto idx = 1U; new_nearest_node->cost > 0                                //
+                                and cost < new_nearest_node->cost + new_nearest_distance  //
+                                and idx < near_list.size();
+                 ++idx)
             {
-                idx++;
                 new_nearest_node = &near_list[idx];
                 new_nearest_distance = c.distance(new_nearest_node->array);
             }
@@ -106,7 +105,6 @@ namespace vamp::planning
         {
             static constexpr std::size_t start_index = 0;
             const RRTCSettings &rrtc_settings = settings.rrtc;
-            const auto start_time = std::chrono::steady_clock::now();
             PlanningResult<Robot> result;
 
             NN start_tree;
@@ -146,81 +144,64 @@ namespace vamp::planning
                     tree_a_is_start = not tree_a_is_start;
                 }
 
-                auto temp = rng->next();
+                const auto temp = rng->next();
 
-                // Find closest goal for optimistic f^ in case of multi-goals
-                NNNode *goal_vert = nullptr;
-                auto min_goal_dist = std::numeric_limits<float>::max();
-                for (NNNode &v : goal_verts)
-                {
-                    const auto d = temp.distance(v.array);
-                    if (d < min_goal_dist)
-                    {
-                        goal_vert = &v;
-                        min_goal_dist = d;
-                    }
-                }
+                NNNode goal_vert = *std::min_element(
+                    goal_verts.begin(),
+                    goal_verts.end(),
+                    [&temp](const auto &a, const auto &b)
+                    { return temp.distance(a.array) < temp.distance(b.array); });
 
-                if (not goal_vert)
-                {
-                    continue;
-                }
+                const auto &root_vert = tree_a_is_start ? start_vert : goal_vert;
+                const auto &target_vert = tree_a_is_start ? goal_vert : start_vert;
 
-                const auto root_vert = tree_a_is_start ? start_vert : *goal_vert;
-                const auto target_vert = tree_a_is_start ? *goal_vert : start_vert;
-
-                float g_hat = temp.distance(root_vert.array);
-                float h_hat = temp.distance(target_vert.array);
-                float f_hat = g_hat + h_hat;
+                const float g_hat = temp.distance(root_vert.array);
+                const float h_hat = temp.distance(target_vert.array);
+                const float f_hat = g_hat + h_hat;
 
                 // The range between the minimum possible cost and maximum allowable cost
                 // - Floating point error can result in a (barely) negative range
                 // - If c_range is 0, only valid connection is to root of tree
                 //   (sampled upper cost bound == g^)
-                float c_range = std::max(max_cost - f_hat, 0.0F);
+                const float c_range = std::max(max_cost - f_hat, 0.0F);
 
                 // Sampled upper cost bound
-                float c_rand = (rng->dist.uniform_01() * c_range) + g_hat;
+                const float c_rand = (rng->dist.uniform_01() * c_range) + g_hat;
 
                 // Find nearest with asymmetric cost function
                 auto [nearest_node, nearest_distance] = find_nearest(tree_a, root_vert, temp, c_rand);
-                auto nearest_radius = radii[nearest_node.index];
-
-                if (rrtc_settings.dynamic_domain and nearest_radius < nearest_distance)
+                if (rrtc_settings.dynamic_domain and radii[nearest_node.index] < nearest_distance)
                 {
                     continue;
                 }
 
-                auto nearest_configuration = nearest_node.array;
-                auto nearest_vector = temp - nearest_configuration;
-
+                const auto nearest_vector = temp - nearest_node.array;
                 bool reach = nearest_distance < rrtc_settings.range;
-                auto extension_vector =
+                const auto extension_vector =
                     (reach) ? nearest_vector : nearest_vector * (rrtc_settings.range / nearest_distance);
 
                 // Evaluate edge reaching towards sample
                 if (validate_vector<Robot, rake, resolution>(
-                        nearest_configuration,
+                        nearest_node.array,
                         extension_vector,
                         (reach) ? nearest_distance : rrtc_settings.range,
                         environment))
                 {
-                    const auto new_configuration = nearest_configuration + extension_vector;
+                    const auto new_configuration = nearest_node.array + extension_vector;
 
                     // Calculate and store actual node cost
-                    const auto dist = new_configuration.distance(nearest_node.array);
-                    auto new_cost = nearest_node.cost + dist;
+                    auto new_cost = nearest_node.cost + new_configuration.distance(nearest_node.array);
 
                     // If resampling costs to try and find a better parent...
                     if (settings.cost_bound_resample)
                     {
-                        g_hat = new_configuration.distance(root_vert.array);
+                        const float g_hat = new_configuration.distance(root_vert.array);
 
                         // Continuously resample cost until an invalid connection is found
                         for (auto i = 0; i < settings.max_cost_bound_resamples; ++i)
                         {
-                            c_range = std::max(new_cost - g_hat, 0.0F);
-                            c_rand = (rng->dist.uniform_01() * c_range) + g_hat;
+                            const float c_range = std::max(new_cost - g_hat, 0.0F);
+                            const float c_rand = (rng->dist.uniform_01() * c_range) + g_hat;
 
                             auto [new_nearest_node, new_nearest_distance] =
                                 find_nearest(tree_a, root_vert, new_configuration, c_rand);
@@ -257,7 +238,8 @@ namespace vamp::planning
                     add_to_tree(tree_a, new_configuration, free_index, nearest_node.index, new_cost);
                     free_index++;
 
-                    if (rrtc_settings.dynamic_domain and nearest_radius != std::numeric_limits<float>::max())
+                    if (rrtc_settings.dynamic_domain and
+                        radii[nearest_node.index] != std::numeric_limits<float>::max())
                     {
                         radii[nearest_node.index] *= (1 + rrtc_settings.alpha);
                     }
@@ -273,8 +255,7 @@ namespace vamp::planning
                     auto [other_nearest_node, other_nearest_distance] =
                         find_nearest(tree_b, target_vert, new_configuration, max_cost - new_cost);
 
-                    const auto other_nearest_configuration = other_nearest_node.array;
-                    const auto other_nearest_vector = other_nearest_configuration - new_configuration;
+                    const auto other_nearest_vector = other_nearest_node.array - new_configuration;
 
                     // Just to be safe, make sure we've improved upon our best solution
                     if (new_cost + other_nearest_distance + other_nearest_node.cost >= max_cost)
@@ -295,7 +276,7 @@ namespace vamp::planning
                            free_index < rrtc_settings.max_samples;
                          ++i_extension)
                     {
-                        auto next = prior + increment;
+                        const auto next = prior + increment;
                         add_to_tree(
                             tree_a,
                             next,
@@ -342,7 +323,7 @@ namespace vamp::planning
                 }
                 else if (rrtc_settings.dynamic_domain)
                 {
-                    if (nearest_radius == std::numeric_limits<float>::max())
+                    if (radii[nearest_node.index] == std::numeric_limits<float>::max())
                     {
                         radii[nearest_node.index] = rrtc_settings.radius;
                     }
@@ -355,10 +336,7 @@ namespace vamp::planning
                 }
             }
 
-            result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
             result.iterations = iter;
-            result.size.emplace_back(start_tree.size());
-            result.size.emplace_back(goal_tree.size());
             return result;
         }
     };

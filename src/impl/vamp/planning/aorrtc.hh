@@ -297,8 +297,6 @@ namespace vamp::planning
                     }
 
                     // Extend to goal tree
-                    // NNNode *other_nearest_node;
-                    // temp_node.index = free_index - 1;
 
                     // Because we are extending to the other tree, we need to change our upper cost bound
                     // We need to find a connection that improves upon our current best solution cost
@@ -308,14 +306,9 @@ namespace vamp::planning
 
                     // Therefore, our maximum allowable cost for a connection through the other tree is
                     // max_cost - vertex_cost
-                    // temp_node.cost = max_cost - new_cost;
-                    // temp_node.array = new_configuration_index;
 
-                    // Once again we must loop over the nearest R neighbours - this time for the other tree
-                    //* ------------------ ------ -------------------
                     auto [other_nearest_node, other_nearest_distance] = find_nearest(
                         tree_b, target_vert, new_configuration, free_index - 1, max_cost - new_cost);
-                    // =============================================*/
 
                     const auto other_nearest_configuration = other_nearest_node.array;
                     const auto other_nearest_vector = other_nearest_configuration - new_configuration;

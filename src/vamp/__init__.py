@@ -84,6 +84,7 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
             )
     elif planner_name == "aorrtc":
         plan_settings = AORRTCSettings()
+        plan_settings.rrtc.range = ROBOT_RRT_RANGES[robot_name]
     else:
         raise NotImplementedError(f"Automatic setup for planner {planner_name} is not implemented yet!")
 
@@ -94,6 +95,14 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
         if hasattr(plan_settings, k):
             print(f"Setting planner - {k}: {v}")
             setattr(plan_settings, k, v)
+
+    # AORRTC Internal
+    for k, v in kwargs.items():
+        if "rrtc_" in k:
+            sk = k.replace("rrtc_", "")
+            if hasattr(plan_settings.rrtc, sk):
+                print(f"Setting planner - {sk}: {v}")
+                setattr(plan_settings.rrtc, sk, v)
 
     simp_settings = SimplifySettings()
 
@@ -117,6 +126,9 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
             if hasattr(sub_setting, sk):
                 print(f"Setting simplification - {sub} - {sk}: {v}")
                 setattr(sub_setting, sk, v)
+
+    if planner_name == "aorrtc":
+        plan_settings.simplify = simp_settings
 
     return robot_module, planner_func, plan_settings, simp_settings
 

@@ -36,31 +36,6 @@ namespace vamp::planning
             return buffer.get() + index * Configuration::num_scalars_rounded;
         };
 
-        template <typename _A, typename _B>
-        inline auto distance(const _A &a_in, const _B &b_in) -> float
-        {
-            Configuration a, b;
-            if constexpr (std::is_same_v<_A, Configuration>)
-            {
-                a = a_in;
-            }
-            else
-            {
-                a = Configuration(a_in);
-            }
-
-            if constexpr (std::is_same_v<_B, Configuration>)
-            {
-                b = b_in;
-            }
-            else
-            {
-                b = Configuration(b_in);
-            }
-
-            return a.distance(b);
-        }
-
         inline auto
         add_to_tree(NN *nn, const Configuration &c, std::size_t index, std::size_t parent_index, float cost)
             -> NNNode
@@ -83,17 +58,17 @@ namespace vamp::planning
         // Only need to check nodes that are closer than the root of the tree, since connecting to the
         // root will always be valid
         inline auto
-        find_nearest(NN *nn, const NNNode &root, const Configuration &c, std::size_t index, float cost)
+        find_nearest(NN *nn, const NNNode &root, const Configuration &c, float cost)
             -> std::pair<NNNode, float>
         {
             std::vector<NNNode> near_list;
 
-            auto temp_node = NNNode{index, cost, c};
+            auto temp_node = NNNode{0, cost, c};
             nn->nearestR(temp_node, NNNode::distance(temp_node, root), near_list);
 
             std::size_t idx = 0;
             const auto *new_nearest_node = &near_list[idx];
-            float new_nearest_distance = distance(c, new_nearest_node->array);
+            float new_nearest_distance = c.distance(new_nearest_node->array);
 
             while (new_nearest_node->cost > 0 and cost < new_nearest_node->cost + new_nearest_distance)
             {
@@ -176,7 +151,7 @@ namespace vamp::planning
                 auto min_goal_dist = std::numeric_limits<double>::max();
                 for (NNNode &v : goal_verts)
                 {
-                    const auto d = distance(temp, v.array);
+                    const auto d = temp.distance(v.array);
                     if (d < min_goal_dist)
                     {
                         goal_vert = &v;
@@ -192,8 +167,8 @@ namespace vamp::planning
                 const auto root_vert = tree_a_is_start ? start_vert : *goal_vert;
                 const auto target_vert = tree_a_is_start ? *goal_vert : start_vert;
 
-                float g_hat = distance(temp, root_vert.array);
-                float h_hat = distance(temp, target_vert.array);
+                float g_hat = temp.distance(root_vert.array);
+                float h_hat = temp.distance(target_vert.array);
                 float f_hat = g_hat + h_hat;
 
                 // The range between the minimum possible cost and maximum allowable cost
@@ -207,7 +182,7 @@ namespace vamp::planning
 
                 // Find nearest with asymmetric cost function
                 auto [nearest_node, nearest_distance] =
-                    find_nearest(tree_a, root_vert, temp, free_index, c_rand);
+                    find_nearest(tree_a, root_vert, temp, c_rand);
                 // =============================================*/
 
                 auto nearest_radius = radii[nearest_node.index];
@@ -251,7 +226,7 @@ namespace vamp::planning
                             //* ------------------ ------ -------------------
 
                             auto [new_nearest_node, new_nearest_distance] =
-                                find_nearest(tree_a, root_vert, new_configuration, free_index, c_rand);
+                                find_nearest(tree_a, root_vert, new_configuration, c_rand);
                             // =============================================*/
 
                             const auto new_nearest_configuration = new_nearest_node.array;
@@ -300,15 +275,12 @@ namespace vamp::planning
 
                     // Because we are extending to the other tree, we need to change our upper cost bound
                     // We need to find a connection that improves upon our current best solution cost
-
                     // The cost from the root of the other tree to our new vertex, + our new vertex's cost
                     // through the current tree, must be lesser than our maximum path cost
-
                     // Therefore, our maximum allowable cost for a connection through the other tree is
                     // max_cost - vertex_cost
-
                     auto [other_nearest_node, other_nearest_distance] = find_nearest(
-                        tree_b, target_vert, new_configuration, free_index - 1, max_cost - new_cost);
+                        tree_b, target_vert, new_configuration, max_cost - new_cost);
 
                     const auto other_nearest_configuration = other_nearest_node.array;
                     const auto other_nearest_vector = other_nearest_configuration - new_configuration;

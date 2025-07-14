@@ -34,6 +34,24 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/ndarray.h>
 
+#define DEFINE_HAS_METHOD(method_name)                                                                       \
+    template <typename T, typename = void>                                                                   \
+    struct has_##method_name : std::false_type                                                               \
+    {                                                                                                        \
+    };                                                                                                       \
+                                                                                                             \
+    template <typename T>                                                                                    \
+    struct has_##method_name<T, std::void_t<decltype(T::method_name)>> : std::true_type                      \
+    {                                                                                                        \
+    };                                                                                                       \
+                                                                                                             \
+    template <typename T>                                                                                    \
+    constexpr bool has_##method_name##_v = has_##method_name<T>::value;
+
+DEFINE_HAS_METHOD(set_lows)
+DEFINE_HAS_METHOD(set_highs)
+DEFINE_HAS_METHOD(set_radius)
+
 namespace vamp::binding
 {
     static constexpr const std::size_t rake = vamp::FloatVectorWidth;
@@ -549,6 +567,21 @@ namespace vamp::binding
         PLANNER("prm", PRM, "PRM");
         PLANNER("fcit", FCIT, "FCIT");
         PLANNER("aorrtc", AORRTC, "AORRTC");
+
+        if constexpr (has_set_lows_v<Robot>)
+        {
+            submodule.def("set_lows", &Robot::set_lows, "Set lower bounds.");
+        }
+
+        if constexpr (has_set_highs_v<Robot>)
+        {
+            submodule.def("set_highs", &Robot::set_highs, "Set upper bounds.");
+        }
+
+        if constexpr (has_set_radius_v<Robot>)
+        {
+            submodule.def("set_radius", &Robot::set_radius, "Set radius.");
+        }
 
         return submodule;
     }

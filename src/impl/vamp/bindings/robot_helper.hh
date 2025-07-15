@@ -281,9 +281,9 @@ namespace vamp::binding
 
         inline static auto filter_self_from_pointcloud(
             const std::vector<collision::Point> &pc,
+            float point_radius,
             const Type &c_in,
-            const EnvironmentInput &environment,
-            float point_radius) -> std::vector<collision::Point>
+            const EnvironmentInput &environment) -> std::vector<collision::Point>
         {
             // TODO: Do this smarter with SIMD CC
             EnvironmentVector ev(environment);
@@ -549,6 +549,14 @@ namespace vamp::binding
            "configuration"_a,
            "environment"_a = vamp::collision::Environment<float>(),
            "check_bounds"_a = false);
+
+        MF("filter_self_from_pointcloud",
+           filter_self_from_pointcloud,
+           "Removes points from pointcloud which collide with the robot and environment.",
+           "pc"_a,
+           "point_radius"_a,
+           "configuration"_,
+           "environment"_a = vamp::collision::Environment<float>());
 
         MF("roadmap",
            PRM::roadmap,

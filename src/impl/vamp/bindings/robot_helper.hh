@@ -555,7 +555,7 @@ namespace vamp::binding
            "Removes points from pointcloud which collide with the robot and environment.",
            "pc"_a,
            "point_radius"_a,
-           "configuration"_,
+           "configuration"_a,
            "environment"_a = vamp::collision::Environment<float>());
 
         MF("roadmap",

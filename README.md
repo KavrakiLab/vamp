@@ -2,10 +2,18 @@
 
 [![arXiv VAMP](https://img.shields.io/badge/arXiv-2309.14545-b31b1b.svg)](https://arxiv.org/abs/2309.14545)
 [![arXiv CAPT](https://img.shields.io/badge/arXiv-2406.02807-b31b1b.svg)](https://arxiv.org/abs/2406.02807)
+[![arXiv FCIT](https://img.shields.io/badge/arXiv-2411.17902-b31b1b.svg)](https://arxiv.org/abs/2411.17902)
 [![Build Check](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml)
 [![Format Check](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml)
 
-This repository hosts the code for the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545) as well as an implementation of the Collision-Affording Point Tree (CAPT) from the forthcoming RSS 2024 paper [“Collision-Affording Point Trees: SIMD-Amenable Nearest Neighbors for Fast Collision Checking”](http://arxiv.org/abs/2406.02807).
+![Demo video](resources/capt_demo.gif)
+
+_For a full demonstration of VAMP running in real-time, see [this video](https://www.youtube.com/watch?v=BzDKdrU1VpM)_.
+
+This repository hosts the code for:
+- the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545),
+- an implementation of the Collision-Affording Point Tree (CAPT) from the RSS 2024 paper [“Collision-Affording Point Trees: SIMD-Amenable Nearest Neighbors for Fast Collision Checking”](http://arxiv.org/abs/2406.02807),
+- an implementation of the Fully Connected Informed Trees (FCIT*) algorithm from the ICRA 2025 submission [“Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)”](https://robotic-esp.com/papers/wilson_arxiv24).
 
 **TL;DR**: By exploiting ubiquitous [CPU SIMD instructions](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) to accelerate collision checking and forward kinematics (FK), `vamp`'s RRT-Connect [[1]](#1) solves problems for the Franka Emika Panda from the MotionBenchMaker dataset [[3]](#3) at a median speed of 35 microseconds (on one core of a consumer desktop PC).
 This approach to hardware-accelerated parallel sampling-based motion planning extends to other planning algorithms without modification (e.g., PRM [[2]](#2)) and also works on low-power systems (e.g., an ARM-based [OrangePi](http://www.orangepi.org/)).
@@ -17,8 +25,10 @@ If you found this research useful for your own work, please use the following ci
   title = {Motions in Microseconds via Vectorized Sampling-Based Planning},
   author = {Thomason, Wil and Kingston, Zachary and Kavraki, Lydia E.},
   booktitle = {IEEE International Conference on Robotics and Automation},
-  date = {2024},
+  pages = {8749--8756},
   url = {http://arxiv.org/abs/2309.14545},
+  doi = {10.1109/ICRA57147.2024.10611190},
+  date = {2024},
 }
 ```
 
@@ -28,9 +38,19 @@ If you use CAPTs or the pointcloud collision checking components of this reposit
   title = {Collision-Affording Point Trees: {SIMD}-Amenable Nearest Neighbors for Fast Collision Checking},
   author = {Ramsey, Clayton W. and Kingston, Zachary and Thomason, Wil and Kavraki, Lydia E.},
   booktitle = {Robotics: Science and Systems},
-  date = {2024},
   url = {http://arxiv.org/abs/2406.02807},
-  note = {To Appear.}
+  doi = {10.15607/RSS.2024.XX.038},
+  date = {2024},
+}
+```
+
+If you use FCIT*, please use the following citation:
+```bibtex
+@misc{fcit_2024,
+  title = {Nearest-Neighbourless Asymptotically Optimal Motion Planning with Fully Connected Informed Trees (FCIT*)},
+  author = {Wilson, Tyler S. and Thomason, Wil and Kingston, Zachary  and Kavraki, Lydia E. and Gammell, Jonathan D.},
+  url = {https://arxiv.org/abs/2411.17902},
+  date = {2024}
 }
 ```
 
@@ -74,6 +94,13 @@ python scripts/sphere_cage_example.py --visualize
 ```
 Which will benchmark a simple scenario of the Franka Emika Panda in a cage of spheres and visualize one of the results.
 See the [README in the scripts directory](scripts/README.md) for more details.
+
+#### Incremental Rebuilds
+Rather than building the entire library from scratch each time, `nanobind` supports [incremental rebuilds](https://nanobind.readthedocs.io/en/latest/packaging.html#step-5-incremental-rebuilds):
+```bash
+cd vamp
+pip install --no-build-isolation -Ceditable.rebuild=true -ve .
+```
 
 ### C++
 If you wish to extend `vamp` via C++, please build directly with CMake, e.g.:
@@ -135,13 +162,18 @@ For the flying sphere in $\mathbb{R}^3$, additional operations are available to 
 - `vamp.sphere.set_lows()` and `vamp.sphere.set_highs()` to set bounding box of space
 - `vamp.sphere.set_radius()` to set the sphere's radius
 
+## Supported RNG
+We ship implementations of the following pseudorandom number generators (PRNGs):
+- `halton`: An implementation of a [multi-dimensional Halton sequence](https://en.wikipedia.org/wiki/Halton_sequence) [[12-13]](#12).
+- `xorshift`: A SIMD-accelerated implementation of an [XOR shift](https://en.wikipedia.org/wiki/Xorshift) generator, only available on x86 machines. Uses the [`SIMDxorshift`](https://github.com/lemire/SIMDxorshift) library.
+
 ## Supported Planners
 We currently ship two planners:
 - `rrtc`, which is an implementation of a dynamic-domain [[6]](#6) balanced [[7]](#7) RRT-Connect [[1]](#1).
 - `prm`, which is an implementation of basic PRM [[2]](#2) (i.e., PRM without the bounce heuristic, etc.).
+- `fcit`, which is an asymptotically optimal planner, described in the [linked paper](https://robotic-esp.com/papers/wilson_arxiv24).
 
 Note that these planners support planning to a set of goals, not just a single goal.
-Also, all planners use a multi-dimensional Halton sequence for deterministic planning [[12-13]](#12).
 
 We also ship a number of heuristic simplification routines:
 - randomized and deterministic shortcutting [[8, 9]](#8) (`REDUCE` and `SHORTCUT`)
@@ -172,7 +204,7 @@ For `rrtc`:
 - `--start_tree_first`: `True` or `False`, grow from start tree or goal tree first.
 See `rrtc_settings.hh` for more information.
 
-For `prm`, the settings must be configured with a neighbor parameter structure, e.g.:
+For `prm` and `fcit`, the settings must be configured with a neighbor parameter structure, e.g.:
 ```py
 robot_module = vamp.panda # or other robot submodule
 prmstar_params = vamp.PRMNeighborParams(robot_module.dimension(), robot_module.space_measure())
@@ -180,9 +212,14 @@ prm_settings = vamp.PRMSettings(prmstar_params)
 ```
 This is handled by default in the configuration function.
 
+For `fcit`, there are also the settings:
+- `--batch_size`: The number of samples to evaluate in a batch per iteration. Default is 1000.
+- `--optimize`: If true, will use all iterations and samples available to find the best possible solution. Default is False. If true, set `--max_samples` to the desired value of refinement.
+
 For simplification:
 - `--simplification_operations`: sequence of shortcutting heuristics to apply each iteration. By default, `[SHORTCUT,BSPLINE]`. Can specify any sequence of the above keys.
-- `--max_iterations`: maximum iterations of simplification. If no heuristics do any work, then early terminates from simplification.
+- `--simplification_max_iterations`: maximum iterations of simplification. If no heuristics do any work, then early terminates from simplification.
+- `--simplification_interpolate`: if non-zero, will interpolate the path before simplification heuristics are applied to the desired resolution.
 - `--bspline_max_steps`: maximum iterations of B-spline smoothing.
 - `--bspline_min_change`: minimum change before smoothing is done.
 - `--bspline_midpoint_interpolation`: point along each axis B-spline interpolation is done from.
@@ -239,6 +276,7 @@ Inside `impl/vamp`, the code is divided into the following directories:
   Planning and simplification routines.
   `rrtc.hh` and `rrtc_settings.hh` are for our RRT-Connect implementation.
   `prm.hh` and `roadmap.hh` are for our PRM implementation.
+  `fcit.hh` is for the FCIT* implementation.
   `simplify.hh` and `simplify_settings.hh` are for simplification heuristics.
   `validate.hh` contains the raked motion validator.
 
@@ -257,6 +295,7 @@ Inside `impl/vamp`, the code is divided into the following directories:
 - [X] Pointcloud collision checking
 - [ ] Manifold-constrained planning
 - [ ] Time-optimal trajectory parameterization
+- [X] Asymptotically-optimal planning
 - and more...
 
 ## References

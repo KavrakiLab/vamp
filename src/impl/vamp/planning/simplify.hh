@@ -6,8 +6,7 @@
 #include <vamp/planning/simplify_settings.hh>
 #include <vamp/planning/plan.hh>
 #include <vamp/planning/validate.hh>
-#include <vamp/random/uniform.hh>
-#include <vamp/random/halton.hh>
+#include <vamp/random/rng.hh>
 #include <vamp/vector.hh>
 
 namespace vamp::planning
@@ -57,7 +56,8 @@ namespace vamp::planning
     inline static auto reduce_path_vertices(
         Path<Robot::dimension> &path,
         const collision::Environment<FloatVector<rake>> &environment,
-        const ReduceSettings &settings) -> bool
+        const ReduceSettings &settings,
+        const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> bool
     {
         if (path.size() < 3)
         {
@@ -66,8 +66,6 @@ namespace vamp::planning
 
         const auto max_steps = (not settings.max_steps) ? path.size() : settings.max_steps;
         const auto max_empty_steps = (not settings.max_empty_steps) ? path.size() : settings.max_empty_steps;
-
-        rng::RNG rng;
 
         bool result = false;
         for (auto i = 0U, no_change = 0U; i < max_steps or no_change < max_empty_steps; ++i, ++no_change)
@@ -78,9 +76,9 @@ namespace vamp::planning
             int range = 1 + static_cast<int>(
                                 std::floor(0.5F + static_cast<float>(initial_size) * settings.range_ratio));
 
-            auto point_0 = rng.uniform_integer(0, max_n);
+            auto point_0 = rng->dist.uniform_integer(0, max_n);
             auto point_1 =
-                rng.uniform_integer(std::max(point_0 - range, 0), std::min(max_n, point_0 + range));
+                rng->dist.uniform_integer(std::max(point_0 - range, 0), std::min(max_n, point_0 + range));
 
             if (std::abs(point_0 - point_1) < 2)
             {
@@ -146,7 +144,8 @@ namespace vamp::planning
     inline static auto perturb_path(
         Path<Robot::dimension> &path,
         const collision::Environment<FloatVector<rake>> &environment,
-        const PerturbSettings &settings) -> bool
+        const PerturbSettings &settings,
+        const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> bool
     {
         if (path.size() < 3)
         {
@@ -156,14 +155,11 @@ namespace vamp::planning
         const auto max_steps = (not settings.max_steps) ? path.size() : settings.max_steps;
         const auto max_empty_steps = (not settings.max_empty_steps) ? path.size() : settings.max_empty_steps;
 
-        rng::RNG rng;
-        rng::Halton<Robot::dimension> halton;
-
         bool changed = false;
         for (auto step = 0U, no_change = 0U; step < max_steps and no_change < max_empty_steps;
              ++step, ++no_change)
         {
-            auto to_perturb_idx = rng.uniform_integer(1UL, path.size() - 2);
+            auto to_perturb_idx = rng->dist.uniform_integer(1UL, path.size() - 2);
             auto perturb_state = path[to_perturb_idx];
             auto before_state = path[to_perturb_idx - 1];
             auto after_state = path[to_perturb_idx + 1];
@@ -172,7 +168,7 @@ namespace vamp::planning
 
             for (auto attempt = 0U; attempt < settings.perturbation_attempts; ++attempt)
             {
-                auto perturbation = halton.next();
+                auto perturbation = rng->next();
                 Robot::scale_configuration(perturbation);
 
                 const auto new_state = perturb_state.interpolate(perturbation, settings.range);
@@ -197,7 +193,8 @@ namespace vamp::planning
     inline auto simplify(
         const Path<Robot::dimension> &path,
         const collision::Environment<FloatVector<rake>> &environment,
-        const SimplifySettings &settings) -> PlanningResult<Robot::dimension>
+        const SimplifySettings &settings,
+        const typename vamp::rng::RNG<Robot::dimension>::Ptr rng) -> PlanningResult<Robot::dimension>
     {
         auto start_time = std::chrono::steady_clock::now();
 
@@ -205,12 +202,15 @@ namespace vamp::planning
 
         const auto bspline = [&result, &environment, settings]()
         { return smooth_bspline<Robot, rake, resolution>(result.path, environment, settings.bspline); };
-        const auto reduce = [&result, &environment, settings]()
-        { return reduce_path_vertices<Robot, rake, resolution>(result.path, environment, settings.reduce); };
+        const auto reduce = [&result, &environment, settings, rng]()
+        {
+            return reduce_path_vertices<Robot, rake, resolution>(
+                result.path, environment, settings.reduce, rng);
+        };
         const auto shortcut = [&result, &environment, settings]()
         { return shortcut_path<Robot, rake, resolution>(result.path, environment, settings.shortcut); };
-        const auto perturb = [&result, &environment, settings]()
-        { return perturb_path<Robot, rake, resolution>(result.path, environment, settings.perturb); };
+        const auto perturb = [&result, &environment, settings, rng]()
+        { return perturb_path<Robot, rake, resolution>(result.path, environment, settings.perturb, rng); };
 
         const std::map<SimplifyRoutine, std::function<bool()>> operations = {
             {BSPLINE, bspline},
@@ -220,8 +220,8 @@ namespace vamp::planning
         };
 
         // Check if straight line is valid
-        if (path.size() == 2 or
-            validate_motion<Robot, rake, resolution>(path.front(), path.back(), environment))
+        if (path.size() == 2 or (path.size() > 2 and validate_motion<Robot, rake, resolution>(
+                                                         path.front(), path.back(), environment)))
         {
             result.path.emplace_back(path.front());
             result.path.emplace_back(path.back());
@@ -230,16 +230,25 @@ namespace vamp::planning
         }
 
         result.path = path;
+
+        if (settings.interpolate)
+        {
+            result.path.interpolate_to_n_states(settings.interpolate);
+        }
+
         if (path.size() > 2)
         {
             for (auto i = 0U; i < settings.max_iterations; ++i)
             {
                 result.iterations++;
 
-                if (not std::all_of(
-                        settings.operations.cbegin(),
-                        settings.operations.cend(),
-                        [&](const auto &op) { return operations.find(op)->second(); }))
+                bool any = false;
+                for (const auto &op : settings.operations)
+                {
+                    any |= operations.find(op)->second();
+                }
+
+                if (not any)
                 {
                     break;
                 }

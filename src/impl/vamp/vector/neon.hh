@@ -35,6 +35,13 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static auto load_unaligned(const ScalarT *const f) noexcept -> VectorT
+        {
+            // NOTE: The same instruction seems to do double-duty for ARM?
+            return vld1q_f32(f);
+        }
+
+        template <unsigned int = 0>
         inline static auto store(ScalarT *f, VectorT v) noexcept -> void
         {
             return vst1q_f32(f, v);
@@ -487,6 +494,13 @@ namespace vamp
         template <unsigned int = 0>
         inline static auto load(const ScalarT *const i) noexcept -> VectorT
         {
+            return vld1q_s32((const int32_t *const)i);
+        }
+
+        template <unsigned int = 0>
+        inline static auto load_unaligned(const ScalarT *const i) noexcept -> VectorT
+        {
+            // NOTE: The same instruction seems to do double-duty for ARM?
             return vld1q_s32((const int32_t *const)i);
         }
 

@@ -1,5 +1,13 @@
 find_package(Eigen3 REQUIRED NO_MODULE)
 
+if(VAMP_BUILD_PYTHON_BINDINGS)
+  find_package(Python 3.8
+    REQUIRED COMPONENTS Interpreter Development.Module
+    OPTIONAL_COMPONENTS Development.SABIModule)
+
+  CPMAddPackage("gh:wjakob/nanobind#358d452c314dbe8c07026d984ad8d5aa860f26fb")
+endif()
+
 CPMAddPackage("gh:kavrakilab/nigh#97130999440647c204e0265d05a997dbd8da4e70")
 if(nigh_ADDED)
   add_library(nigh INTERFACE)
@@ -39,8 +47,12 @@ endif()
 # TODO: Handle including this in the C++ library
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
   CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
-  list(APPEND VAMP_EXT_SOURCES
-    ${SIMDxorshift_SOURCE_DIR}/src/simdxorshift128plus.c
-    ${SIMDxorshift_SOURCE_DIR}/src/xorshift128plus.c)
-  list(APPEND VAMP_EXT_INCLUDES ${SIMDxorshift_SOURCE_DIR}/include)
+  # Only add SIMD sources and includes if Python bindings are enabled (they're only used in Python module)
+  if(VAMP_BUILD_PYTHON_BINDINGS)
+    list(APPEND VAMP_EXT_SOURCES
+      ${SIMDxorshift_SOURCE_DIR}/src/simdxorshift128plus.c
+      ${SIMDxorshift_SOURCE_DIR}/src/xorshift128plus.c)
+    # Add SIMDxorshift includes to VAMP_COMMON_INCLUDES for Python module
+    list(APPEND VAMP_COMMON_INCLUDES ${SIMDxorshift_SOURCE_DIR}/include)
+  endif()
 endif()

@@ -219,7 +219,7 @@ namespace vamp::collision::factory
                     length);
             }
         }  // namespace center
-    }      // namespace cylinder
+    }  // namespace cylinder
 
     namespace capsule
     {
@@ -339,7 +339,7 @@ namespace vamp::collision::factory
                     length);
             }
         }  // namespace center
-    }      // namespace capsule
+    }  // namespace capsule
 
     namespace sphere
     {

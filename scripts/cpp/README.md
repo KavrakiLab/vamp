@@ -1,5 +1,13 @@
 # Using VAMP inside of C++ projects
 
+## C++ Demo
+
+The VAMP C++ demo can be compiled with (in the VAMP directory):
+```bash
+cmake -Bbuild -GNinja -DVAMP_BUILD_CPP_DEMO=On .
+cmake --build build
+```
+
 ## OMPL Integration Demo
 
 We provide an example of using VAMP as a motion validator and collision checker inside the [https://ompl.kavrakilab.org/index.html](Open Motion Planning Library), given in `ompl_integration.cc`. Please note that - although offering a substantial speedup to OMPL planners - this example is not engineered for maximum performance (e.g., it relies on state copying between OMPL and VAMP representations, etc.).
@@ -19,7 +27,7 @@ The VAMP demo can be compiled with (in the VAMP directory):
 ```bash
 # Specify OMPL demos are to be build with -DVAMP_BUILD_OMPL_DEMOS=On
 # If using a local installation, specify the OMPL path with VAMP_OMPL_PATH
-cmake -Bbuild -GNinja -DVAMP_BUILD_OMPL_DEMOS=On -DVAMP_OMPL_PATH=~/ompl_install .
+cmake -Bbuild -GNinja -DVAMP_BUILD_OMPL_DEMO=On -DVAMP_OMPL_PATH=~/ompl_install .
 cmake --build build
 ```
 

@@ -325,6 +325,11 @@ class PyBulletSimulator:
             self.client.removeAllUserDebugItems()
 
     def animate(self, plan, callback = None):
+        if not len(plan):
+            print("""Path has no states!
+            """)
+            return
+
         plan_idx = 0
         playing = False
         moved = True

@@ -33,6 +33,6 @@ wheel.py-api = "cp312"
 cmake.build-type = "Release"
 
 [tool.scikit-build.cmake.define]
-VAMP_LTO = "ON"
+VAMP_LTO = "OFF"
 # VAMP_FORCE_CLANG = "ON"
 VAMP_BUILD_PYTHON_BINDINGS = ON

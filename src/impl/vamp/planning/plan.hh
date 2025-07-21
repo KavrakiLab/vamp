@@ -1,9 +1,9 @@
 #pragma once
 
 #include <limits>
+#include <vamp/planning/validate.hh>
 #include <vamp/planning/nn.hh>
 #include <vamp/vector.hh>
-#include <vector>
 
 namespace vamp::planning
 {
@@ -48,11 +48,81 @@ namespace vamp::planning
             this->swap(new_path);
         }
 
-        inline auto interpolate(std::size_t resolution) noexcept
+        inline auto interpolate_to_n_states(std::size_t n) noexcept
         {
+            const std::size_t n_p = this->size();
+            if (this->size() < 2 or n < n_p)
+            {
+                return;
+            }
+
             Path<dim> new_path;
-            float path_cost = cost();
-            auto n_states = static_cast<std::size_t>(path_cost * static_cast<float>(resolution));
+            new_path.reserve(n);
+
+            std::vector<float> segment_lengths(n_p - 1);
+            float remaining_length = 0.;
+
+            for (auto i = 0U; i < n_p - 1; ++i)
+            {
+                remaining_length += segment_lengths[i] =
+                    this->operator[](i).distance(this->operator[](i + 1));
+            }
+
+            if (remaining_length < std::numeric_limits<float>::epsilon())
+            {
+                return;
+            }
+
+            const auto n1 = n_p - 1;
+            for (auto i = 0U; i < n1; ++i)
+            {
+                const auto &a = this->operator[](i);
+                const auto &b = this->operator[](i + 1);
+
+                new_path.emplace_back(a);
+                const auto max_n_states = n + i - n_p;
+
+                if (max_n_states > 0)
+                {
+                    auto ns =
+                        (i + 1 == n1) ?
+                            (max_n_states + 2) :
+                            (static_cast<int>(std::floor(0.5 + n * segment_lengths[i] / remaining_length)) +
+                             1);
+
+                    // more than endpoints needed
+                    ns = (ns > 2) ? std::min(ns - 2, max_n_states) : 0;
+
+                    const auto &v = b - a;
+                    for (auto k = 1U; k <= ns; ++k)
+                    {
+                        new_path.emplace_back(a + (static_cast<float>(k) / ns) * v);
+                    }
+
+                    n -= ns + 1;
+                    remaining_length -= segment_lengths[i];
+                }
+                else
+                {
+                    n -= 1;
+                }
+            }
+
+            new_path.emplace_back(this->back());
+            this->swap(new_path);
+        }
+
+        inline auto interpolate_to_resolution(std::size_t resolution) noexcept
+        {
+            if (this->size() < 2)
+            {
+                return;
+            }
+
+            const float path_cost = cost();
+            const auto n_states = static_cast<std::size_t>(path_cost * static_cast<float>(resolution));
+
+            Path<dim> new_path;
             new_path.reserve(n_states);
 
             for (auto i = 0U; i < this->size() - 1; ++i)
@@ -60,8 +130,9 @@ namespace vamp::planning
                 const auto &current = this->operator[](i);
                 const auto &next = this->operator[](i + 1);
 
-                float segment_cost = current.distance(next);
-                auto segment_states = static_cast<std::size_t>(segment_cost * static_cast<float>(resolution));
+                const float segment_cost = current.distance(next);
+                const auto segment_states =
+                    static_cast<std::size_t>(segment_cost * static_cast<float>(resolution));
 
                 new_path.emplace_back(current);
 
@@ -79,6 +150,21 @@ namespace vamp::planning
 
             new_path.emplace_back(this->back());
             this->swap(new_path);
+        }
+
+        template <typename Robot, std::size_t rake>
+        inline auto validate(const collision::Environment<FloatVector<rake>> &environment) noexcept -> bool
+        {
+            for (auto i = 0U; i < this->size() - 1; ++i)
+            {
+                const auto &current = this->operator[](i);
+                const auto &next = this->operator[](i + 1);
+                if (not validate_motion<Robot, rake, Robot::resolution>(current, next, environment))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     };
 

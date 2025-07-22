@@ -46,6 +46,26 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CompilerSettings)
 include(FetchInitCPM)
+<<<<<<< Updated upstream
+=======
+include(Dependencies)
+
+# Common include directories for both C++ library and Python bindings
+list(APPEND VAMP_COMMON_INCLUDES
+  ${NIGH_INCLUDE_DIRS}
+  ${PDQSORT_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/impl
+)
+
+message(STATUS "VAMP_COMMON_INCLUDES: ${VAMP_COMMON_INCLUDES}")
+
+# Create VAMP C++ library
+add_library(vamp_cpp INTERFACE)
+
+# Always use only the subdirectory for install interface to avoid CMake's parent directory bug
+# Do NOT use INCLUDES DESTINATION in install(TARGETS ...) for INTERFACE libraries
+# If you change include structure, update this path accordingly
+>>>>>>> Stashed changes
 
 find_package(Eigen3 REQUIRED NO_MODULE)
 

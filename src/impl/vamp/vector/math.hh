@@ -2,13 +2,13 @@
 
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
+#include <cmath>
 
 template <typename DataT>
 inline constexpr auto sin(const DataT &v) -> DataT
 {
-<<<<<<< Updated upstream
     return v.sin();
-=======
+
     if constexpr (std::is_arithmetic_v<DataT>)
     {
         return std::sin(v);
@@ -17,15 +17,11 @@ inline constexpr auto sin(const DataT &v) -> DataT
     {
         return v.sin();
     }
->>>>>>> Stashed changes
-}
 
 template <typename DataT>
 inline constexpr auto cos(const DataT &v) -> DataT
 {
-<<<<<<< Updated upstream
     return v.cos();
-=======
     if constexpr (std::is_arithmetic_v<DataT>)
     {
         return std::cos(v);
@@ -34,8 +30,6 @@ inline constexpr auto cos(const DataT &v) -> DataT
     {
         return v.cos();
     }
->>>>>>> Stashed changes
-}
 
 template <typename DataT>
 inline constexpr auto sqrt(const DataT &v) -> DataT

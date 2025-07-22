@@ -46,6 +46,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CompilerSettings)
 include(FetchInitCPM)
+
 include(Dependencies)
 
 # Common include directories for both C++ library and Python bindings

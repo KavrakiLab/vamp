@@ -7,22 +7,29 @@
 template <typename DataT>
 inline constexpr auto sin(const DataT &v) -> DataT
 {
-    if constexpr (std::is_arithmetic_v<DataT>) {
+    return v.sin();
+
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
         return std::sin(v);
-    } else {
+    }
+    else
+    {
         return v.sin();
     }
-}
 
 template <typename DataT>
 inline constexpr auto cos(const DataT &v) -> DataT
 {
-    if constexpr (std::is_arithmetic_v<DataT>) {
+    return v.cos();
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
         return std::cos(v);
-    } else {
+    }
+    else
+    {
         return v.cos();
     }
-}
 
 template <typename DataT>
 inline constexpr auto sqrt(const DataT &v) -> DataT

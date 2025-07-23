@@ -46,15 +46,6 @@ else()
   message(FATAL_ERROR "Could not install required dependency: pdqsort")
 endif()
 
-# TODO: Handle including this in the C++ library
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
   CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
-  # Only add SIMD sources and includes if Python bindings are enabled (they're only used in Python module)
-  if(VAMP_BUILD_PYTHON_BINDINGS)
-    list(APPEND VAMP_EXT_SOURCES
-      ${SIMDxorshift_SOURCE_DIR}/src/simdxorshift128plus.c
-      ${SIMDxorshift_SOURCE_DIR}/src/xorshift128plus.c)
-    # Add SIMDxorshift includes to VAMP_COMMON_INCLUDES for Python module
-    list(APPEND VAMP_COMMON_INCLUDES ${SIMDxorshift_SOURCE_DIR}/include)
-  endif()
 endif()

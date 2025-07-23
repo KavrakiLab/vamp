@@ -54,15 +54,6 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
   CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
 endif()
 
-# Common include directories for both C++ library and Python bindings
-list(APPEND VAMP_COMMON_INCLUDES
-  ${NIGH_INCLUDE_DIRS}
-  ${PDQSORT_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/impl
-)
-
-message(STATUS "VAMP_COMMON_INCLUDES: ${VAMP_COMMON_INCLUDES}")
-
 # Create VAMP C++ library
 add_library(vamp_cpp INTERFACE)
 
@@ -71,16 +62,28 @@ add_library(vamp_cpp INTERFACE)
 # Do NOT use INCLUDES DESTINATION in install(TARGETS ...) for INTERFACE libraries
 # If you change include structure, update this path accordingly
 
-target_include_directories(vamp_cpp
-    INTERFACE
-        $<BUILD_INTERFACE:${VAMP_COMMON_INCLUDES}>
-        $<INSTALL_INTERFACE:include/vamp>
+# Split common includes into exportable and non-exportable parts
+set(VAMP_EXPORTABLE_INCLUDES
+  ${NIGH_INCLUDE_DIRS}
+  ${PDQSORT_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/impl
 )
 
-# Force the property to avoid CMake's parent directory bug
-set_target_properties(vamp_cpp PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES
-        "$<BUILD_INTERFACE:${VAMP_COMMON_INCLUDES}>;$<INSTALL_INTERFACE:include/vamp>"
+set(VAMP_BUILD_ONLY_INCLUDES)
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND SIMDxorshift_SOURCE_DIR)
+  list(APPEND VAMP_BUILD_ONLY_INCLUDES ${SIMDxorshift_SOURCE_DIR}/include)
+endif()
+
+# Common include directories for both C++ library and Python bindings
+set(VAMP_COMMON_INCLUDES ${VAMP_EXPORTABLE_INCLUDES} ${VAMP_BUILD_ONLY_INCLUDES})
+
+message(STATUS "VAMP_COMMON_INCLUDES: ${VAMP_COMMON_INCLUDES}")
+
+target_include_directories(vamp_cpp
+    INTERFACE
+        $<BUILD_INTERFACE:${VAMP_EXPORTABLE_INCLUDES}>
+        $<BUILD_INTERFACE:${VAMP_BUILD_ONLY_INCLUDES}>
+        $<INSTALL_INTERFACE:include/vamp>
 )
 
 target_link_libraries(vamp_cpp

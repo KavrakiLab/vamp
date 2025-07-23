@@ -49,6 +49,11 @@ include(FetchInitCPM)
 
 include(Dependencies)
 
+# Add SIMDxorshift dependency for x86_64 systems
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
+endif()
+
 # Common include directories for both C++ library and Python bindings
 list(APPEND VAMP_COMMON_INCLUDES
   ${NIGH_INCLUDE_DIRS}
@@ -85,14 +90,44 @@ target_link_libraries(vamp_cpp
     pdqsort
 )
 
+# Create SIMDxorshift static library for x86_64 systems
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND SIMDxorshift_SOURCE_DIR)
+  add_library(vamp_simd STATIC
+    ${SIMDxorshift_SOURCE_DIR}/src/simdxorshift128plus.c
+    ${SIMDxorshift_SOURCE_DIR}/src/xorshift128plus.c
+  )
+  
+  target_include_directories(vamp_simd
+    PRIVATE
+    ${SIMDxorshift_SOURCE_DIR}/include
+  )
+  
+  # Link the SIMD library to vamp_cpp
+  target_link_libraries(vamp_cpp
+    INTERFACE
+    vamp_simd
+  )
+  
+  # Set library properties for vamp_simd
+  set_target_properties(vamp_simd PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+  )
+endif()
+
 # Set library properties
 set_target_properties(vamp_cpp PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
 )
 
-# Install C++ library headers
-install(TARGETS vamp_cpp
+# Install C++ library headers and SIMD library (if available)
+set(VAMP_INSTALL_TARGETS vamp_cpp)
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND TARGET vamp_simd)
+  list(APPEND VAMP_INSTALL_TARGETS vamp_simd)
+endif()
+
+install(TARGETS ${VAMP_INSTALL_TARGETS}
     EXPORT vamp_cppTargets
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib

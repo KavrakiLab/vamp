@@ -4,15 +4,15 @@ option(VAMP_LTO "Use LTO." ON)
 option(VAMP_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output." ON)
 option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
 
-option(VAMP_BUILD_PYTHON_BINDINGS "Build VAMP Python bindings" OFF)
+option(VAMP_BUILD_PYTHON_BINDINGS "Build VAMP Python bindings" ON)
 
 option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" OFF)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
 option(VAMP_OMPL_PATH "Search Path for OMPL Installation - Only Needed for Demo Script" "")
 
 if(VAMP_FORCE_CLANG)
-  find_package(CLANG "clang")
-  find_package(CLANGPP "clang++")
+  find_program(CLANG "clang")
+  find_program(CLANGPP "clang++")
 
   set(CMAKE_C_COMPILER ${CLANG} CACHE STRING "C compiler" FORCE)
   set(CMAKE_CXX_COMPILER ${CLANGPP} CACHE STRING "C++ compiler" FORCE)
@@ -179,26 +179,19 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
     STABLE_ABI
     NOMINSIZE
     ${VAMP_EXT_SOURCES}
-    ${VAMP_SOURCES}
   )
 
-  set(VAMP_INCLUDES ${VAMP_COMMON_INCLUDES})
   target_include_directories(_core_ext
     SYSTEM PRIVATE
-    ${VAMP_INCLUDES}
+    ${VAMP_COMMON_INCLUDES}
     ${CMAKE_CURRENT_BINARY_DIR}
   )
 
   target_link_libraries(_core_ext
     PRIVATE
+    vamp_cpp
     Eigen3::Eigen
   )
-
-  if($ENV{GITHUB_ACTIONS})
-    set(STUB_PREFIX "")
-  else()
-    set(STUB_PREFIX "${CMAKE_BINARY_DIR}/stubs/")
-  endif()
 
   nanobind_add_stub(
     vamp_stub

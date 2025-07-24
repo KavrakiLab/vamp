@@ -87,9 +87,9 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
     Eigen3::Eigen
   )
 
-  # Disable narrowing warnings for Python bindings to maintain compatibility
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_options(_core_ext PRIVATE -Wno-c++11-narrowing)
+  # Disable strict warnings for Python bindings to maintain compatibility
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(_core_ext PRIVATE -Wno-c++11-narrowing -Wno-sign-compare)
   endif()
 
   nanobind_add_stub(

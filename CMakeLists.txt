@@ -148,9 +148,9 @@ if(VAMP_BUILD_CPP_DEMO)
   add_executable(vamp_rrtc_example scripts/cpp/rrtc_example.cc)
   target_link_libraries(vamp_rrtc_example PRIVATE vamp_cpp)
   
-  # Disable narrowing warnings for demos to maintain compatibility
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_options(vamp_rrtc_example PRIVATE -Wno-c++11-narrowing)
+  # Disable strict warnings for demos to maintain compatibility
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(vamp_rrtc_example PRIVATE -Wno-c++11-narrowing -Wno-sign-compare)
   endif()
 endif()
 
@@ -162,9 +162,9 @@ if(VAMP_BUILD_OMPL_DEMO)
     add_executable(vamp_ompl_integration scripts/cpp/ompl_integration.cc)
     target_link_libraries(vamp_ompl_integration PRIVATE ompl::ompl vamp_cpp)
     
-    # Disable narrowing warnings for demos to maintain compatibility
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-      target_compile_options(vamp_ompl_integration PRIVATE -Wno-c++11-narrowing)
+    # Disable strict warnings for demos to maintain compatibility
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      target_compile_options(vamp_ompl_integration PRIVATE -Wno-c++11-narrowing -Wno-sign-compare)
     endif()
   else()
     message(WARNING "OMPL not found! Cannot build OMPL demo.")

@@ -11,12 +11,11 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR VAMP_BUILD_TESTS)
     # Link against VAMP library
     target_link_libraries(vamp_tests PRIVATE vamp_cpp)
 
-    # Add test discovery (if using CTest)
-    enable_testing()
-    add_test(NAME vamp_basic_tests COMMAND vamp_tests)
+    # Add test discovery (CTest enabled in main CMakeLists.txt)
+    add_test(NAME vamp_tests COMMAND vamp_tests)
 
     # Set test properties
-    set_tests_properties(vamp_basic_tests PROPERTIES
+    set_tests_properties(vamp_tests PROPERTIES
         TIMEOUT 60
         LABELS "unit;basic"
     )

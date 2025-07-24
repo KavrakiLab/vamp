@@ -1,6 +1,4 @@
-import pickle
 from pathlib import Path
-import numpy as np
 
 from fire import Fire
 
@@ -23,7 +21,7 @@ def main(
     **kwargs,
     ):
 
-    if robot not in vamp.robots():
+    if robot not in vamp.robots:
         raise RuntimeError(f"Robot {robot} does not exist in VAMP!")
 
     robot_dir = Path(__file__).parent.parent / 'resources' / robot
@@ -42,8 +40,8 @@ def main(
 
     sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp_module.joint_names(), True)
 
-    start = sample_valid(vamp_module, sampler).to_list()
-    goal = sample_valid(vamp_module, sampler).to_list()
+    start = sample_valid(vamp_module, sampler).tolist()
+    goal = sample_valid(vamp_module, sampler).tolist()
 
     while True:
         result = planner_func(start, goal, env, plan_settings, sampler)
@@ -73,7 +71,7 @@ Simplified: {stats['simplified_path_cost']:5.3f}"""
             sim.play_once(plan)
 
             start = goal
-            goal = sample_valid(vamp_module, sampler).to_list()
+            goal = sample_valid(vamp_module, sampler).tolist()
 
         else:
             print("Failed to solve, stopping!")

@@ -83,6 +83,7 @@ if(VAMP_BUILD_PYTHON)
       panda
       fetch
       baxter
+      spot
     )
 
     list(APPEND VAMP_ROBOT_STRUCTS
@@ -91,6 +92,7 @@ if(VAMP_BUILD_PYTHON)
       Panda
       Fetch
       Baxter
+      Spot
     )
   endif()
 

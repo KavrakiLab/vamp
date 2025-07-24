@@ -5,6 +5,7 @@ option(VAMP_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output." ON)
 option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
 
 option(VAMP_BUILD_PYTHON_BINDINGS "Build VAMP Python bindings" ON)
+option(VAMP_INSTALL_CPP_LIBRARY "Install VAMP C++ library (disable for Python wheel builds)" ON)
 
 option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" OFF)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
@@ -59,20 +60,9 @@ add_library(vamp_cpp INTERFACE)
 # Set required C++ standard for the library
 target_compile_features(vamp_cpp INTERFACE cxx_std_17)
 
-# Always use only the subdirectory for install interface to avoid CMake's parent directory bug
-# See: https://gitlab.kitware.com/cmake/cmake/-/issues/17950 and related
-# Do NOT use INCLUDES DESTINATION in install(TARGETS ...) for INTERFACE libraries
-# If you change include structure, update this path accordingly
-
-# VAMP's own include directories
-set(VAMP_SOURCE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/impl)
-
-# VAMP source include directory only - dependencies handled via targets
-set(VAMP_COMMON_INCLUDES ${VAMP_SOURCE_INCLUDE_DIR})
-
 target_include_directories(vamp_cpp
     INTERFACE
-        $<BUILD_INTERFACE:${VAMP_SOURCE_INCLUDE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/impl>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/vamp>
 )
 
@@ -97,51 +87,54 @@ set_target_properties(vamp_cpp PROPERTIES
 # Create alias target for modern CMake usage
 add_library(vamp::vamp ALIAS vamp_cpp)
 
-# Install C++ library headers and SIMD library (if available)
-set(VAMP_INSTALL_TARGETS vamp_cpp)
-if(TARGET simdxorshift)
-  list(APPEND VAMP_INSTALL_TARGETS simdxorshift)
+# Install C++ library components (conditional for Python wheel builds)
+if(VAMP_INSTALL_CPP_LIBRARY)
+  # Install C++ library headers and SIMD library (if available)
+  set(VAMP_INSTALL_TARGETS vamp_cpp)
+  if(TARGET simdxorshift)
+    list(APPEND VAMP_INSTALL_TARGETS simdxorshift)
+  endif()
+
+  install(TARGETS ${VAMP_INSTALL_TARGETS}
+      EXPORT vamp_cppTargets
+      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+
+  # Install headers
+  install(DIRECTORY src/impl/vamp/
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vamp
+      FILES_MATCHING PATTERN "*.hh"
+  )
+
+  # Generate package configuration files
+  configure_package_config_file(
+      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/vampConfig.cmake.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/vampConfig.cmake"
+      INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
+  )
+
+  write_basic_package_version_file(
+      "${CMAKE_CURRENT_BINARY_DIR}/vampConfigVersion.cmake"
+      VERSION ${PROJECT_VERSION}
+      COMPATIBILITY SameMajorVersion
+  )
+
+  # Install package configuration files
+  install(FILES
+      "${CMAKE_CURRENT_BINARY_DIR}/vampConfig.cmake"
+      "${CMAKE_CURRENT_BINARY_DIR}/vampConfigVersion.cmake"
+      DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
+  )
+
+  # Export targets
+  install(EXPORT vamp_cppTargets
+      FILE vamp_cppTargets.cmake
+      NAMESPACE vamp::
+      DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
+  )
 endif()
-
-install(TARGETS ${VAMP_INSTALL_TARGETS}
-    EXPORT vamp_cppTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-# Install headers
-install(DIRECTORY src/impl/vamp/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vamp
-    FILES_MATCHING PATTERN "*.hh"
-)
-
-# Generate package configuration files
-configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/vampConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/vampConfig.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
-)
-
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/vampConfigVersion.cmake"
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
-)
-
-# Install package configuration files
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/vampConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/vampConfigVersion.cmake"
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
-)
-
-# Export targets
-install(EXPORT vamp_cppTargets
-    FILE vamp_cppTargets.cmake
-    NAMESPACE vamp::
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
-)
 
 # C++ demos
 if(VAMP_BUILD_CPP_DEMO)
@@ -174,6 +167,7 @@ endif()
 # Print build configuration
 message(STATUS "VAMP build configuration:")
 message(STATUS "  - C++ library: ON")
+message(STATUS "  - Install C++ library: ${VAMP_INSTALL_CPP_LIBRARY}")
 message(STATUS "  - Python bindings: ${VAMP_BUILD_PYTHON_BINDINGS}")
 message(STATUS "  - C++ demos: ${VAMP_BUILD_CPP_DEMO}")
 message(STATUS "  - OMPL demos: ${VAMP_BUILD_OMPL_DEMO}")

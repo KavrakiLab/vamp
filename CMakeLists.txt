@@ -44,46 +44,36 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 include(CompilerSettings)
 include(FetchInitCPM)
 
 include(Dependencies)
 
-# Add SIMDxorshift dependency for x86_64 systems
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-  CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
-endif()
+include(Python)
 
 # Create VAMP C++ library
 add_library(vamp_cpp INTERFACE)
+
+# Set required C++ standard for the library
+target_compile_features(vamp_cpp INTERFACE cxx_std_17)
 
 # Always use only the subdirectory for install interface to avoid CMake's parent directory bug
 # See: https://gitlab.kitware.com/cmake/cmake/-/issues/17950 and related
 # Do NOT use INCLUDES DESTINATION in install(TARGETS ...) for INTERFACE libraries
 # If you change include structure, update this path accordingly
 
-# Split common includes into exportable and non-exportable parts
-set(VAMP_EXPORTABLE_INCLUDES
-  ${NIGH_INCLUDE_DIRS}
-  ${PDQSORT_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/impl
-)
+# VAMP's own include directories
+set(VAMP_SOURCE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/impl)
 
-set(VAMP_BUILD_ONLY_INCLUDES)
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND SIMDxorshift_SOURCE_DIR)
-  list(APPEND VAMP_BUILD_ONLY_INCLUDES ${SIMDxorshift_SOURCE_DIR}/include)
-endif()
-
-# Common include directories for both C++ library and Python bindings
-set(VAMP_COMMON_INCLUDES ${VAMP_EXPORTABLE_INCLUDES} ${VAMP_BUILD_ONLY_INCLUDES})
-
-message(STATUS "VAMP_COMMON_INCLUDES: ${VAMP_COMMON_INCLUDES}")
+# VAMP source include directory only - dependencies handled via targets
+set(VAMP_COMMON_INCLUDES ${VAMP_SOURCE_INCLUDE_DIR})
 
 target_include_directories(vamp_cpp
     INTERFACE
-        $<BUILD_INTERFACE:${VAMP_EXPORTABLE_INCLUDES}>
-        $<BUILD_INTERFACE:${VAMP_BUILD_ONLY_INCLUDES}>
-        $<INSTALL_INTERFACE:include/vamp>
+        $<BUILD_INTERFACE:${VAMP_SOURCE_INCLUDE_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/vamp>
 )
 
 target_link_libraries(vamp_cpp
@@ -93,29 +83,9 @@ target_link_libraries(vamp_cpp
     pdqsort
 )
 
-# Create SIMDxorshift static library for x86_64 systems
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND SIMDxorshift_SOURCE_DIR)
-  add_library(vamp_simd STATIC
-    ${SIMDxorshift_SOURCE_DIR}/src/simdxorshift128plus.c
-    ${SIMDxorshift_SOURCE_DIR}/src/xorshift128plus.c
-  )
-  
-  target_include_directories(vamp_simd
-    PRIVATE
-    ${SIMDxorshift_SOURCE_DIR}/include
-  )
-  
-  # Link the SIMD library to vamp_cpp
-  target_link_libraries(vamp_cpp
-    INTERFACE
-    vamp_simd
-  )
-  
-  # Set library properties for vamp_simd
-  set_target_properties(vamp_simd PROPERTIES
-    VERSION ${PROJECT_VERSION}
-    SOVERSION ${PROJECT_VERSION_MAJOR}
-  )
+# Link SIMDxorshift if available
+if(TARGET simdxorshift)
+  target_link_libraries(vamp_cpp INTERFACE simdxorshift)
 endif()
 
 # Set library properties
@@ -124,156 +94,64 @@ set_target_properties(vamp_cpp PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}
 )
 
+# Create alias target for modern CMake usage
+add_library(vamp::vamp ALIAS vamp_cpp)
+
 # Install C++ library headers and SIMD library (if available)
 set(VAMP_INSTALL_TARGETS vamp_cpp)
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" AND TARGET vamp_simd)
-  list(APPEND VAMP_INSTALL_TARGETS vamp_simd)
+if(TARGET simdxorshift)
+  list(APPEND VAMP_INSTALL_TARGETS simdxorshift)
 endif()
 
 install(TARGETS ${VAMP_INSTALL_TARGETS}
     EXPORT vamp_cppTargets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 # Install headers
 install(DIRECTORY src/impl/vamp/
-    DESTINATION include/vamp
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vamp
     FILES_MATCHING PATTERN "*.hh"
+)
+
+# Generate package configuration files
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/vampConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/vampConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
+)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/vampConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+# Install package configuration files
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/vampConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/vampConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
 )
 
 # Export targets
 install(EXPORT vamp_cppTargets
     FILE vamp_cppTargets.cmake
     NAMESPACE vamp::
-    DESTINATION lib/cmake/vamp
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/vamp
 )
-
-
-if(VAMP_BUILD_PYTHON_BINDINGS)
-  # Check if Python is available
-  if(NOT Python_FOUND)
-    message(FATAL_ERROR "VAMP_BUILD_PYTHON_BINDINGS is ON but Python was not found")
-  endif()
-
-  if(NOT VAMP_ROBOT_MODULES)
-    list(APPEND VAMP_ROBOT_MODULES
-      sphere
-      ur5
-      panda
-      fetch
-      baxter
-    )
-
-    list(APPEND VAMP_ROBOT_STRUCTS
-      Sphere
-      UR5
-      Panda
-      Fetch
-      Baxter
-    )
-  endif()
-
-  foreach(robot ${VAMP_ROBOT_MODULES})
-    string(APPEND VAMP_ROBOT_INITS "    vb::init_${robot}(pymodule);\n")
-    string(APPEND VAMP_ROBOT_DECLS "    void init_${robot}(nanobind::module_ &pymodule);\n")
-    string(APPEND VAMP_ROBOT_QUOTED "\"${robot}\",")
-  endforeach()
-
-  list(JOIN VAMP_ROBOT_QUOTED ", " VAMP_ROBOT_NAMES)
-
-  configure_file(
-    src/impl/vamp/bindings/init.hh.in
-    ${CMAKE_CURRENT_BINARY_DIR}/vamp_python_init.hh
-    @ONLY
-  )
-
-  configure_file(
-    src/impl/vamp/bindings/python.cc.in
-    ${CMAKE_CURRENT_BINARY_DIR}/python.cc
-    @ONLY
-  )
-
-  list(APPEND VAMP_EXT_SOURCES
-    src/impl/vamp/bindings/environment.cc
-    src/impl/vamp/bindings/settings.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/python.cc
-  )
-  foreach(robot_name robot_struct IN ZIP_LISTS VAMP_ROBOT_MODULES VAMP_ROBOT_STRUCTS)
-  configure_file(
-    src/impl/vamp/bindings/robot.cc.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${robot_name}.cc
-    @ONLY
-  )
-
-  list(APPEND VAMP_EXT_SOURCES
-    ${CMAKE_CURRENT_BINARY_DIR}/${robot_name}.cc
-  )
-  endforeach()
-
-  nanobind_add_module(_core_ext
-    NB_STATIC
-    STABLE_ABI
-    NOMINSIZE
-    ${VAMP_EXT_SOURCES}
-  )
-
-  target_include_directories(_core_ext
-    SYSTEM PRIVATE
-    ${VAMP_COMMON_INCLUDES}
-    ${CMAKE_CURRENT_BINARY_DIR}
-  )
-
-  target_link_libraries(_core_ext
-    PRIVATE
-    vamp_cpp
-    Eigen3::Eigen
-  )
-
-  nanobind_add_stub(
-    vamp_stub
-    MODULE _core_ext
-    OUTPUT "${STUB_PREFIX}__init__.pyi"
-    PYTHON_PATH $<TARGET_FILE_DIR:_core_ext>
-    DEPENDS _core_ext
-    VERBOSE
-  )
-
-  foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
-    nanobind_add_stub(
-      "vamp_${robot_name}_stub"
-      MODULE "_core_ext.${robot_name}"
-      OUTPUT "${STUB_PREFIX}${robot_name}.pyi"
-      PYTHON_PATH $<TARGET_FILE_DIR:_core_ext>
-      DEPENDS _core_ext
-      VERBOSE
-    )
-  endforeach()
-
-  install(
-    TARGETS _core_ext
-    LIBRARY
-    DESTINATION vamp/_core
-  )
-
-  install(
-    FILES "${STUB_PREFIX}__init__.pyi"
-    DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
-  )
-
-  foreach(robot_name IN LISTS VAMP_ROBOT_MODULES)
-    install(
-      FILES "${STUB_PREFIX}${robot_name}.pyi"
-      DESTINATION "${CMAKE_SOURCE_DIR}/src/vamp/_core"
-    )
-  endforeach()
-endif()
 
 # C++ demos
 if(VAMP_BUILD_CPP_DEMO)
   add_executable(vamp_rrtc_example scripts/cpp/rrtc_example.cc)
   target_link_libraries(vamp_rrtc_example PRIVATE vamp_cpp)
+  
+  # Disable narrowing warnings for demos to maintain compatibility
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(vamp_rrtc_example PRIVATE -Wno-c++11-narrowing)
+  endif()
 endif()
 
 # OMPL integration demo
@@ -283,6 +161,11 @@ if(VAMP_BUILD_OMPL_DEMO)
   if(ompl_FOUND)
     add_executable(vamp_ompl_integration scripts/cpp/ompl_integration.cc)
     target_link_libraries(vamp_ompl_integration PRIVATE ompl::ompl vamp_cpp)
+    
+    # Disable narrowing warnings for demos to maintain compatibility
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+      target_compile_options(vamp_ompl_integration PRIVATE -Wno-c++11-narrowing)
+    endif()
   else()
     message(WARNING "OMPL not found! Cannot build OMPL demo.")
   endif()

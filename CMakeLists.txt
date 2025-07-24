@@ -6,6 +6,7 @@ option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
 
 option(VAMP_BUILD_PYTHON_BINDINGS "Build VAMP Python bindings" ON)
 option(VAMP_INSTALL_CPP_LIBRARY "Install VAMP C++ library (disable for Python wheel builds)" ON)
+option(VAMP_BUILD_TESTS "Build VAMP C++ unit tests" OFF)
 
 option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" OFF)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
@@ -164,10 +165,16 @@ if(VAMP_BUILD_OMPL_DEMO)
   endif()
 endif()
 
+# Tests
+if(VAMP_BUILD_TESTS)
+  add_subdirectory(tests)
+endif()
+
 # Print build configuration
 message(STATUS "VAMP build configuration:")
 message(STATUS "  - C++ library: ON")
 message(STATUS "  - Install C++ library: ${VAMP_INSTALL_CPP_LIBRARY}")
 message(STATUS "  - Python bindings: ${VAMP_BUILD_PYTHON_BINDINGS}")
+message(STATUS "  - C++ tests: ${VAMP_BUILD_TESTS}")
 message(STATUS "  - C++ demos: ${VAMP_BUILD_CPP_DEMO}")
 message(STATUS "  - OMPL demos: ${VAMP_BUILD_OMPL_DEMO}")

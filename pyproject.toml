@@ -3,8 +3,8 @@ requires = ["scikit-build-core >=0.4.3", "nanobind >=2.0.0", "cmake >=3.1", "typ
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "vamp"
-version = "0.5"
+name = "vamp-planner"
+version = "0.6"
 description = "Vector-Accelerated Motion Planner"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -14,7 +14,6 @@ authors = [
     { name = "Clayton Ramsey", email = "claytonwramsey@gmail.com" }
 ]
 classifiers = [
-    "License :: Polyform Noncommercial",
 ]
 dependencies = ["numpy"]
 

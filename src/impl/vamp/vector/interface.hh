@@ -836,7 +836,7 @@ namespace vamp
             }
             else
             {
-                Interface::pack<false>(scalar_data);
+                Interface::template pack<false>(scalar_data);
             }
         }
 
@@ -940,6 +940,13 @@ namespace vamp
         {
             return *reinterpret_cast<RowT *>(
                 reinterpret_cast<std::array<typename S::VectorT, num_vectors_per_row> *>(data.data() + idx));
+        }
+
+        [[nodiscard]] inline constexpr auto element(std::size_t idx) const noexcept -> typename S::ScalarT
+        {
+            std::size_t row_idx = idx / num_scalars_per_row;
+            std::size_t col_idx = idx % num_scalars_per_row;
+            return S::extract(data[row_idx], col_idx);
         }
 
         inline constexpr auto operator[](std::size_t idx) const noexcept -> RowT

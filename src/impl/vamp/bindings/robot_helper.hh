@@ -72,7 +72,7 @@ namespace vamp::binding
             auto *arr = new FloatT[Robot::dimension];
             for (auto i = 0U; i < Robot::dimension; ++i)
             {
-                arr[i] = c[{0, i}];
+                arr[i] = c.element(i);
             }
 
             nanobind::capsule arr_owner(
@@ -371,7 +371,7 @@ namespace vamp::binding
                 {
                     for (auto i = 0U; i < n; ++i)
                     {
-                        auto x = rng->next();
+                        rng->next();
                     }
                 },
                 "Skip the next n iterations.");

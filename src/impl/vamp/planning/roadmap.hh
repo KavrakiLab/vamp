@@ -83,13 +83,15 @@ namespace vamp::planning
         {
         }
 
-        [[nodiscard]] inline constexpr auto max_neighbors(std::size_t num_states) const noexcept
+        // We use *all* the neighbors
+        [[nodiscard]] inline constexpr auto max_neighbors(std::size_t /* num_states */) const noexcept
             -> std::size_t
         {
             return std::numeric_limits<size_t>::max();
         }
 
-        [[nodiscard]] inline auto neighbor_radius(std::size_t num_states) const noexcept -> float
+        // I said we use *all* the neighbors
+        [[nodiscard]] inline auto neighbor_radius(std::size_t /* num_states */) const noexcept -> float
         {
             return std::numeric_limits<float>::infinity();
         }

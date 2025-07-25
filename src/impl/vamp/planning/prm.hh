@@ -96,7 +96,7 @@ namespace vamp::planning
 
             for (const auto &goal : goals)
             {
-                std::size_t index = nodes.size();
+                uint32_t index = nodes.size();
                 auto *goal_state = state_index(index);
                 goal.to_array(goal_state);
                 nodes.emplace_back(index, index);

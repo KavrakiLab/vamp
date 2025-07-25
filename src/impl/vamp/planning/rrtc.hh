@@ -43,7 +43,6 @@ namespace vamp::planning
             NN<dimension> goal_tree;
 
             constexpr const std::size_t start_index = 0;
-            constexpr const std::size_t goal_index = 1;
 
             auto buffer = std::unique_ptr<float, decltype(&free)>(
                 vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(

@@ -40,10 +40,10 @@ def main(
 
     sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp_module.joint_names(), True)
 
-    start = sample_valid(vamp_module, sampler).tolist()
+    start = sample_valid(vamp_module, sampler)
 
     while True:
-        goal = sample_valid(vamp_module, sampler).tolist()
+        goal = sample_valid(vamp_module, sampler)
         result = planner_func(start, goal, env, plan_settings, sampler)
         solved = result.solved
 

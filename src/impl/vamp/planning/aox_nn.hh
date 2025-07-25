@@ -385,7 +385,8 @@ namespace vamp::planning
             centers.clear();
             centers.reserve(k);
 
-            if (dists.rows() < data.size() or dists.cols() < k)
+            if (static_cast<std::size_t>(dists.rows()) < data.size() or
+                static_cast<std::size_t>(dists.cols()) < k)
             {
                 dists.resize(std::max(2U * (std::size_t)dists.rows() + 1U, data.size()), k);
             }

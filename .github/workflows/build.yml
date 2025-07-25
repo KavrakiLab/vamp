@@ -68,6 +68,8 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cpp }}
         -DCMAKE_C_COMPILER=${{ matrix.compiler.c }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DVAMP_BUILD_PYTHON_BINDINGS=ON
+        -DVAMP_INSTALL_CPP_LIBRARY=ON
         -S ${{ github.workspace }}
 
     - name: Build

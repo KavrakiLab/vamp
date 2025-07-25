@@ -199,7 +199,7 @@ namespace vamp::planning
                         const float g_hat = new_configuration.distance(root_vert.array);
 
                         // Continuously resample cost until an invalid connection is found
-                        for (auto i = 0; i < settings.max_cost_bound_resamples; ++i)
+                        for (auto i = 0U; i < settings.max_cost_bound_resamples; ++i)
                         {
                             const float c_range = std::max(new_cost - g_hat, 0.0F);
                             const float c_rand = (rng->dist.uniform_01() * c_range) + g_hat;

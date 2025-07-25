@@ -16,39 +16,6 @@
 
 namespace vamp::collision
 {
-    namespace
-    {
-        template <class T>
-        struct AlignedAllocator
-        {
-            using value_type = T;
-            inline static constexpr std::align_val_t alignment{32};
-
-            constexpr AlignedAllocator() noexcept = default;
-            constexpr AlignedAllocator(const AlignedAllocator &) noexcept = default;
-
-            template <typename U>
-            constexpr AlignedAllocator(const AlignedAllocator<U> &) noexcept
-            {
-            }
-
-            [[nodiscard]] value_type *allocate(std::size_t num_elements)
-            {
-                if (num_elements > std::numeric_limits<std::size_t>::max() / sizeof(value_type))
-                {
-                    throw std::bad_array_new_length();
-                }
-
-                const auto num_bytes = num_elements * sizeof(value_type);
-                return reinterpret_cast<value_type *>(::operator new[](num_bytes, alignment));
-            }
-
-            void deallocate(value_type *allocated_ptr, [[maybe_unused]] std::size_t num_allocated_bytes)
-            {
-                ::operator delete[](allocated_ptr, alignment);
-            }
-        };
-    }  // namespace
 
     // A 3D cell volume.
     struct Volume
@@ -458,7 +425,7 @@ namespace vamp::collision
         {
             // Test against top AABB
             FVectorT inbounds =
-                centers[0] + radii >= aabb_top.lower[0] & (centers[0] - radii <= aabb_top.upper[0]);
+                (centers[0] + radii >= aabb_top.lower[0]) & (centers[0] - radii <= aabb_top.upper[0]);
 
             for (uint8_t k = 1; k < 3; k++)
             {
@@ -582,6 +549,37 @@ namespace vamp::collision
 
         // Destroy the affordance tree, freeing all owned memory.
         ~CAPT() = default;
+
+        template <class T>
+        struct AlignedAllocator
+        {
+            using value_type = T;
+            inline static constexpr std::align_val_t alignment{32};
+
+            constexpr AlignedAllocator() noexcept = default;
+            constexpr AlignedAllocator(const AlignedAllocator &) noexcept = default;
+
+            template <typename U>
+            constexpr AlignedAllocator(const AlignedAllocator<U> &) noexcept
+            {
+            }
+
+            [[nodiscard]] value_type *allocate(std::size_t num_elements)
+            {
+                if (num_elements > std::numeric_limits<std::size_t>::max() / sizeof(value_type))
+                {
+                    throw std::bad_array_new_length();
+                }
+
+                const auto num_bytes = num_elements * sizeof(value_type);
+                return reinterpret_cast<value_type *>(::operator new[](num_bytes, alignment));
+            }
+
+            void deallocate(value_type *allocated_ptr, [[maybe_unused]] std::size_t num_allocated_bytes)
+            {
+                ::operator delete[](allocated_ptr, alignment);
+            }
+        };
 
         // The test buffer for this tree.
         // Contains (2 ^ nlog2) - 1 points.

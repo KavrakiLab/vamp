@@ -123,9 +123,10 @@ namespace vamp::binding
         inline static auto from(const Configuration &c) -> Type
         {
             Type a;
+            auto c_arr = c.to_array();
             for (auto i = 0U; i < Robot::dimension; ++i)
             {
-                a[i] = c[{0, i}];
+                a[i] = c_arr[i];
             }
 
             return a;
@@ -372,7 +373,7 @@ namespace vamp::binding
                 {
                     for (auto i = 0U; i < n; ++i)
                     {
-                        auto x = rng->next();
+                        rng->next();
                     }
                 },
                 "Skip the next n iterations.");

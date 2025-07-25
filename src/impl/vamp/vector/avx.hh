@@ -457,7 +457,6 @@ namespace vamp
         {
             using IntVector = SIMDVector<__m256i>;
 
-            const auto ps_inv_sign_mask = constant_int(~0x80000000);
             const auto ps_sign_mask = constant_int(0x80000000);
             const auto ps_cephes_FOPI = constant(1.27323954473516f);  // 4/Pi
             const auto pi32_1 = IntVector::constant(1);

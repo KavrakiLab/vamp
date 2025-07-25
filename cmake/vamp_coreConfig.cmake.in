@@ -1,0 +1,14 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Find required dependencies
+find_dependency(Eigen3 REQUIRED NO_MODULE)
+
+# Include the targets file
+include("${CMAKE_CURRENT_LIST_DIR}/vamp_coreTargets.cmake")
+
+# Set VAMP_CORE_FOUND
+set(VAMP_CORE_FOUND TRUE)
+
+check_required_components(vamp_core) 

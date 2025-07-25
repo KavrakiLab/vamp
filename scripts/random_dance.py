@@ -23,7 +23,7 @@ def main(
     **kwargs,
     ):
 
-    if robot not in vamp.robots():
+    if robot not in vamp.robots:
         raise RuntimeError(f"Robot {robot} does not exist in VAMP!")
 
     robot_dir = Path(__file__).parent.parent / 'resources' / robot
@@ -42,10 +42,10 @@ def main(
 
     sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp_module.joint_names(), True)
 
-    start = sample_valid(vamp_module, sampler).to_list()
-    goal = sample_valid(vamp_module, sampler).to_list()
+    start = sample_valid(vamp_module, sampler)
 
     while True:
+        goal = sample_valid(vamp_module, sampler)
         result = planner_func(start, goal, env, plan_settings, sampler)
         solved = result.solved
         print(solved)
@@ -73,11 +73,9 @@ Simplified: {stats['simplified_path_cost']:5.3f}"""
             sim.play_once(plan)
 
             start = goal
-            goal = sample_valid(vamp_module, sampler).to_list()
 
         else:
-            print("Failed to solve, stopping!")
-            break
+            print("Failed to solve, trying again!")
 
 
 if __name__ == "__main__":

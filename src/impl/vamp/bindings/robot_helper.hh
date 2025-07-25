@@ -70,9 +70,10 @@ namespace vamp::binding
         inline static auto from(const Configuration &c) -> Type
         {
             auto *arr = new FloatT[Robot::dimension];
+            auto c_arr = c.to_array();
             for (auto i = 0U; i < Robot::dimension; ++i)
             {
-                arr[i] = c.element(i);
+                arr[i] = c_arr[i];
             }
 
             nanobind::capsule arr_owner(
@@ -122,9 +123,10 @@ namespace vamp::binding
         inline static auto from(const Configuration &c) -> Type
         {
             Type a;
+            auto c_arr = c.to_array();
             for (auto i = 0U; i < Robot::dimension; ++i)
             {
-                a[i] = c[{0, i}];
+                a[i] = c_arr[i];
             }
 
             return a;

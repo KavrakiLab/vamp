@@ -41,12 +41,11 @@ def main(
     sim = vpb.PyBulletSimulator(str(robot_dir / f"{robot}_spherized.urdf"), vamp_module.joint_names(), True)
 
     start = sample_valid(vamp_module, sampler).tolist()
-    goal = sample_valid(vamp_module, sampler).tolist()
 
     while True:
+        goal = sample_valid(vamp_module, sampler).tolist()
         result = planner_func(start, goal, env, plan_settings, sampler)
         solved = result.solved
-        print(solved)
 
         if solved:
             simplify = vamp_module.simplify(result.path, env, simp_settings, sampler)
@@ -71,11 +70,9 @@ Simplified: {stats['simplified_path_cost']:5.3f}"""
             sim.play_once(plan)
 
             start = goal
-            goal = sample_valid(vamp_module, sampler).tolist()
 
         else:
-            print("Failed to solve, stopping!")
-            break
+            print("Failed to solve, trying again!")
 
 
 if __name__ == "__main__":

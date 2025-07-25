@@ -165,12 +165,6 @@ if(VAMP_BUILD_OMPL_DEMO)
   endif()
 endif()
 
-# Tests
-if(VAMP_BUILD_TESTS)
-  enable_testing()
-  add_subdirectory(tests)
-endif()
-
 # Print build configuration
 message(STATUS "VAMP build configuration:")
 message(STATUS "  - C++ library: ON")

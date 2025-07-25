@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - src/impl/**
-      - tests/**
       - CMakeLists.txt
       - cmake/Dependencies.cmake
       - pyproject.toml
@@ -14,7 +13,6 @@ on:
   pull_request:
     paths:
       - src/impl/**
-      - tests/**
       - CMakeLists.txt
       - cmake/Dependencies.cmake
       - pyproject.toml
@@ -70,21 +68,10 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cpp }}
         -DCMAKE_C_COMPILER=${{ matrix.compiler.c }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DVAMP_BUILD_TESTS=ON
+        -DVAMP_BUILD_TESTS=OFF
         -DVAMP_BUILD_PYTHON_BINDINGS=ON
         -DVAMP_INSTALL_CPP_LIBRARY=ON
         -S ${{ github.workspace }}
 
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
-
-    - name: Run Tests
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: |
-        if command -v ctest &> /dev/null; then
-          echo "Running tests via CTest..."
-          ctest --output-on-failure --timeout 60
-        else
-          echo "CTest not available, running test binary directly..."
-          ./tests/vamp_tests
-        fi

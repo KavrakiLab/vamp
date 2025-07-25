@@ -6,6 +6,7 @@
 [![arXiv AORRTC](https://img.shields.io/badge/arXiv-2505.10542-b31b1b.svg)](https://arxiv.org/abs/2505.10542)
 [![Build Check](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/build.yml)
 [![Format Check](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml/badge.svg)](https://github.com/KavrakiLab/vamp/actions/workflows/format.yml)
+[![PyPI - Version](https://img.shields.io/pypi/v/vamp-planner)](https://pypi.org/project/vamp-planner/)
 
 ![Demo video](resources/capt_demo.gif)
 
@@ -69,7 +70,12 @@ If you use AORRTC, please use the following citation:
 }
 ```
 
-## Building and Installing
+## Installation
+
+You can simply download the latest release of VAMP from PyPI with:
+```bash
+pip install vamp-planner
+```
 
 VAMP requires the following system dependencies:
 - [CMake](https://cmake.org/) version 3.16 or greater.
@@ -83,12 +89,13 @@ VAMP requires the following system dependencies:
   To install on Ubuntu 22.04, `sudo apt install libeigen3-dev`.
   Note that we require at least Eigen 3.4, which is not available by default on Ubuntu 20.04.
 
+### Installation from Source
+
 VAMP fetches the following external dependencies via [CPM](https://github.com/cpm-cmake/CPM.cmake):
 - [`nanobind`](https://github.com/wjakob/nanobind): for Python bindings
 - [`nigh`](https://github.com/KavrakiLab/nigh): a fork of the original [`nigh`](https://github.com/UNC-Robotics/nigh) [[4]](#4) to better use our vector types
 - [`pdqsort`](https://github.com/orlp/pdqsort): for fast sorting
 - [`SIMDxorshift`](https://github.com/lemire/SIMDxorshift): alternative fast random numbers for x86 machines
-
 
 Download the code and submodules:
 ```bash

@@ -45,13 +45,12 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(macros)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CompilerSettings)
 include(FetchInitCPM)
-
 include(Dependencies)
-
 include(Python)
 
 # Create VAMP C++ library
@@ -66,7 +65,7 @@ target_include_directories(vamp_cpp
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/vamp>
 )
 
-target_link_libraries(vamp_cpp
+target_link_libraries_system(vamp_cpp
     INTERFACE
     Eigen3::Eigen
     nigh

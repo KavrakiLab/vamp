@@ -84,6 +84,7 @@ if(VAMP_BUILD_PYTHON)
       fetch
       baxter
       spot
+      spotarm
     )
 
     list(APPEND VAMP_ROBOT_STRUCTS
@@ -93,6 +94,7 @@ if(VAMP_BUILD_PYTHON)
       Fetch
       Baxter
       Spot
+      SpotArm
     )
   endif()
 

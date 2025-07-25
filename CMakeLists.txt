@@ -51,7 +51,6 @@ include(CMakePackageConfigHelpers)
 include(CompilerSettings)
 include(FetchInitCPM)
 include(Dependencies)
-include(Python)
 
 # Create VAMP C++ library
 add_library(vamp_cpp INTERFACE)
@@ -85,6 +84,9 @@ set_target_properties(vamp_cpp PROPERTIES
 
 # Create alias target for modern CMake usage
 add_library(vamp::vamp ALIAS vamp_cpp)
+
+# Build Python bindings
+include(Python)
 
 # Install C++ library components (conditional for Python wheel builds)
 if(VAMP_INSTALL_CPP_LIBRARY)

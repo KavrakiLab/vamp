@@ -9,7 +9,7 @@ namespace vamp::rng
     struct Halton : public RNG<Robot>
     {
         // Numerical precision degrades around 1.4M iterations, this value can be increased up to that point.
-        static constexpr const std::size_t max_iterations = 1000000U;
+        static constexpr const std::size_t max_iterations = 100000U;
 
         using Configuration = typename Robot::Configuration;
 

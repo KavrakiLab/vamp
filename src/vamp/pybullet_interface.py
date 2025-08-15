@@ -80,8 +80,9 @@ class PyBulletSimulator:
             self.link_map = {ji[12]: ji[0] for ji in jtu}
 
             if urdf:
-                srdffile = list(Path(urdf).parent.glob('*.srdf'))[0]
-                if srdffile:
+                srdffiles = list(Path(urdf).parent.glob('*.srdf'))
+                if srdffiles:
+                    srdffile = srdffiles[0]
                     with open(srdffile, 'r') as f:
                         srdf = xmltodict.parse(f.read())
 

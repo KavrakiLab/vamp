@@ -250,7 +250,7 @@ namespace vamp
 
         inline constexpr auto less_than(typename S::ScalarT s) const noexcept -> D
         {
-            return greater_than(broadcast_scalar(s));
+            return (broadcast_scalar(s));
         }
 
         template <typename T, typename allow_types<D>::template check<T> = true>

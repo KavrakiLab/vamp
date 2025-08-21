@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <cmath>
 
 #include <vamp/collision/environment.hh>
 #include <vamp/planning/nn.hh>
@@ -104,8 +105,8 @@ namespace vamp::planning
 
                 if ((not settings.balance) or ratio < settings.tree_ratio)
                 {
-                    std::swap(tree_a, tree_b);
-                    tree_a_is_start = not tree_a_is_start;
+                    //std::swap(tree_a, tree_b);
+                    //tree_a_is_start = not tree_a_is_start;
                 }
 
                 auto temp = rng->next();
@@ -113,6 +114,8 @@ namespace vamp::planning
 
                 typename Robot::ConfigurationBuffer temp_array;
                 temp.to_array(temp_array.data());
+                //temp_array.data()[2] = 0.0;
+                //temp = temp_array.data();//.as_vector();
 
                 const auto nearest = tree_a->nearest(NNFloatArray<dimension>{temp_array.data()});
                 if (not nearest)
@@ -135,6 +138,13 @@ namespace vamp::planning
                 bool reach = nearest_distance < settings.range;
                 auto extension_vector =
                     (reach) ? nearest_vector : nearest_vector * (settings.range / nearest_distance);
+
+                //typename Robot::ConfigurationBuffer temp_array2;
+                //extension_vector.to_array(temp_array2.data());
+                //auto dist = std::sqrt(temp_array2.data()[0]*temp_array2.data()[0] + temp_array2.data()[1]*temp_array2.data()[1]);
+                //temp_array2.data()[2] = std::acos(temp_array2.data()[0] / dist);
+                //extension_vector = temp_array2.data();
+
 
                 if (validate_vector<Robot, rake, resolution>(
                         nearest_configuration,
@@ -172,6 +182,10 @@ namespace vamp::planning
                     const std::size_t n_extensions = std::ceil(other_nearest_distance / settings.range);
                     const float increment_length = other_nearest_distance / static_cast<float>(n_extensions);
                     auto increment = other_nearest_vector * (1.0F / static_cast<float>(n_extensions));
+                    //typename Robot::ConfigurationBuffer temp_array3;
+                    //increment.to_array(temp_array3.data());
+                    //temp_array3.data()[2] = 0.0;
+                    //increment = temp_array3.data();
 
                     std::size_t i_extension = 0;
                     auto prior = new_configuration;

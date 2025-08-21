@@ -27,6 +27,13 @@ namespace vamp::planning
         float distance,
         const collision::Environment<FloatVector<rake>> &environment) -> bool
     {
+        // Get x and distance of vector, ensure abs(cos of that) is > some value
+        //auto dot = vector.broadcast(0)*start.broadcast(2).cos() + vector.broadcast(1)*start.broadcast(2).sin();
+        //auto dist = (vector.broadcast(0)*vector.broadcast(0) + vector.broadcast(1)*vector.broadcast(1)).sqrt();
+        //if ((dot / dist).abs().test_all_less_equal(0.87) || vector.broadcast(2).abs().test_all_greater_equal(0.4))
+        //    return false;
+        //if ((start.broadcast(2) - vector.broadcast(2)) > 0.15)
+        //    return false;
         // TODO: Fix use of reinterpret_cast in pack() so that this can be constexpr
         const auto percents = FloatVector<rake>(Percents<rake>::percents);
 

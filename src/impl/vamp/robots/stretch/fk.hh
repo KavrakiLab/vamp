@@ -97,6 +97,38 @@ namespace vamp::robots::stretch
         q[11] = 0.4694835680751174 * (q[11] - -1.57);
         q[12] = 0.1592356687898089 * (q[12] - -3.14);
     }
+// =======
+//     static const Configuration s_a(s_a_a);inline void scale_configuration(Configuration& q) noexcept { q = q * s_m + s_a; }template <std::size_t block_width> inline void scale_configuration_block(ConfigurationBlock<block_width>& q) noexcept {q[0] = -5.0 + (q[0] * 10.0);
+//     q[1] = -5.0 + (q[1] * 10.0);
+//     q[2] = -3.14159 + (q[2] * 6.28318);
+//     q[3] = 0.0 + (q[3] * 1.1);
+//     q[4] = 0.0 + (q[4] * 0.13);
+//     q[5] = 0.0 + (q[5] * 0.13);
+//     q[6] = 0.0 + (q[6] * 0.13);
+//     q[7] = 0.0 + (q[7] * 0.13);
+//     q[8] = -1.75 + (q[8] * 5.75);
+//     q[9] = -3.9 + (q[9] * 5.4);
+//     q[10] = -1.53 + (q[10] * 2.3200000000000003);
+//     q[11] = -1.57 + (q[11] * 2.13);
+//     q[12] = -3.14 + (q[12] * 6.28);}
+
+//     alignas(Configuration::S::Alignment) constexpr std::array<float, 13> d_m_a{0.1, 0.1, 0.15915507752443828, 0.9090909090909091, 7.692307692307692, 7.692307692307692, 7.692307692307692, 7.692307692307692, 0.17391304347826086, 0.18518518518518517, 0.43103448275862066, 0.4694835680751174, 0.1592356687898089};
+//     alignas(Configuration::S::Alignment) constexpr std::array<float, 13> d_a_a{-5.0, -5.0, -3.14159, 0.0, 0.0, 0.0, 0.0, 0.0, -1.75, -3.9, -1.53, -1.57, -3.14};
+//     static const Configuration d_m(d_m_a);
+//     static const Configuration d_a(d_a_a);inline void descale_configuration(Configuration& q) noexcept { q = (q - d_a) * d_m; }template <std::size_t block_width> inline void descale_configuration_block(ConfigurationBlock<block_width>& q) noexcept {q[0] = 0.1 * (q[0] - -5.0);
+//     q[1] = 0.1 * (q[1] - -5.0);
+//     q[2] = 0.15915507752443828 * (q[2] - -3.14159);
+//     q[3] = 0.9090909090909091 * (q[3] - 0.0);
+//     q[4] = 7.692307692307692 * (q[4] - 0.0);
+//     q[5] = 7.692307692307692 * (q[5] - 0.0);
+//     q[6] = 7.692307692307692 * (q[6] - 0.0);
+//     q[7] = 7.692307692307692 * (q[7] - 0.0);
+//     q[8] = 0.17391304347826086 * (q[8] - -1.75);
+//     q[9] = 0.18518518518518517 * (q[9] - -3.9);
+//     q[10] = 0.43103448275862066 * (q[10] - -1.53);
+//     q[11] = 0.4694835680751174 * (q[11] - -1.57);
+//     q[12] = 0.1592356687898089 * (q[12] - -3.14);}
+// >>>>>>> f97aa5a65d32f6048c47568f96c977aa2a7252ee
 
     //constexpr auto space_measure = 6235.581234344888;
     inline static auto space_measure() noexcept -> float

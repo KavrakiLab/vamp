@@ -171,10 +171,33 @@ namespace vamp::binding
         }
 
         inline static auto
+        validate_motion_configuration(const Configuration &a, const Configuration &b, const EnvironmentInput &environment)
+            -> bool
+        {
+            auto copya = a.trim();
+            Robot::descale_configuration(copya);
+
+            auto copyb = b.trim();
+            Robot::descale_configuration(copyb);
+
+            return (copya <= 1.F).all() and (copya >= 0.F).all() and (copyb <= 1.F).all() and (copyb >= 0.F).all() and
+                   vamp::planning::validate_motion<Robot, rake, 1>(
+                       a, b, EnvironmentVector(environment));
+        }
+
+        inline static auto
         validate(const ConfigurationArray &configuration, const EnvironmentInput &environment) -> bool
         {
             const Configuration configuration_v(configuration);
             return validate_configuration(configuration_v, environment);
+        }
+
+        inline static auto
+        validate_motion(const ConfigurationArray &a, const ConfigurationArray &b, const EnvironmentInput &environment) -> bool
+        {
+            const Configuration configuration_va(a);
+            const Configuration configuration_vb(b);
+            return validate_motion_configuration(configuration_va, configuration_vb, environment);
         }
 
         inline static auto rrtc_single(
@@ -622,6 +645,22 @@ namespace vamp::binding
             "configuration"_a,
             "environment"_a = vamp::collision::Environment<float>(),
             "Check if a configuration is valid. Returns true if valid.");
+
+        submodule.def(
+            "validate",
+            RH::validate_motion_configuration,
+            "a"_a,
+            "b"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "Check if a motion from a to b is valid. Returns true if valid.");
+
+        submodule.def(
+            "validate",
+            RH::validate_motion,
+            "a"_a,
+            "b"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "Check if a motion from a to b is valid. Returns true if valid.");
 
         submodule.def(
             "sphere_validity",

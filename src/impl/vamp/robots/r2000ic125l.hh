@@ -8,7 +8,7 @@
 // NOLINTBEGIN(*-magic-numbers)
 namespace vamp::robots
 {
-struct R2000IC125l
+struct R2000IC125L
 {
     static constexpr char* name = "r2000ic125l";
     static constexpr std::size_t dimension = 6;

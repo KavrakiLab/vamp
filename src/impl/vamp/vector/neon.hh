@@ -602,7 +602,7 @@ namespace vamp
 
             auto poly_mask_f = IntVector::template as<VectorT>(poly_mask);
             auto ys = blend(y2, y1, poly_mask_f);
-            return blend(ys, neg(ys), vreinterpretq_f32_u32(vreinterpretq_u32_f32(sign_mask_sin)));
+            return blend(ys, neg(ys), sign_mask_sin);
         }
 
         // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...

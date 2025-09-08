@@ -67,7 +67,7 @@ namespace vamp
         template <unsigned int = 0>
         inline static constexpr auto cmp_not_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_s32_u32(vmvnq_u32(vreinterpretq_u32_s32(vceqq_s32(l, r))));
+            return vreinterpretq_s32_u32(vmvnq_u32(vceqq_s32(l, r)));
         }
 
         template <unsigned int = 0>

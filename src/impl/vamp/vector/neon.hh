@@ -605,6 +605,145 @@ namespace vamp
             return blend(ys, neg(ys), sign_mask_sin);
         }
 
+        // NEON Implementation of asin and acos functions
+        // Translation from AVX2 (__m256) to ARM NEON (float32x4_t)
+
+        template <unsigned int = 0>
+        inline static constexpr auto asin(VectorT x) noexcept -> VectorT
+        {
+            // Polynomial coefficients for P(z) evaluation (z < 0.625)
+            const auto ps_cephes_P0 = constant(4.253011369004428248960E-3f);
+            const auto ps_cephes_P1 = constant(-6.019598008014123785661E-1f);
+            const auto ps_cephes_P2 = constant(5.444622390564711410273E0f);
+            const auto ps_cephes_P3 = constant(-1.626247967210700244449E1f);
+            const auto ps_cephes_P4 = constant(1.956261983317594739197E1f);
+            const auto ps_cephes_P5 = constant(-8.198089802484824371615E0f);
+
+            // Polynomial coefficients for Q(z) evaluation (z < 0.625)
+            const auto ps_cephes_Q0 = constant(-1.474091372988853791896E1f);
+            const auto ps_cephes_Q1 = constant(7.049610280856842141659E1f);
+            const auto ps_cephes_Q2 = constant(-1.471791292232726029859E2f);
+            const auto ps_cephes_Q3 = constant(1.395105614657485689735E2f);
+            const auto ps_cephes_Q4 = constant(-4.918853881490881290097E1f);
+
+            // Polynomial coefficients for R(z) evaluation (z > 0.625)
+            const auto ps_cephes_R0 = constant(2.967721961301243206100E-3f);
+            const auto ps_cephes_R1 = constant(-5.634242780008963776856E-1f);
+            const auto ps_cephes_R2 = constant(6.968710824104713396794E0f);
+            const auto ps_cephes_R3 = constant(-2.556901049652824852289E1f);
+            const auto ps_cephes_R4 = constant(2.853665548261061424989E1f);
+
+            // Polynomial coefficients for S(z) evaluation (z > 0.625)
+            const auto ps_cephes_S0 = constant(-2.194779531642920639778E1f);
+            const auto ps_cephes_S1 = constant(1.470656354026814941758E2f);
+            const auto ps_cephes_S2 = constant(-3.838770957603691357202E2f);
+            const auto ps_cephes_S3 = constant(3.424398657913078477438E2f);
+
+            // Mathematical constants
+            const auto ps_1 = constant(1.0f);
+            const auto ps_cephes_pi4 = constant(7.85398163397448309616E-1f);  // π/4
+            const auto ps_cephes_morebits = constant(6.123233995736765886130E-17f);
+            const auto ps_625 = constant(0.625f);
+            const auto ps_1en8 = constant(1E-8f);
+
+            // Extract and preserve sign
+            auto sign_bit = and_(x, constant_int(0x80000000));
+            auto a = abs(x);
+
+            // Branch 1: Evaluate asin for |x| > 0.625 using R(z)/S(z) rational approximation
+            auto zz = sub(ps_1, a);  // z = 1 - |x|
+
+            // Evaluate R(z) polynomial
+            auto r = ps_cephes_R0;
+            r = add(mul(r, zz), ps_cephes_R1);
+            r = add(mul(r, zz), ps_cephes_R2);
+            r = add(mul(r, zz), ps_cephes_R3);
+            r = add(mul(r, zz), ps_cephes_R4);
+
+            // Evaluate S(z) polynomial (using Horner's method with leading coefficient 1)
+            auto s = add(zz, ps_cephes_S0);
+            s = add(mul(s, zz), ps_cephes_S1);
+            s = add(mul(s, zz), ps_cephes_S2);
+            s = add(mul(s, zz), ps_cephes_S3);
+
+            // Compute rational function and apply sqrt correction
+            auto p = div(mul(zz, r), s);
+            zz = sqrt(add(zz, zz));  // sqrt(2z) = sqrt(2(1-|x|))
+            auto z = sub(ps_cephes_pi4, zz);
+            zz = sub(mul(zz, p), ps_cephes_morebits);
+            z = add(sub(z, zz), ps_cephes_pi4);  // Final result for |x| > 0.625
+
+            // Branch 2: Evaluate asin for |x| ≤ 0.625 using P(z²)/Q(z²) rational approximation
+            auto zz2 = mul(a, a);  // z² = |x|²
+
+            // Evaluate P(z²) polynomial
+            auto pq = ps_cephes_P0;
+            pq = add(mul(pq, zz2), ps_cephes_P1);
+            pq = add(mul(pq, zz2), ps_cephes_P2);
+            pq = add(mul(pq, zz2), ps_cephes_P3);
+            pq = add(mul(pq, zz2), ps_cephes_P4);
+            pq = add(mul(pq, zz2), ps_cephes_P5);
+
+            // Evaluate Q(z²) polynomial (using Horner's method with leading coefficient 1)
+            auto qp = add(zz2, ps_cephes_Q0);
+            qp = add(mul(qp, zz2), ps_cephes_Q1);
+            qp = add(mul(qp, zz2), ps_cephes_Q2);
+            qp = add(mul(qp, zz2), ps_cephes_Q3);
+            qp = add(mul(qp, zz2), ps_cephes_Q4);
+
+            // Compute rational function: |x| * P(|x|²)/Q(|x|²) + |x|
+            auto z2 = add(mul(a, div(mul(zz2, pq), qp)), a);
+
+            // Apply range-based masking to select appropriate approximation
+            auto gt_625_mask = cmp_greater_than(a, ps_625);
+            z = and_(gt_625_mask, z);  // Select z for |x| > 0.625
+            z2 = and_(vreinterpretq_f32_u32(vmvnq_u32(vreinterpretq_u32_f32(gt_625_mask))), z2);  // Select z2
+                                                                                                  // for |x| ≤
+                                                                                                  // 0.625
+            z = add(z, z2);
+
+            // Restore original sign
+            z = or_(z, sign_bit);
+
+            // Handle very small values: if |x| > 1e-8, use computed result; otherwise return x
+            auto gt_1en8_mask = cmp_greater_than(a, ps_1en8);
+            z = and_(gt_1en8_mask, z);
+            z2 = and_(vreinterpretq_f32_u32(vmvnq_u32(vreinterpretq_u32_f32(gt_1en8_mask))), x);
+            z = add(z, z2);
+
+            return z;
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto acos(VectorT x) noexcept -> VectorT
+        {
+            // Mathematical constants
+            const auto ps_cephes_morebits = constant(6.123233995736765886130E-17f);
+            const auto ps_05 = constant(0.5f);
+            const auto ps_cephes_pi4 = constant(7.85398163397448309616E-1f);  // π/4
+            const auto ps_2 = constant(2.0f);
+
+            // Branch 1: For x > 0.5, use identity acos(x) = 2*asin(sqrt((1-x)/2))
+            auto z = sqrt(mul(ps_05, sub(ps_05, x)));  // sqrt((1-x)/2)
+            z = mul(ps_2, asin(z));                    // 2*asin(sqrt((1-x)/2))
+
+            // Branch 2: For x ≤ 0.5, use identity acos(x) = π/2 - asin(x)
+            auto z2 = asin(x);
+            z2 = sub(ps_cephes_pi4, z2);
+            z2 = add(z2, ps_cephes_morebits);
+            z2 = add(z2, ps_cephes_pi4);  // π/2 - asin(x)
+
+            // Apply conditional selection based on input range
+            auto gt_05_mask = cmp_greater_than(x, ps_05);
+            z = and_(gt_05_mask, z);  // Select z for x > 0.5
+            z2 =
+                and_(vreinterpretq_f32_u32(vmvnq_u32(vreinterpretq_u32_f32(gt_05_mask))), z2);  // Select z2
+                                                                                                // for x ≤ 0.5
+            z = add(z, z2);
+
+            return z;
+        }
+
         // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
         template <unsigned int = 0>
         inline static constexpr auto log(VectorT x) noexcept -> VectorT

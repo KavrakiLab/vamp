@@ -411,7 +411,8 @@ namespace vamp
         template <unsigned int = 0>
         inline static constexpr auto sqrt(VectorT v) noexcept -> VectorT
         {
-            return _mm256_mul_ps(v, _mm256_rsqrt_ps(v));
+            // return _mm256_mul_ps(v, _mm256_rsqrt_ps(v));
+            return _mm256_sqrt_ps(v);
         }
 
         template <unsigned int = 0>
@@ -545,6 +546,154 @@ namespace vamp
             y = _mm256_xor_ps(y, sign_bit);
 
             return y;
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto asin(VectorT x) noexcept -> VectorT
+        {
+            const auto ps_sign_mask = constant_int(0x80000000);
+
+            const auto ps_cephes_P0 = constant(4.253011369004428248960E-3);
+            const auto ps_cephes_P1 = constant(-6.019598008014123785661E-1);
+            const auto ps_cephes_P2 = constant(5.444622390564711410273E0);
+            const auto ps_cephes_P3 = constant(-1.626247967210700244449E1);
+            const auto ps_cephes_P4 = constant(1.956261983317594739197E1);
+            const auto ps_cephes_P5 = constant(-8.198089802484824371615E0);
+
+            const auto ps_cephes_Q0 = constant(-1.474091372988853791896E1);
+            const auto ps_cephes_Q1 = constant(7.049610280856842141659E1);
+            const auto ps_cephes_Q2 = constant(-1.471791292232726029859E2);
+            const auto ps_cephes_Q3 = constant(1.395105614657485689735E2);
+            const auto ps_cephes_Q4 = constant(-4.918853881490881290097E1);
+
+            const auto ps_cephes_R0 = constant(2.967721961301243206100E-3);
+            const auto ps_cephes_R1 = constant(-5.634242780008963776856E-1);
+            const auto ps_cephes_R2 = constant(6.968710824104713396794E0);
+            const auto ps_cephes_R3 = constant(-2.556901049652824852289E1);
+            const auto ps_cephes_R4 = constant(2.853665548261061424989E1);
+
+            const auto ps_cephes_S0 = constant(-2.194779531642920639778E1);
+            const auto ps_cephes_S1 = constant(1.470656354026814941758E2);
+            const auto ps_cephes_S2 = constant(-3.838770957603691357202E2);
+            const auto ps_cephes_S3 = constant(3.424398657913078477438E2);
+
+            const auto ps_1 = constant(1.0f);
+            const auto ps_cephes_pi4 = constant(7.85398163397448309616E-1);
+            const auto ps_cephes_morebits = constant(6.123233995736765886130E-17);
+
+            const auto ps_625 = constant(0.625);  // 0.625
+            const auto ps_1en8 = constant(1E-8);  // 1e-8
+
+            auto sign_bit = x;
+            auto a = abs(x);
+            sign_bit = and_(sign_bit, ps_sign_mask);
+
+            // Evaluate asin for x > 0.625
+            auto zz = sub(ps_1, a);
+
+            // solve r = polevl( zz, R, 4)
+            auto r = ps_cephes_R0;
+            r = mul(r, zz);
+            r = add(r, ps_cephes_R1);
+            r = mul(r, zz);
+            r = add(r, ps_cephes_R2);
+            r = mul(r, zz);
+            r = add(r, ps_cephes_R3);
+            r = mul(r, zz);
+            r = add(r, ps_cephes_R4);
+
+            // solve s = p1evl( zz, S, 4);
+            auto s = add(zz, ps_cephes_S0);
+            s = mul(s, zz);
+            s = add(s, ps_cephes_S1);
+            s = mul(s, zz);
+            s = add(s, ps_cephes_S2);
+            s = mul(s, zz);
+            s = add(s, ps_cephes_S3);
+
+            auto p = mul(zz, r);
+            p = div(p, s);
+            zz = add(zz, zz);
+            zz = sqrt(zz);
+            auto z = sub(ps_cephes_pi4, zz);
+            zz = mul(zz, p);
+            zz = sub(zz, ps_cephes_morebits);
+            z = sub(z, zz);
+            z = add(z, ps_cephes_pi4);
+
+            // evaluate for x < 0.625
+            zz = mul(a, a);
+            // evaluate pq = polevl( zz, P, 5)
+            auto pq = ps_cephes_P0;
+            pq = mul(pq, zz);
+            pq = add(pq, ps_cephes_P1);
+            pq = mul(pq, zz);
+            pq = add(pq, ps_cephes_P2);
+            pq = mul(pq, zz);
+            pq = add(pq, ps_cephes_P3);
+            pq = mul(pq, zz);
+            pq = add(pq, ps_cephes_P4);
+            pq = mul(pq, zz);
+            pq = add(pq, ps_cephes_P5);
+
+            auto qp = add(zz, ps_cephes_Q0);
+            qp = mul(qp, zz);
+            qp = add(qp, ps_cephes_Q1);
+            qp = mul(qp, zz);
+            qp = add(qp, ps_cephes_Q2);
+            qp = mul(qp, zz);
+            qp = add(qp, ps_cephes_Q3);
+            qp = mul(qp, zz);
+            qp = add(qp, ps_cephes_Q4);
+
+            auto z2 = mul(zz, pq);
+            z2 = div(z2, qp);
+            z2 = mul(a, z2);
+            z2 = add(z2, a);
+
+            // implement >0.625 mask first
+            // calculate a mask
+            auto gt_625_mask = cmp_greater_than(a, ps_625);
+            z = and_(gt_625_mask, z);
+            z2 = _mm256_andnot_ps(gt_625_mask, z2);
+            z = add(z, z2);
+
+            z = _mm256_xor_ps(z, sign_bit);
+
+            auto gt_1en8_mask = cmp_greater_than(a, ps_1en8);
+            z = and_(gt_1en8_mask, z);
+            z2 = _mm256_andnot_ps(gt_1en8_mask, x);
+            z = add(z, z2);
+
+            return z;
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto acos(VectorT x) noexcept -> VectorT
+        {
+            const auto ps_cephes_morebits = constant(6.123233995736765886130E-17);
+
+            const auto ps_05 = constant(0.5);                                // 0.5
+            const auto ps_cephes_pi4 = constant(7.85398163397448309616E-1);  // pi/4
+            const auto ps_2 = constant(2.0f);                                // 0.5
+
+            auto z = mul(ps_05, x);
+            z = sub(ps_05, z);
+            z = sqrt(z);
+            z = asin(z);
+            z = mul(ps_2, z);
+
+            auto z2 = asin(x);
+            z2 = sub(ps_cephes_pi4, z2);
+            z2 = add(z2, ps_cephes_morebits);
+            z2 = add(z2, ps_cephes_pi4);
+
+            auto gt_05_mask = cmp_greater_than(x, ps_05);
+            z = and_(gt_05_mask, z);
+            z2 = _mm256_andnot_ps(gt_05_mask, z2);
+            z = add(z, z2);
+
+            return z;
         }
 
         // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...

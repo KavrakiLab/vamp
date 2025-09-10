@@ -31,9 +31,30 @@ inline constexpr auto cos(const DataT &v) -> DataT
 }
 
 template <typename DataT>
+inline constexpr auto atan(const DataT &v) -> DataT
+{
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
+        return std::atan(v);
+    }
+    else
+    {
+        return v.atan();
+    }
+}
+
+
+template <typename DataT>
 inline constexpr auto sqrt(const DataT &v) -> DataT
 {
-    return v.sqrt();
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
+        return std::sqrt(v);
+    }
+    else
+    {
+        return v.sqrt();
+    }
 }
 
 template <typename DataT>

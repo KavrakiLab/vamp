@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<!-- Semantic Robot Description Format for fanuc_m900ib400l -->
+<robot name="fanuc_m900ib400l">
+
+  <!-- Arm kinematic group -->
+  <!-- <group name="manipulator">
+    <chain base_link="base_link" tip_link="tool0"/>
+  </group>
+
+  <group name="tool">
+    <link name="torch"/>
+    <link name="tcp"/>
+  </group>
+
+  <end_effector name="welding_torch" parent_link="tool0" group="tool" parent_group="manipulator"/> -->
+  <group name="manipulator">
+    <chain base_link="base_link" tip_link="tool0"/>
+    <joint name="joint_1"/>
+    <joint name="joint_2"/>
+    <joint name="joint_3"/>
+    <joint name="joint_4"/>
+    <joint name="joint_5"/>
+    <joint name="joint_6"/>
+  </group>
+
+  <!-- A convenient named posture -->
+  <group_state name="all-zeros" group="manipulator">
+    <joint name="joint_1" value="0"/>
+    <joint name="joint_2" value="0"/>
+    <joint name="joint_3" value="0"/>
+    <joint name="joint_4" value="0"/>
+    <joint name="joint_5" value="0"/>
+    <joint name="joint_6" value="0"/>
+  </group_state>
+
+  <!-- The robot is bolted down -->
+  <virtual_joint name="FixedBase" type="fixed" parent_frame="world" child_link="base_link"/>
+
+  <!-- Disable obviously-adjacent and fixed-link collisions 
+       (start conservative; refine with MoveIt Self-Collision Check) -->
+  <!-- Adjacent joints in the main chain -->
+  <disable_collisions link1="base_link" link2="link_1" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="plink_1" reason="Adjacent"/> 
+  <disable_collisions link1="link_1"   link2="link_2" reason="Adjacent"/>
+  <disable_collisions link1="link_2"   link2="link_3" reason="Adjacent"/>
+  <disable_collisions link1="link_1"   link2="balancer_left" reason="Adjacent"/> 
+  <disable_collisions link1="link_1"   link2="balancer_right" reason="Adjacent"/> 
+  <disable_collisions link1="link_2"   link2="balancer_left" reason="Adjacent"/> 
+  <disable_collisions link1="link_2"   link2="balancer_right" reason="Adjacent"/>
+  <disable_collisions link1="link_1"   link2="plink_1" reason="Adjacent"/>
+  <disable_collisions link1="link_3"   link2="link_4" reason="Adjacent"/>
+  <disable_collisions link1="link_4"   link2="link_5" reason="Adjacent"/>
+  <disable_collisions link1="link_5"   link2="link_6" reason="Adjacent"/>
+
+  <!-- ROS-I helper frames and fixed joints -->
+  <disable_collisions link1="base_link" link2="base"   reason="Fixed"/>
+  <disable_collisions link1="link_6"    link2="flange" reason="Fixed"/>
+  <disable_collisions link1="link_6"    link2="tool0"  reason="Fixed"/>
+  <disable_collisions link1="tool0"     link2="torch"  reason="Fixed"/>
+  <disable_collisions link1="torch"     link2="tcp"    reason="Fixed"/>
+
+  <!-- Optional: common non-adjacent pairs that often contact due to mesh overlap;
+       comment these back in only if your self-collision checker flags them frequently. -->
+  <!--
+  <disable_collisions link1="link_3" link2="link_5" reason="Never"/>
+  <disable_collisions link1="link_4" link2="link_6" reason="Never"/>
+  -->
+</robot>

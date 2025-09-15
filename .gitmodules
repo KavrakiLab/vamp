@@ -1,0 +1,4 @@
+[submodule "ext/cricket"]
+	path = ext/cricket
+	url = https://github.com/CoMMALab/cricket.git
+	branch = master

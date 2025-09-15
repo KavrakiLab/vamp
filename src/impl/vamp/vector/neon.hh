@@ -384,6 +384,13 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static constexpr auto cmp_greater_than(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vreinterpretq_f32_u32(vcgtq_f32(l, r));
+        }
+        
+
+        template <unsigned int = 0>
         inline static constexpr auto cmp_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
             return vreinterpretq_f32_u32(vceqq_f32(l, r));

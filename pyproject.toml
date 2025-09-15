@@ -34,5 +34,6 @@ cmake.build-type = "Release"
 
 [tool.scikit-build.cmake.define]
 VAMP_LTO = "OFF"
-VAMP_ROBOT_MODULES="sphere;ur5;panda;fetch;baxter"
-VAMP_ROBOT_STRUCTS="Sphere;UR5;Panda;Fetch;Baxter"
+VAMP_ROBOT_MODULES="sphere;ur5;panda;fetch;fr3;baxter"
+VAMP_ROBOT_STRUCTS="Sphere;UR5;Panda;Fetch;FR3;Baxter"
+

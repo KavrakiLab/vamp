@@ -1,8 +1,0 @@
-[submodule "ext/franka_description"]
-	path = ext/franka_description
-	url = https://github.com/frankarobotics/franka_description.git
-	branch = main
-[submodule "ext/foam"]
-	path = ext/foam
-	url = https://github.com/CoMMALab/foam.git
-	branch = master

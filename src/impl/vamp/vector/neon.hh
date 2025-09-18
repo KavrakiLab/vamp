@@ -388,7 +388,6 @@ namespace vamp
         {
             return vreinterpretq_f32_u32(vcgtq_f32(l, r));
         }
-        
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_equal(VectorT l, VectorT r) noexcept -> VectorT

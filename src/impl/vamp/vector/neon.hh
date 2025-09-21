@@ -622,11 +622,11 @@ namespace vamp
             auto invalid_mask = cmp_less_equal(x, zero_vector());
 
             // cut off denormalized values
-            x = max(x, constant_int(0x00800000));
+            x = max(x, vreinterpretq_f32_u32(vdupq_n_u32(0x00800000u)));
 
             auto emm0 = IntVector::shift_right(as<IntVector::VectorT>(x), 23);
 
-            x = and_(x, constant_int(~0x7f800000));
+            x = and_(x, vreinterpretq_f32_u32(vdupq_n_u32(~0x7f800000u)));
             x = or_(x, half);
 
             // keep only the fractional part

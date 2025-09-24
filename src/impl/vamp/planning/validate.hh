@@ -55,7 +55,9 @@ namespace vamp::planning
                 block[j] = block[j] - backstep.broadcast(j);
             }
 
-            if (not Robot::template fkcc<rake>(environment, block))
+            bool valid = (environment.attachments) ? Robot::template fkcc_attach<rake>(environment, block) :
+                                                     Robot::template fkcc<rake>(environment, block);
+            if (not valid)
             {
                 return false;
             }

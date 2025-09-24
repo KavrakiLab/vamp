@@ -1,15 +1,18 @@
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-	# Need explicit AVX2 for some MacOS clang versions
-	set(VAMP_ARCH "-march=native -mavx2")
-elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
-	# ARM platforms (aarch64 / arm64)
-	set(VAMP_ARCH "-mcpu=native -mtune=native")
-	# Fix for GCC 13+ NEON vector type conversion errors
-	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 13.0)
-		string(APPEND VAMP_ARCH " -flax-vector-conversions")
+# Allow users to override VAMP_ARCH (e.g., for Docker builds targeting different hardware)
+if(NOT DEFINED VAMP_ARCH)
+	if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+		# Need explicit AVX2 for some MacOS clang versions
+		set(VAMP_ARCH "-march=native -mavx2")
+	elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
+		# ARM platforms (aarch64 / arm64)
+		set(VAMP_ARCH "-mcpu=native -mtune=native")
+		# Fix for GCC 13+ NEON vector type conversion errors
+		if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 13.0)
+			string(APPEND VAMP_ARCH " -flax-vector-conversions")
+		endif()
+	else()
+		message(FATAL_ERROR "Unsupported architecture ${CMAKE_SYSTEM_PROCESSOR}")
 	endif()
-else()
-	message(FATAL_ERROR "Unsupported architecture ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
 # default fast args that work on all platforms

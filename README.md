@@ -139,6 +139,16 @@ cmake --build build
 ```
 Please see `CMakeLists.txt` for further build configuration options.
 
+#### Architecture-Specific Build Options
+By default, VAMP builds with `-march=native` for optimal performance on the build machine. For builds targeting different hardware (e.g., Docker containers), you can override the architecture flags:
+```bash
+cmake -Bbuild -DCMAKE_BUILD_TYPE=Release -DVAMP_ARCH="-march=x86-64-v3 -mavx2" .
+```
+
+Example options:
+- `-march=x86-64-v3 -mavx2`: Supports most modern x86_64 systems (2013+), includes BMI2 instructions required by VAMP
+- `-march=native -mavx2`: Default setting, optimizes for build machine's specific CPU
+
 ### Docker
 We provide example dockerfiles in `docker/` that show installation on Ubuntu 20.04, 22.04, and 24.04.
 

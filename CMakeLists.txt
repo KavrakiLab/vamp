@@ -4,8 +4,8 @@ option(VAMP_LTO "Use LTO." ON)
 option(VAMP_FORCE_COLORED_OUTPUT "Always produce ANSI-colored output." ON)
 option(VAMP_FORCE_CLANG "Force the use of Clang." OFF)
 
-option(VAMP_BUILD_PYTHON_BINDINGS "Build VAMP Python bindings" OFF)
-option(VAMP_INSTALL_CPP_LIBRARY "Install VAMP C++ library (disable for Python wheel builds)" OFF)
+option(VAMP_BUILD_PYTHON_BINDINGS "Build VAMP Python bindings" ON)
+option(VAMP_INSTALL_CPP_LIBRARY "Install VAMP C++ library (disable for Python wheel builds)" ON)
 
 option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" ON)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)

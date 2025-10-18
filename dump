@@ -1,2 +1,210 @@
-[1/2] Building CXX object CMakeFiles/vamp_rrtc_example.dir/scripts/cpp/rrtc_example.cc.o
-[2/2] Linking CXX executable vamp_rrtc_example
+[1/13] Building CXX object CMakeFiles/_core_ext.dir/src/impl/vamp/bindings/environment.cc.o
+FAILED: CMakeFiles/_core_ext.dir/src/impl/vamp/bindings/environment.cc.o 
+/usr/bin/c++ -DPy_LIMITED_API=0x030C0000 -D_core_ext_EXPORTS -I/usr/include/python3.12 -I/src/myfork/vamp/build/_deps/nanobind-src/include -I/src/myfork/vamp/src/impl -I/src/myfork/vamp/build/_deps/simdxorshift-src/include -isystem /src/myfork/vamp/build -isystem /usr/include/eigen3 -isystem /src/myfork/vamp/build/_deps/nigh-src/src -isystem /src/myfork/vamp/build/_deps/pdqsort-src -w -march=native -mavx2 -Wall -Wextra -Wno-ignored-attributes -O3 -DNDEBUG -O3 -fno-math-errno -fno-signed-zeros -fno-trapping-math -fno-rounding-math -ffp-contract=fast -fassociative-math -flto=auto -std=c++17 -fPIC -fvisibility=hidden -fno-stack-protector -ffunction-sections -fdata-sections -MD -MT CMakeFiles/_core_ext.dir/src/impl/vamp/bindings/environment.cc.o -MF CMakeFiles/_core_ext.dir/src/impl/vamp/bindings/environment.cc.o.d -o CMakeFiles/_core_ext.dir/src/impl/vamp/bindings/environment.cc.o -c /src/myfork/vamp/src/impl/vamp/bindings/environment.cc
+/src/myfork/vamp/src/impl/vamp/bindings/environment.cc: In lambda function:
+/src/myfork/vamp/src/impl/vamp/bindings/environment.cc:164:124: error: 'std::map<long unsigned int, vamp::collision::Attachment<float>, std::less<long unsigned int>, std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > > >::mapped_type' {aka 'struct vamp::collision::Attachment<float>'} has no member named 'emplace'
+  164 |             [](vc::Environment<float> &e, const vc::Attachment<float> &a, const size_t eef_id = 0) { e.attachments[eef_id].emplace(a); })
+      |                                                                                                                            ^~~~~~~
+/src/myfork/vamp/src/impl/vamp/bindings/environment.cc: In lambda function:
+/src/myfork/vamp/src/impl/vamp/bindings/environment.cc:165:103: error: 'std::map<long unsigned int, vamp::collision::Attachment<float>, std::less<long unsigned int>, std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > > >::mapped_type' {aka 'struct vamp::collision::Attachment<float>'} has no member named 'reset'
+  165 |         .def("detach", [](vc::Environment<float> &e, const size_t eef_id = 0) { e.attachments[eef_id].reset(); e.attachments.erase(eef_id); });
+      |                                                                                                       ^~~~~
+In file included from /usr/include/c++/13/bits/memory_resource.h:47,
+                 from /usr/include/c++/13/string:58,
+                 from /usr/include/c++/13/stdexcept:39,
+                 from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:33,
+                 from /src/myfork/vamp/build/vamp_python_init.hh:1,
+                 from /src/myfork/vamp/src/impl/vamp/bindings/environment.cc:1:
+/usr/include/c++/13/tuple: In instantiation of 'std::pair<_T1, _T2>::pair(std::tuple<_Args1 ...>&, std::tuple<_Args2 ...>&, std::_Index_tuple<_Indexes1 ...>, std::_Index_tuple<_Indexes2 ...>) [with _Args1 = {const long unsigned int&}; long unsigned int ..._Indexes1 = {0}; _Args2 = {}; long unsigned int ..._Indexes2 = {}; _T1 = const long unsigned int; _T2 = vamp::collision::Attachment<float>]':
+/usr/include/c++/13/tuple:2257:63:   required from 'std::pair<_T1, _T2>::pair(std::piecewise_construct_t, std::tuple<_Args1 ...>, std::tuple<_Args2 ...>) [with _Args1 = {const long unsigned int&}; _Args2 = {}; _T1 = const long unsigned int; _T2 = vamp::collision::Attachment<float>]'
+/usr/include/c++/13/bits/new_allocator.h:191:4:   required from 'void std::__new_allocator<_Tp>::construct(_Up*, _Args&& ...) [with _Up = std::pair<const long unsigned int, vamp::collision::Attachment<float> >; _Args = {const std::piecewise_construct_t&, std::tuple<const long unsigned int&>, std::tuple<>}; _Tp = std::_Rb_tree_node<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >]'
+/usr/include/c++/13/bits/alloc_traits.h:538:17:   required from 'static void std::allocator_traits<std::allocator<_CharT> >::construct(allocator_type&, _Up*, _Args&& ...) [with _Up = std::pair<const long unsigned int, vamp::collision::Attachment<float> >; _Args = {const std::piecewise_construct_t&, std::tuple<const long unsigned int&>, std::tuple<>}; _Tp = std::_Rb_tree_node<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; allocator_type = std::allocator<std::_Rb_tree_node<std::pair<const long unsigned int, vamp::collision::Attachment<float> > > >]'
+/usr/include/c++/13/bits/stl_tree.h:597:32:   required from 'void std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_construct_node(_Link_type, _Args&& ...) [with _Args = {const std::piecewise_construct_t&, std::tuple<const long unsigned int&>, std::tuple<>}; _Key = long unsigned int; _Val = std::pair<const long unsigned int, vamp::collision::Attachment<float> >; _KeyOfValue = std::_Select1st<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; _Compare = std::less<long unsigned int>; _Alloc = std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; _Link_type = std::_Rb_tree_node<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >*]'
+/usr/include/c++/13/bits/stl_tree.h:614:21:   required from 'std::_Rb_tree_node<_Val>* std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_create_node(_Args&& ...) [with _Args = {const std::piecewise_construct_t&, std::tuple<const long unsigned int&>, std::tuple<>}; _Key = long unsigned int; _Val = std::pair<const long unsigned int, vamp::collision::Attachment<float> >; _KeyOfValue = std::_Select1st<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; _Compare = std::less<long unsigned int>; _Alloc = std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; _Link_type = std::_Rb_tree_node<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >*]'
+/usr/include/c++/13/bits/stl_tree.h:1637:32:   required from 'std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_Auto_node::_Auto_node(std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>&, _Args&& ...) [with _Args = {const std::piecewise_construct_t&, std::tuple<const long unsigned int&>, std::tuple<>}; _Key = long unsigned int; _Val = std::pair<const long unsigned int, vamp::collision::Attachment<float> >; _KeyOfValue = std::_Select1st<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; _Compare = std::less<long unsigned int>; _Alloc = std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >]'
+/usr/include/c++/13/bits/stl_tree.h:2462:13:   required from 'std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::iterator std::_Rb_tree<_Key, _Val, _KeyOfValue, _Compare, _Alloc>::_M_emplace_hint_unique(const_iterator, _Args&& ...) [with _Args = {const std::piecewise_construct_t&, std::tuple<const long unsigned int&>, std::tuple<>}; _Key = long unsigned int; _Val = std::pair<const long unsigned int, vamp::collision::Attachment<float> >; _KeyOfValue = std::_Select1st<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; _Compare = std::less<long unsigned int>; _Alloc = std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; iterator = std::_Rb_tree<long unsigned int, std::pair<const long unsigned int, vamp::collision::Attachment<float> >, std::_Select1st<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >, std::less<long unsigned int>, std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > > >::iterator; const_iterator = std::_Rb_tree<long unsigned int, std::pair<const long unsigned int, vamp::collision::Attachment<float> >, std::_Select1st<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >, std::less<long unsigned int>, std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > > >::const_iterator]'
+/usr/include/c++/13/bits/stl_map.h:513:37:   required from 'std::map<_Key, _Tp, _Compare, _Alloc>::mapped_type& std::map<_Key, _Tp, _Compare, _Alloc>::operator[](const key_type&) [with _Key = long unsigned int; _Tp = vamp::collision::Attachment<float>; _Compare = std::less<long unsigned int>; _Alloc = std::allocator<std::pair<const long unsigned int, vamp::collision::Attachment<float> > >; mapped_type = vamp::collision::Attachment<float>; key_type = long unsigned int]'
+/src/myfork/vamp/src/impl/vamp/bindings/environment.cc:164:122:   required from here
+/usr/include/c++/13/tuple:2268:9: error: no matching function for call to 'vamp::collision::Attachment<float>::Attachment()'
+ 2268 |         second(std::forward<_Args2>(std::get<_Indexes2>(__tuple2))...)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /src/myfork/vamp/src/impl/vamp/collision/environment.hh:11,
+                 from /src/myfork/vamp/src/impl/vamp/collision/factory.hh:7,
+                 from /src/myfork/vamp/src/impl/vamp/bindings/environment.cc:5:
+/src/myfork/vamp/src/impl/vamp/collision/attachments.hh:28:9: note: candidate: 'template<class DT, class> vamp::collision::Attachment<DataT>::Attachment(const vamp::collision::Attachment<float>&) [with <template-parameter-2-2> = DT; DataT = float]'
+   28 |         Attachment(const Attachment<float> &o) noexcept : Attachment(o.tf)
+      |         ^~~~~~~~~~
+/src/myfork/vamp/src/impl/vamp/collision/attachments.hh:28:9: note:   template argument deduction/substitution failed:
+/usr/include/c++/13/tuple:2268:9: note:   candidate expects 1 argument, 0 provided
+ 2268 |         second(std::forward<_Args2>(std::get<_Indexes2>(__tuple2))...)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/src/myfork/vamp/src/impl/vamp/collision/attachments.hh:20:9: note: candidate: 'template<class DT, class> vamp::collision::Attachment<DataT>::Attachment(const Eigen::Transform<float, 3, 1>&) [with <template-parameter-2-2> = DT; DataT = float]'
+   20 |         Attachment(const Eigen::Transform<float, 3, Eigen::Isometry> &tf) noexcept
+      |         ^~~~~~~~~~
+/src/myfork/vamp/src/impl/vamp/collision/attachments.hh:20:9: note:   template argument deduction/substitution failed:
+/usr/include/c++/13/tuple:2268:9: note:   candidate expects 1 argument, 0 provided
+ 2268 |         second(std::forward<_Args2>(std::get<_Indexes2>(__tuple2))...)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/src/myfork/vamp/src/impl/vamp/collision/attachments.hh:25:9: note: candidate: 'vamp::collision::Attachment<DataT>::Attachment(const vamp::collision::Attachment<DataT>&) [with DataT = float]'
+   25 |         Attachment(const Attachment &) = default;
+      |         ^~~~~~~~~~
+/src/myfork/vamp/src/impl/vamp/collision/attachments.hh:25:9: note:   candidate expects 1 argument, 0 provided
+/src/myfork/vamp/src/impl/vamp/collision/attachments.hh:15:9: note: candidate: 'vamp::collision::Attachment<DataT>::Attachment(const Eigen::Transform<DataT, 3, 1>&) [with DataT = float]'
+   15 |         Attachment(const Eigen::Transform<DataT, 3, Eigen::Isometry> &tf) noexcept : tf(std::move(tf))
+      |         ^~~~~~~~~~
+/src/myfork/vamp/src/impl/vamp/collision/attachments.hh:15:9: note:   candidate expects 1 argument, 0 provided
+[2/13] Building CXX object CMakeFiles/_core_ext.dir/sphere.cc.o
+FAILED: CMakeFiles/_core_ext.dir/sphere.cc.o 
+/usr/bin/c++ -DPy_LIMITED_API=0x030C0000 -D_core_ext_EXPORTS -I/usr/include/python3.12 -I/src/myfork/vamp/build/_deps/nanobind-src/include -I/src/myfork/vamp/src/impl -I/src/myfork/vamp/build/_deps/simdxorshift-src/include -isystem /src/myfork/vamp/build -isystem /usr/include/eigen3 -isystem /src/myfork/vamp/build/_deps/nigh-src/src -isystem /src/myfork/vamp/build/_deps/pdqsort-src -w -march=native -mavx2 -Wall -Wextra -Wno-ignored-attributes -O3 -DNDEBUG -O3 -fno-math-errno -fno-signed-zeros -fno-trapping-math -fno-rounding-math -ffp-contract=fast -fassociative-math -flto=auto -std=c++17 -fPIC -fvisibility=hidden -fno-stack-protector -ffunction-sections -fdata-sections -MD -MT CMakeFiles/_core_ext.dir/sphere.cc.o -MF CMakeFiles/_core_ext.dir/sphere.cc.o.d -o CMakeFiles/_core_ext.dir/sphere.cc.o -c /src/myfork/vamp/build/sphere.cc
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:55,
+                 from /src/myfork/vamp/build/vamp_python_init.hh:1,
+                 from /src/myfork/vamp/build/sphere.cc:1:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h: In instantiation of 'PyObject* nanobind::detail::func_create(Func&&, Return (*)(Args ...), std::index_sequence<Is2 ...>, const Extra& ...) [with bool ReturnRef = false; bool CheckGuard = true; Func = vamp::binding::init_robot<vamp::robots::Sphere>(nanobind::module_&)::<lambda()>; Return = char* const*; Args = {}; long unsigned int ...Is = {}; Extra = {nanobind::scope, nanobind::name, char [26]}; PyObject = _object; std::index_sequence<Is2 ...> = std::integer_sequence<long unsigned int>]':
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:352:37:   required from 'void nanobind::cpp_function_def(Func&&, const Extra& ...) [with <template-parameter-1-1> = void; Func = vamp::binding::init_robot<vamp::robots::Sphere>(nanobind::module_&)::<lambda()>; Extra = {scope, name, char [26]}; typename std::enable_if<is_lambda_v<typename std::remove_reference<_Arg>::type>, int>::type <anonymous> = 0]'
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:409:21:   required from 'nanobind::module_& nanobind::module_::def(const char*, Func&&, const Extra& ...) [with Func = vamp::binding::init_robot<vamp::robots::Sphere>(nanobind::module_&)::<lambda()>; Extra = {char [26]}]'
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:358:22:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Sphere]'
+/src/myfork/vamp/build/sphere.cc:8:52:   required from here
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:275:33: error: invalid conversion from 'char* const*' to 'char' [-fpermissive]
+  275 |                        cap->func((in.template get<Is>())
+      |                        ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 char* const*
+  276 |                                      .operator cast_t<Args>()...),
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:52:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_cast.h:303:33: note:   initializing argument 1 of 'static nanobind::handle nanobind::detail::type_caster<char>::from_cpp(char, nanobind::rv_policy, nanobind::detail::cleanup_list*)'
+  303 |     static handle from_cpp(char value, rv_policy, cleanup_list *) noexcept {
+      |                            ~~~~~^~~~~
+[3/13] Building CXX object CMakeFiles/_core_ext.dir/ur5.cc.o
+FAILED: CMakeFiles/_core_ext.dir/ur5.cc.o 
+/usr/bin/c++ -DPy_LIMITED_API=0x030C0000 -D_core_ext_EXPORTS -I/usr/include/python3.12 -I/src/myfork/vamp/build/_deps/nanobind-src/include -I/src/myfork/vamp/src/impl -I/src/myfork/vamp/build/_deps/simdxorshift-src/include -isystem /src/myfork/vamp/build -isystem /usr/include/eigen3 -isystem /src/myfork/vamp/build/_deps/nigh-src/src -isystem /src/myfork/vamp/build/_deps/pdqsort-src -w -march=native -mavx2 -Wall -Wextra -Wno-ignored-attributes -O3 -DNDEBUG -O3 -fno-math-errno -fno-signed-zeros -fno-trapping-math -fno-rounding-math -ffp-contract=fast -fassociative-math -flto=auto -std=c++17 -fPIC -fvisibility=hidden -fno-stack-protector -ffunction-sections -fdata-sections -MD -MT CMakeFiles/_core_ext.dir/ur5.cc.o -MF CMakeFiles/_core_ext.dir/ur5.cc.o.d -o CMakeFiles/_core_ext.dir/ur5.cc.o -c /src/myfork/vamp/build/ur5.cc
+In file included from /src/myfork/vamp/build/ur5.cc:3:
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh: In instantiation of 'static Eigen::Matrix4f vamp::binding::Helper<Robot, Input>::eefk(const Type&) [with Robot = vamp::robots::UR5; Input = vamp::binding::NDArrayInput<vamp::robots::UR5>; Eigen::Matrix4f = Eigen::Matrix<float, 4, 4>; Type = nanobind::ndarray<float, nanobind::numpy, nanobind::detail::shape<6>, nanobind::device::cpu>]':
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:537:9:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::UR5]'
+/src/myfork/vamp/build/ur5.cc:8:49:   required from here
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:281:53: error: 'struct std::array<Eigen::Transform<float, 3, 1>, 1>' has no member named 'matrix'
+  281 |             return Robot::eefk(Input::array(start)).matrix();
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh: In instantiation of 'static Eigen::Matrix4f vamp::binding::Helper<Robot, Input>::eefk(const Type&) [with Robot = vamp::robots::UR5; Input = vamp::binding::ArrayInput<vamp::robots::UR5>; Eigen::Matrix4f = Eigen::Matrix<float, 4, 4>; Type = std::array<float, 6>]':
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:537:9:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::UR5]'
+/src/myfork/vamp/build/ur5.cc:8:49:   required from here
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:281:53: error: 'struct std::array<Eigen::Transform<float, 3, 1>, 1>' has no member named 'matrix'
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:55,
+                 from /src/myfork/vamp/build/vamp_python_init.hh:1,
+                 from /src/myfork/vamp/build/ur5.cc:1:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h: In instantiation of 'PyObject* nanobind::detail::func_create(Func&&, Return (*)(Args ...), std::index_sequence<Is2 ...>, const Extra& ...) [with bool ReturnRef = false; bool CheckGuard = true; Func = vamp::binding::init_robot<vamp::robots::UR5>(nanobind::module_&)::<lambda()>; Return = char* const*; Args = {}; long unsigned int ...Is = {}; Extra = {nanobind::scope, nanobind::name, char [26]}; PyObject = _object; std::index_sequence<Is2 ...> = std::integer_sequence<long unsigned int>]':
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:352:37:   required from 'void nanobind::cpp_function_def(Func&&, const Extra& ...) [with <template-parameter-1-1> = void; Func = vamp::binding::init_robot<vamp::robots::UR5>(nanobind::module_&)::<lambda()>; Extra = {scope, name, char [26]}; typename std::enable_if<is_lambda_v<typename std::remove_reference<_Arg>::type>, int>::type <anonymous> = 0]'
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:409:21:   required from 'nanobind::module_& nanobind::module_::def(const char*, Func&&, const Extra& ...) [with Func = vamp::binding::init_robot<vamp::robots::UR5>(nanobind::module_&)::<lambda()>; Extra = {char [26]}]'
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:358:22:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::UR5]'
+/src/myfork/vamp/build/ur5.cc:8:49:   required from here
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:275:33: error: invalid conversion from 'char* const*' to 'char' [-fpermissive]
+  275 |                        cap->func((in.template get<Is>())
+      |                        ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 char* const*
+  276 |                                      .operator cast_t<Args>()...),
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:52:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_cast.h:303:33: note:   initializing argument 1 of 'static nanobind::handle nanobind::detail::type_caster<char>::from_cpp(char, nanobind::rv_policy, nanobind::detail::cleanup_list*)'
+  303 |     static handle from_cpp(char value, rv_policy, cleanup_list *) noexcept {
+      |                            ~~~~~^~~~~
+[4/13] Building CXX object CMakeFiles/_core_ext.dir/panda.cc.o
+FAILED: CMakeFiles/_core_ext.dir/panda.cc.o 
+/usr/bin/c++ -DPy_LIMITED_API=0x030C0000 -D_core_ext_EXPORTS -I/usr/include/python3.12 -I/src/myfork/vamp/build/_deps/nanobind-src/include -I/src/myfork/vamp/src/impl -I/src/myfork/vamp/build/_deps/simdxorshift-src/include -isystem /src/myfork/vamp/build -isystem /usr/include/eigen3 -isystem /src/myfork/vamp/build/_deps/nigh-src/src -isystem /src/myfork/vamp/build/_deps/pdqsort-src -w -march=native -mavx2 -Wall -Wextra -Wno-ignored-attributes -O3 -DNDEBUG -O3 -fno-math-errno -fno-signed-zeros -fno-trapping-math -fno-rounding-math -ffp-contract=fast -fassociative-math -flto=auto -std=c++17 -fPIC -fvisibility=hidden -fno-stack-protector -ffunction-sections -fdata-sections -MD -MT CMakeFiles/_core_ext.dir/panda.cc.o -MF CMakeFiles/_core_ext.dir/panda.cc.o.d -o CMakeFiles/_core_ext.dir/panda.cc.o -c /src/myfork/vamp/build/panda.cc
+In file included from /src/myfork/vamp/build/panda.cc:3:
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh: In instantiation of 'static Eigen::Matrix4f vamp::binding::Helper<Robot, Input>::eefk(const Type&) [with Robot = vamp::robots::Panda; Input = vamp::binding::NDArrayInput<vamp::robots::Panda>; Eigen::Matrix4f = Eigen::Matrix<float, 4, 4>; Type = nanobind::ndarray<float, nanobind::numpy, nanobind::detail::shape<7>, nanobind::device::cpu>]':
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:537:9:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Panda]'
+/src/myfork/vamp/build/panda.cc:8:51:   required from here
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:281:53: error: 'struct std::array<Eigen::Transform<float, 3, 1>, 1>' has no member named 'matrix'
+  281 |             return Robot::eefk(Input::array(start)).matrix();
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh: In instantiation of 'static Eigen::Matrix4f vamp::binding::Helper<Robot, Input>::eefk(const Type&) [with Robot = vamp::robots::Panda; Input = vamp::binding::ArrayInput<vamp::robots::Panda>; Eigen::Matrix4f = Eigen::Matrix<float, 4, 4>; Type = std::array<float, 7>]':
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:537:9:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Panda]'
+/src/myfork/vamp/build/panda.cc:8:51:   required from here
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:281:53: error: 'struct std::array<Eigen::Transform<float, 3, 1>, 1>' has no member named 'matrix'
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:55,
+                 from /src/myfork/vamp/build/vamp_python_init.hh:1,
+                 from /src/myfork/vamp/build/panda.cc:1:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h: In instantiation of 'PyObject* nanobind::detail::func_create(Func&&, Return (*)(Args ...), std::index_sequence<Is2 ...>, const Extra& ...) [with bool ReturnRef = false; bool CheckGuard = true; Func = vamp::binding::init_robot<vamp::robots::Panda>(nanobind::module_&)::<lambda()>; Return = char* const*; Args = {}; long unsigned int ...Is = {}; Extra = {nanobind::scope, nanobind::name, char [26]}; PyObject = _object; std::index_sequence<Is2 ...> = std::integer_sequence<long unsigned int>]':
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:352:37:   required from 'void nanobind::cpp_function_def(Func&&, const Extra& ...) [with <template-parameter-1-1> = void; Func = vamp::binding::init_robot<vamp::robots::Panda>(nanobind::module_&)::<lambda()>; Extra = {scope, name, char [26]}; typename std::enable_if<is_lambda_v<typename std::remove_reference<_Arg>::type>, int>::type <anonymous> = 0]'
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:409:21:   required from 'nanobind::module_& nanobind::module_::def(const char*, Func&&, const Extra& ...) [with Func = vamp::binding::init_robot<vamp::robots::Panda>(nanobind::module_&)::<lambda()>; Extra = {char [26]}]'
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:358:22:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Panda]'
+/src/myfork/vamp/build/panda.cc:8:51:   required from here
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:275:33: error: invalid conversion from 'char* const*' to 'char' [-fpermissive]
+  275 |                        cap->func((in.template get<Is>())
+      |                        ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 char* const*
+  276 |                                      .operator cast_t<Args>()...),
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:52:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_cast.h:303:33: note:   initializing argument 1 of 'static nanobind::handle nanobind::detail::type_caster<char>::from_cpp(char, nanobind::rv_policy, nanobind::detail::cleanup_list*)'
+  303 |     static handle from_cpp(char value, rv_policy, cleanup_list *) noexcept {
+      |                            ~~~~~^~~~~
+[5/13] Building CXX object CMakeFiles/_core_ext.dir/baxter.cc.o
+FAILED: CMakeFiles/_core_ext.dir/baxter.cc.o 
+/usr/bin/c++ -DPy_LIMITED_API=0x030C0000 -D_core_ext_EXPORTS -I/usr/include/python3.12 -I/src/myfork/vamp/build/_deps/nanobind-src/include -I/src/myfork/vamp/src/impl -I/src/myfork/vamp/build/_deps/simdxorshift-src/include -isystem /src/myfork/vamp/build -isystem /usr/include/eigen3 -isystem /src/myfork/vamp/build/_deps/nigh-src/src -isystem /src/myfork/vamp/build/_deps/pdqsort-src -w -march=native -mavx2 -Wall -Wextra -Wno-ignored-attributes -O3 -DNDEBUG -O3 -fno-math-errno -fno-signed-zeros -fno-trapping-math -fno-rounding-math -ffp-contract=fast -fassociative-math -flto=auto -std=c++17 -fPIC -fvisibility=hidden -fno-stack-protector -ffunction-sections -fdata-sections -MD -MT CMakeFiles/_core_ext.dir/baxter.cc.o -MF CMakeFiles/_core_ext.dir/baxter.cc.o.d -o CMakeFiles/_core_ext.dir/baxter.cc.o -c /src/myfork/vamp/build/baxter.cc
+In file included from /src/myfork/vamp/build/baxter.cc:3:
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh: In instantiation of 'static Eigen::Matrix4f vamp::binding::Helper<Robot, Input>::eefk(const Type&) [with Robot = vamp::robots::Baxter; Input = vamp::binding::NDArrayInput<vamp::robots::Baxter>; Eigen::Matrix4f = Eigen::Matrix<float, 4, 4>; Type = nanobind::ndarray<float, nanobind::numpy, nanobind::detail::shape<14>, nanobind::device::cpu>]':
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:537:9:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Baxter]'
+/src/myfork/vamp/build/baxter.cc:8:52:   required from here
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:281:53: error: 'struct std::array<Eigen::Transform<float, 3, 1>, 1>' has no member named 'matrix'
+  281 |             return Robot::eefk(Input::array(start)).matrix();
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh: In instantiation of 'static Eigen::Matrix4f vamp::binding::Helper<Robot, Input>::eefk(const Type&) [with Robot = vamp::robots::Baxter; Input = vamp::binding::ArrayInput<vamp::robots::Baxter>; Eigen::Matrix4f = Eigen::Matrix<float, 4, 4>; Type = std::array<float, 14>]':
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:537:9:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Baxter]'
+/src/myfork/vamp/build/baxter.cc:8:52:   required from here
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:281:53: error: 'struct std::array<Eigen::Transform<float, 3, 1>, 1>' has no member named 'matrix'
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:55,
+                 from /src/myfork/vamp/build/vamp_python_init.hh:1,
+                 from /src/myfork/vamp/build/baxter.cc:1:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h: In instantiation of 'PyObject* nanobind::detail::func_create(Func&&, Return (*)(Args ...), std::index_sequence<Is2 ...>, const Extra& ...) [with bool ReturnRef = false; bool CheckGuard = true; Func = vamp::binding::init_robot<vamp::robots::Baxter>(nanobind::module_&)::<lambda()>; Return = char* const*; Args = {}; long unsigned int ...Is = {}; Extra = {nanobind::scope, nanobind::name, char [26]}; PyObject = _object; std::index_sequence<Is2 ...> = std::integer_sequence<long unsigned int>]':
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:352:37:   required from 'void nanobind::cpp_function_def(Func&&, const Extra& ...) [with <template-parameter-1-1> = void; Func = vamp::binding::init_robot<vamp::robots::Baxter>(nanobind::module_&)::<lambda()>; Extra = {scope, name, char [26]}; typename std::enable_if<is_lambda_v<typename std::remove_reference<_Arg>::type>, int>::type <anonymous> = 0]'
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:409:21:   required from 'nanobind::module_& nanobind::module_::def(const char*, Func&&, const Extra& ...) [with Func = vamp::binding::init_robot<vamp::robots::Baxter>(nanobind::module_&)::<lambda()>; Extra = {char [26]}]'
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:358:22:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Baxter]'
+/src/myfork/vamp/build/baxter.cc:8:52:   required from here
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:275:33: error: invalid conversion from 'char* const*' to 'char' [-fpermissive]
+  275 |                        cap->func((in.template get<Is>())
+      |                        ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 char* const*
+  276 |                                      .operator cast_t<Args>()...),
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:52:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_cast.h:303:33: note:   initializing argument 1 of 'static nanobind::handle nanobind::detail::type_caster<char>::from_cpp(char, nanobind::rv_policy, nanobind::detail::cleanup_list*)'
+  303 |     static handle from_cpp(char value, rv_policy, cleanup_list *) noexcept {
+      |                            ~~~~~^~~~~
+[6/13] Building CXX object CMakeFiles/_core_ext.dir/fetch.cc.o
+FAILED: CMakeFiles/_core_ext.dir/fetch.cc.o 
+/usr/bin/c++ -DPy_LIMITED_API=0x030C0000 -D_core_ext_EXPORTS -I/usr/include/python3.12 -I/src/myfork/vamp/build/_deps/nanobind-src/include -I/src/myfork/vamp/src/impl -I/src/myfork/vamp/build/_deps/simdxorshift-src/include -isystem /src/myfork/vamp/build -isystem /usr/include/eigen3 -isystem /src/myfork/vamp/build/_deps/nigh-src/src -isystem /src/myfork/vamp/build/_deps/pdqsort-src -w -march=native -mavx2 -Wall -Wextra -Wno-ignored-attributes -O3 -DNDEBUG -O3 -fno-math-errno -fno-signed-zeros -fno-trapping-math -fno-rounding-math -ffp-contract=fast -fassociative-math -flto=auto -std=c++17 -fPIC -fvisibility=hidden -fno-stack-protector -ffunction-sections -fdata-sections -MD -MT CMakeFiles/_core_ext.dir/fetch.cc.o -MF CMakeFiles/_core_ext.dir/fetch.cc.o.d -o CMakeFiles/_core_ext.dir/fetch.cc.o -c /src/myfork/vamp/build/fetch.cc
+In file included from /src/myfork/vamp/build/fetch.cc:3:
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh: In instantiation of 'static Eigen::Matrix4f vamp::binding::Helper<Robot, Input>::eefk(const Type&) [with Robot = vamp::robots::Fetch; Input = vamp::binding::NDArrayInput<vamp::robots::Fetch>; Eigen::Matrix4f = Eigen::Matrix<float, 4, 4>; Type = nanobind::ndarray<float, nanobind::numpy, nanobind::detail::shape<8>, nanobind::device::cpu>]':
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:537:9:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Fetch]'
+/src/myfork/vamp/build/fetch.cc:8:51:   required from here
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:281:53: error: 'struct std::array<Eigen::Transform<float, 3, 1>, 1>' has no member named 'matrix'
+  281 |             return Robot::eefk(Input::array(start)).matrix();
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh: In instantiation of 'static Eigen::Matrix4f vamp::binding::Helper<Robot, Input>::eefk(const Type&) [with Robot = vamp::robots::Fetch; Input = vamp::binding::ArrayInput<vamp::robots::Fetch>; Eigen::Matrix4f = Eigen::Matrix<float, 4, 4>; Type = std::array<float, 8>]':
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:537:9:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Fetch]'
+/src/myfork/vamp/build/fetch.cc:8:51:   required from here
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:281:53: error: 'struct std::array<Eigen::Transform<float, 3, 1>, 1>' has no member named 'matrix'
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:55,
+                 from /src/myfork/vamp/build/vamp_python_init.hh:1,
+                 from /src/myfork/vamp/build/fetch.cc:1:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h: In instantiation of 'PyObject* nanobind::detail::func_create(Func&&, Return (*)(Args ...), std::index_sequence<Is2 ...>, const Extra& ...) [with bool ReturnRef = false; bool CheckGuard = true; Func = vamp::binding::init_robot<vamp::robots::Fetch>(nanobind::module_&)::<lambda()>; Return = char* const*; Args = {}; long unsigned int ...Is = {}; Extra = {nanobind::scope, nanobind::name, char [26]}; PyObject = _object; std::index_sequence<Is2 ...> = std::integer_sequence<long unsigned int>]':
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:352:37:   required from 'void nanobind::cpp_function_def(Func&&, const Extra& ...) [with <template-parameter-1-1> = void; Func = vamp::binding::init_robot<vamp::robots::Fetch>(nanobind::module_&)::<lambda()>; Extra = {scope, name, char [26]}; typename std::enable_if<is_lambda_v<typename std::remove_reference<_Arg>::type>, int>::type <anonymous> = 0]'
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:409:21:   required from 'nanobind::module_& nanobind::module_::def(const char*, Func&&, const Extra& ...) [with Func = vamp::binding::init_robot<vamp::robots::Fetch>(nanobind::module_&)::<lambda()>; Extra = {char [26]}]'
+/src/myfork/vamp/src/impl/vamp/bindings/robot_helper.hh:358:22:   required from 'nanobind::module_ vamp::binding::init_robot(nanobind::module_&) [with Robot = vamp::robots::Fetch]'
+/src/myfork/vamp/build/fetch.cc:8:51:   required from here
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_func.h:275:33: error: invalid conversion from 'char* const*' to 'char' [-fpermissive]
+  275 |                        cap->func((in.template get<Is>())
+      |                        ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+      |                                 |
+      |                                 char* const*
+  276 |                                      .operator cast_t<Args>()...),
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nanobind.h:52:
+/src/myfork/vamp/build/_deps/nanobind-src/include/nanobind/nb_cast.h:303:33: note:   initializing argument 1 of 'static nanobind::handle nanobind::detail::type_caster<char>::from_cpp(char, nanobind::rv_policy, nanobind::detail::cleanup_list*)'
+  303 |     static handle from_cpp(char value, rv_policy, cleanup_list *) noexcept {
+      |                            ~~~~~^~~~~
+ninja: build stopped: subcommand failed.

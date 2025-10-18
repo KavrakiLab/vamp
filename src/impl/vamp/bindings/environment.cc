@@ -161,8 +161,8 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             })
         .def(
             "attach",
-            [](vc::Environment<float> &e, const vc::Attachment<float> &a) { e.attachments.emplace(a); })
-        .def("detach", [](vc::Environment<float> &e) { e.attachments.reset(); });
+            [](vc::Environment<float> &e, const vc::Attachment<float> &a, const size_t eef_id = 0) { e.attachments[eef_id].emplace(a); })
+        .def("detach", [](vc::Environment<float> &e, const size_t eef_id = 0) { e.attachments[eef_id].reset(); e.attachments.erase(eef_id); });
 
     pymodule.def(
         "filter_pointcloud",

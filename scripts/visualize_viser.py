@@ -9,10 +9,10 @@ from fire import Fire
 
 
 # Starting configuration
-a = [0., -0.785, 0., -2.356, 0., 1.571, 0.785, 2.35, 1., 0., -0.8, 0, 2.5, 0.785]
+a = [0.0, -0.785, 0.0, -2.356, 0.0, 1.571, 0.785, 2.35, 1.0, 0.0, -0.8, 0, 2.5, 0.785]
 
 # Goal configuration
-b = [-2.35, 1., 0., -0.8, 0, 2.5, 0.785, 0., -0.785, 0., -2.356, 0., 1.571, 0.785]
+b = [-2.35, 1.0, 0.0, -0.8, 0, 2.5, 0.785, 0.0, -0.785, 0.0, -2.356, 0.0, 1.571, 0.785]
 
 
 # Problem specification: a list of sphere centers
@@ -31,8 +31,7 @@ problem = [
     [-0.35, -0.5, 0.8],
     [0, -0.65, 0.8],
     [0.35, -0.65, 0.8],
-    ]
-
+]
 
 
 def main(
@@ -43,8 +42,9 @@ def main(
     **kwargs,
 ):
 
-    (vamp_module, planner_func, plan_settings,
-     simp_settings) = vamp.configure_robot_and_planner_with_kwargs("bimanualpanda", planner, **kwargs)
+    (vamp_module, planner_func, plan_settings, simp_settings) = (
+        vamp.configure_robot_and_planner_with_kwargs("bimanualpanda", planner, **kwargs)
+    )
 
     # Create an attachment offset on the Z-axis from the end-effector frame
     tf = np.identity(4)
@@ -57,8 +57,7 @@ def main(
     attachment.add_spheres([vamp.Sphere([0, 0, 0], attachment_radius)])
     attachment2.add_spheres([vamp.Sphere([0, 0, 0], attachment_radius)])
 
-
-    robot_dir = Path(__file__).parents[1] / 'resources' / 'panda'
+    robot_dir = Path(__file__).parents[1] / "resources" / "panda"
 
     server, robot = setup_viser_with_robot(robot_dir, "bipanda_spherized.urdf")
     robot.update_cfg(a)
@@ -76,15 +75,24 @@ def main(
     e.attach(attachment2, 1)
 
     # Add attachment sphere to visualization
-    attachment_sph = add_spheres(server, np.zeros((2, 3)), np.array([attachment_radius] * 2), colors=[[0, 255, 0], [0, 0, 255]])
+    attachment_sph = add_spheres(
+        server,
+        np.zeros((2, 3)),
+        np.array([attachment_radius] * 2),
+        colors=[[0, 255, 0], [0, 0, 255]],
+    )
 
     # Update attachment sphere positions corresponding to the waypoints.
     # this could also be made into a callable that can be called during trajectory viz
     def get_attachment_pos(configuration):
         for idx, attach in enumerate([attachment, attachment2]):
             attach.set_ee_pose(vamp_module.eefk(configuration)[idx])
-        return np.array([attachment.posed_spheres[0].position, attachment2.posed_spheres[0].position])
-
+        return np.array(
+            [
+                attachment.posed_spheres[0].position,
+                attachment2.posed_spheres[0].position,
+            ]
+        )
 
     # Plan and display
     sampler = vamp_module.halton()

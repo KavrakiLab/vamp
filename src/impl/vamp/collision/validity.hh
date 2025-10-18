@@ -264,7 +264,26 @@ namespace vamp
                     return true;
                 }
             }
+
+        // now treat the other attachments also as potential collision objects
+        // This is probably expensive, find a more efficient way. 
+            for (const auto &other_attachment: e.attachments){
+                if(attachment.first != other_attachment.first) { // different obj
+                    for (const auto &s : attachment.second.posed_spheres) {
+                        for(const auto &s2 : other_attachment.second.posed_spheres) {
+                            if (not collision::sphere_sphere_sql2(s, s2).test_zero())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
+
+
+
 
         return false;
     }

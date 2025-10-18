@@ -34,7 +34,7 @@ namespace vamp::robots
         };
 
         static constexpr std::array<std::string_view, dimension> joint_names = {"x", "y", "z"};
-        static constexpr char *end_effector = "";
+        static constexpr char *end_effectors[] = {};
 
         template <std::size_t rake>
         struct Spheres

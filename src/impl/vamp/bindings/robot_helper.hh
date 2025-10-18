@@ -355,7 +355,7 @@ namespace vamp::binding
             "Minimum and maximum radii sizes of robot spheres.");
         submodule.def(
             "joint_names", []() { return Robot::joint_names; }, "Joint names for the robot in order of DoF");
-        submodule.def("end_effector", []() { return Robot::end_effector; }, "End-effector frame name.");
+        submodule.def("end_effectors", []() { return Robot::end_effectors; }, "End-effector frame names.");
 
         using RNG = vamp::rng::RNG<Robot>;
         nb::class_<typename RNG::Ptr>(submodule, "RNG", "RNG for robot configurations.")

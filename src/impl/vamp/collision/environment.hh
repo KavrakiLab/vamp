@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
@@ -22,7 +23,7 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
         std::vector<CAPT> pointclouds;
-        std::optional<Attachment<DataT>> attachments;
+        std::map<size_t, Attachment<DataT>> attachments;
 
         Environment() = default;
 
@@ -36,7 +37,7 @@ namespace vamp::collision
           , z_aligned_cuboids(other.z_aligned_cuboids.begin(), other.z_aligned_cuboids.end())
           , heightfields(other.heightfields.begin(), other.heightfields.end())
           , pointclouds(other.pointclouds.begin(), other.pointclouds.end())
-          , attachments(other.template clone_attachments<DataT>())
+          , attachments(other.attachments.begin(), other.attachments.end())
         {
         }
 
@@ -72,24 +73,30 @@ namespace vamp::collision
         template <typename OtherDataT>
         friend struct Environment;
 
-        template <typename OtherDataT>
-        inline auto clone_attachments() const noexcept -> std::optional<Attachment<OtherDataT>>
-        {
-            if (attachments)
-            {
-                return Attachment<OtherDataT>(*attachments);
-            }
+        // template <typename OtherDataT>
+        // inline auto clone_attachments() const noexcept -> std::vector<Attachment<OtherDataT>>
+        // {
+        //     if (attachments)
+        //     {
+        //         return std::vector<Attachment<OtherDataT>>(*attachments);
+        //     }
 
-            return std::nullopt;
-        }
+        //     return std::nullopt;
+        // }
     };
 
-    template <typename DataT>
+    template <size_t N, typename DataT>
     inline auto set_attachment_pose(
         const Environment<DataT> &e,
-        const Eigen::Transform<DataT, 3, Eigen::Isometry> &p_tf) noexcept
+        const std::array<Eigen::Transform<DataT, 3, Eigen::Isometry>, N> &p_tfs
+    ) noexcept
     {
-        e.attachments->pose(p_tf);
+        // and number of attachment poses are same.
+        for(auto i=0U; i < N; i++){
+            if(e.attachments.find(i) != e.attachments.end())
+                // ;
+                e.attachments.at(i).pose(p_tfs[i]);
+        }
     }
 
 }  // namespace vamp::collision

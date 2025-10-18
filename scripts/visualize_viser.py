@@ -41,7 +41,7 @@ def main(
     attachment_offset: float = 0.04,
     planner: str = "rrtc",
     **kwargs,
-    ):
+):
 
     (vamp_module, planner_func, plan_settings,
      simp_settings) = vamp.configure_robot_and_planner_with_kwargs("bimanualpanda", planner, **kwargs)
@@ -63,13 +63,13 @@ def main(
     server, robot = setup_viser_with_robot(robot_dir, "bipanda_spherized.urdf")
     robot.update_cfg(a)
 
-
-
     e = vamp.Environment()
     for sphere in problem:
         e.add_sphere(vamp.Sphere(sphere, obstacle_radius))
 
-    _problem_sphere_handles = add_spheres(server, np.array(problem), np.array([obstacle_radius] * len(problem)))
+    _problem_sphere_handles = add_spheres(
+        server, np.array(problem), np.array([obstacle_radius] * len(problem))
+    )
 
     # Add the attchment to the VAMP environment
     e.attach(attachment, 0)
@@ -94,7 +94,9 @@ def main(
 
     attachment_positions = [get_attachment_pos(pos) for pos in simple.path.numpy()]
 
-    add_trajectory(server, simple.path.numpy(), robot, attachment_sph, attachment_positions)
+    add_trajectory(
+        server, simple.path.numpy(), robot, attachment_sph, attachment_positions
+    )
 
     # display
     while True:

@@ -23,7 +23,7 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
         std::vector<CAPT> pointclouds;
-        std::map<size_t, Attachment<DataT>> attachments;
+        std::map<size_t, Attachment<DataT>> attachments; // eef_id to attachment
 
         Environment() = default;
 
@@ -72,17 +72,6 @@ namespace vamp::collision
     private:
         template <typename OtherDataT>
         friend struct Environment;
-
-        // template <typename OtherDataT>
-        // inline auto clone_attachments() const noexcept -> std::vector<Attachment<OtherDataT>>
-        // {
-        //     if (attachments)
-        //     {
-        //         return std::vector<Attachment<OtherDataT>>(*attachments);
-        //     }
-
-        //     return std::nullopt;
-        // }
     };
 
     template <size_t N, typename DataT>
@@ -91,10 +80,8 @@ namespace vamp::collision
         const std::array<Eigen::Transform<DataT, 3, Eigen::Isometry>, N> &p_tfs
     ) noexcept
     {
-        // and number of attachment poses are same.
         for(auto i=0U; i < N; i++){
             if(e.attachments.find(i) != e.attachments.end())
-                // ;
                 e.attachments.at(i).pose(p_tfs[i]);
         }
     }

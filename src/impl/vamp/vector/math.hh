@@ -55,7 +55,7 @@ inline static auto to_isometries(const DataT *buf) -> std::array<Eigen::Transfor
 {
     std::array<Eigen::Transform<DataT, 3, Eigen::Isometry>, N> out;
 
-    for(auto i=0; i < N; i++)
+    for(size_t i=0; i < N; i++)
     {
         auto offset = i * 12;
         const Eigen::Map<const Eigen::Matrix<DataT, 3, 3>> R(&buf[offset + 3]);

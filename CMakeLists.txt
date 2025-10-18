@@ -11,7 +11,6 @@ option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" ON)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
 option(VAMP_OMPL_PATH "Search Path for OMPL Installation - Only Needed for Demo Script" "")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") 
 
 if(VAMP_FORCE_CLANG)
   find_program(CLANG "clang")

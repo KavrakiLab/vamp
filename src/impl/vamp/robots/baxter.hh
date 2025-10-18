@@ -32,7 +32,7 @@ namespace vamp::robots
             "right_w0",
             "right_w1",
             "right_w2"};
-        static constexpr char *end_effectors[] = {"right_gripper"};
+        static constexpr std::array<std::string_view, 1> end_effectors = {"right_gripper"};
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;

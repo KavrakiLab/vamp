@@ -26,7 +26,7 @@ namespace vamp::robots
             "forearm_roll_joint",
             "wrist_flex_joint",
             "wrist_roll_joint"};
-        static constexpr char *end_effectors[] = {"gripper_link"};
+        static constexpr std::array<std::string_view, 1> end_effectors = {"gripper_link"};
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;

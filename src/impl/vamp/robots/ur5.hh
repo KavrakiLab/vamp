@@ -24,7 +24,7 @@ namespace vamp::robots
             "wrist_1_joint",
             "wrist_2_joint",
             "wrist_3_joint"};
-        static constexpr char *end_effectors[] = {"robotiq_85_base_link"};
+        static constexpr std::array<std::string_view, 1> end_effectors = {"robotiq_85_base_link"};
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;

@@ -32,8 +32,9 @@ namespace vamp::robots
             "right_panda_joint5",
             "right_panda_joint6",
             "right_panda_joint7"};
-        static constexpr char *end_effectors[] = {"left_panda_grasptarget"
-                                                  "right_panda_grasptarget"};
+        static constexpr std::array<std::string_view, 2> end_effectors = {
+            "left_panda_grasptarget",
+            "right_panda_grasptarget"};
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;

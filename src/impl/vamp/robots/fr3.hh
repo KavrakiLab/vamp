@@ -27,7 +27,7 @@ namespace vamp::robots
             "fr3_joint7",
             "fr3_finger_joint1",
             "fr3_finger_joint2"};
-        static constexpr char *end_effectors[] = {"fr3_hand_tcp"};
+        static constexpr std::array<std::string_view, 1> end_effectors = {"fr3_hand_tcp"};
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;

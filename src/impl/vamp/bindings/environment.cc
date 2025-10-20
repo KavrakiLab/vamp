@@ -161,7 +161,14 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             })
         .def(
             "attach",
-            [](vc::Environment<float> &e, const vc::Attachment<float> &a, const size_t eef_id = 0) { e.attachments.emplace(eef_id, a); })
+            [](vc::Environment<float> &e, const vc::Attachment<float> &a) { 
+                for(size_t i = 0; i < e.size(); i++)
+                    if (e.attachments[i].eef_idx == a.eef_idx){
+                        e.attachments[i] = a;
+                        return ;
+                    }
+                e.push_back(a);
+             })
         .def("detach", [](vc::Environment<float> &e, const size_t eef_id = 0) { e.attachments.erase(eef_id); });
 
     pymodule.def(
@@ -199,11 +206,11 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
     nb::class_<vc::Attachment<float>>(pymodule, "Attachment")
         .def(
             "__init__",
-            [](vc::Attachment<float> *q, Eigen::Matrix4f &tf) noexcept
+            [](vc::Attachment<float> *q, Eigen::Matrix4f &tf, const size_t eef_idx) noexcept
             {
                 Eigen::Isometry3f iso;
                 iso.matrix() = tf;
-                new (q) vc::Attachment<float>(iso);
+                new (q) vc::Attachment<float>(iso, eef_idx);
             },
             "Constructor for an attachment centered at a relative transform from the end-effector.")
         .def_prop_ro("relative_frame", [](vc::Attachment<float> &a) { return a.tf; })
@@ -224,5 +231,9 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
                 a.pose(iso);
             },
             "tf"_a)
+        .def(
+            "set_eef_idx",
+            [](vc::Attachment<float> &a, const size_t eef_idx)
+            { a.eef_idx = eef_idx; })
         .def_ro("posed_spheres", &vc::Attachment<float>::posed_spheres);
 }

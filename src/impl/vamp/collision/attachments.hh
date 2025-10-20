@@ -12,29 +12,31 @@ namespace vamp::collision
     template <typename DataT>
     struct Attachment
     {
-        Attachment(const Eigen::Transform<DataT, 3, Eigen::Isometry> &tf) noexcept : tf(std::move(tf))
+        Attachment(const Eigen::Transform<DataT, 3, Eigen::Isometry> &tf, const size_t eef_idx = 0) noexcept : tf(std::move(tf)), eef_idx(eef_idx)
         {
         }
 
         template <typename DT = DataT, typename = std::enable_if_t<not std::is_same_v<DT, float>>>
-        Attachment(const Eigen::Transform<float, 3, Eigen::Isometry> &tf) noexcept
-          : Attachment(tf.cast<DataT>())
+        Attachment(const Eigen::Transform<float, 3, Eigen::Isometry> &tf, const size_t eef_idx = 0) noexcept
+          : Attachment(tf.cast<DataT>(), eef_idx)
         {
         }
 
         Attachment(const Attachment &) = default;
 
         template <typename DT = DataT, typename = std::enable_if_t<not std::is_same_v<DT, float>>>
-        Attachment(const Attachment<float> &o) noexcept : Attachment(o.tf)
+        Attachment(const Attachment<float> &o, const size_t eef_idx = 0) noexcept : Attachment(o.tf, eef_idx)
         {
             spheres.reserve(o.spheres.size());
             for (const auto &sphere : o.spheres)
             {
                 spheres.emplace_back(sphere);
             }
+
         }
 
         std::vector<Sphere<DataT>> spheres;
+        size_t eef_idx = 0;
         // HACK: To get around passing the environment as const but needing to re-pose the
         // attachments
         mutable std::vector<Sphere<DataT>> posed_spheres;

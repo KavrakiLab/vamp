@@ -23,7 +23,7 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
         std::vector<CAPT> pointclouds;
-        std::map<size_t, Attachment<DataT>> attachments; // eef_id to attachment
+        std::vector<Attachment<DataT>> attachments; // eef_id to attachment
 
         Environment() = default;
 
@@ -80,9 +80,12 @@ namespace vamp::collision
         const std::array<Eigen::Transform<DataT, 3, Eigen::Isometry>, N> &p_tfs
     ) noexcept
     {
+        // small enough N that brute forcing is the best option.
         for(auto i=0U; i < N; i++){
-            if(e.attachments.find(i) != e.attachments.end())
-                e.attachments.at(i).pose(p_tfs[i]);
+            for(auto &attachment : e.attachments) {
+                if (attachment.eef_idx == i)
+                    attachment.pose(p_tfs[i]);
+            }
         }
     }
 

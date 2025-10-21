@@ -40,7 +40,7 @@ namespace vamp::planning
 
         const std::size_t n = std::max(std::ceil(distance / static_cast<float>(rake) * resolution), 1.F);
 
-        bool valid = (environment.attachments.size()) ? Robot::template fkcc_attach<rake>(environment, block) :
+        bool valid = (environment.eef_attachments.size()) ? Robot::template fkcc_attach<rake>(environment, block) :
                                                  Robot::template fkcc<rake>(environment, block);
         if (not valid or n == 1)
         {
@@ -55,7 +55,7 @@ namespace vamp::planning
                 block[j] = block[j] - backstep.broadcast(j);
             }
 
-            bool valid = (environment.attachments.size()) ? Robot::template fkcc_attach<rake>(environment, block) :
+            bool valid = (environment.eef_attachments.size()) ? Robot::template fkcc_attach<rake>(environment, block) :
                                                      Robot::template fkcc<rake>(environment, block);
             if (not valid)
             {

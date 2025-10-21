@@ -13,6 +13,21 @@
 namespace vamp::collision
 {
     template <typename DataT>
+    struct EEFAttachment {
+        size_t eef_idx;
+        Attachment<DataT> attachment;
+
+        EEFAttachment(size_t eef_idx, const Attachment<DataT>& _a) : eef_idx(eef_idx), attachment(_a) {}
+
+        template <typename OtherDataT>
+        EEFAttachment(const EEFAttachment<OtherDataT> &other)
+        : eef_idx(other.eef_idx), attachment(other.attachment)
+        {
+        }
+
+    };
+
+    template <typename DataT>
     struct Environment
     {
         std::vector<Sphere<DataT>> spheres;
@@ -23,7 +38,23 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
         std::vector<CAPT> pointclouds;
-        std::vector<Attachment<DataT>> attachments; // eef_id to attachment
+        std::vector<EEFAttachment<DataT>> eef_attachments; // eef_id to attachment
+
+        void attach(const Attachment<DataT> &a, size_t eef_idx = 0){
+            for(auto &eef_attachment: eef_attachments)
+                if (eef_attachment.eef_idx == eef_idx){
+                    eef_attachment.attachment = a;
+                    return ;
+                }
+            eef_attachments.emplace_back(eef_idx, a);
+        }
+        void detach(size_t eef_idx = 0){
+            for(size_t i = 0; i < eef_attachments.size(); i++)
+                if (eef_attachments[i].eef_idx == eef_idx){
+                    eef_attachments.erase(eef_attachments.begin() + i);
+                    return ;
+                }
+        }
 
         Environment() = default;
 
@@ -37,7 +68,7 @@ namespace vamp::collision
           , z_aligned_cuboids(other.z_aligned_cuboids.begin(), other.z_aligned_cuboids.end())
           , heightfields(other.heightfields.begin(), other.heightfields.end())
           , pointclouds(other.pointclouds.begin(), other.pointclouds.end())
-          , attachments(other.attachments.begin(), other.attachments.end())
+          , eef_attachments(other.eef_attachments.begin(), other.eef_attachments.end())
         {
         }
 
@@ -82,9 +113,9 @@ namespace vamp::collision
     {
         // small enough N that brute forcing is the best option.
         for(auto i=0U; i < N; i++){
-            for(auto &attachment : e.attachments) {
-                if (attachment.eef_idx == i)
-                    attachment.pose(p_tfs[i]);
+            for(auto &eef_attachment : e.eef_attachments) {
+                if (eef_attachment.eef_idx == i)
+                    eef_attachment.attachment.pose(p_tfs[i]);
             }
         }
     }

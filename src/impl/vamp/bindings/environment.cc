@@ -216,6 +216,10 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             [](vc::Attachment<float> &a, std::vector<collision::Sphere<float>> &spheres)
             { a.spheres.insert(a.spheres.end(), spheres.cbegin(), spheres.cend()); })
         .def(
+            "clear_spheres",
+            [](vc::Attachment<float> &a) { a.spheres.clear(); }
+        )
+        .def(
             "set_ee_pose",
             [](vc::Attachment<float> &a, Eigen::Matrix4f &tf)
             {

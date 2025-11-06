@@ -1,0 +1,58 @@
+{
+  "name": "tools",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile",
+    "options": ["--platform=linux/amd64"]
+  },
+
+  "runArgs": [
+    "--rm",
+    "-v", "/dev:/dev",
+    "--device-cgroup-rule", "c 81:* rmw",
+    "--device-cgroup-rule", "c 189:* rmw",
+    "--network=host",
+    "--cap-add=SYS_NICE",
+    "--ulimit", "memlock=8428281856",
+    "--platform=linux/amd64"
+  ],
+
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopContainer",
+
+  "containerUser": "vscode",
+  "remoteUser": "vscode",
+  "privileged": true,
+  "updateRemoteUserUID": true,
+
+  // Persist GitHub CLI auth across container rebuilds/reopens:
+  // ${devcontainerId} keeps volumes unique per project.
+  "mounts": [
+   "type=bind,source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig",
+    "type=bind,source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,readonly"
+  ],
+
+  "postStartCommand": "sudo usermod -aG sudo vscode",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.debugpy",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-python.python",
+        "ms-vscode.cpptools",
+        "ms-python.black-formatter",
+        "mhutchie.git-graph"
+      ]
+    }
+  },
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "vscode"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  }
+}

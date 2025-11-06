@@ -1,0 +1,9 @@
+{
+    "cmake.configureOnOpen": true,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.sourceDirectory": "/workspace",
+    "cmake.buildToolArgs": [
+        "-j8"
+    ],
+    "cmake.exportCompileCommandsFile": true
+}

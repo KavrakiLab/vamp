@@ -20,6 +20,8 @@ namespace vamp::planning
         std::size_t max_internal_iterations = 100000;
         std::size_t max_samples = 100000;
         std::size_t max_cost_bound_resamples = 1000;
+
+        std::vector<float> dof_cost_weights = {};
     };
 
 }  // namespace vamp::planning

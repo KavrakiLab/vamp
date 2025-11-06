@@ -415,7 +415,7 @@ namespace vamp::planning
             // We have a new best solution
             PlanningResult<Robot> final_result;
             final_result.path = result.path;
-            best_path_cost = result.path.cost(dof_cost_weights_vector);
+            best_path_cost = result.path.cost_weighted(dof_cost_weights_vector);
 
             float best_possible_cost = std::numeric_limits<float>::max();
             for (const auto &goal : goals)
@@ -477,11 +477,11 @@ namespace vamp::planning
                     }
 
                     // To be safe, ensure new path is actually a better solution
-                    if (result.path.cost(dof_cost_weights_vector) < best_path_cost)
+                    if (result.path.cost_weighted(dof_cost_weights_vector) < best_path_cost)
                     {
                         // Update best solution
                         final_result.path = result.path;
-                        best_path_cost = result.path.cost(dof_cost_weights_vector);
+                        best_path_cost = result.path.cost_weighted(dof_cost_weights_vector);
 
                         phs_rng->phs.set_transverse_diameter(best_path_cost);
                     }

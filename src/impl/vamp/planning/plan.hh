@@ -31,7 +31,7 @@ namespace vamp::planning
             return std::numeric_limits<float>::infinity();
         }
 
-        [[nodiscard]] inline auto cost(FloatVector<Robot::dimension> &weights) const noexcept -> float
+        [[nodiscard]] inline auto cost_weighted(const FloatVector<Robot::dimension> &weights) const noexcept -> float
         {
             if (this->size() > 2)
             {

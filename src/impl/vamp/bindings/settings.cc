@@ -37,7 +37,8 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("max_iterations", &vp::AORRTCSettings::max_iterations)
         .def_rw("max_internal_iterations", &vp::AORRTCSettings::max_internal_iterations)
         .def_rw("max_cost_bound_resamples", &vp::AORRTCSettings::max_cost_bound_resamples)
-        .def_rw("max_samples", &vp::AORRTCSettings::max_samples);
+        .def_rw("max_samples", &vp::AORRTCSettings::max_samples)
+        .def_rw("dof_cost_weights", &vp::AORRTCSettings::dof_cost_weights);
 
     // TODO: Redesign a neater form of RoadmapSettings/NeighborParams
     // TODO: Expose the other NeighborParams types

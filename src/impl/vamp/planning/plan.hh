@@ -31,6 +31,27 @@ namespace vamp::planning
             return std::numeric_limits<float>::infinity();
         }
 
+        [[nodiscard]] inline auto cost(FloatVector<Robot::dimension> &weights) const noexcept -> float
+        {
+            if (this->size() > 2)
+            {
+                float distance = 0;
+                for (auto i = 0U; i < this->size() - 1; ++i)
+                {
+                    distance += ((this->operator[](i) - this->operator[](i + 1)) * weights).l2_norm();
+                }
+
+                return distance;
+            }
+
+            if (this->size() == 2)
+            {
+                return ((this->front() - this->back()) * weights).l2_norm();
+            }
+
+            return std::numeric_limits<float>::infinity();
+        }
+
         inline auto subdivide() noexcept
         {
             Path<Robot> new_path;

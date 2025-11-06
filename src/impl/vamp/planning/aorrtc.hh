@@ -379,6 +379,10 @@ namespace vamp::planning
             AORRTCSettings settings = settings_in;  // make a mutable copy
             const std::size_t &max_samples = settings.max_samples;
             const std::size_t &max_iterations = settings.max_iterations;
+            const FloatVector<Robot::dimension> dof_cost_weights_vector =
+                (settings.dof_cost_weights.size() == Robot::dimension)
+                    ? FloatVector<Robot::dimension>(settings.dof_cost_weights, false)
+                    : FloatVector<Robot::dimension>(std::vector<float>(Robot::dimension, 1.0F), false);
 
             // Configure internal RRTC settings
             RRTCSettings &rrtc_settings = settings.rrtc;
@@ -411,7 +415,7 @@ namespace vamp::planning
             // We have a new best solution
             PlanningResult<Robot> final_result;
             final_result.path = result.path;
-            best_path_cost = result.path.cost();
+            best_path_cost = result.path.cost(dof_cost_weights_vector);
 
             float best_possible_cost = std::numeric_limits<float>::max();
             for (const auto &goal : goals)
@@ -473,15 +477,16 @@ namespace vamp::planning
                     }
 
                     // To be safe, ensure new path is actually a better solution
-                    if (result.path.cost() < best_path_cost)
+                    if (result.path.cost(dof_cost_weights_vector) < best_path_cost)
                     {
                         // Update best solution
                         final_result.path = result.path;
-                        best_path_cost = result.path.cost();
+                        best_path_cost = result.path.cost(dof_cost_weights_vector);
 
                         phs_rng->phs.set_transverse_diameter(best_path_cost);
                     }
                 }
+                
             }
 
             final_result.iterations = iters;

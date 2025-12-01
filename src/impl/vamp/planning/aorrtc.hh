@@ -91,10 +91,11 @@ namespace vamp::planning
         }
 
         AOX_RRTC(std::size_t max_samples)
-          : buffer(std::unique_ptr<float, decltype(&free)>(
-                vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
-                    max_samples * Configuration::num_scalars_rounded),
-                &free))
+          : buffer(
+                std::unique_ptr<float, decltype(&free)>(
+                    vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
+                        max_samples * Configuration::num_scalars_rounded),
+                    &free))
         {
             parents.resize(max_samples);
             radii.resize(max_samples);

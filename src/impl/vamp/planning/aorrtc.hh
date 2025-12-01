@@ -68,7 +68,13 @@ namespace vamp::planning
 
             auto temp_node = NNNode{0, cost, c};
             nn->nearestR(temp_node, NNNode::distance(temp_node, root), near_list);
-
+            
+            //Explicitly handle case where no neighbors are in the disc.
+            if (near_list.empty())
+            {
+                return {root, c.distance(root.array)};
+            }
+            
             const auto *new_nearest_node = &near_list[0];
             float new_nearest_distance = c.distance(new_nearest_node->array);
 

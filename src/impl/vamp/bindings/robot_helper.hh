@@ -257,6 +257,7 @@ namespace vamp::binding
         {
             auto configuration = Input::to(c_in);
             auto copy = configuration.trim();
+            Robot::format_to_robot_configuration(copy);
             Robot::descale_configuration(copy);
 
             const bool in_bounds = (copy <= 1.F).all() and (copy >= 0.F).all();

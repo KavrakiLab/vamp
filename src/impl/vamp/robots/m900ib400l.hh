@@ -52,6 +52,22 @@ struct M900IB400L
         0.15915963053703308, 0.37206533551216125, 0.3581148684024811, 0.07957854866981506, 0.2348189502954483, 0.07957854866981506
     };
 
+    inline static void format_to_robot_configuration(Configuration &q) noexcept
+    {
+        std::array<float, 8> arr8 = q.to_array();
+        std::array<float, 6>  arr = {arr8[0], arr8[1], arr8[2], arr8[3], arr8[4], arr8[5]};
+        arr[2] -= arr[1];
+        q = Configuration(arr);
+    }
+
+    inline static void format_to_vamp_configuration(Configuration &q) noexcept
+    {
+        std::array<float, 8> arr8 = q.to_array();
+        std::array<float, 6> arr = {arr8[0], arr8[1], arr8[2], arr8[3], arr8[4], arr8[5]};
+        arr[2] += arr[1];
+        q = Configuration(arr);
+    }
+
     static inline void scale_configuration(Configuration& q) noexcept
     {
         q = q * Configuration(s_m) + Configuration(s_a);
@@ -60,30 +76,6 @@ struct M900IB400L
     static inline void descale_configuration(Configuration& q) noexcept
     {
         q = (q - Configuration(s_a)) * Configuration(d_m);
-    }
-
-    template <std::size_t rake>
-    static inline void scale_configuration_block(ConfigurationBlock<rake> &q) noexcept
-    {
-        q[0] = -3.1414999961853027 + (q[0] * 6.2829999923706055);
-q[1] = -1.1169999837875366 + (q[1] * 2.687700033187866);
-q[2] = -2.268899917602539 + (q[2] * 2.7923998832702637);
-q[3] = -6.283100128173828 + (q[3] * 12.566200256347656);
-q[4] = -2.129300117492676 + (q[4] * 4.258600234985352);
-q[5] = -6.283100128173828 + (q[5] * 12.566200256347656);
-
-    }
-
-    template <std::size_t rake>
-    static inline void descale_configuration_block(ConfigurationBlock<rake> & q) noexcept
-    {
-        q[0] = 0.15915963053703308 * (q[0] - -3.1414999961853027);
-q[1] = 0.37206533551216125 * (q[1] - -1.1169999837875366);
-q[2] = 0.3581148684024811 * (q[2] - -2.268899917602539);
-q[3] = 0.07957854866981506 * (q[3] - -6.283100128173828);
-q[4] = 0.2348189502954483 * (q[4] - -2.129300117492676);
-q[5] = 0.07957854866981506 * (q[5] - -6.283100128173828);
-
     }
 
     inline static auto space_measure() noexcept -> float

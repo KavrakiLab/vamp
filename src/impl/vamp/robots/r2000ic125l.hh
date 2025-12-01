@@ -52,6 +52,14 @@ struct R2000IC125L
         0.1548534631729126, 0.4212924540042877, 0.1903514266014099, 0.0795774757862091, 0.22918328642845154, 0.0795774757862091
     };
 
+    inline static void format_to_robot_configuration(Configuration &q) noexcept
+    {
+    }
+
+    inline static void format_to_vamp_configuration(Configuration &q) noexcept
+    {
+    }
+
     static inline void scale_configuration(Configuration& q) noexcept
     {
         q = q * Configuration(s_m) + Configuration(s_a);

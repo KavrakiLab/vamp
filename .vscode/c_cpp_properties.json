@@ -3,7 +3,16 @@
         {
             "name": "Linux",
             "configurationProvider": "ms-vscode.cmake-tools",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+            "compileCommands": [
+                "${workspaceFolder}/build/compile_commands.json"
+            ],
+            "includePath": [
+                "${default}",
+                "${workspaceFolder}/src/impl",
+                "${workspaceFolder}/src/impl/**",
+                "${workspaceFolder}/build/_deps/**",
+                "/usr/include/eigen3"
+            ]
         }
     ],
     "version": 4

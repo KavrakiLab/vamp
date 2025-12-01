@@ -21,6 +21,8 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
       panda
       fetch
       baxter
+      r2000ic125l
+      m900ib400l
     )
 
     list(APPEND VAMP_ROBOT_STRUCTS
@@ -29,6 +31,8 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
       Panda
       Fetch
       Baxter
+      R2000IC125L
+      M900iB400L
     )
   endif()
 

@@ -70,6 +70,14 @@ namespace vamp::robots
             0.15915493667125702,
             0.15915493667125702};
 
+        inline static void format_to_robot_configuration(Configuration &q) noexcept
+        {
+        }
+
+        inline static void format_to_vamp_configuration(Configuration &q) noexcept
+        {
+        }
+
         inline static void scale_configuration(Configuration &q) noexcept
         {
             q = q * Configuration(s_m) + Configuration(s_a);

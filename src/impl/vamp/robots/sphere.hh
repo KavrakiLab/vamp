@@ -60,6 +60,14 @@ namespace vamp::robots
             std::copy_n(new_highs.cbegin(), 3, highs.begin());
         }
 
+        inline static void format_to_robot_configuration(Configuration &q) noexcept
+        {
+        }
+
+        inline static void format_to_vamp_configuration(Configuration &q) noexcept
+        {
+        }
+
         inline static void scale_configuration(Configuration &q) noexcept
         {
             Configuration clow(lows.data());

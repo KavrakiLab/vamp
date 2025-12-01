@@ -163,9 +163,11 @@ namespace vamp::planning
             auto x = phs.transform(uniform_in_ball());
 
             // Clamp values
+            Robot::format_to_robot_configuration(x);
             Robot::descale_configuration(x);
             x.clamp(0.F, 1.F);
             Robot::scale_configuration(x);
+            Robot::format_to_vamp_configuration(x);
 
             return x;
         }

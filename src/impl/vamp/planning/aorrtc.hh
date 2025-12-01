@@ -68,8 +68,8 @@ namespace vamp::planning
 
             auto temp_node = NNNode{0, cost, c};
             nn->nearestR(temp_node, NNNode::distance(temp_node, root), near_list);
-            
-            //Explicitly handle case where no neighbors are within r distance.
+
+            // Explicitly handle case where no neighbors are within r distance.
             if (near_list.empty())
             {
                 return {root, c.distance(root.array)};
@@ -91,11 +91,10 @@ namespace vamp::planning
         }
 
         AOX_RRTC(std::size_t max_samples)
-          : buffer(
-                std::unique_ptr<float, decltype(&free)>(
-                    vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
-                        max_samples * Configuration::num_scalars_rounded),
-                    &free))
+          : buffer(std::unique_ptr<float, decltype(&free)>(
+                vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
+                    max_samples * Configuration::num_scalars_rounded),
+                &free))
         {
             parents.resize(max_samples);
             radii.resize(max_samples);

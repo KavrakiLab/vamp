@@ -16,21 +16,11 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
 
   if(NOT VAMP_ROBOT_MODULES)
     list(APPEND VAMP_ROBOT_MODULES
-      sphere
-      ur5
-      panda
-      fetch
-      baxter
       r2000ic125l
       m900ib400l
     )
 
     list(APPEND VAMP_ROBOT_STRUCTS
-      Sphere
-      UR5
-      Panda
-      Fetch
-      Baxter
       R2000IC125L
       M900iB400L
     )

@@ -5,6 +5,7 @@
 #include <vamp/utils.hh>
 #include <vamp/vector.hh>
 #include <vamp/collision/environment.hh>
+#include <vamp/collision/validity.hh>
 
 namespace vamp::planning
 {
@@ -21,11 +22,11 @@ namespace vamp::planning
     };
 
     template <typename Robot, std::size_t rake, std::size_t resolution>
-    inline constexpr auto validate_vector(
+    inline constexpr auto validate_vector_with_reason(
         const typename Robot::Configuration &start,
         const typename Robot::Configuration &vector,
         float distance,
-        const collision::Environment<FloatVector<rake>> &environment) -> bool
+        const collision::Environment<FloatVector<rake>> &environment) -> vamp::Validity
     {
         // TODO: Fix use of reinterpret_cast in pack() so that this can be constexpr
         const auto percents = FloatVector<rake>(Percents<rake>::percents);
@@ -40,9 +41,9 @@ namespace vamp::planning
 
         const std::size_t n = std::max(std::ceil(distance / static_cast<float>(rake) * resolution), 1.F);
 
-        bool valid = (environment.attachments) ? Robot::template fkcc_attach<rake>(environment, block) :
+        vamp::Validity valid = (environment.attachments) ? Robot::template fkcc_attach<rake>(environment, block) :
                                                  Robot::template fkcc<rake>(environment, block);
-        if (not valid or n == 1)
+        if (valid != vamp::Validity::VALID or n == 1)
         {
             return valid;
         }
@@ -55,15 +56,27 @@ namespace vamp::planning
                 block[j] = block[j] - backstep.broadcast(j);
             }
 
-            bool valid = (environment.attachments) ? Robot::template fkcc_attach<rake>(environment, block) :
+            vamp::Validity valid = (environment.attachments) ? Robot::template fkcc_attach<rake>(environment, block) :
                                                      Robot::template fkcc<rake>(environment, block);
-            if (not valid)
+            if (valid != vamp::Validity::VALID)
             {
-                return false;
+                return valid;
             }
         }
 
-        return true;
+        return vamp::Validity::VALID;
+    }
+
+
+    template <typename Robot, std::size_t rake, std::size_t resolution>
+    inline constexpr auto validate_vector(
+        const typename Robot::Configuration &start,
+        const typename Robot::Configuration &vector,
+        float distance,
+        const collision::Environment<FloatVector<rake>> &environment) -> bool
+    {
+        return validate_vector_with_reason<Robot, rake, resolution>(start, vector, distance, environment) ==
+               vamp::Validity::VALID;
     }
 
     template <typename Robot, std::size_t rake, std::size_t resolution>
@@ -74,5 +87,15 @@ namespace vamp::planning
     {
         auto vector = goal - start;
         return validate_vector<Robot, rake, resolution>(start, vector, vector.l2_norm(), environment);
+    }
+
+    template <typename Robot, std::size_t rake, std::size_t resolution>
+    inline constexpr auto validate_motion_with_reason(
+        const typename Robot::Configuration &start,
+        const typename Robot::Configuration &goal,
+        const collision::Environment<FloatVector<rake>> &environment) -> vamp::Validity
+    {
+        auto vector = goal - start;
+        return validate_vector_with_reason<Robot, rake, resolution>(start, vector, vector.l2_norm(), environment);
     }
 }  // namespace vamp::planning

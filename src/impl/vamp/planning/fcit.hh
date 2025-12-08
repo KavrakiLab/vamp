@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <vamp/collision/environment.hh>
+#include <vamp/collision/validity.hh>
 #include <vamp/planning/nn.hh>
 #include <vamp/planning/plan.hh>
 #include <vamp/planning/utils.hh>
@@ -330,7 +331,7 @@ namespace vamp::planning
                         temp_block[i] = rng_temp.broadcast(i);
                     }
 
-                    if (not Robot::template fkcc<rake>(environment, temp_block))
+                    if (Robot::template fkcc<rake>(environment, temp_block) != vamp::Validity::VALID)
                     {
                         continue;
                     }

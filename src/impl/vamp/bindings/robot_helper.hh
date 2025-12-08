@@ -260,10 +260,31 @@ namespace vamp::binding
             Robot::format_to_robot_configuration(copy);
             Robot::descale_configuration(copy);
 
+            if (check_bounds and not((copy <= 1.F).all() and (copy >= 0.F).all()))
+            {
+                return false;
+            }
+
+            return vamp::planning::validate_motion<Robot, rake, 1>(
+                configuration, configuration, EnvironmentVector(environment));
+        }
+
+        inline static auto
+        validate_with_reason(const Type &c_in, const EnvironmentInput &environment, bool check_bounds = false) -> vamp::Validity
+        {
+            auto configuration = Input::to(c_in);
+            auto copy = configuration.trim();
+            Robot::format_to_robot_configuration(copy);
+            Robot::descale_configuration(copy);
+
             const bool in_bounds = (copy <= 1.F).all() and (copy >= 0.F).all();
 
-            return (not check_bounds or in_bounds) and
-                   vamp::planning::validate_motion<Robot, rake, 1>(
+            if (check_bounds and not in_bounds)
+            {
+                return vamp::Validity::EXCEEDED_JOINT_LIMITS;
+            }
+
+            return vamp::planning::validate_motion_with_reason<Robot, rake, 1>(
                        configuration, configuration, EnvironmentVector(environment));
         }
 
@@ -549,6 +570,13 @@ namespace vamp::binding
         MF("validate",
            validate,
            "Check if a configuration is valid. Returns true if valid.",
+           "configuration"_a,
+           "environment"_a = vamp::collision::Environment<float>(),
+           "check_bounds"_a = false);
+
+        MF("validate_with_reason",
+           validate_with_reason,
+           "Check if a configuration is valid. Returns Validity enum.",
            "configuration"_a,
            "environment"_a = vamp::collision::Environment<float>(),
            "check_bounds"_a = false);

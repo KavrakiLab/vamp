@@ -5,6 +5,8 @@
 #include <vamp/collision/environment.hh>
 #include <vamp/collision/validity.hh>
 
+#define Validity vamp::Validity
+
 // NOLINTBEGIN(*-magic-numbers)
 namespace vamp::robots
 {
@@ -41,16 +43,28 @@ struct R2000IC125L
     };
 
     alignas(Configuration::S::Alignment) static constexpr std::array<float, dimension> s_m{
-        6.4577178955078125, 2.373647928237915, 5.253440856933594, 12.566370010375977, 4.3633198738098145, 12.566370010375977
-    };
+        4.0,
+        2.373650074005127,
+        3.0543301105499268,
+        12.56637954711914,
+        4.3633198738098145,
+        12.56637954711914};
 
     alignas(Configuration::S::Alignment) static constexpr std::array<float, dimension> s_a{
-        -3.2288589477539063, -1.0471980571746826, -2.1118481159210205, -6.283185005187988, -2.1816599369049072, -6.283185005187988
-    };
+        -2.0,
+        -1.0471999645233154,
+        -1.4137200117111206,
+        -6.28318977355957,
+        -2.1816599369049072,
+        -6.28318977355957};
 
     alignas(Configuration::S::Alignment) static constexpr std::array<float, dimension> d_m{
-        0.1548534631729126, 0.4212924540042877, 0.1903514266014099, 0.0795774757862091, 0.22918328642845154, 0.0795774757862091
-    };
+        0.25,
+        0.42129209637641907,
+        0.32740405201911926,
+        0.07957740873098373,
+        0.22918328642845154,
+        0.07957740873098373};
 
     inline static void format_to_robot_configuration(Configuration &q) noexcept
     {
@@ -4886,7 +4900,7 @@ q[5] = 0.0795774757862091 * (q[5] - -6.283185005187988);
     }
 
     template <std::size_t rake>
-        static inline bool fkcc(
+        static inline Validity fkcc(
             const vamp::collision::Environment<FloatVector<rake>> &environment,
             const ConfigurationBlock<rake> &x) noexcept
     {
@@ -5159,7 +5173,7 @@ if (sphere_environment_in_collision(environment,
                                         y[130],
                                         y[131]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5169,7 +5183,7 @@ if (sphere_environment_in_collision(environment,
                                         y[134],
                                         y[135]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -5199,7 +5213,7 @@ if (sphere_environment_in_collision(environment,
                                         y[122],
                                         y[123]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5209,7 +5223,7 @@ if (sphere_environment_in_collision(environment,
                                         y[126],
                                         y[127]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -5239,7 +5253,7 @@ if (sphere_environment_in_collision(environment,
                                         y[106],
                                         y[107]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5249,7 +5263,7 @@ if (sphere_environment_in_collision(environment,
                                         y[110],
                                         y[111]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5259,7 +5273,7 @@ if (sphere_environment_in_collision(environment,
                                         y[114],
                                         y[115]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5269,7 +5283,7 @@ if (sphere_environment_in_collision(environment,
                                         y[118],
                                         y[119]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -5299,7 +5313,7 @@ if (sphere_environment_in_collision(environment,
                                         y[74],
                                         y[75]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5309,7 +5323,7 @@ if (sphere_environment_in_collision(environment,
                                         y[78],
                                         y[79]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5319,7 +5333,7 @@ if (sphere_environment_in_collision(environment,
                                         y[82],
                                         y[83]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5329,7 +5343,7 @@ if (sphere_environment_in_collision(environment,
                                         y[86],
                                         y[87]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5339,7 +5353,7 @@ if (sphere_environment_in_collision(environment,
                                         y[90],
                                         y[91]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5349,7 +5363,7 @@ if (sphere_environment_in_collision(environment,
                                         y[94],
                                         y[95]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5359,7 +5373,7 @@ if (sphere_environment_in_collision(environment,
                                         y[98],
                                         y[99]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5369,7 +5383,7 @@ if (sphere_environment_in_collision(environment,
                                         y[102],
                                         y[103]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -5399,7 +5413,7 @@ if (sphere_environment_in_collision(environment,
                                         y[42],
                                         y[43]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5409,7 +5423,7 @@ if (sphere_environment_in_collision(environment,
                                         y[46],
                                         y[47]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5419,7 +5433,7 @@ if (sphere_environment_in_collision(environment,
                                         y[50],
                                         y[51]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5429,7 +5443,7 @@ if (sphere_environment_in_collision(environment,
                                         y[54],
                                         y[55]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5439,7 +5453,7 @@ if (sphere_environment_in_collision(environment,
                                         y[58],
                                         y[59]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5449,7 +5463,7 @@ if (sphere_environment_in_collision(environment,
                                         y[62],
                                         y[63]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5459,7 +5473,7 @@ if (sphere_environment_in_collision(environment,
                                         y[66],
                                         y[67]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5469,7 +5483,7 @@ if (sphere_environment_in_collision(environment,
                                         y[70],
                                         y[71]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -5499,7 +5513,7 @@ if (sphere_environment_in_collision(environment,
                                         y[18],
                                         y[19]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5509,7 +5523,7 @@ if (sphere_environment_in_collision(environment,
                                         y[22],
                                         y[23]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5519,7 +5533,7 @@ if (sphere_environment_in_collision(environment,
                                         y[26],
                                         y[27]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5529,7 +5543,7 @@ if (sphere_environment_in_collision(environment,
                                         y[30],
                                         y[31]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5539,7 +5553,7 @@ if (sphere_environment_in_collision(environment,
                                         y[34],
                                         y[35]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5549,7 +5563,7 @@ if (sphere_environment_in_collision(environment,
                                         y[38],
                                         y[39]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -5579,7 +5593,7 @@ if (sphere_environment_in_collision(environment,
                                         y[2],
                                         y[3]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5589,7 +5603,7 @@ if (sphere_environment_in_collision(environment,
                                         y[6],
                                         y[7]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5599,7 +5613,7 @@ if (sphere_environment_in_collision(environment,
                                         y[10],
                                         y[11]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -5609,7 +5623,7 @@ if (sphere_environment_in_collision(environment,
                                         y[14],
                                         y[15]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -5656,7 +5670,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5673,7 +5687,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5690,7 +5704,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5707,7 +5721,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5724,7 +5738,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5741,7 +5755,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5758,7 +5772,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5775,7 +5789,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5794,7 +5808,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5811,7 +5825,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5828,7 +5842,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5845,7 +5859,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5862,7 +5876,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5879,7 +5893,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5896,7 +5910,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5913,7 +5927,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5932,7 +5946,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5949,7 +5963,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5966,7 +5980,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -5983,7 +5997,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6000,7 +6014,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6017,7 +6031,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6034,7 +6048,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6051,7 +6065,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6070,7 +6084,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6087,7 +6101,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6104,7 +6118,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6121,7 +6135,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6138,7 +6152,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6155,7 +6169,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6172,7 +6186,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6189,7 +6203,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6231,7 +6245,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6248,7 +6262,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6265,7 +6279,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6282,7 +6296,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6301,7 +6315,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6318,7 +6332,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6335,7 +6349,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6352,7 +6366,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6371,7 +6385,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6388,7 +6402,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6405,7 +6419,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6422,7 +6436,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6441,7 +6455,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6458,7 +6472,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6475,7 +6489,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6492,7 +6506,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6534,7 +6548,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6551,7 +6565,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6570,7 +6584,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6587,7 +6601,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6606,7 +6620,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6623,7 +6637,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6642,7 +6656,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6659,7 +6673,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6701,7 +6715,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6718,7 +6732,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6737,7 +6751,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6754,7 +6768,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6773,7 +6787,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6790,7 +6804,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6809,7 +6823,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6826,7 +6840,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6868,7 +6882,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6885,7 +6899,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6902,7 +6916,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6919,7 +6933,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6936,7 +6950,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6953,7 +6967,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6970,7 +6984,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -6987,7 +7001,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7006,7 +7020,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7023,7 +7037,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7040,7 +7054,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7057,7 +7071,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7074,7 +7088,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7091,7 +7105,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7108,7 +7122,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7125,7 +7139,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7144,7 +7158,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7161,7 +7175,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7178,7 +7192,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7195,7 +7209,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7212,7 +7226,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7229,7 +7243,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7246,7 +7260,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7263,7 +7277,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7282,7 +7296,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7299,7 +7313,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7316,7 +7330,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7333,7 +7347,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7350,7 +7364,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7367,7 +7381,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7384,7 +7398,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7401,7 +7415,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7420,7 +7434,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7437,7 +7451,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7454,7 +7468,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7471,7 +7485,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7488,7 +7502,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7505,7 +7519,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7522,7 +7536,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7539,7 +7553,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7558,7 +7572,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7575,7 +7589,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7592,7 +7606,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7609,7 +7623,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7626,7 +7640,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7643,7 +7657,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7660,7 +7674,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7677,7 +7691,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7719,7 +7733,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7736,7 +7750,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7753,7 +7767,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7770,7 +7784,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7789,7 +7803,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7806,7 +7820,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7823,7 +7837,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7840,7 +7854,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7859,7 +7873,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7876,7 +7890,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7893,7 +7907,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7910,7 +7924,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7929,7 +7943,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7946,7 +7960,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7963,7 +7977,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7980,7 +7994,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -7999,7 +8013,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8016,7 +8030,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8033,7 +8047,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8050,7 +8064,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8069,7 +8083,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8086,7 +8100,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8103,7 +8117,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8120,7 +8134,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8162,7 +8176,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8179,7 +8193,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8198,7 +8212,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8215,7 +8229,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8234,7 +8248,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8251,7 +8265,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8270,7 +8284,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8287,7 +8301,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8306,7 +8320,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8323,7 +8337,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8342,7 +8356,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8359,7 +8373,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8401,7 +8415,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8418,7 +8432,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8437,7 +8451,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8454,7 +8468,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8473,7 +8487,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8490,7 +8504,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8509,7 +8523,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8526,7 +8540,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8545,7 +8559,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8562,7 +8576,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8581,7 +8595,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8598,7 +8612,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8640,7 +8654,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8657,7 +8671,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8674,7 +8688,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8691,7 +8705,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8710,7 +8724,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8727,7 +8741,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8744,7 +8758,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8761,7 +8775,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8780,7 +8794,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8797,7 +8811,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8814,7 +8828,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8831,7 +8845,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8850,7 +8864,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8867,7 +8881,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8884,7 +8898,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8901,7 +8915,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8920,7 +8934,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8937,7 +8951,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8954,7 +8968,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8971,7 +8985,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -8990,7 +9004,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9007,7 +9021,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9024,7 +9038,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9041,7 +9055,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9060,7 +9074,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9077,7 +9091,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9094,7 +9108,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9111,7 +9125,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9130,7 +9144,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9147,7 +9161,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9164,7 +9178,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9181,7 +9195,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9223,7 +9237,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9240,7 +9254,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9259,7 +9273,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9276,7 +9290,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9295,7 +9309,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9312,7 +9326,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9331,7 +9345,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9348,7 +9362,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9367,7 +9381,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9384,7 +9398,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9403,7 +9417,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9420,7 +9434,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9439,7 +9453,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9456,7 +9470,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9475,7 +9489,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9492,7 +9506,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9534,7 +9548,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9551,7 +9565,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9570,7 +9584,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9587,7 +9601,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9606,7 +9620,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9623,7 +9637,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9642,7 +9656,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9659,7 +9673,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9678,7 +9692,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9695,7 +9709,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9714,7 +9728,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9731,7 +9745,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9750,7 +9764,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9767,7 +9781,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9786,7 +9800,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9803,7 +9817,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -9813,11 +9827,11 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
 
 
 
-        return true;
+        return Validity::VALID;
     }
 
     template <std::size_t rake>
-    static inline bool fkcc_attach(
+    static inline Validity fkcc_attach(
         const vamp::collision::Environment<FloatVector<rake>> &environment,
         const ConfigurationBlock<rake> &x) noexcept
     {
@@ -10090,7 +10104,7 @@ if (sphere_environment_in_collision(environment,
                                         y[130],
                                         y[131]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10100,7 +10114,7 @@ if (sphere_environment_in_collision(environment,
                                         y[134],
                                         y[135]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -10130,7 +10144,7 @@ if (sphere_environment_in_collision(environment,
                                         y[122],
                                         y[123]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10140,7 +10154,7 @@ if (sphere_environment_in_collision(environment,
                                         y[126],
                                         y[127]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -10170,7 +10184,7 @@ if (sphere_environment_in_collision(environment,
                                         y[106],
                                         y[107]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10180,7 +10194,7 @@ if (sphere_environment_in_collision(environment,
                                         y[110],
                                         y[111]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10190,7 +10204,7 @@ if (sphere_environment_in_collision(environment,
                                         y[114],
                                         y[115]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10200,7 +10214,7 @@ if (sphere_environment_in_collision(environment,
                                         y[118],
                                         y[119]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -10230,7 +10244,7 @@ if (sphere_environment_in_collision(environment,
                                         y[74],
                                         y[75]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10240,7 +10254,7 @@ if (sphere_environment_in_collision(environment,
                                         y[78],
                                         y[79]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10250,7 +10264,7 @@ if (sphere_environment_in_collision(environment,
                                         y[82],
                                         y[83]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10260,7 +10274,7 @@ if (sphere_environment_in_collision(environment,
                                         y[86],
                                         y[87]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10270,7 +10284,7 @@ if (sphere_environment_in_collision(environment,
                                         y[90],
                                         y[91]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10280,7 +10294,7 @@ if (sphere_environment_in_collision(environment,
                                         y[94],
                                         y[95]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10290,7 +10304,7 @@ if (sphere_environment_in_collision(environment,
                                         y[98],
                                         y[99]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10300,7 +10314,7 @@ if (sphere_environment_in_collision(environment,
                                         y[102],
                                         y[103]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -10330,7 +10344,7 @@ if (sphere_environment_in_collision(environment,
                                         y[42],
                                         y[43]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10340,7 +10354,7 @@ if (sphere_environment_in_collision(environment,
                                         y[46],
                                         y[47]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10350,7 +10364,7 @@ if (sphere_environment_in_collision(environment,
                                         y[50],
                                         y[51]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10360,7 +10374,7 @@ if (sphere_environment_in_collision(environment,
                                         y[54],
                                         y[55]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10370,7 +10384,7 @@ if (sphere_environment_in_collision(environment,
                                         y[58],
                                         y[59]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10380,7 +10394,7 @@ if (sphere_environment_in_collision(environment,
                                         y[62],
                                         y[63]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10390,7 +10404,7 @@ if (sphere_environment_in_collision(environment,
                                         y[66],
                                         y[67]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10400,7 +10414,7 @@ if (sphere_environment_in_collision(environment,
                                         y[70],
                                         y[71]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -10430,7 +10444,7 @@ if (sphere_environment_in_collision(environment,
                                         y[18],
                                         y[19]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10440,7 +10454,7 @@ if (sphere_environment_in_collision(environment,
                                         y[22],
                                         y[23]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10450,7 +10464,7 @@ if (sphere_environment_in_collision(environment,
                                         y[26],
                                         y[27]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10460,7 +10474,7 @@ if (sphere_environment_in_collision(environment,
                                         y[30],
                                         y[31]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10470,7 +10484,7 @@ if (sphere_environment_in_collision(environment,
                                         y[34],
                                         y[35]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10480,7 +10494,7 @@ if (sphere_environment_in_collision(environment,
                                         y[38],
                                         y[39]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -10510,7 +10524,7 @@ if (sphere_environment_in_collision(environment,
                                         y[2],
                                         y[3]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10520,7 +10534,7 @@ if (sphere_environment_in_collision(environment,
                                         y[6],
                                         y[7]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10530,7 +10544,7 @@ if (sphere_environment_in_collision(environment,
                                         y[10],
                                         y[11]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
     
@@ -10540,7 +10554,7 @@ if (sphere_environment_in_collision(environment,
                                         y[14],
                                         y[15]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
     
 }
@@ -10587,7 +10601,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10604,7 +10618,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10621,7 +10635,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10638,7 +10652,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10655,7 +10669,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10672,7 +10686,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10689,7 +10703,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10706,7 +10720,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10725,7 +10739,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10742,7 +10756,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10759,7 +10773,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10776,7 +10790,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10793,7 +10807,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10810,7 +10824,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10827,7 +10841,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10844,7 +10858,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10863,7 +10877,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10880,7 +10894,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10897,7 +10911,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10914,7 +10928,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10931,7 +10945,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10948,7 +10962,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10965,7 +10979,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -10982,7 +10996,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11001,7 +11015,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11018,7 +11032,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11035,7 +11049,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11052,7 +11066,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11069,7 +11083,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11086,7 +11100,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11103,7 +11117,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11120,7 +11134,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11162,7 +11176,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11179,7 +11193,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11196,7 +11210,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11213,7 +11227,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11232,7 +11246,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11249,7 +11263,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11266,7 +11280,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11283,7 +11297,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11302,7 +11316,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11319,7 +11333,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11336,7 +11350,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11353,7 +11367,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11372,7 +11386,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11389,7 +11403,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11406,7 +11420,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11423,7 +11437,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11465,7 +11479,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11482,7 +11496,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11501,7 +11515,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11518,7 +11532,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11537,7 +11551,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11554,7 +11568,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11573,7 +11587,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11590,7 +11604,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11632,7 +11646,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11649,7 +11663,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11668,7 +11682,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11685,7 +11699,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11704,7 +11718,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11721,7 +11735,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11740,7 +11754,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11757,7 +11771,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[136],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11799,7 +11813,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11816,7 +11830,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11833,7 +11847,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11850,7 +11864,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11867,7 +11881,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11884,7 +11898,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11901,7 +11915,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11918,7 +11932,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11937,7 +11951,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11954,7 +11968,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11971,7 +11985,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -11988,7 +12002,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12005,7 +12019,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12022,7 +12036,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12039,7 +12053,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12056,7 +12070,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12075,7 +12089,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12092,7 +12106,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12109,7 +12123,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12126,7 +12140,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12143,7 +12157,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12160,7 +12174,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12177,7 +12191,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12194,7 +12208,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12213,7 +12227,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12230,7 +12244,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12247,7 +12261,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12264,7 +12278,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12281,7 +12295,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12298,7 +12312,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12315,7 +12329,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12332,7 +12346,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12351,7 +12365,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12368,7 +12382,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12385,7 +12399,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12402,7 +12416,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12419,7 +12433,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12436,7 +12450,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12453,7 +12467,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12470,7 +12484,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12489,7 +12503,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[74 ],
                                                      y[75 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12506,7 +12520,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[78 ],
                                                      y[79 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12523,7 +12537,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[82 ],
                                                      y[83 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12540,7 +12554,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[86 ],
                                                      y[87 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12557,7 +12571,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[90 ],
                                                      y[91 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12574,7 +12588,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[94 ],
                                                      y[95 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12591,7 +12605,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[98 ],
                                                      y[99 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12608,7 +12622,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[102 ],
                                                      y[103 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12650,7 +12664,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12667,7 +12681,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12684,7 +12698,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12701,7 +12715,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12720,7 +12734,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12737,7 +12751,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12754,7 +12768,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12771,7 +12785,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12790,7 +12804,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12807,7 +12821,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12824,7 +12838,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12841,7 +12855,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12860,7 +12874,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12877,7 +12891,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12894,7 +12908,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12911,7 +12925,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12930,7 +12944,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12947,7 +12961,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12964,7 +12978,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -12981,7 +12995,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13000,7 +13014,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13017,7 +13031,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13034,7 +13048,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13051,7 +13065,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13093,7 +13107,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13110,7 +13124,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13129,7 +13143,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13146,7 +13160,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13165,7 +13179,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13182,7 +13196,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13201,7 +13215,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13218,7 +13232,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13237,7 +13251,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13254,7 +13268,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13273,7 +13287,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13290,7 +13304,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13332,7 +13346,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13349,7 +13363,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13368,7 +13382,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13385,7 +13399,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13404,7 +13418,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13421,7 +13435,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13440,7 +13454,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13457,7 +13471,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13476,7 +13490,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13493,7 +13507,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13512,7 +13526,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13529,7 +13543,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[140],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13571,7 +13585,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13588,7 +13602,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13605,7 +13619,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13622,7 +13636,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13641,7 +13655,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13658,7 +13672,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13675,7 +13689,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13692,7 +13706,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13711,7 +13725,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13728,7 +13742,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13745,7 +13759,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13762,7 +13776,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13781,7 +13795,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13798,7 +13812,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13815,7 +13829,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13832,7 +13846,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13851,7 +13865,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13868,7 +13882,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13885,7 +13899,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13902,7 +13916,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13921,7 +13935,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13938,7 +13952,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13955,7 +13969,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13972,7 +13986,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -13991,7 +14005,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14008,7 +14022,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14025,7 +14039,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14042,7 +14056,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14061,7 +14075,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[106 ],
                                                      y[107 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14078,7 +14092,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[110 ],
                                                      y[111 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14095,7 +14109,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[114 ],
                                                      y[115 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14112,7 +14126,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[118 ],
                                                      y[119 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14154,7 +14168,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14171,7 +14185,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14190,7 +14204,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14207,7 +14221,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14226,7 +14240,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14243,7 +14257,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14262,7 +14276,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14279,7 +14293,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14298,7 +14312,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14315,7 +14329,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14334,7 +14348,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14351,7 +14365,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14370,7 +14384,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14387,7 +14401,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14406,7 +14420,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[122 ],
                                                      y[123 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14423,7 +14437,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[126 ],
                                                      y[127 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14465,7 +14479,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14482,7 +14496,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14501,7 +14515,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14518,7 +14532,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14537,7 +14551,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14554,7 +14568,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14573,7 +14587,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14590,7 +14604,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14609,7 +14623,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14626,7 +14640,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14645,7 +14659,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14662,7 +14676,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14681,7 +14695,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14698,7 +14712,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14717,7 +14731,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[130 ],
                                                      y[131 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14734,7 +14748,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                      y[134 ],
                                                      y[135 ]))
     {
-        return false;
+        return Validity::ENVIRONMENT_COLLISION;
     }
 
     
@@ -14752,7 +14766,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
         //
         if (attachment_environment_collision(environment))
         {
-            return false;
+            return Validity::ENVIRONMENT_COLLISION;
         }
 
         //
@@ -14779,7 +14793,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[2],
                                                             y[3]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14789,7 +14803,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[6],
                                                             y[7]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14799,7 +14813,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[10],
                                                             y[11]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14809,7 +14823,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[14],
                                                             y[15]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
         }
@@ -14833,7 +14847,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[18],
                                                             y[19]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14843,7 +14857,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[22],
                                                             y[23]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14853,7 +14867,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[26],
                                                             y[27]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14863,7 +14877,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[30],
                                                             y[31]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14873,7 +14887,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[34],
                                                             y[35]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14883,7 +14897,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[38],
                                                             y[39]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
         }
@@ -14907,7 +14921,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[42],
                                                             y[43]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14917,7 +14931,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[46],
                                                             y[47]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14927,7 +14941,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[50],
                                                             y[51]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14937,7 +14951,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[54],
                                                             y[55]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14947,7 +14961,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[58],
                                                             y[59]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14957,7 +14971,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[62],
                                                             y[63]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14967,7 +14981,7 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[66],
                                                             y[67]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
             
@@ -14977,13 +14991,13 @@ if (sphere_sphere_self_collision<decltype(x[0])>(y[144],
                                                             y[70],
                                                             y[71]))
             {
-                return false;
+                return Validity::ENVIRONMENT_COLLISION;
             }
             
         }
         
 
-        return true;
+        return Validity::VALID;
     }
 
     static inline auto eefk(const std::array<float, 6> &x) noexcept -> Eigen::Isometry3f

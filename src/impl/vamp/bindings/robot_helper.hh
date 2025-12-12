@@ -601,7 +601,7 @@ namespace vamp::binding
            "configuration_in"_a,
            "configuration_out"_a,
            "environment"_a = vamp::collision::Environment<float>(),
-           "check_bounds"_a = false);
+           "check_bounds"_a = true);
 
         MF("filter_self_from_pointcloud",
            filter_self_from_pointcloud,

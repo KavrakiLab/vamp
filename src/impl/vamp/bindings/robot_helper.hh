@@ -266,6 +266,25 @@ namespace vamp::binding
                        configuration, configuration, EnvironmentVector(environment));
         }
 
+        inline static auto
+        validate_motion(const Type &c_in, const Type &c_out, const EnvironmentInput &environment, bool check_bounds = false) -> bool
+        {
+            auto configuration_in = Input::to(c_in);
+            auto copy_in = configuration_in.trim();
+            Robot::descale_configuration(copy_in);
+
+            const bool in_bounds_in = (copy_in <= 1.F).all() and (copy_in >= 0.F).all();
+
+            auto configuration_out = Input::to(c_out);
+            auto copy_out = configuration_out.trim();
+            Robot::descale_configuration(copy_out);
+
+            const bool in_bounds_out = (copy_out <= 1.F).all() and (copy_out >= 0.F).all();
+
+            return (not check_bounds or in_bounds_in or in_bounds_out) and
+                   vamp::planning::validate_motion<Robot, rake, 1>(
+                       configuration_in, configuration_out, EnvironmentVector(environment));
+        }
         inline static auto simplify(
             const Path &path,
             const EnvironmentInput &environment,
@@ -549,6 +568,14 @@ namespace vamp::binding
            validate,
            "Check if a configuration is valid. Returns true if valid.",
            "configuration"_a,
+           "environment"_a = vamp::collision::Environment<float>(),
+           "check_bounds"_a = false);
+
+        MF("validate_motion",
+            validate_motion,
+            "Check if a configuration is valid. Returns true if valid.",
+            "configuration_in"_a,
+            "configuration_out"_a,
            "environment"_a = vamp::collision::Environment<float>(),
            "check_bounds"_a = false);
 

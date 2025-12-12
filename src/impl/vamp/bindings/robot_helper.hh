@@ -266,8 +266,11 @@ namespace vamp::binding
                        configuration, configuration, EnvironmentVector(environment));
         }
 
-        inline static auto
-        validate_motion(const Type &c_in, const Type &c_out, const EnvironmentInput &environment, bool check_bounds = false) -> bool
+        inline static auto validate_motion(
+            const Type &c_in,
+            const Type &c_out,
+            const EnvironmentInput &environment,
+            bool check_bounds = false) -> bool
         {
             auto configuration_in = Input::to(c_in);
             auto copy_in = configuration_in.trim();
@@ -285,6 +288,7 @@ namespace vamp::binding
                    vamp::planning::validate_motion<Robot, rake, 1>(
                        configuration_in, configuration_out, EnvironmentVector(environment));
         }
+
         inline static auto simplify(
             const Path &path,
             const EnvironmentInput &environment,
@@ -375,9 +379,11 @@ namespace vamp::binding
         submodule.def(
             "joint_names", []() { return Robot::joint_names; }, "Joint names for the robot in order of DoF");
         submodule.def("end_effector", []() { return Robot::end_effector; }, "End-effector frame name.");
-        
+
         submodule.def(
-            "upper_bounds", []() -> NDArray {
+            "upper_bounds",
+            []() -> NDArray
+            {
                 std::array<float, Robot::dimension> ones;
                 ones.fill(1.0f);
                 auto one_v = typename Robot::Configuration(ones);
@@ -385,7 +391,9 @@ namespace vamp::binding
                 return NA::from(one_v);
             });
         submodule.def(
-            "lower_bounds", []() -> NDArray {
+            "lower_bounds",
+            []() -> NDArray
+            {
                 std::array<float, Robot::dimension> zeros;
                 zeros.fill(0.0f);
                 auto zero_v = typename Robot::Configuration(zeros);
@@ -588,12 +596,12 @@ namespace vamp::binding
            "check_bounds"_a = false);
 
         MF("validate_motion",
-            validate_motion,
-            "Check if a configuration is valid. Returns true if valid.",
-            "configuration_in"_a,
-            "configuration_out"_a,
-            "environment"_a = vamp::collision::Environment<float>(),
-            "check_bounds"_a = false);
+           validate_motion,
+           "Check if a configuration is valid. Returns true if valid.",
+           "configuration_in"_a,
+           "configuration_out"_a,
+           "environment"_a = vamp::collision::Environment<float>(),
+           "check_bounds"_a = false);
 
         MF("filter_self_from_pointcloud",
            filter_self_from_pointcloud,

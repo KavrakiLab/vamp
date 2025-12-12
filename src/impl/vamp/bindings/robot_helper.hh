@@ -375,7 +375,23 @@ namespace vamp::binding
         submodule.def(
             "joint_names", []() { return Robot::joint_names; }, "Joint names for the robot in order of DoF");
         submodule.def("end_effector", []() { return Robot::end_effector; }, "End-effector frame name.");
-
+        
+        submodule.def(
+            "upper_bounds", []() -> NDArray {
+                std::array<float, Robot::dimension> ones;
+                ones.fill(1.0f);
+                auto one_v = typename Robot::Configuration(ones);
+                Robot::scale_configuration(one_v);
+                return NA::from(one_v);
+            });
+        submodule.def(
+            "lower_bounds", []() -> NDArray {
+                std::array<float, Robot::dimension> zeros;
+                zeros.fill(0.0f);
+                auto zero_v = typename Robot::Configuration(zeros);
+                Robot::scale_configuration(zero_v);
+                return NA::from(zero_v);
+            });
         using RNG = vamp::rng::RNG<Robot>;
         nb::class_<typename RNG::Ptr>(submodule, "RNG", "RNG for robot configurations.")
             .def(
@@ -576,8 +592,8 @@ namespace vamp::binding
             "Check if a configuration is valid. Returns true if valid.",
             "configuration_in"_a,
             "configuration_out"_a,
-           "environment"_a = vamp::collision::Environment<float>(),
-           "check_bounds"_a = false);
+            "environment"_a = vamp::collision::Environment<float>(),
+            "check_bounds"_a = false);
 
         MF("filter_self_from_pointcloud",
            filter_self_from_pointcloud,

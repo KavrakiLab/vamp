@@ -284,7 +284,7 @@ namespace vamp::binding
 
             const bool in_bounds_out = (copy_out <= 1.F).all() and (copy_out >= 0.F).all();
 
-            return (not check_bounds or in_bounds_in or in_bounds_out) and
+            return (not check_bounds or (in_bounds_in and in_bounds_out)) and
                    vamp::planning::validate_motion<Robot, rake, 1>(
                        configuration_in, configuration_out, EnvironmentVector(environment));
         }

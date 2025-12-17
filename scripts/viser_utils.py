@@ -11,10 +11,10 @@ def setup_viser_with_robot(robot_dir, robot_urdf_name):
     robot = ViserUrdf(
         server,
         urdf,
-        load_meshes=True,
-        load_collision_meshes=False,
-        root_node_name="/robot",
-    )
+        load_meshes = True,
+        load_collision_meshes = False,
+        root_node_name = "/robot",
+        )
 
     return server, robot
 
@@ -25,7 +25,7 @@ def add_spheres(
     sphere_radii: Sequence,
     colors: Union[Sequence[int], Sequence[Sequence[int]]] = [],
     prefix: str = "my_sphere",
-):
+    ):
     """
     Add spheres to the env/
     Sphere positions are (N,3) and sphere radii are (N)
@@ -39,11 +39,11 @@ def add_spheres(
         assert len(colors) == len(sphere_positions)
     for i, (sphere_pos, sphere_rad) in enumerate(zip(sphere_positions, sphere_radii)):
         sphere_handles[i] = server.scene.add_icosphere(
-            name=f"{prefix}_{i}",
-            radius=sphere_rad,
-            position=tuple(sphere_pos[:3]),
-            color=tuple(colors[i]),
-        )
+            name = f"{prefix}_{i}",
+            radius = sphere_rad,
+            position = tuple(sphere_pos[:3]),
+            color = tuple(colors[i]),
+            )
     return sphere_handles
 
 
@@ -67,8 +67,8 @@ def add_trajectory(server, waypoints, robot, attachment_handles, attachment_posi
         return
     assert len(attachment_handles) == len(attachment_positions[0])
     traj_slider = server.gui.add_slider(
-        "Current Waypoint", min=0, max=len(waypoints) - 1, step=1, initial_value=0
-    )
+        "Current Waypoint", min = 0, max = len(waypoints) - 1, step = 1, initial_value = 0
+        )
 
     @traj_slider.on_update
     def update_robot_pose(event):

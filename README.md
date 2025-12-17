@@ -42,7 +42,7 @@ If you use CAPTs or the pointcloud collision checking components of this reposit
   author = {Ramsey, Clayton W. and Kingston, Zachary and Thomason, Wil and Kavraki, Lydia E.},
   title = {Collision-Affording Point Trees: {SIMD}-Amenable Nearest Neighbors for Fast Collision Checking},
   booktitle = {Robotics: Science and Systems},
-  url = {http://arxiv.org/abs/2406.02807},
+  url = {https://www.roboticsproceedings.org/rss20/p038.pdf},
   doi = {10.15607/RSS.2024.XX.038},
   date = {2024}
 }

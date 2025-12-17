@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdint>
 #include <new>
 #include <numeric>
@@ -369,7 +370,10 @@ namespace vamp::collision
         //  Returns `true` if in collision and `false` if not.
         [[nodiscard]] auto collides(const Point &center, float r) const noexcept -> bool
         {
-            if (aabb_top.distsq_to(center) > r * r)
+            // Pad query radii by radius of points.
+            r = r + r_point;
+            const float radius_sq = r * r;
+            if (aabb_top.distsq_to(center) > radius_sq)
             {
                 return false;
             }
@@ -383,8 +387,6 @@ namespace vamp::collision
 
             const std::size_t z = test_idx - tests.size();
 
-            r += r_point;
-            const float radius_sq = r * r;
             if (aabbs[z].distsq_to(center) > radius_sq)
             {
                 return false;
@@ -423,6 +425,8 @@ namespace vamp::collision
         // - `radii`: SIMD vector of the radii of each sphere.
         auto collides_simd(const std::array<FVectorT, 3> &centers, FVectorT radii) const noexcept -> bool
         {
+            // Padd radii by radius of points.
+            radii = radii + r_point;
             // Test against top AABB
             FVectorT inbounds =
                 (centers[0] + radii >= aabb_top.lower[0]) & (centers[0] - radii <= aabb_top.upper[0]);
@@ -453,11 +457,6 @@ namespace vamp::collision
 
             const IVectorT zs = idxs - tests.size();
 
-            // Test whether points are in the AABBs
-            // NOTE: Now is when we need to add r_point, since these AABBs are really "point volume AABBs" -
-            // we can't just test if the query is in the AABB, but rather if it's in the AABB when fattened by
-            // the radius of the points the AABB contains
-            radii = radii + r_point;
             IVectorT zs6 = zs * 6;
             const float *const aabb_ptr = &aabbs.front().lower.front();
 

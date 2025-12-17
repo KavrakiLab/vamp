@@ -252,17 +252,38 @@ namespace vamp
     inline constexpr auto attachment_environment_collision(const collision::Environment<DataT> &e) noexcept
         -> bool
     {
-        for (const auto &s : e.attachments->posed_spheres)
-        {
-            // HACK: The radius needs to be a float, and unfortunately the spheres assume homogeneous
-            // DataT for storage
-            // TODO: Fix the sphere representation to allow to store float radii even with vector
-            // centers
-            if (sphere_environment_in_collision(e, s.x, s.y, s.z, s.r[{0, 0}]))
+        for (const auto &eef_attachment: e.eef_attachments){
+            for (const auto &s : eef_attachment.attachment.posed_spheres)
             {
-                return true;
+                // HACK: The radius needs to be a float, and unfortunately the spheres assume homogeneous
+                // DataT for storage
+                // TODO: Fix the sphere representation to allow to store float radii even with vector
+                // centers
+                if (sphere_environment_in_collision(e, s.x, s.y, s.z, s.r[{0, 0}]))
+                {
+                    return true;
+                }
             }
+
+            // now treat the other attachments also as potential collision objects
+            // This is probably expensive, find a more efficient way. 
+            for (const auto &other_eef_attachment: e.eef_attachments){
+                if(eef_attachment.eef_idx != other_eef_attachment.eef_idx) { // different obj
+                    for (const auto &s : eef_attachment.attachment.posed_spheres) {
+                        for(const auto &s2 : other_eef_attachment.attachment.posed_spheres) {
+                            if (not collision::sphere_sphere_sql2(s, s2).test_zero())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
+
+
+
 
         return false;
     }
@@ -280,15 +301,17 @@ namespace vamp
         auto sy = static_cast<DataT>(sy_);
         auto sz = static_cast<DataT>(sz_);
         auto sr = static_cast<DataT>(sr_);
-        for (const auto &att_s : e.attachments->posed_spheres)
+        for (const auto &eef_attachment: e.eef_attachments)
         {
-            if (not collision::sphere_sphere_sql2(sx, sy, sz, sr, att_s.x, att_s.y, att_s.z, att_s.r)
-                        .test_zero())
+            for (const auto &att_s : eef_attachment.attachment.posed_spheres)
             {
-                return true;
+                if (not collision::sphere_sphere_sql2(sx, sy, sz, sr, att_s.x, att_s.y, att_s.z, att_s.r)
+                            .test_zero())
+                {
+                    return true;
+                }
             }
         }
-
         return false;
     }
 }  // namespace vamp

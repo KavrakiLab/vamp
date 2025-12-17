@@ -34,7 +34,7 @@ namespace vamp::robots
         };
 
         static constexpr std::array<std::string_view, dimension> joint_names = {"x", "y", "z"};
-        static constexpr char *end_effector = "";
+        static constexpr std::array<std::string_view, 0> end_effectors = {};
 
         template <std::size_t rake>
         struct Spheres
@@ -140,11 +140,12 @@ namespace vamp::robots
             out.r[0] = radius;
         }
 
-        static auto eefk(const std::array<float, 3> &q) noexcept -> Eigen::Isometry3f
+        static auto eefk(const std::array<float, 3> &q) noexcept -> std::array<Eigen::Isometry3f, 1>
         {
             auto tf = Eigen::Isometry3f::Identity();
             tf.translation() = Eigen::Vector3f(q[0], q[1], q[2]);
-            return tf;
+            std::array<Eigen::Isometry3f, 1> out = {tf}; 
+            return out;
         }
     };
 }  // namespace vamp::robots

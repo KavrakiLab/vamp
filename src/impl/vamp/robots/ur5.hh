@@ -24,7 +24,7 @@ namespace vamp::robots
             "wrist_1_joint",
             "wrist_2_joint",
             "wrist_3_joint"};
-        static constexpr char *end_effector = "robotiq_85_base_link";
+        static constexpr std::array<std::string_view, 1> end_effectors = {"robotiq_85_base_link"};
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;
@@ -853,65 +853,50 @@ namespace vamp::robots
             output.first.emplace_back(
                 sphere_environment_get_collisions<decltype(x[0])>(environment, y[96], y[97], y[98], y[99]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[100], y[101], y[102], y[103]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[100], y[101], y[102], y[103]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[104], y[105], y[106], y[107]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[104], y[105], y[106], y[107]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[108], y[109], y[110], y[111]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[108], y[109], y[110], y[111]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[112], y[113], y[114], y[115]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[112], y[113], y[114], y[115]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[116], y[117], y[118], y[119]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[116], y[117], y[118], y[119]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[120], y[121], y[122], y[123]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[120], y[121], y[122], y[123]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[124], y[125], y[126], y[127]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[124], y[125], y[126], y[127]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[128], y[129], y[130], y[131]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[128], y[129], y[130], y[131]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[132], y[133], y[134], y[135]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[132], y[133], y[134], y[135]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[136], y[137], y[138], y[139]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[136], y[137], y[138], y[139]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[140], y[141], y[142], y[143]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[140], y[141], y[142], y[143]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[144], y[145], y[146], y[147]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[144], y[145], y[146], y[147]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[148], y[149], y[150], y[151]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[148], y[149], y[150], y[151]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[152], y[153], y[154], y[155]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[152], y[153], y[154], y[155]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[156], y[157], y[158], y[159]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[156], y[157], y[158], y[159]));
 
             if (sphere_sphere_self_collision<decltype(x[0])>(
                     y[0], y[1], y[2], y[3], y[8], y[9], y[10], y[11]))
@@ -9807,8 +9792,9 @@ namespace vamp::robots
                 }
             }
 
-            // attaching at robotiq_85_base_link
-            set_attachment_pose(environment, to_isometry(&y[228]));
+            // attaching at ["robotiq_85_base_link"]
+            // provide the eef pose of all end effectors.
+            set_attachment_pose(environment, to_isometries<1>(&y[228]));
 
             //
             // attachment vs. environment collisions
@@ -9940,7 +9926,7 @@ namespace vamp::robots
             return true;
         }
 
-        inline static auto eefk(const std::array<float, 6> &x) noexcept -> Eigen::Isometry3f
+        inline static auto eefk(const std::array<float, 6> &x) noexcept -> std::array<Eigen::Isometry3f, 1>
         {
             std::array<float, 28> v;
             std::array<float, 12> y;
@@ -10019,7 +10005,7 @@ namespace vamp::robots
             y[10] = -0.000796324663347988 * v[19] + 0.999999365865199 * v[2] + 0.000796326710733264 * v[21];
             y[11] = -0.000796324663347988 * v[25] + 0.999999365865199 * v[9] + 0.000796326710733264 * v[16];
 
-            return to_isometry(y.data());
+            return to_isometries<1>(y.data());
         }
     };
 }  // namespace vamp::robots

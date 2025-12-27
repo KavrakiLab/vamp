@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="fr3" path="fr3.urdf">
+	<link name="base"></link>
+	<link name="fr3_link0">
+		<visual name="fr3_link0_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_arms/fr3/visual/link0.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.093646"></sphere>
+			</geometry>
+			<origin xyz="-0.08604953894373772 0.0036964648894988027 0.03944024855788951" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.117857"></sphere>
+			</geometry>
+			<origin xyz="-0.015627538943737723 0.00040146488949880277 0.06625224855788951" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.0172 0.0004 0.0745"></origin>
+			<mass value="2.3966"></mass>
+			<inertia ixx="0.009" ixy="0.0" ixz="0.002" iyy="0.0115" iyz="0.0" izz="0.0085"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_link1">
+		<visual name="fr3_link1_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_arms/fr3/visual/link1.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.076596"></sphere>
+			</geometry>
+			<origin xyz="0.0002572757452726364 0.00036496158409118906 -0.1395377861636877" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.077209"></sphere>
+			</geometry>
+			<origin xyz="-0.0002227242547273636 -0.05429003841590881 0.0004042138363122977" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.063841"></sphere>
+			</geometry>
+			<origin xyz="0.0021852757452726366 -0.032367038415908815 -0.07320478616368771" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0000004128 -0.0181251324 -0.0386035970"></origin>
+			<mass value="2.9274653454"></mass>
+			<inertia ixx="0.023927316485107913" ixy="1.3317903455714081e-05" ixz="-0.00011404774918616684" iyy="0.0224821613275756" iyz="-0.0019950320628240115" izz="0.006350098258530016"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_link2">
+		<visual name="fr3_link2_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_arms/fr3/visual/link2.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.076816"></sphere>
+			</geometry>
+			<origin xyz="-0.00027067482554912563 0.001070431646943093 0.05372098027944565" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.077489"></sphere>
+			</geometry>
+			<origin xyz="-8.367482554912564e-05 -0.14062856835305693 8.998027944565057e-05" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.062048"></sphere>
+			</geometry>
+			<origin xyz="0.0003963251744508743 -0.0708775683530569 0.03436398027944565" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0031828864 -0.0743221644 0.0088146084"></origin>
+			<mass value="2.9355370338"></mass>
+			<inertia ixx="0.041938946257609425" ixy="0.00020257331521090626" ixz="0.004077784227179924" iyy="0.02514514885014724" iyz="-0.0042252158006570156" izz="0.06170214472888839"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_link3">
+		<visual name="fr3_link3_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_arms/fr3/visual/link3.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.075943"></sphere>
+			</geometry>
+			<origin xyz="0.0824602061868906 0.05128625277674198 -0.0022088697187900574" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.075019"></sphere>
+			</geometry>
+			<origin xyz="-0.0002167938131093991 0.00010725277674198189 -0.07312186971879006" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.062048"></sphere>
+			</geometry>
+			<origin xyz="0.0557052061868906 0.03720825277674198 -0.024382869718790057" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0407015686 -0.0048200565 -0.0289730823"></origin>
+			<mass value="2.2449013699"></mass>
+			<inertia ixx="0.02410142547240885" ixy="0.002404694559042109" ixz="-0.002856269270114313" iyy="0.01974053266708178" iyz="-0.002104212683891874" izz="0.019044494482244823"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_link4">
+		<visual name="fr3_link4_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_arms/fr3/visual/link4.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.075495"></sphere>
+			</geometry>
+			<origin xyz="-0.08238368919563294 0.07379842906057835 -2.6764888167381956e-05" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.075361"></sphere>
+			</geometry>
+			<origin xyz="0.0001593108043670688 -7.857093942165161e-05 0.05122923511183262" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.055149"></sphere>
+			</geometry>
+			<origin xyz="-0.03874268919563294 0.029100429060578345 0.030254235111832617" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.0459100965 0.0630492960 -0.0085187868"></origin>
+			<mass value="2.6155955791"></mass>
+			<inertia ixx="0.03452998321913202" ixy="0.01322552265982813" ixz="0.01015142998484113" iyy="0.028881621933049058" iyz="-0.0009762833870704552" izz="0.04125471171146641"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_link5">
+		<visual name="fr3_link5_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_arms/fr3/visual/link5.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.068828"></sphere>
+			</geometry>
+			<origin xyz="-0.0004341865881681442 0.06618005760097503 -0.0001217777594327979" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.048846"></sphere>
+			</geometry>
+			<origin xyz="0.00023581341183185575 0.08886305760097504 -0.0383667777594328" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.037086"></sphere>
+			</geometry>
+			<origin xyz="-2.2186588168144228e-05 0.09049005760097503 -0.09064677775943279" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.038546"></sphere>
+			</geometry>
+			<origin xyz="-0.002255186588168144 0.08243205760097504 -0.1297767777594328" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.052285"></sphere>
+			</geometry>
+			<origin xyz="0.001972813411831856 0.05637305760097504 -0.1834387777594328" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.06584"></sphere>
+			</geometry>
+			<origin xyz="-0.006596186588168144 0.016208057600975035 -0.2143127777594328" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.061387"></sphere>
+			</geometry>
+			<origin xyz="0.013021813411831855 -0.0014499423990249616 -0.2192007777594328" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.059023"></sphere>
+			</geometry>
+			<origin xyz="-0.008915186588168145 -0.009376942399024965 -0.22116877775943278" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.0016039605 0.0292536262 -0.0972965990"></origin>
+			<mass value="2.3271207594"></mass>
+			<inertia ixx="0.051610278463662895" ixy="-0.005715173387783472" ixz="-0.0035673167625872135" iyy="0.04787729713371481" iyz="0.010673985108535986" izz="0.016423625579357254"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_link6">
+		<visual name="fr3_link6_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_arms/fr3/visual/link6.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.082713"></sphere>
+			</geometry>
+			<origin xyz="0.08852163272205019 0.011632835493021526 -0.0010641464367326884" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.076831"></sphere>
+			</geometry>
+			<origin xyz="0.011907632722050181 0.011082835493021526 0.017439853563267313" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0597131221 -0.0410294666 -0.0101692726"></origin>
+			<mass value="1.8170376524"></mass>
+			<inertia ixx="0.005412333594383447" ixy="0.006193456360285834" ixz="0.0014219289306117652" iyy="0.014058329545509979" iyz="-0.0013140753741120031" izz="0.016080817924212554"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_link7">
+		<visual name="fr3_link7_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_arms/fr3/visual/link7.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.054563"></sphere>
+			</geometry>
+			<origin xyz="0.00010334357428550683 -0.0008827081855535511 0.07766810432720184" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.042595"></sphere>
+			</geometry>
+			<origin xyz="0.0398483435742855 0.03995329181444645 0.07909310432720185" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0045225817 0.0086261921 -0.0161633251"></origin>
+			<mass value="0.6271432862"></mass>
+			<inertia ixx="0.00021092389150104718" ixy="-2.433299114461931e-05" ixz="4.564480393778983e-05" iyy="0.00017718568002411474" iyz="8.744070223226438e-05" izz="5.993190599659971e-05"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_link8"></link>
+	<link name="fr3_hand">
+		<visual name="fr3_hand_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_ee/franka_hand_white/visual/hand.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.044394"></sphere>
+			</geometry>
+			<origin xyz="9.193240296840668e-05 0.07441707816624642 0.027520674433231355" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.048978"></sphere>
+			</geometry>
+			<origin xyz="2.5932402968406678e-05 0.033791078166246415 0.023450674433231355" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.050352"></sphere>
+			</geometry>
+			<origin xyz="1.9324029684066776e-06 -0.0068179218337535855 0.020964674433231353" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.044425"></sphere>
+			</geometry>
+			<origin xyz="7.293240296840668e-05 -0.06114992183375358 0.039945674433231354" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.043995"></sphere>
+			</geometry>
+			<origin xyz="1.6932402968406676e-05 -0.06272592183375358 0.006249674433231354" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.0000376 0.0119128 0.0207260"></origin>
+			<mass value="0.6544"></mass>
+			<inertia ixx="0.00186" ixy="0.0" ixz="0.0" iyy="0.0003" iyz="-2e-05" izz="0.00174"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_hand_tcp"></link>
+	<link name="fr3_leftfinger">
+		<visual name="fr3_leftfinger_visual">
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_ee/franka_hand_white/visual/finger.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.014577"></sphere>
+			</geometry>
+			<origin xyz="0.003501 0.0185 0.011" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.014578"></sphere>
+			</geometry>
+			<origin xyz="-0.0035 0.0185 0.011" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.00429"></sphere>
+			</geometry>
+			<origin xyz="0.007892 0.004664 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.004564"></sphere>
+			</geometry>
+			<origin xyz="0.007396 0.009148 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.00487"></sphere>
+			</geometry>
+			<origin xyz="0.000716 0.0043 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.004752"></sphere>
+			</geometry>
+			<origin xyz="-0.000175 0.008893999999999999 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.004695"></sphere>
+			</geometry>
+			<origin xyz="-0.007202 0.004383 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.004571"></sphere>
+			</geometry>
+			<origin xyz="-0.007549 0.0089 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.010191"></sphere>
+			</geometry>
+			<origin xyz="1.6e-05 0.011945 0.0352" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.010082"></sphere>
+			</geometry>
+			<origin xyz="-0.004842 0.017471 0.025629" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.009704"></sphere>
+			</geometry>
+			<origin xyz="0.004004 0.017923 0.024847" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.014829"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.00758 0.04525" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0.0152850 0.0219675"></origin>
+			<mass value="0.0291"></mass>
+			<inertia ixx="8.49e-06" ixy="0.0" ixz="0.0" iyy="8.53e-06" iyz="-1.06e-06" izz="1.77e-06"></inertia>
+		</inertial>
+	</link>
+	<link name="fr3_rightfinger">
+		<visual name="fr3_rightfinger_visual">
+			<origin rpy="0 0 0" xyz="0 0 0"></origin>
+			<geometry>
+				<mesh filename="package://franka_description/meshes/robot_ee/franka_hand_white/visual/finger.dae"></mesh>
+			</geometry>
+		</visual>
+		<collision>
+			<geometry>
+				<sphere radius="0.014577"></sphere>
+			</geometry>
+			<origin xyz="0.003501 0.0185 0.011" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.014578"></sphere>
+			</geometry>
+			<origin xyz="-0.0035 0.0185 0.011" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.00429"></sphere>
+			</geometry>
+			<origin xyz="0.007892 0.004664 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.004564"></sphere>
+			</geometry>
+			<origin xyz="0.007396 0.009148 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.00487"></sphere>
+			</geometry>
+			<origin xyz="0.000716 0.0043 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.004752"></sphere>
+			</geometry>
+			<origin xyz="-0.000175 0.008893999999999999 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.004695"></sphere>
+			</geometry>
+			<origin xyz="-0.007202 0.004383 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.004571"></sphere>
+			</geometry>
+			<origin xyz="-0.007549 0.0089 0.0022" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.010137"></sphere>
+			</geometry>
+			<origin xyz="0.004086058018873126 0.013642224017722297 0.031498468183219636" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.010701"></sphere>
+			</geometry>
+			<origin xyz="5.801887312660461e-08 0.019548224017722295 0.020975468183219638" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.010583"></sphere>
+			</geometry>
+			<origin xyz="-0.005011941981126873 0.013726224017722296 0.030987468183219638" rpy="0 0 0"></origin>
+		</collision>
+		<collision>
+			<geometry>
+				<sphere radius="0.014829"></sphere>
+			</geometry>
+			<origin xyz="0.0 0.00758 0.04525" rpy="0 0 0"></origin>
+		</collision>
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0.0152850 0.0219675"></origin>
+			<mass value="0.0291"></mass>
+			<inertia ixx="8.49e-06" ixy="0.0" ixz="0.0" iyy="8.53e-06" iyz="-1.06e-06" izz="1.77e-06"></inertia>
+		</inertial>
+	</link>
+	<joint name="fr3_base_joint" type="fixed">
+		<parent link="base"></parent>
+		<child link="fr3_link0"></child>
+		<origin rpy="0 0 0" xyz="0 0 0"></origin>
+	</joint>
+	<joint name="fr3_joint1" type="revolute">
+		<origin rpy="0 0 0" xyz="0 0 0.333"></origin>
+		<parent link="fr3_link0"></parent>
+		<child link="fr3_link1"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="87.0" lower="-2.7437" upper="2.7437" velocity="2.62"></limit>
+		<safety_controller k_position="100.0" k_velocity="40.0" soft_lower_limit="-2.7437" soft_upper_limit="2.7437"></safety_controller>
+		<dynamics D="1" K="7000" damping="0.003" friction="0.2" mu_coulomb="0" mu_viscous="16"></dynamics>
+	</joint>
+	<joint name="fr3_joint2" type="revolute">
+		<origin rpy="-1.570796326794897 0 0" xyz="0 0 0"></origin>
+		<parent link="fr3_link1"></parent>
+		<child link="fr3_link2"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="87.0" lower="-1.7837" upper="1.7837" velocity="2.62"></limit>
+		<safety_controller k_position="100.0" k_velocity="40.0" soft_lower_limit="-1.7837" soft_upper_limit="1.7837"></safety_controller>
+		<dynamics D="1" K="7000" damping="0.003" friction="0.2" mu_coulomb="0" mu_viscous="16"></dynamics>
+	</joint>
+	<joint name="fr3_joint3" type="revolute">
+		<origin rpy="1.570796326794897 0 0" xyz="0 -0.316 0"></origin>
+		<parent link="fr3_link2"></parent>
+		<child link="fr3_link3"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="87.0" lower="-2.9007" upper="2.9007" velocity="2.62"></limit>
+		<safety_controller k_position="100.0" k_velocity="40.0" soft_lower_limit="-2.9007" soft_upper_limit="2.9007"></safety_controller>
+		<dynamics D="1" K="7000" damping="0.003" friction="0.2" mu_coulomb="0" mu_viscous="16"></dynamics>
+	</joint>
+	<joint name="fr3_joint4" type="revolute">
+		<origin rpy="1.570796326794897 0 0" xyz="0.0825 0 0"></origin>
+		<parent link="fr3_link3"></parent>
+		<child link="fr3_link4"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="87.0" lower="-3.0421" upper="-0.1518" velocity="2.62"></limit>
+		<safety_controller k_position="100.0" k_velocity="40.0" soft_lower_limit="-3.0421" soft_upper_limit="-0.1518"></safety_controller>
+		<dynamics D="1" K="7000" damping="0.003" friction="0.2" mu_coulomb="0" mu_viscous="16"></dynamics>
+	</joint>
+	<joint name="fr3_joint5" type="revolute">
+		<origin rpy="-1.570796326794897 0 0" xyz="-0.0825 0.384 0"></origin>
+		<parent link="fr3_link4"></parent>
+		<child link="fr3_link5"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="12.0" lower="-2.8065" upper="2.8065" velocity="5.26"></limit>
+		<safety_controller k_position="100.0" k_velocity="40.0" soft_lower_limit="-2.8065" soft_upper_limit="2.8065"></safety_controller>
+		<dynamics D="1" K="7000" damping="0.003" friction="0.2" mu_coulomb="0" mu_viscous="16"></dynamics>
+	</joint>
+	<joint name="fr3_joint6" type="revolute">
+		<origin rpy="1.570796326794897 0 0" xyz="0 0 0"></origin>
+		<parent link="fr3_link5"></parent>
+		<child link="fr3_link6"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="12.0" lower="0.5445" upper="4.5169" velocity="4.18"></limit>
+		<safety_controller k_position="100.0" k_velocity="40.0" soft_lower_limit="0.5445" soft_upper_limit="4.5169"></safety_controller>
+		<dynamics D="1" K="7000" damping="0.003" friction="0.2" mu_coulomb="0" mu_viscous="16"></dynamics>
+	</joint>
+	<joint name="fr3_joint7" type="revolute">
+		<origin rpy="1.570796326794897 0 0" xyz="0.088 0 0"></origin>
+		<parent link="fr3_link6"></parent>
+		<child link="fr3_link7"></child>
+		<axis xyz="0 0 1"></axis>
+		<limit effort="12.0" lower="-3.0159" upper="3.0159" velocity="5.26"></limit>
+		<safety_controller k_position="100.0" k_velocity="40.0" soft_lower_limit="-3.0159" soft_upper_limit="3.0159"></safety_controller>
+		<dynamics D="1" K="7000" damping="0.003" friction="0.2" mu_coulomb="0" mu_viscous="16"></dynamics>
+	</joint>
+	<joint name="fr3_joint8" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.107"></origin>
+		<parent link="fr3_link7"></parent>
+		<child link="fr3_link8"></child>
+	</joint>
+	<joint name="fr3_hand_joint" type="fixed">
+		<parent link="fr3_link8"></parent>
+		<child link="fr3_hand"></child>
+		<origin rpy="0 0 -0.7853981633974483" xyz="0 0 0"></origin>
+	</joint>
+	<joint name="fr3_hand_tcp_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.1034"></origin>
+		<parent link="fr3_hand"></parent>
+		<child link="fr3_hand_tcp"></child>
+	</joint>
+	<joint name="fr3_finger_joint1" type="prismatic">
+		<parent link="fr3_hand"></parent>
+		<child link="fr3_leftfinger"></child>
+		<origin rpy="0 0 0" xyz="0 0 0.0584"></origin>
+		<axis xyz="0 1 0"></axis>
+		<limit effort="100" lower="0.0" upper="0.04" velocity="0.2"></limit>
+		<dynamics damping="0.3"></dynamics>
+	</joint>
+	<joint name="fr3_finger_joint2" type="prismatic">
+		<parent link="fr3_hand"></parent>
+		<child link="fr3_rightfinger"></child>
+		<origin rpy="0 0 3.141592653589793" xyz="0 0 0.0584"></origin>
+		<axis xyz="0 1 0"></axis>
+		<limit effort="100" lower="0.0" upper="0.04" velocity="0.2"></limit>
+		<mimic joint="fr3_finger_joint1"></mimic>
+		<dynamics damping="0.3"></dynamics>
+	</joint>
+</robot>

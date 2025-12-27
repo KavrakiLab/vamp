@@ -1,0 +1,12 @@
+#
+# Wavefront material file
+# Converted by Meshlab Group
+#
+
+newmtl material_0
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ks 0.000000 0.000000 0.000000
+illum 2
+Ns 100.0
+map_Kd ./spot_mat.png

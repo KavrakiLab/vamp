@@ -1,6 +1,4 @@
-import pickle
 from pathlib import Path
-import numpy as np
 
 from fire import Fire
 
@@ -48,7 +46,6 @@ def main(
         goal = sample_valid(vamp_module, sampler)
         result = planner_func(start, goal, env, plan_settings, sampler)
         solved = result.solved
-        print(solved)
 
         if solved:
             simplify = vamp_module.simplify(result.path, env, simp_settings, sampler)

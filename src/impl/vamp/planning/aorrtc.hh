@@ -408,9 +408,13 @@ namespace vamp::planning
                 result = simplify<Robot, rake, resolution>(result.path, environment, settings.simplify, rng);
             }
 
+            result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
+            result.iterations = iters;
+
             // Exit early if trivial, unsolved, or not optimizing
             if (not settings.optimize or result.path.empty() or result.path.size() == 2)
             {
+                
                 return result;
             }
 

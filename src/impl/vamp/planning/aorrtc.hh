@@ -414,7 +414,6 @@ namespace vamp::planning
             // Exit early if trivial, unsolved, or not optimizing
             if (not settings.optimize or result.path.empty() or result.path.size() == 2)
             {
-                
                 return result;
             }
 

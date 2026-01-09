@@ -1033,7 +1033,7 @@ namespace vamp
     {
         o << "[";
 
-        for (auto i = 0; i < v.data.size() - 1; ++i)
+        for (auto i = 0U; i < v.data.size() - 1; ++i)
         {
             o << " [";
             print_vector<typename VectorIT::S>(o, v.data[i]);

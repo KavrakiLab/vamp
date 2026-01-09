@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core >=0.4.3", "nanobind >=2.0.0", "cmake >=3.1", "typing_extensions"]
+requires = ["scikit-build-core >=0.4.3", "nanobind >=2.0.0", "typing_extensions"]
 build-backend = "scikit_build_core.build"
 
 [project]
@@ -29,10 +29,11 @@ minimum-version = "0.4"
 build-dir = "build/{wheel_tag}"
 wheel.py-api = "cp312"
 wheel.packages = ["src/vamp"]
-
 cmake.build-type = "Release"
 
 [tool.scikit-build.cmake.define]
 VAMP_LTO = "OFF"
-VAMP_ROBOT_MODULES="sphere;ur5;panda;fetch;baxter"
-VAMP_ROBOT_STRUCTS="Sphere;UR5;Panda;Fetch;Baxter"
+VAMP_BUILD_PYTHON_BINDINGS = "ON"
+VAMP_INSTALL_CPP_LIBRARY = "OFF"
+VAMP_ROBOT_MODULES="sphere;ur5;panda;fetch;baxter;spot;spotarm"
+VAMP_ROBOT_STRUCTS="Sphere;UR5;Panda;Fetch;Baxter;Spot;SpotArm"

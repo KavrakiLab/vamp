@@ -521,6 +521,12 @@ namespace vamp
             return or_(o.data);
         }
 
+        inline constexpr auto operator|=(D o) noexcept -> D &
+        {
+            d()->data = apply<S::template or_<0>>(d()->data, o.data);
+            return *d();
+        }
+
         inline constexpr auto operator&(D o) const noexcept -> D
         {
             return and_(o.data);

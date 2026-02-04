@@ -149,6 +149,33 @@ namespace vamp
         return false;
     }
 
+
+    template <typename DataT, typename ArgT1, typename ArgT2, typename ArgT3, typename ArgT4>
+    inline constexpr auto sphere_environment_in_collision_pc_all(
+        const collision::Environment<DataT> &e,  //
+        ArgT1 sx_,
+        ArgT2 sy_,
+        ArgT3 sz_,
+        ArgT4 sr_) noexcept -> IntVector<>
+    {
+        // TODO: Figure out a way to avoid needing to upcast floats to vectors
+        auto sx = static_cast<DataT>(sx_);
+        auto sy = static_cast<DataT>(sy_);
+        auto sz = static_cast<DataT>(sz_);
+        auto sr = static_cast<DataT>(sr_);
+        const auto max_extent = collision::sqrt(collision::dot_3(sx, sy, sz, sx, sy, sz)) + sr;
+
+        IntVector<> colliding = {0};
+
+        const std::array<DataT, 3> positions = {sx, sy, sz};
+        for (const auto &pc : e.pointclouds)
+        {
+            colliding |= pc.collides_simd_all(positions, sr);
+        }
+
+        return colliding;
+    }
+
     template <typename DataT, typename ArgT1, typename ArgT2, typename ArgT3, typename ArgT4>
     inline auto sphere_environment_get_collisions(
         const collision::Environment<DataT> &e,  //

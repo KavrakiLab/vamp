@@ -505,6 +505,106 @@ namespace vamp::collision
             return false;
         }
 
+        // Determine whether the set of spheres collides with a point in this tree.
+        //
+        // Templates
+        //
+        // - `FVectorT`: type of a vector of floats
+        // - `IVectorT`: type of a vector of integer indexes
+        //
+        // Inputs
+        //
+        // - `centers`: (x, y, z) struct-of-arrays of the centers of each sphere.
+        // - `radii`: SIMD vector of the radii of each sphere.
+        //
+        // Return
+        // 
+        // - IVectorT integer vector. Its i-th element is 1 if the i-th sphere is colliding and 0 otherwise
+        auto collides_simd_all(const std::array<FVectorT, 3> &centers, FVectorT radii) const noexcept -> IVectorT
+        {
+            // Padd radii by radius of points.
+            radii = radii + r_point;
+            // Test against top AABB
+            FVectorT inbounds =
+                (centers[0] + radii >= aabb_top.lower[0]) & (centers[0] - radii <= aabb_top.upper[0]);
+
+            for (uint8_t k = 1; k < 3; k++)
+            {
+                inbounds = inbounds & (centers[k] + radii >= aabb_top.lower[k]) &
+                           (centers[k] - radii <= aabb_top.upper[k]);
+            }
+
+            if (inbounds.none())
+            {
+                return 0;
+            }
+
+            FVectorT these_tests = FVectorT::fill(tests[0]);
+            FVectorT cmp_results = centers[0].greater_equal(these_tests);
+            auto idxs = (cmp_results >> 31U).template as<IVectorT>() + 1;
+
+            // Search downward through the tree, parallel across each point
+            for (uint8_t i = 1, k = 1; i < nlog2; i++)
+            {
+                these_tests = FVectorT::gather(tests.data(), idxs);
+                cmp_results = centers[k].greater_equal(these_tests);
+                idxs = (idxs << 1U) + (cmp_results >> 31U).template as<IVectorT>() + 1;
+                k = (k + 1) % 3;
+            }
+
+            const IVectorT zs = idxs - tests.size();
+
+            IVectorT zs6 = zs * 6;
+            const float *const aabb_ptr = &aabbs.front().lower.front();
+
+            const auto rc_sq = radii * radii;
+
+            auto d0 = centers[0] -
+                      centers[0].clamp(FVectorT::gather(aabb_ptr, zs6), FVectorT::gather(aabb_ptr, zs6 + 3));
+            auto d1 =
+                centers[1] -
+                centers[1].clamp(FVectorT::gather(aabb_ptr, zs6 + 1), FVectorT::gather(aabb_ptr, zs6 + 4));
+            auto d2 =
+                centers[2] -
+                centers[2].clamp(FVectorT::gather(aabb_ptr, zs6 + 2), FVectorT::gather(aabb_ptr, zs6 + 5));
+
+            auto distsq_to = d0 * d0 + d1 * d1 + d2 * d2;
+            inbounds = inbounds & (distsq_to <= rc_sq);
+            if (inbounds.none())
+            {
+                return 0;
+            }
+
+            std::array<int, FVectorT::num_scalars> colliding = {0};
+
+            // Convert the terminal test indices to reference indices for the affordance buffer
+            const auto *affdata = reinterpret_cast<const int32_t *>(aff_starts.data());
+            const IVectorT starts_v = IVectorT::gather(affdata, zs);
+            IVectorT ends_v = inbounds.template as<IVectorT>() & IVectorT::gather(affdata, zs + 1);
+
+            const auto starts = starts_v.to_array();
+            const auto ends = ends_v.to_array();
+
+            for (uint8_t j = 0; j < FVectorT::num_scalars; j++)
+            {
+                const auto xc = centers[0].broadcast(j);
+                const auto yc = centers[1].broadcast(j);
+                const auto zc = centers[2].broadcast(j);
+                const auto rc = rc_sq.broadcast(j);
+                for (auto i = starts[j]; i < ends[j]; ++i)
+                {
+                    const auto distsq =
+                        sql2_3(affordances[0][i], affordances[1][i], affordances[2][i], xc, yc, zc);
+                    if (distsq.test_any_less_equal(rc))
+                    {
+                        colliding[j] = 1;
+                    }
+                }
+            }
+
+            return IVectorT(colliding);
+        }
+
         auto is_valid() const noexcept -> bool
         {
             /// check relative sizing of tests / aff_starts

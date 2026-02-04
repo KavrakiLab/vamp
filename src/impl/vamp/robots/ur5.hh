@@ -6507,6 +6507,2046 @@ namespace vamp::robots
         }
 
         template <std::size_t rake>
+        inline static IntVector<> fkcc_all(
+            const vamp::collision::Environment<FloatVector<rake>> &environment,
+            const ConfigurationBlock<rake> &x) noexcept
+        {
+            std::array<FloatVector<rake, 1>, 30> v;
+            std::array<FloatVector<rake, 1>, 228> y;
+
+            v[0] = cos(x[0]);
+            v[1] = sin(x[0]);
+            v[2] = 0.000796326710733264 * v[0] + -0.999999682931835 * v[1];
+            v[3] = sin(x[1]);
+            v[4] = cos(x[1]);
+            v[5] = 1.79489656471077e-09 * v[3] + v[4];
+            v[6] = v[2] * v[5];
+            v[7] = -v[1];
+            v[8] = 0.000796326710733264 * v[7] + -0.999999682931835 * v[0];
+            y[24] = 0.13585 * v[8];
+            y[8] = 0.105 * v[6] + y[24];
+            v[1] = 0.999999682931835 * v[0] + 0.000796326710733264 * v[1];
+            v[5] = v[1] * v[5];
+            v[7] = 0.999999682931835 * v[7] + 0.000796326710733264 * v[0];
+            y[25] = 0.13585 * v[7];
+            y[9] = 0.105 * v[5] + y[25];
+            v[0] = -1. * v[3] + 1.79489656471077e-09 * v[4];
+            y[10] = 1.003559 + 0.105 * v[0];
+            y[12] = 0.21 * v[6] + y[24];
+            y[13] = 0.21 * v[5] + y[25];
+            y[14] = 1.003559 + 0.21 * v[0];
+            y[16] = 0.315 * v[6] + y[24];
+            y[17] = 0.315 * v[5] + y[25];
+            y[18] = 1.003559 + 0.315 * v[0];
+            y[20] = 0.42 * v[6] + y[24];
+            y[21] = 0.42 * v[5] + y[25];
+            y[22] = 1.003559 + 0.42 * v[0];
+            y[28] = y[24] + -0.1197 * v[8] + 0.425 * v[6];
+            y[29] = y[25] + -0.1197 * v[7] + 0.425 * v[5];
+            y[30] = 1.003559 + 0.425 * v[0];
+            v[3] = -v[3];
+            v[9] = 1.79489656471077e-09 * v[4] + v[3];
+            v[2] = v[2] * v[9];
+            v[10] = sin(x[2]);
+            v[11] = cos(x[2]);
+            v[12] = v[2] * v[10] + v[6] * v[11];
+            y[32] = 0.1 * v[12] + y[28];
+            v[9] = v[1] * v[9];
+            v[1] = v[9] * v[10] + v[5] * v[11];
+            y[33] = 0.1 * v[1] + y[29];
+            v[3] = -1. * v[4] + 1.79489656471077e-09 * v[3];
+            v[4] = v[3] * v[10] + v[0] * v[11];
+            y[34] = 0.1 * v[4] + y[30];
+            y[36] = 0.14 * v[12] + y[28];
+            y[37] = 0.14 * v[1] + y[29];
+            y[38] = 0.14 * v[4] + y[30];
+            y[40] = 0.18 * v[12] + y[28];
+            y[41] = 0.18 * v[1] + y[29];
+            y[42] = 0.18 * v[4] + y[30];
+            y[44] = 0.22 * v[12] + y[28];
+            y[45] = 0.22 * v[1] + y[29];
+            y[46] = 0.22 * v[4] + y[30];
+            y[48] = 0.26 * v[12] + y[28];
+            y[49] = 0.26 * v[1] + y[29];
+            y[50] = 0.26 * v[4] + y[30];
+            y[52] = 0.3 * v[12] + y[28];
+            y[53] = 0.3 * v[1] + y[29];
+            y[54] = 0.3 * v[4] + y[30];
+            y[56] = 0.34 * v[12] + y[28];
+            y[57] = 0.34 * v[1] + y[29];
+            y[58] = 0.34 * v[4] + y[30];
+            y[60] = 0.38 * v[12] + y[28];
+            y[61] = 0.38 * v[1] + y[29];
+            y[62] = 0.38 * v[4] + y[30];
+            v[10] = -v[10];
+            v[2] = v[2] * v[11] + v[6] * v[10];
+            v[13] = sin(x[3]);
+            v[14] = cos(x[3]);
+            v[15] = 1.79489656471077e-09 * v[13] + v[14];
+            v[16] = -1. * v[13] + 1.79489656471077e-09 * v[14];
+            v[17] = v[2] * v[15] + v[12] * v[16];
+            v[18] = y[28] + 0.39225 * v[12];
+            y[64] = 0.09 * v[8] + 0.03 * v[17] + v[18];
+            v[9] = v[9] * v[11] + v[5] * v[10];
+            v[19] = v[9] * v[15] + v[1] * v[16];
+            v[20] = y[29] + 0.39225 * v[1];
+            y[65] = 0.09 * v[7] + 0.03 * v[19] + v[20];
+            v[10] = v[3] * v[11] + v[0] * v[10];
+            v[16] = v[10] * v[15] + v[4] * v[16];
+            y[74] = y[30] + 0.39225 * v[4];
+            y[66] = 0.03 * v[16] + y[74];
+            y[68] = 0.09 * v[8] + -0.03 * v[17] + v[18];
+            y[69] = 0.09 * v[7] + -0.03 * v[19] + v[20];
+            y[70] = -0.03 * v[16] + y[74];
+            y[72] = 0.09 * v[8] + v[18];
+            y[73] = 0.09 * v[7] + v[20];
+            v[13] = -v[13];
+            v[15] = 1.79489656471077e-09 * v[14] + v[13];
+            v[13] = -1. * v[14] + 1.79489656471077e-09 * v[13];
+            v[2] = v[2] * v[15] + v[12] * v[13];
+            v[14] = sin(x[4]);
+            v[3] = -v[14];
+            v[11] = cos(x[4]);
+            v[21] = v[2] * v[3] + v[8] * v[11];
+            v[22] = v[18] + 0.093 * v[8];
+            y[76] = 0.03 * v[21] + 0.09 * v[17] + v[22];
+            v[9] = v[9] * v[15] + v[1] * v[13];
+            v[23] = v[9] * v[3] + v[7] * v[11];
+            v[24] = v[20] + 0.093 * v[7];
+            y[77] = 0.03 * v[23] + 0.09 * v[19] + v[24];
+            v[13] = v[10] * v[15] + v[4] * v[13];
+            v[3] = v[13] * v[3];
+            y[78] = 0.03 * v[3] + 0.09 * v[16] + y[74];
+            y[80] = -0.03 * v[21] + 0.09 * v[17] + v[22];
+            y[81] = -0.03 * v[23] + 0.09 * v[19] + v[24];
+            y[82] = -0.03 * v[3] + 0.09 * v[16] + y[74];
+            y[84] = 0.09 * v[17] + v[22];
+            y[85] = 0.09 * v[19] + v[24];
+            y[86] = 0.09 * v[16] + y[74];
+            v[15] = v[22] + 0.09465 * v[17];
+            y[88] = 0.06 * v[21] + v[15];
+            v[10] = v[24] + 0.09465 * v[19];
+            y[89] = 0.06 * v[23] + v[10];
+            v[25] = y[74] + 0.09465 * v[16];
+            y[90] = 0.06 * v[3] + v[25];
+            v[2] = v[2] * v[11] + v[8] * v[14];
+            v[26] = cos(x[5]);
+            v[27] = sin(x[5]);
+            v[28] = -v[27];
+            v[29] = v[2] * v[26] + v[17] * v[28];
+            y[92] = 1.59265611381251e-05 * v[29] + 0.0973000063413347 * v[21] + v[15];
+            v[9] = v[9] * v[11] + v[7] * v[14];
+            v[14] = v[9] * v[26] + v[19] * v[28];
+            y[93] = 1.59265611381251e-05 * v[14] + 0.0973000063413347 * v[23] + v[10];
+            v[13] = v[13] * v[11];
+            v[28] = v[13] * v[26] + v[16] * v[28];
+            y[94] = 1.59265611381251e-05 * v[28] + 0.0973000063413347 * v[3] + v[25];
+            v[2] = v[2] * v[27] + v[17] * v[26];
+            y[96] = -4.77794169794995e-05 * v[29] + 0.177299961951912 * v[21] + 0.000547779602643996 * v[2] +
+                    v[15];
+            v[9] = v[9] * v[27] + v[19] * v[26];
+            y[97] = -4.77794169794995e-05 * v[14] + 0.177299961951912 * v[23] + 0.000547779602643996 * v[9] +
+                    v[10];
+            v[13] = v[13] * v[27] + v[16] * v[26];
+            y[98] = -4.77794169794995e-05 * v[28] + 0.177299961951912 * v[3] + 0.000547779602643996 * v[13] +
+                    v[25];
+            y[100] =
+                -1.592643044558e-05 * v[29] + 0.137299987317304 * v[21] + 0.000515926534214666 * v[2] + v[15];
+            y[101] =
+                -1.592643044558e-05 * v[14] + 0.137299987317304 * v[23] + 0.000515926534214666 * v[9] + v[10];
+            y[102] =
+                -1.592643044558e-05 * v[28] + 0.137299987317304 * v[3] + 0.000515926534214666 * v[13] + v[25];
+            y[104] =
+                0.0326288719300173 * v[29] + 0.206633483191718 * v[21] + 0.000571117947718783 * v[2] + v[15];
+            y[105] =
+                0.0326288719300173 * v[14] + 0.206633483191718 * v[23] + 0.000571117947718783 * v[9] + v[10];
+            y[106] =
+                0.0326288719300173 * v[28] + 0.206633483191718 * v[3] + 0.000571117947718783 * v[13] + v[25];
+            y[108] =
+                0.0471739661448351 * v[29] + 0.257142085198042 * v[21] + 0.000611330073064923 * v[2] + v[15];
+            y[109] =
+                0.0471739661448351 * v[14] + 0.257142085198042 * v[23] + 0.000611330073064923 * v[9] + v[10];
+            y[110] =
+                0.0471739661448351 * v[28] + 0.257142085198042 * v[3] + 0.000611330073064923 * v[13] + v[25];
+            y[112] =
+                0.0471938742614188 * v[29] + 0.232142101051412 * v[21] + 0.000591421905296592 * v[2] + v[15];
+            y[113] =
+                0.0471938742614188 * v[14] + 0.232142101051412 * v[23] + 0.000591421905296592 * v[9] + v[10];
+            y[114] =
+                0.0471938742614188 * v[28] + 0.232142101051412 * v[3] + 0.000591421905296592 * v[13] + v[25];
+            y[116] =
+                0.0305511319550535 * v[29] + 0.180116344904696 * v[21] + 0.000550002959776232 * v[2] + v[15];
+            y[117] =
+                0.0305511319550535 * v[14] + 0.180116344904696 * v[23] + 0.000550002959776232 * v[9] + v[10];
+            y[118] =
+                0.0305511319550535 * v[28] + 0.180116344904696 * v[3] + 0.000550002959776232 * v[13] + v[25];
+            y[120] =
+                0.0622118532100359 * v[29] + 0.218207593376579 * v[21] + 0.000580315961208078 * v[2] + v[15];
+            y[121] =
+                0.0622118532100359 * v[14] + 0.218207593376579 * v[23] + 0.000580315961208078 * v[9] + v[10];
+            y[122] =
+                0.0622118532100359 * v[28] + 0.218207593376579 * v[3] + 0.000580315961208078 * v[13] + v[25];
+            y[124] =
+                0.0622437061965698 * v[29] + 0.178207618741971 * v[21] + 0.000548462892778747 * v[2] + v[15];
+            y[125] =
+                0.0622437061965698 * v[14] + 0.178207618741971 * v[23] + 0.000548462892778747 * v[9] + v[10];
+            y[126] =
+                0.0622437061965698 * v[28] + 0.178207618741971 * v[3] + 0.000548462892778747 * v[13] + v[25];
+            y[128] =
+                0.0622277797033028 * v[29] + 0.198207606059275 * v[21] + 0.000564389426993413 * v[2] + v[15];
+            y[129] =
+                0.0622277797033028 * v[14] + 0.198207606059275 * v[23] + 0.000564389426993413 * v[9] + v[10];
+            y[130] =
+                0.0622277797033028 * v[28] + 0.198207606059275 * v[3] + 0.000564389426993413 * v[13] + v[25];
+            y[132] =
+                -0.0327711073338182 * v[29] + 0.206581403542295 * v[21] + 0.000571117947718776 * v[2] + v[15];
+            y[133] =
+                -0.0327711073338182 * v[14] + 0.206581403542295 * v[23] + 0.000571117947718776 * v[9] + v[10];
+            y[134] =
+                -0.0327711073338182 * v[28] + 0.206581403542295 * v[3] + 0.000571117947718776 * v[13] + v[25];
+            y[136] =
+                -0.0469176493992621 * v[29] + 0.257427526148899 * v[21] + 0.000611617044105126 * v[2] + v[15];
+            y[137] =
+                -0.0469176493992621 * v[14] + 0.257427526148899 * v[23] + 0.000611617044105126 * v[9] + v[10];
+            y[138] =
+                -0.0469176493992621 * v[28] + 0.257427526148899 * v[3] + 0.000611617044105126 * v[13] + v[25];
+            y[140] =
+                -0.0468977412826784 * v[29] + 0.232427542002269 * v[21] + 0.000591708876336795 * v[2] + v[15];
+            y[141] =
+                -0.0468977412826784 * v[14] + 0.232427542002269 * v[23] + 0.000591708876336795 * v[9] + v[10];
+            y[142] =
+                -0.0468977412826784 * v[28] + 0.232427542002269 * v[3] + 0.000591708876336795 * v[13] + v[25];
+            y[144] =
+                -0.0306511374916797 * v[29] + 0.180067607997177 * v[21] + 0.000550002959776232 * v[2] + v[15];
+            y[145] =
+                -0.0306511374916797 * v[14] + 0.180067607997177 * v[23] + 0.000550002959776232 * v[9] + v[10];
+            y[146] =
+                -0.0306511374916797 * v[28] + 0.180067607997177 * v[3] + 0.000550002959776232 * v[13] + v[25];
+            y[148] =
+                -0.0623912961612096 * v[29] + 0.218440976014459 * v[21] + 0.000580580825254713 * v[2] + v[15];
+            y[149] =
+                -0.0623912961612096 * v[14] + 0.218440976014459 * v[23] + 0.000580580825254713 * v[9] + v[10];
+            y[150] =
+                -0.0623912961612096 * v[28] + 0.218440976014459 * v[3] + 0.000580580825254713 * v[13] + v[25];
+            y[152] =
+                -0.0623594431746757 * v[29] + 0.178441001379851 * v[21] + 0.000548727756825382 * v[2] + v[15];
+            y[153] =
+                -0.0623594431746757 * v[14] + 0.178441001379851 * v[23] + 0.000548727756825382 * v[9] + v[10];
+            y[154] =
+                -0.0623594431746757 * v[28] + 0.178441001379851 * v[3] + 0.000548727756825382 * v[13] + v[25];
+            y[156] =
+                -0.0623753696679426 * v[29] + 0.198440988697155 * v[21] + 0.000564654291040047 * v[2] + v[15];
+            y[157] =
+                -0.0623753696679426 * v[14] + 0.198440988697155 * v[23] + 0.000564654291040047 * v[9] + v[10];
+            y[158] =
+                -0.0623753696679426 * v[28] + 0.198440988697155 * v[3] + 0.000564654291040047 * v[13] + v[25];
+            y[168] = 0.209999993443489 * v[6] + y[24];
+            y[169] = 0.209999993443489 * v[5] + y[25];
+            y[170] = 1.003559 + 0.209999993443489 * v[0];
+            y[172] = 0.170000001788139 * v[12] + y[28];
+            y[173] = 0.170000001788139 * v[1] + y[29];
+            y[174] = 0.170000001788139 * v[4] + y[30];
+            y[176] = 0.0900000035762787 * v[8] + v[18];
+            y[177] = 0.0900000035762787 * v[7] + v[20];
+            y[180] = 0.0900000035762787 * v[17] + v[22];
+            y[181] = 0.0900000035762787 * v[19] + v[24];
+            y[182] = 0.0900000035762787 * v[16] + y[74];
+            y[184] = 0.0599999986588955 * v[21] + v[15];
+            y[185] = 0.0599999986588955 * v[23] + v[10];
+            y[186] = 0.0599999986588955 * v[3] + v[25];
+            y[188] = 1.59265619004145e-05 * v[29] + 0.0973000079393387 * v[21] + v[15];
+            y[189] = 1.59265619004145e-05 * v[14] + 0.0973000079393387 * v[23] + v[10];
+            y[190] = 1.59265619004145e-05 * v[28] + 0.0973000079393387 * v[3] + v[25];
+            y[192] = -3.18529237119947e-05 * v[29] + 0.157299980521202 * v[21] + 0.000531853060238063 * v[2] +
+                     v[15];
+            y[193] = -3.18529237119947e-05 * v[14] + 0.157299980521202 * v[23] + 0.000531853060238063 * v[9] +
+                     v[10];
+            y[194] = -3.18529237119947e-05 * v[28] + 0.157299980521202 * v[3] + 0.000531853060238063 * v[13] +
+                     v[25];
+            y[196] =
+                0.0326288715004921 * v[29] + 0.206633478403091 * v[21] + 0.000571117969229817 * v[2] + v[15];
+            y[197] =
+                0.0326288715004921 * v[14] + 0.206633478403091 * v[23] + 0.000571117969229817 * v[9] + v[10];
+            y[198] =
+                0.0326288715004921 * v[28] + 0.206633478403091 * v[3] + 0.000571117969229817 * v[13] + v[25];
+            y[200] = 0.047183919698 * v[29] + 0.244642093777657 * v[21] + 0.000601375999394804 * v[2] + v[15];
+            y[201] = 0.047183919698 * v[14] + 0.244642093777657 * v[23] + 0.000601375999394804 * v[9] + v[10];
+            y[202] = 0.047183919698 * v[28] + 0.244642093777657 * v[3] + 0.000601375999394804 * v[13] + v[25];
+            y[204] =
+                0.0305511318147182 * v[29] + 0.180116340517998 * v[21] + 0.000550002965610474 * v[2] + v[15];
+            y[205] =
+                0.0305511318147182 * v[14] + 0.180116340517998 * v[23] + 0.000550002965610474 * v[9] + v[10];
+            y[206] =
+                0.0305511318147182 * v[28] + 0.180116340517998 * v[3] + 0.000550002965610474 * v[13] + v[25];
+            y[208] =
+                0.0622277781367302 * v[29] + 0.198207601904869 * v[21] + 0.000564389454666525 * v[2] + v[15];
+            y[209] =
+                0.0622277781367302 * v[14] + 0.198207601904869 * v[23] + 0.000564389454666525 * v[9] + v[10];
+            y[210] =
+                0.0622277781367302 * v[28] + 0.198207601904869 * v[3] + 0.000564389454666525 * v[13] + v[25];
+            y[212] =
+                -0.0327711068093777 * v[29] + 0.206581398844719 * v[21] + 0.000571117969229817 * v[2] + v[15];
+            y[213] =
+                -0.0327711068093777 * v[14] + 0.206581398844719 * v[23] + 0.000571117969229817 * v[9] + v[10];
+            y[214] =
+                -0.0327711068093777 * v[28] + 0.206581398844719 * v[3] + 0.000571117969229817 * v[13] + v[25];
+            y[216] =
+                -0.0469076968729496 * v[29] + 0.244927540421486 * v[21] + 0.000601662963163108 * v[2] + v[15];
+            y[217] =
+                -0.0469076968729496 * v[14] + 0.244927540421486 * v[23] + 0.000601662963163108 * v[9] + v[10];
+            y[218] =
+                -0.0469076968729496 * v[28] + 0.244927540421486 * v[3] + 0.000601662963163108 * v[13] + v[25];
+            y[220] =
+                -0.0306511372327805 * v[29] + 0.180067613720894 * v[21] + 0.000550002965610474 * v[2] + v[15];
+            y[221] =
+                -0.0306511372327805 * v[14] + 0.180067613720894 * v[23] + 0.000550002965610474 * v[9] + v[10];
+            y[222] =
+                -0.0306511372327805 * v[28] + 0.180067613720894 * v[3] + 0.000550002965610474 * v[13] + v[25];
+            y[224] =
+                -0.062375370413065 * v[29] + 0.198440983891487 * v[21] + 0.000564654299523681 * v[2] + v[15];
+            y[225] =
+                -0.062375370413065 * v[14] + 0.198440983891487 * v[23] + 0.000564654299523681 * v[9] + v[10];
+            y[226] =
+                -0.062375370413065 * v[28] + 0.198440983891487 * v[3] + 0.000564654299523681 * v[13] + v[25];
+            // variable duplicates: 1
+            y[178] = y[74];
+            // dependent variables without operations
+            y[0] = 0.;
+            y[1] = 0.;
+            y[2] = 0.9144;
+            y[3] = 0.0799999982118607;
+            y[4] = 0.;
+            y[5] = 0.;
+            y[6] = 1.003559;
+            y[7] = 0.0799999982118607;
+            y[11] = 0.0799999982118607;
+            y[15] = 0.0799999982118607;
+            y[19] = 0.0799999982118607;
+            y[23] = 0.0799999982118607;
+            y[26] = 1.003559;
+            y[27] = 0.0799999982118607;
+            y[31] = 0.0799999982118607;
+            y[35] = 0.0399999991059303;
+            y[39] = 0.0399999991059303;
+            y[43] = 0.0399999991059303;
+            y[47] = 0.0399999991059303;
+            y[51] = 0.0399999991059303;
+            y[55] = 0.0399999991059303;
+            y[59] = 0.0399999991059303;
+            y[63] = 0.0399999991059303;
+            y[67] = 0.0399999991059303;
+            y[71] = 0.0399999991059303;
+            y[75] = 0.0399999991059303;
+            y[79] = 0.0399999991059303;
+            y[83] = 0.0399999991059303;
+            y[87] = 0.0399999991059303;
+            y[91] = 0.0399999991059303;
+            y[95] = 0.0399999991059303;
+            y[99] = 0.0399999991059303;
+            y[103] = 0.0399999991059303;
+            y[107] = 0.0199999995529652;
+            y[111] = 0.0149999996647239;
+            y[115] = 0.0149999996647239;
+            y[119] = 0.0199999995529652;
+            y[123] = 0.0149999996647239;
+            y[127] = 0.0149999996647239;
+            y[131] = 0.0149999996647239;
+            y[135] = 0.0199999995529652;
+            y[139] = 0.0149999996647239;
+            y[143] = 0.0149999996647239;
+            y[147] = 0.0199999995529652;
+            y[151] = 0.0149999996647239;
+            y[155] = 0.0149999996647239;
+            y[159] = 0.0149999996647239;
+            y[160] = 0.;
+            y[161] = 0.;
+            y[162] = 0.914399981498718;
+            y[163] = 0.0799999982118607;
+            y[164] = 0.;
+            y[165] = 0.;
+            y[166] = 1.003559;
+            y[167] = 0.0799999982118607;
+            y[171] = 0.28999999165535;
+            y[175] = 0.25;
+            y[179] = 0.0700000002980232;
+            y[183] = 0.0700000002980232;
+            y[187] = 0.0399999991059303;
+            y[191] = 0.0399999991059303;
+            y[195] = 0.0599999986588955;
+            y[199] = 0.0199999995529652;
+            y[203] = 0.0274999998509884;
+            y[207] = 0.0199999995529652;
+            y[211] = 0.0350000001490116;
+            y[215] = 0.0199999995529652;
+            y[219] = 0.0274999998509884;
+            y[223] = 0.0199999995529652;
+            y[227] = 0.0350000001490116;
+
+            IntVector<> colliding = {0};
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_right_finger_link
+            if (sphere_environment_in_collision(environment, y[224], y[225], y[226], y[227]))
+            {
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[148], y[149], y[150], y[151]);
+
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[152], y[153], y[154], y[155]);
+
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[156], y[157], y[158], y[159]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_right_knuckle_link
+            if (sphere_environment_in_collision(environment, y[220], y[221], y[222], y[223]))
+            {
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[144], y[145], y[146], y[147]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_right_finger_tip_link
+            if (sphere_environment_in_collision(environment, y[216], y[217], y[218], y[219]))
+            {
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[136], y[137], y[138], y[139]);
+
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[140], y[141], y[142], y[143]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_right_inner_knuckle_link
+            if (sphere_environment_in_collision(environment, y[212], y[213], y[214], y[215]))
+            {
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[132], y[133], y[134], y[135]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_left_finger_link
+            if (sphere_environment_in_collision(environment, y[208], y[209], y[210], y[211]))
+            {
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[120], y[121], y[122], y[123]);
+
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[124], y[125], y[126], y[127]);
+
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[128], y[129], y[130], y[131]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_left_knuckle_link
+            if (sphere_environment_in_collision(environment, y[204], y[205], y[206], y[207]))
+            {
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[116], y[117], y[118], y[119]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_left_finger_tip_link
+            if (sphere_environment_in_collision(environment, y[200], y[201], y[202], y[203]))
+            {
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[108], y[109], y[110], y[111]);
+
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[112], y[113], y[114], y[115]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_left_inner_knuckle_link
+            if (sphere_environment_in_collision(environment, y[196], y[197], y[198], y[199]))
+            {
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[104], y[105], y[106], y[107]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // robotiq_85_base_link
+            if (sphere_environment_in_collision(environment, y[192], y[193], y[194], y[195]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[96], y[97], y[98], y[99]);
+
+                colliding |=
+                    sphere_environment_in_collision_pc_all(environment, y[100], y[101], y[102], y[103]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // fts_robotside
+            if (sphere_environment_in_collision(environment, y[188], y[189], y[190], y[191]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[92], y[93], y[94], y[95]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // wrist_3_link
+            if (sphere_environment_in_collision(environment, y[184], y[185], y[186], y[187]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[88], y[89], y[90], y[91]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // wrist_2_link
+            if (sphere_environment_in_collision(environment, y[180], y[181], y[182], y[183]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[84], y[85], y[86], y[87]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // wrist_1_link
+            if (sphere_environment_in_collision(environment, y[176], y[177], y[178], y[179]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[64], y[65], y[66], y[67]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[68], y[69], y[70], y[71]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[72], y[73], y[74], y[75]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // forearm_link
+            if (sphere_environment_in_collision(environment, y[172], y[173], y[174], y[175]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[28], y[29], y[30], y[31]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[32], y[33], y[34], y[35]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[36], y[37], y[38], y[39]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[40], y[41], y[42], y[43]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[44], y[45], y[46], y[47]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[48], y[49], y[50], y[51]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[52], y[53], y[54], y[55]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[56], y[57], y[58], y[59]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[60], y[61], y[62], y[63]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // upper_arm_link
+            if (sphere_environment_in_collision(environment, y[168], y[169], y[170], y[171]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[8], y[9], y[10], y[11]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[12], y[13], y[14], y[15]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[16], y[17], y[18], y[19]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[20], y[21], y[22], y[23]);
+
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[24], y[25], y[26], y[27]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // shoulder_link
+            if (sphere_environment_in_collision(environment, y[164], y[165], y[166], y[167]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[4], y[5], y[6], y[7]);
+            }
+
+            //
+            // environment vs. robot collisions
+            //
+
+            // base_link
+            if (sphere_environment_in_collision(environment, y[160], y[161], y[162], y[163]))
+            {
+                colliding |= sphere_environment_in_collision_pc_all(environment, y[0], y[1], y[2], y[3]);
+            }
+
+            //
+            // robot self-collisions
+            //
+
+            // base_link vs. upper_arm_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[168], y[169], y[170], y[171]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[8], y[9], y[10], y[11]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[12], y[13], y[14], y[15]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[16], y[17], y[18], y[19]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[20], y[21], y[22], y[23]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[24], y[25], y[26], y[27]);
+            }
+
+            // base_link vs. forearm_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[172], y[173], y[174], y[175]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[28], y[29], y[30], y[31]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[32], y[33], y[34], y[35]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[36], y[37], y[38], y[39]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[40], y[41], y[42], y[43]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[44], y[45], y[46], y[47]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[48], y[49], y[50], y[51]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[52], y[53], y[54], y[55]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[56], y[57], y[58], y[59]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[60], y[61], y[62], y[63]);
+            }
+
+            // base_link vs. wrist_1_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[176], y[177], y[178], y[179]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[64], y[65], y[66], y[67]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[68], y[69], y[70], y[71]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[72], y[73], y[74], y[75]);
+            }
+
+            // base_link vs. wrist_2_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[180], y[181], y[182], y[183]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[84], y[85], y[86], y[87]);
+            }
+
+            // base_link vs. wrist_3_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[184], y[185], y[186], y[187]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[88], y[89], y[90], y[91]);
+            }
+
+            // base_link vs. fts_robotside
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[188], y[189], y[190], y[191]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[92], y[93], y[94], y[95]);
+            }
+
+            // base_link vs. robotiq_85_base_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[192], y[193], y[194], y[195]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[100], y[101], y[102], y[103]);
+            }
+
+            // base_link vs. robotiq_85_left_inner_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[196], y[197], y[198], y[199]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[104], y[105], y[106], y[107]);
+            }
+
+            // base_link vs. robotiq_85_left_finger_tip_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[200], y[201], y[202], y[203]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[112], y[113], y[114], y[115]);
+            }
+
+            // base_link vs. robotiq_85_left_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[204], y[205], y[206], y[207]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[116], y[117], y[118], y[119]);
+            }
+
+            // base_link vs. robotiq_85_left_finger_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[208], y[209], y[210], y[211]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[128], y[129], y[130], y[131]);
+            }
+
+            // base_link vs. robotiq_85_right_inner_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[212], y[213], y[214], y[215]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[132], y[133], y[134], y[135]);
+            }
+
+            // base_link vs. robotiq_85_right_finger_tip_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[216], y[217], y[218], y[219]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[140], y[141], y[142], y[143]);
+            }
+
+            // base_link vs. robotiq_85_right_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[220], y[221], y[222], y[223]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[144], y[145], y[146], y[147]);
+            }
+
+            // base_link vs. robotiq_85_right_finger_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[160], y[161], y[162], y[163], y[224], y[225], y[226], y[227]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[0], y[1], y[2], y[3], y[156], y[157], y[158], y[159]);
+            }
+
+            // shoulder_link vs. forearm_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[172], y[173], y[174], y[175]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[28], y[29], y[30], y[31]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[32], y[33], y[34], y[35]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[36], y[37], y[38], y[39]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[40], y[41], y[42], y[43]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[44], y[45], y[46], y[47]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[48], y[49], y[50], y[51]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[52], y[53], y[54], y[55]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[56], y[57], y[58], y[59]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[60], y[61], y[62], y[63]);
+            }
+
+            // shoulder_link vs. wrist_1_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[176], y[177], y[178], y[179]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[64], y[65], y[66], y[67]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[68], y[69], y[70], y[71]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[72], y[73], y[74], y[75]);
+            }
+
+            // shoulder_link vs. wrist_2_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[180], y[181], y[182], y[183]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[84], y[85], y[86], y[87]);
+            }
+
+            // shoulder_link vs. wrist_3_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[184], y[185], y[186], y[187]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[88], y[89], y[90], y[91]);
+            }
+
+            // shoulder_link vs. fts_robotside
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[188], y[189], y[190], y[191]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[92], y[93], y[94], y[95]);
+            }
+
+            // shoulder_link vs. robotiq_85_base_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[192], y[193], y[194], y[195]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[100], y[101], y[102], y[103]);
+            }
+
+            // shoulder_link vs. robotiq_85_left_inner_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[196], y[197], y[198], y[199]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[104], y[105], y[106], y[107]);
+            }
+
+            // shoulder_link vs. robotiq_85_left_finger_tip_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[200], y[201], y[202], y[203]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[112], y[113], y[114], y[115]);
+            }
+
+            // shoulder_link vs. robotiq_85_left_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[204], y[205], y[206], y[207]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[116], y[117], y[118], y[119]);
+            }
+
+            // shoulder_link vs. robotiq_85_left_finger_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[208], y[209], y[210], y[211]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[128], y[129], y[130], y[131]);
+            }
+
+            // shoulder_link vs. robotiq_85_right_inner_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[212], y[213], y[214], y[215]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[132], y[133], y[134], y[135]);
+            }
+
+            // shoulder_link vs. robotiq_85_right_finger_tip_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[216], y[217], y[218], y[219]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[140], y[141], y[142], y[143]);
+            }
+
+            // shoulder_link vs. robotiq_85_right_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[220], y[221], y[222], y[223]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[144], y[145], y[146], y[147]);
+            }
+
+            // shoulder_link vs. robotiq_85_right_finger_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[164], y[165], y[166], y[167], y[224], y[225], y[226], y[227]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[4], y[5], y[6], y[7], y[156], y[157], y[158], y[159]);
+            }
+
+            // upper_arm_link vs. wrist_1_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[176], y[177], y[178], y[179]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[64], y[65], y[66], y[67]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[68], y[69], y[70], y[71]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[72], y[73], y[74], y[75]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[64], y[65], y[66], y[67]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[68], y[69], y[70], y[71]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[72], y[73], y[74], y[75]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[64], y[65], y[66], y[67]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[68], y[69], y[70], y[71]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[72], y[73], y[74], y[75]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[64], y[65], y[66], y[67]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[68], y[69], y[70], y[71]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[72], y[73], y[74], y[75]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[64], y[65], y[66], y[67]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[68], y[69], y[70], y[71]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[72], y[73], y[74], y[75]);
+            }
+
+            // upper_arm_link vs. wrist_2_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[180], y[181], y[182], y[183]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[84], y[85], y[86], y[87]);
+            }
+
+            // upper_arm_link vs. wrist_3_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[184], y[185], y[186], y[187]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[88], y[89], y[90], y[91]);
+            }
+
+            // upper_arm_link vs. fts_robotside
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[188], y[189], y[190], y[191]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[92], y[93], y[94], y[95]);
+            }
+
+            // upper_arm_link vs. robotiq_85_base_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[192], y[193], y[194], y[195]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[100], y[101], y[102], y[103]);
+            }
+
+            // upper_arm_link vs. robotiq_85_left_inner_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[196], y[197], y[198], y[199]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[104], y[105], y[106], y[107]);
+            }
+
+            // upper_arm_link vs. robotiq_85_left_finger_tip_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[200], y[201], y[202], y[203]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[112], y[113], y[114], y[115]);
+            }
+
+            // upper_arm_link vs. robotiq_85_left_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[204], y[205], y[206], y[207]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[116], y[117], y[118], y[119]);
+            }
+
+            // upper_arm_link vs. robotiq_85_left_finger_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[208], y[209], y[210], y[211]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[128], y[129], y[130], y[131]);
+            }
+
+            // upper_arm_link vs. robotiq_85_right_inner_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[212], y[213], y[214], y[215]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[132], y[133], y[134], y[135]);
+            }
+
+            // upper_arm_link vs. robotiq_85_right_finger_tip_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[216], y[217], y[218], y[219]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[140], y[141], y[142], y[143]);
+            }
+
+            // upper_arm_link vs. robotiq_85_right_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[220], y[221], y[222], y[223]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[144], y[145], y[146], y[147]);
+            }
+
+            // upper_arm_link vs. robotiq_85_right_finger_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[168], y[169], y[170], y[171], y[224], y[225], y[226], y[227]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[8], y[9], y[10], y[11], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[12], y[13], y[14], y[15], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[16], y[17], y[18], y[19], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[20], y[21], y[22], y[23], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[24], y[25], y[26], y[27], y[156], y[157], y[158], y[159]);
+            }
+
+            // forearm_link vs. wrist_2_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[180], y[181], y[182], y[183]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[84], y[85], y[86], y[87]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[76], y[77], y[78], y[79]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[80], y[81], y[82], y[83]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[84], y[85], y[86], y[87]);
+            }
+
+            // forearm_link vs. wrist_3_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[184], y[185], y[186], y[187]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[88], y[89], y[90], y[91]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[88], y[89], y[90], y[91]);
+            }
+
+            // forearm_link vs. fts_robotside
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[188], y[189], y[190], y[191]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[92], y[93], y[94], y[95]);
+            }
+
+            // forearm_link vs. robotiq_85_base_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[192], y[193], y[194], y[195]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[100], y[101], y[102], y[103]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[96], y[97], y[98], y[99]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[100], y[101], y[102], y[103]);
+            }
+
+            // forearm_link vs. robotiq_85_left_inner_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[196], y[197], y[198], y[199]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[104], y[105], y[106], y[107]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[104], y[105], y[106], y[107]);
+            }
+
+            // forearm_link vs. robotiq_85_left_finger_tip_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[200], y[201], y[202], y[203]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[112], y[113], y[114], y[115]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[108], y[109], y[110], y[111]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[112], y[113], y[114], y[115]);
+            }
+
+            // forearm_link vs. robotiq_85_left_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[204], y[205], y[206], y[207]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[116], y[117], y[118], y[119]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[116], y[117], y[118], y[119]);
+            }
+
+            // forearm_link vs. robotiq_85_left_finger_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[208], y[209], y[210], y[211]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[128], y[129], y[130], y[131]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[120], y[121], y[122], y[123]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[124], y[125], y[126], y[127]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[128], y[129], y[130], y[131]);
+            }
+
+            // forearm_link vs. robotiq_85_right_inner_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[212], y[213], y[214], y[215]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[132], y[133], y[134], y[135]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[132], y[133], y[134], y[135]);
+            }
+
+            // forearm_link vs. robotiq_85_right_finger_tip_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[216], y[217], y[218], y[219]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[140], y[141], y[142], y[143]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[136], y[137], y[138], y[139]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[140], y[141], y[142], y[143]);
+            }
+
+            // forearm_link vs. robotiq_85_right_knuckle_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[220], y[221], y[222], y[223]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[144], y[145], y[146], y[147]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[144], y[145], y[146], y[147]);
+            }
+
+            // forearm_link vs. robotiq_85_right_finger_link
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[172], y[173], y[174], y[175], y[224], y[225], y[226], y[227]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[28], y[29], y[30], y[31], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[32], y[33], y[34], y[35], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[36], y[37], y[38], y[39], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[40], y[41], y[42], y[43], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[44], y[45], y[46], y[47], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[48], y[49], y[50], y[51], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[52], y[53], y[54], y[55], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[56], y[57], y[58], y[59], y[156], y[157], y[158], y[159]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[148], y[149], y[150], y[151]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[152], y[153], y[154], y[155]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[60], y[61], y[62], y[63], y[156], y[157], y[158], y[159]);
+            }
+
+            // wrist_1_link vs. fts_robotside
+            if (sphere_sphere_self_collision<decltype(x[0])>(
+                    y[176], y[177], y[178], y[179], y[188], y[189], y[190], y[191]))
+            {
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[64], y[65], y[66], y[67], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[68], y[69], y[70], y[71], y[92], y[93], y[94], y[95]);
+
+                colliding |= sphere_sphere_self_collision<decltype(x[0])>(
+                    y[72], y[73], y[74], y[75], y[92], y[93], y[94], y[95]);
+            }
+
+            return colliding;
+        }
+
+        template <std::size_t rake>
         inline static bool fkcc_attach(
             const vamp::collision::Environment<FloatVector<rake>> &environment,
             const ConfigurationBlock<rake> &x) noexcept

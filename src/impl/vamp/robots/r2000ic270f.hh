@@ -5618,57 +5618,6 @@ if (sphere_environment_in_collision(environment,
 // environment vs. robot collisions
 //
 
-// base_link
-if (sphere_environment_in_collision(environment,
-                                    y[152],
-                                    y[153],
-                                    y[154],
-                                    y[155]))
-{
-    
-    
-    if (sphere_environment_in_collision(environment,
-                                        y[0],
-                                        y[1],
-                                        y[2],
-                                        y[3]))
-    {
-        return Validity::ENVIRONMENT_COLLISION;
-    }
-    
-    
-    if (sphere_environment_in_collision(environment,
-                                        y[4],
-                                        y[5],
-                                        y[6],
-                                        y[7]))
-    {
-        return Validity::ENVIRONMENT_COLLISION;
-    }
-    
-    
-    if (sphere_environment_in_collision(environment,
-                                        y[8],
-                                        y[9],
-                                        y[10],
-                                        y[11]))
-    {
-        return Validity::ENVIRONMENT_COLLISION;
-    }
-    
-    
-    if (sphere_environment_in_collision(environment,
-                                        y[12],
-                                        y[13],
-                                        y[14],
-                                        y[15]))
-    {
-        return Validity::ENVIRONMENT_COLLISION;
-    }
-    
-}
-
-
 
 //
 // robot self-collisions
@@ -10468,56 +10417,6 @@ if (sphere_environment_in_collision(environment,
 //
 // environment vs. robot collisions
 //
-
-// base_link
-if (sphere_environment_in_collision(environment,
-                                    y[152],
-                                    y[153],
-                                    y[154],
-                                    y[155]))
-{
-    
-    
-    if (sphere_environment_in_collision(environment,
-                                        y[0],
-                                        y[1],
-                                        y[2],
-                                        y[3]))
-    {
-        return Validity::ENVIRONMENT_COLLISION;
-    }
-    
-    
-    if (sphere_environment_in_collision(environment,
-                                        y[4],
-                                        y[5],
-                                        y[6],
-                                        y[7]))
-    {
-        return Validity::ENVIRONMENT_COLLISION;
-    }
-    
-    
-    if (sphere_environment_in_collision(environment,
-                                        y[8],
-                                        y[9],
-                                        y[10],
-                                        y[11]))
-    {
-        return Validity::ENVIRONMENT_COLLISION;
-    }
-    
-    
-    if (sphere_environment_in_collision(environment,
-                                        y[12],
-                                        y[13],
-                                        y[14],
-                                        y[15]))
-    {
-        return Validity::ENVIRONMENT_COLLISION;
-    }
-    
-}
 
 
 

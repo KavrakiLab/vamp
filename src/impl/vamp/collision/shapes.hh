@@ -2,6 +2,9 @@
 
 #include <string>
 #include <memory>
+#include <vector>
+#include <limits>
+#include <cmath>
 
 #include <vamp/vector.hh>
 #include <vamp/collision/math.hh>
@@ -307,6 +310,81 @@ namespace vamp::collision
           , xd2(other.xd2)
           , yd2(other.yd2)
           , data(other.data)
+        {
+        }
+    };
+
+    // A convex polytope with dual representation:
+    // - H-representation: F half-planes { x : n_i . x <= d_i }
+    // - V-representation: V vertices defining the convex hull
+    // Storage: SoA layout with separate vectors for each component
+    template <typename DataT>
+    struct ConvexPolytope : public Shape<DataT>
+    {
+        // H-representation: halfspaces
+        std::size_t num_planes;
+        std::vector<float> nx;  // plane normals
+        std::vector<float> ny;
+        std::vector<float> nz;
+        std::vector<float> d;   // plane offsets (n.x <= d defines interior)
+
+        // V-representation: vertices
+        std::size_t num_vertices;
+        std::vector<float> vx;
+        std::vector<float> vy;
+        std::vector<float> vz;
+
+        ConvexPolytope() = default;
+
+        // Constructor from both representations (V and H)
+        explicit ConvexPolytope(
+            std::size_t num_planes,
+            const std::vector<float> &nx,
+            const std::vector<float> &ny,
+            const std::vector<float> &nz,
+            const std::vector<float> &d,
+            std::size_t num_vertices,
+            const std::vector<float> &vx,
+            const std::vector<float> &vy,
+            const std::vector<float> &vz)
+          : Shape<DataT>()
+          , num_planes(num_planes)
+          , nx(nx)
+          , ny(ny)
+          , nz(nz)
+          , d(d)
+          , num_vertices(num_vertices)
+          , vx(vx)
+          , vy(vy)
+          , vz(vz)
+        {
+            Shape<DataT>::min_distance = compute_min_distance();
+        }
+
+        inline auto compute_min_distance() -> DataT
+        {
+            // Minimum distance from origin to any vertex
+            float min_dist = std::numeric_limits<float>::max();
+            for (auto i = 0U; i < num_vertices; ++i)
+            {
+                float dist = std::sqrt(vx[i] * vx[i] + vy[i] * vy[i] + vz[i] * vz[i]);
+                min_dist = std::min(min_dist, dist);
+            }
+            return DataT(min_dist);
+        }
+
+        template <typename OtherDataT>
+        explicit ConvexPolytope(const ConvexPolytope<OtherDataT> &other)
+          : Shape<DataT>(other)
+          , num_planes(other.num_planes)
+          , nx(other.nx)
+          , ny(other.ny)
+          , nz(other.nz)
+          , d(other.d)
+          , num_vertices(other.num_vertices)
+          , vx(other.vx)
+          , vy(other.vy)
+          , vz(other.vz)
         {
         }
     };

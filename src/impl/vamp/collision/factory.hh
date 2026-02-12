@@ -6,6 +6,7 @@
 #include <vamp/collision/shapes.hh>
 #include <vamp/collision/environment.hh>
 #include <vamp/collision/math.hh>
+#include <vamp/collision/polytope_convert.hh>
 
 #include <Eigen/Dense>
 
@@ -421,4 +422,118 @@ namespace vamp::collision::factory
                 data);
         }
     }  // namespace heightfield
+
+    namespace polytope
+    {
+        // Construct a convex polytope from arrays of plane coefficients
+        // Each plane is defined as nx*x + ny*y + nz*z <= d
+        // Normals should be unit vectors pointing outward from the polytope interior
+        // Vertices are computed automatically via cddlib
+        inline static auto flat(
+            const std::vector<float> &nx,
+            const std::vector<float> &ny,
+            const std::vector<float> &nz,
+            const std::vector<float> &d) -> collision::ConvexPolytope<float>
+        {
+            auto data = collision::halfspaces_to_vertices(nx, ny, nz, d);
+            return collision::ConvexPolytope<float>(
+                data.nx.size(),
+                data.nx,
+                data.ny,
+                data.nz,
+                data.d,
+                data.vx.size(),
+                data.vx,
+                data.vy,
+                data.vz);
+        }
+
+        // Construct from a vector of 4-tuples (nx, ny, nz, d) - computes vertices via cddlib
+        inline static auto from_planes(const std::vector<std::array<float, 4>> &planes)
+            -> collision::ConvexPolytope<float>
+        {
+            auto data = collision::halfspaces_to_vertices(planes);
+            return collision::ConvexPolytope<float>(
+                data.nx.size(),
+                data.nx,
+                data.ny,
+                data.nz,
+                data.d,
+                data.vx.size(),
+                data.vx,
+                data.vy,
+                data.vz);
+        }
+
+        // Construct from SoA vertex coordinates - computes halfspaces via cddlib
+        inline static auto from_vertices(
+            const std::vector<float> &vx,
+            const std::vector<float> &vy,
+            const std::vector<float> &vz) -> collision::ConvexPolytope<float>
+        {
+            auto data = collision::vertices_to_halfspaces(vx, vy, vz);
+            return collision::ConvexPolytope<float>(
+                data.nx.size(),
+                data.nx,
+                data.ny,
+                data.nz,
+                data.d,
+                data.vx.size(),
+                data.vx,
+                data.vy,
+                data.vz);
+        }
+
+        // Construct from a vector of 3-tuples (x, y, z) vertices - computes halfspaces via cddlib
+        inline static auto from_vertices(const std::vector<std::array<float, 3>> &vertices)
+            -> collision::ConvexPolytope<float>
+        {
+            auto data = collision::vertices_to_halfspaces(vertices);
+            return collision::ConvexPolytope<float>(
+                data.nx.size(),
+                data.nx,
+                data.ny,
+                data.nz,
+                data.d,
+                data.vx.size(),
+                data.vx,
+                data.vy,
+                data.vz);
+        }
+
+        // Construct from both representations (no conversion needed)
+        inline static auto from_both(
+            const std::vector<std::array<float, 3>> &vertices,
+            const std::vector<std::array<float, 4>> &planes) noexcept -> collision::ConvexPolytope<float>
+        {
+            std::vector<float> nx, ny, nz, d;
+            nx.reserve(planes.size());
+            ny.reserve(planes.size());
+            nz.reserve(planes.size());
+            d.reserve(planes.size());
+
+            for (const auto &plane : planes)
+            {
+                nx.emplace_back(plane[0]);
+                ny.emplace_back(plane[1]);
+                nz.emplace_back(plane[2]);
+                d.emplace_back(plane[3]);
+            }
+
+            std::vector<float> vx, vy, vz;
+            vx.reserve(vertices.size());
+            vy.reserve(vertices.size());
+            vz.reserve(vertices.size());
+
+            for (const auto &v : vertices)
+            {
+                vx.emplace_back(v[0]);
+                vy.emplace_back(v[1]);
+                vz.emplace_back(v[2]);
+            }
+
+            return collision::ConvexPolytope<float>(
+                planes.size(), nx, ny, nz, d, vertices.size(), vx, vy, vz);
+        }
+    }  // namespace polytope
 }  // namespace vamp::collision::factory

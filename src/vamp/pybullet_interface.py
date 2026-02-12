@@ -253,6 +253,48 @@ class PyBulletSimulator:
 
             return multibody_id
 
+    def add_polytope(
+        self,
+        polytope,
+        name: Optional[str] = None,
+        color: Optional[Union[List[float], str]] = None,
+        ):
+        from scipy.spatial import ConvexHull
+
+        vertices = np.column_stack([polytope.vx, polytope.vy, polytope.vz])
+        hull = ConvexHull(vertices)
+
+        with DisableRendering(self.client):
+            col_shape_id = self.client.createCollisionShape(
+                pb.GEOM_MESH,
+                vertices=vertices.tolist(),
+                indices=hull.simplices.flatten().tolist(),
+                )
+
+            vis_shape_id = self.client.createVisualShape(
+                pb.GEOM_MESH,
+                vertices=vertices.tolist(),
+                indices=hull.simplices.flatten().tolist(),
+                rgbaColor=handle_color(name or polytope.name, color),
+                )
+
+            multibody_id = self.client.createMultiBody(
+                baseCollisionShapeIndex=col_shape_id,
+                baseVisualShapeIndex=vis_shape_id,
+                basePosition=[0, 0, 0],
+                )
+
+            display_name = name or polytope.name
+            if display_name:
+                centroid = vertices.mean(axis=0)
+                self.client.addUserDebugText(
+                    text=display_name,
+                    textPosition=centroid.tolist(),
+                    textColorRGB=[0., 0., 0.],
+                    )
+
+            return multibody_id
+
     def update_object_position(
             self, multibody_id: int, position: Position, rot_xywz: XYZWQuaternion = [0, 0, 0, 1]
         ):

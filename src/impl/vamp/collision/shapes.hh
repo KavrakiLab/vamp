@@ -315,18 +315,17 @@ namespace vamp::collision
     };
 
     // A convex polytope with dual representation:
-    // - H-representation: F half-planes { x : n_i . x <= d_i }
-    // - V-representation: V vertices defining the convex hull
-    // Storage: SoA layout with separate vectors for each component
+    // - H-representation: F half-planes 
+    // - V-representation: V vertices 
     template <typename DataT>
     struct ConvexPolytope : public Shape<DataT>
     {
         // H-representation: halfspaces
         std::size_t num_planes;
-        std::vector<float> nx;  // plane normals
-        std::vector<float> ny;
-        std::vector<float> nz;
-        std::vector<float> d;   // plane offsets (n.x <= d defines interior)
+        std::vector<DataT> nx;  // plane normals
+        std::vector<DataT> ny;
+        std::vector<DataT> nz;
+        std::vector<DataT> d;   // plane offsets (n.x <= d defines interior)
 
         // V-representation: vertices
         std::size_t num_vertices;
@@ -334,15 +333,17 @@ namespace vamp::collision
         std::vector<float> vy;
         std::vector<float> vz;
 
+        // Axis-aligned bounding box for fast collision pre-check
+        Cuboid<DataT> aabb;
+
         ConvexPolytope() = default;
 
-        // Constructor from both representations (V and H)
         explicit ConvexPolytope(
             std::size_t num_planes,
-            const std::vector<float> &nx,
-            const std::vector<float> &ny,
-            const std::vector<float> &nz,
-            const std::vector<float> &d,
+            const std::vector<DataT> &nx,
+            const std::vector<DataT> &ny,
+            const std::vector<DataT> &nz,
+            const std::vector<DataT> &d,
             std::size_t num_vertices,
             const std::vector<float> &vx,
             const std::vector<float> &vy,
@@ -358,6 +359,7 @@ namespace vamp::collision
           , vy(vy)
           , vz(vz)
         {
+            aabb = compute_aabb();
             Shape<DataT>::min_distance = compute_min_distance();
         }
 
@@ -373,19 +375,59 @@ namespace vamp::collision
             return DataT(min_dist);
         }
 
+        inline auto compute_aabb() -> Cuboid<DataT>
+        {
+            float min_x = vx[0], max_x = vx[0];
+            float min_y = vy[0], max_y = vy[0];
+            float min_z = vz[0], max_z = vz[0];
+
+            for (auto i = 1U; i < num_vertices; ++i)
+            {
+                min_x = std::min(min_x, vx[i]);
+                max_x = std::max(max_x, vx[i]);
+                min_y = std::min(min_y, vy[i]);
+                max_y = std::max(max_y, vy[i]);
+                min_z = std::min(min_z, vz[i]);
+                max_z = std::max(max_z, vz[i]);
+            }
+
+            // Center and half-extents
+            float cx = (min_x + max_x) * 0.5f;
+            float cy = (min_y + max_y) * 0.5f;
+            float cz = (min_z + max_z) * 0.5f;
+            float hx = (max_x - min_x) * 0.5f;
+            float hy = (max_y - min_y) * 0.5f;
+            float hz = (max_z - min_z) * 0.5f;
+
+            return Cuboid<DataT>(
+                DataT(cx), DataT(cy), DataT(cz),
+                DataT(1), DataT(0), DataT(0),
+                DataT(0), DataT(1), DataT(0),
+                DataT(0), DataT(0), DataT(1),
+                DataT(hx), DataT(hy), DataT(hz));
+        }
+
         template <typename OtherDataT>
         explicit ConvexPolytope(const ConvexPolytope<OtherDataT> &other)
           : Shape<DataT>(other)
           , num_planes(other.num_planes)
-          , nx(other.nx)
-          , ny(other.ny)
-          , nz(other.nz)
-          , d(other.d)
+          , nx(other.nx.size())
+          , ny(other.ny.size())
+          , nz(other.nz.size())
+          , d(other.d.size())
           , num_vertices(other.num_vertices)
           , vx(other.vx)
           , vy(other.vy)
           , vz(other.vz)
+          , aabb(other.aabb)
         {
+            for (auto i = 0U; i < other.nx.size(); ++i)
+            {
+                nx[i] = DataT(other.nx[i]);
+                ny[i] = DataT(other.ny[i]);
+                nz[i] = DataT(other.nz[i]);
+                d[i] = DataT(other.d[i]);
+            }
         }
     };
 }  // namespace vamp::collision

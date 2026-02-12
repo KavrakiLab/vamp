@@ -264,33 +264,47 @@ class PyBulletSimulator:
         vertices = np.column_stack([polytope.vx, polytope.vy, polytope.vz])
         hull = ConvexHull(vertices)
 
+        # Normals aren't always outward facing...
+        centroid = vertices.mean(axis = 0)
+        corrected_simplices = []
+        for simplex in hull.simplices:
+            v0, v1, v2 = vertices[simplex]
+            normal = np.cross(v1 - v0, v2 - v0)
+            face_center = (v0 + v1 + v2) / 3
+            to_face = face_center - centroid
+            if np.dot(normal, to_face) < 0:
+                corrected_simplices.append([simplex[0], simplex[2], simplex[1]])
+            else:
+                corrected_simplices.append(simplex.tolist())
+        indices = np.array(corrected_simplices).flatten().tolist()
+
         with DisableRendering(self.client):
             col_shape_id = self.client.createCollisionShape(
                 pb.GEOM_MESH,
-                vertices=vertices.tolist(),
-                indices=hull.simplices.flatten().tolist(),
+                vertices = vertices.tolist(),
+                indices = indices,
                 )
 
             vis_shape_id = self.client.createVisualShape(
                 pb.GEOM_MESH,
-                vertices=vertices.tolist(),
-                indices=hull.simplices.flatten().tolist(),
-                rgbaColor=handle_color(name or polytope.name, color),
+                vertices = vertices.tolist(),
+                indices = indices,
+                rgbaColor = handle_color(name or polytope.name, color),
                 )
 
             multibody_id = self.client.createMultiBody(
-                baseCollisionShapeIndex=col_shape_id,
-                baseVisualShapeIndex=vis_shape_id,
-                basePosition=[0, 0, 0],
+                baseCollisionShapeIndex = col_shape_id,
+                baseVisualShapeIndex = vis_shape_id,
+                basePosition = [0, 0, 0],
                 )
 
             display_name = name or polytope.name
             if display_name:
-                centroid = vertices.mean(axis=0)
+                centroid = vertices.mean(axis = 0)
                 self.client.addUserDebugText(
-                    text=display_name,
-                    textPosition=centroid.tolist(),
-                    textColorRGB=[0., 0., 0.],
+                    text = display_name,
+                    textPosition = centroid.tolist(),
+                    textColorRGB = [0., 0., 0.],
                     )
 
             return multibody_id

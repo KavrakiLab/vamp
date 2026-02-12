@@ -316,25 +316,25 @@ namespace vamp::collision
     };
 
     // A convex polytope with dual representation:
-    // - H-representation: F half-planes 
-    // - V-representation: V vertices 
+    // - H-representation: half-planes
+    // - V-representation: vertices
     template <typename DataT>
     struct ConvexPolytope : public Shape<DataT>
     {
-        // H-representation: halfspaces
+        // Halfspaces
         std::size_t num_planes;
         std::vector<DataT> nx;  // plane normals
         std::vector<DataT> ny;
         std::vector<DataT> nz;
-        std::vector<DataT> d;   // plane offsets (n.x <= d defines interior)
+        std::vector<DataT> d;  // plane offsets (n.x <= d defines interior)
 
-        // V-representation: vertices
+        // Vertices
         std::size_t num_vertices;
         std::vector<float> vx;
         std::vector<float> vy;
         std::vector<float> vz;
 
-        // Oriented bounding box for fast collision pre-check
+        // Oriented bounding box for broadphase
         Cuboid<DataT> obb;
 
         ConvexPolytope() = default;
@@ -451,11 +451,21 @@ namespace vamp::collision
             const float half_2 = (max_2 - min_2) * 0.5f;
 
             return Cuboid<DataT>(
-                DataT(center.x()), DataT(center.y()), DataT(center.z()),
-                DataT(axis_0.x()), DataT(axis_0.y()), DataT(axis_0.z()),
-                DataT(axis_1.x()), DataT(axis_1.y()), DataT(axis_1.z()),
-                DataT(axis_2.x()), DataT(axis_2.y()), DataT(axis_2.z()),
-                DataT(half_0), DataT(half_1), DataT(half_2));
+                DataT(center.x()),
+                DataT(center.y()),
+                DataT(center.z()),
+                DataT(axis_0.x()),
+                DataT(axis_0.y()),
+                DataT(axis_0.z()),
+                DataT(axis_1.x()),
+                DataT(axis_1.y()),
+                DataT(axis_1.z()),
+                DataT(axis_2.x()),
+                DataT(axis_2.y()),
+                DataT(axis_2.z()),
+                DataT(half_0),
+                DataT(half_1),
+                DataT(half_2));
         }
 
         template <typename OtherDataT>

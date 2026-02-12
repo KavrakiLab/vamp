@@ -50,7 +50,7 @@ if(VAMP_INSTALL_CPP_LIBRARY)
   export(EXPORT pdqsort_TARGETS FILE ${CMAKE_CURRENT_BINARY_DIR}/cmake/pdqsortTargets.cmake NAMESPACE pdqsort::)
 endif()
 
-# cddlib for convex polytope vertex/halfspace conversion (double description method)
+# cddlib for convex polytope vertex/halfspace conversion
 CPMAddPackage(
   NAME cddlib
   GITHUB_REPOSITORY cddlib/cddlib

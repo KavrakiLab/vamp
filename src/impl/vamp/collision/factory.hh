@@ -428,7 +428,6 @@ namespace vamp::collision::factory
         // Construct a convex polytope from arrays of plane coefficients
         // Each plane is defined as nx*x + ny*y + nz*z <= d
         // Normals should be unit vectors pointing outward from the polytope interior
-        // Vertices are computed automatically via cddlib
         inline static auto flat(
             const std::vector<float> &nx,
             const std::vector<float> &ny,
@@ -437,35 +436,19 @@ namespace vamp::collision::factory
         {
             auto data = collision::halfspaces_to_vertices(nx, ny, nz, d);
             return collision::ConvexPolytope<float>(
-                data.nx.size(),
-                data.nx,
-                data.ny,
-                data.nz,
-                data.d,
-                data.vx.size(),
-                data.vx,
-                data.vy,
-                data.vz);
+                data.nx.size(), data.nx, data.ny, data.nz, data.d, data.vx.size(), data.vx, data.vy, data.vz);
         }
 
-        // Construct from a vector of 4-tuples (nx, ny, nz, d) - computes vertices via cddlib
+        // Construct from a vector of halfspaces
         inline static auto from_planes(const std::vector<std::array<float, 4>> &planes)
             -> collision::ConvexPolytope<float>
         {
             auto data = collision::halfspaces_to_vertices(planes);
             return collision::ConvexPolytope<float>(
-                data.nx.size(),
-                data.nx,
-                data.ny,
-                data.nz,
-                data.d,
-                data.vx.size(),
-                data.vx,
-                data.vy,
-                data.vz);
+                data.nx.size(), data.nx, data.ny, data.nz, data.d, data.vx.size(), data.vx, data.vy, data.vz);
         }
 
-        // Construct from SoA vertex coordinates - computes halfspaces via cddlib
+        // Construct from vertices
         inline static auto from_vertices(
             const std::vector<float> &vx,
             const std::vector<float> &vy,
@@ -473,35 +456,19 @@ namespace vamp::collision::factory
         {
             auto data = collision::vertices_to_halfspaces(vx, vy, vz);
             return collision::ConvexPolytope<float>(
-                data.nx.size(),
-                data.nx,
-                data.ny,
-                data.nz,
-                data.d,
-                data.vx.size(),
-                data.vx,
-                data.vy,
-                data.vz);
+                data.nx.size(), data.nx, data.ny, data.nz, data.d, data.vx.size(), data.vx, data.vy, data.vz);
         }
 
-        // Construct from a vector of 3-tuples (x, y, z) vertices - computes halfspaces via cddlib
+        // Construct from a vector of vertices
         inline static auto from_vertices(const std::vector<std::array<float, 3>> &vertices)
             -> collision::ConvexPolytope<float>
         {
             auto data = collision::vertices_to_halfspaces(vertices);
             return collision::ConvexPolytope<float>(
-                data.nx.size(),
-                data.nx,
-                data.ny,
-                data.nz,
-                data.d,
-                data.vx.size(),
-                data.vx,
-                data.vy,
-                data.vz);
+                data.nx.size(), data.nx, data.ny, data.nz, data.d, data.vx.size(), data.vx, data.vy, data.vz);
         }
 
-        // Construct from both representations (no conversion needed)
+        // Construct from both representations
         inline static auto from_both(
             const std::vector<std::array<float, 3>> &vertices,
             const std::vector<std::array<float, 4>> &planes) noexcept -> collision::ConvexPolytope<float>

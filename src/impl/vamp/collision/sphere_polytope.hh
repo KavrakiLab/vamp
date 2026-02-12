@@ -43,9 +43,7 @@ namespace vamp::collision
     }
 
     template <typename DataT>
-    inline auto sphere_polytope(
-        const ConvexPolytope<DataT> &p,
-        const Sphere<DataT> &s) noexcept -> DataT
+    inline auto sphere_polytope(const ConvexPolytope<DataT> &p, const Sphere<DataT> &s) noexcept -> DataT
     {
         return sphere_polytope(p, s.x, s.y, s.z, s.r);
     }

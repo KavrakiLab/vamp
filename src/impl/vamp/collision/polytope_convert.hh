@@ -67,7 +67,9 @@ namespace vamp::collision
         {
             dd_FreeMatrix(vertices_matrix);
             if (poly)
+            {
                 dd_FreePolyhedra(poly);
+            }
             throw std::runtime_error("cddlib: Failed to convert vertices to halfspaces");
         }
 
@@ -145,7 +147,9 @@ namespace vamp::collision
         {
             dd_FreeMatrix(ineq_matrix);
             if (poly)
+            {
                 dd_FreePolyhedra(poly);
+            }
             throw std::runtime_error("cddlib: Failed to convert halfspaces to vertices");
         }
 

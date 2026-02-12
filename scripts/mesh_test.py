@@ -14,6 +14,7 @@ def main(
     position: tuple = (0.5, 0.0, 0.0),
     scale: float = 0.01,
     decompose: bool = False,
+    max_convex_hulls: int = 10,
     benchmark: bool = False,
     n_trials: int = 100,
     visualize: bool = True,
@@ -32,7 +33,12 @@ def main(
         raise FileNotFoundError(f"Mesh file not found: {mesh_path}")
 
     polytopes = vamp.mesh_to_polytopes(
-        mesh_path, position=position, scale=scale, convex_decomposition=decompose, name="mesh"
+        mesh_path,
+        position = position,
+        scale = scale,
+        convex_decomposition = decompose,
+        name = "mesh",
+        maxConvexHulls = max_convex_hulls
         )
 
     (vamp_module, planner_func, plan_settings,

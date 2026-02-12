@@ -81,7 +81,7 @@ def mesh_to_polytopes(
     import trimesh
     import numpy as np
 
-    mesh = trimesh.load(str(filename), force='mesh')
+    mesh = trimesh.load(str(filename), force = 'mesh')
 
     if convex_decomposition:
         parts = trimesh.decomposition.convex_decomposition(mesh, **decomposition_kwargs)

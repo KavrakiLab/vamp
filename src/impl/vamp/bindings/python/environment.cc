@@ -112,29 +112,28 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
         .def(
             "__init__",
             [](vc::ConvexPolytope<float> *q, const std::vector<std::array<float, 4>> &planes)
-            {
-        new (q) vc::ConvexPolytope<float>(vf::polytope::from_planes(planes)); },
+            { new (q) vc::ConvexPolytope<float>(vf::polytope::from_planes(planes)); },
             "planes"_a,
-            "Constructor from halfplanes as List[[nx, ny, nz, d]]."
+            "Constructor from halfplanes as [nx, ny, nz, d].")
         .def(
             "__init__",
             [](vc::ConvexPolytope<float> *q,
                const nb::ndarray<float, nb::shape<-1, 3>, nb::device::cpu> &vertices)
             {
-        std::vector<float> vx, vy, vz;
-        const std::size_t num_vertices = vertices.shape(0);
-        vx.reserve(num_vertices);
-        vy.reserve(num_vertices);
-        vz.reserve(num_vertices);
+                std::vector<float> vx, vy, vz;
+                const std::size_t num_vertices = vertices.shape(0);
+                vx.reserve(num_vertices);
+                vy.reserve(num_vertices);
+                vz.reserve(num_vertices);
 
-        for (std::size_t i = 0; i < num_vertices; ++i)
-        {
-            vx.push_back(vertices(i, 0));
-            vy.push_back(vertices(i, 1));
-            vz.push_back(vertices(i, 2));
-        }
+                for (std::size_t i = 0; i < num_vertices; ++i)
+                {
+                    vx.push_back(vertices(i, 0));
+                    vy.push_back(vertices(i, 1));
+                    vz.push_back(vertices(i, 2));
+                }
 
-        new (q) vc::ConvexPolytope<float>(vf::polytope::from_vertices(vx, vy, vz));
+                new (q) vc::ConvexPolytope<float>(vf::polytope::from_vertices(vx, vy, vz));
             },
             "vertices"_a,
             "Constructor from vertices array.")
@@ -147,20 +146,20 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             "from_vertices",
             [](const nb::ndarray<float, nb::shape<-1, 3>, nb::device::cpu> &vertices)
             {
-        std::vector<float> vx, vy, vz;
-        const std::size_t num_vertices = vertices.shape(0);
-        vx.reserve(num_vertices);
-        vy.reserve(num_vertices);
-        vz.reserve(num_vertices);
+                std::vector<float> vx, vy, vz;
+                const std::size_t num_vertices = vertices.shape(0);
+                vx.reserve(num_vertices);
+                vy.reserve(num_vertices);
+                vz.reserve(num_vertices);
 
-        for (std::size_t i = 0; i < num_vertices; ++i)
-        {
-            vx.push_back(vertices(i, 0));
-            vy.push_back(vertices(i, 1));
-            vz.push_back(vertices(i, 2));
-        }
+                for (std::size_t i = 0; i < num_vertices; ++i)
+                {
+                    vx.push_back(vertices(i, 0));
+                    vy.push_back(vertices(i, 1));
+                    vz.push_back(vertices(i, 2));
+                }
 
-        return vf::polytope::from_vertices(vx, vy, vz);
+                return vf::polytope::from_vertices(vx, vy, vz);
             },
             "vertices"_a,
             "Create from vertices array.")

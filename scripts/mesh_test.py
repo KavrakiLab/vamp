@@ -3,20 +3,20 @@ import vamp
 from fire import Fire
 
 # Starting configuration
-a = [0., -0.785, 0., -2.356, 0., 1.571, 0.785]
+a = [-1., 1., 0., -0.8, 0, 2.5, 0.785]
 
 # Goal configuration
-b = [2.35, 1., 0., -0.8, 0, 2.5, 0.785]
+b = [1., 1., 0., -0.8, 0, 2.5, 0.785]
 
 
 def main(
     mesh_file: str = None,
-    position: tuple = (0.5, 0.0, 0.3),
-    scale: float = 2.0,
+    position: tuple = (0.5, 0.0, 0.0),
+    scale: float = 0.01,
     decompose: bool = False,
-    benchmark: bool = True,
+    benchmark: bool = False,
     n_trials: int = 100,
-    visualize: bool = False,
+    visualize: bool = True,
     planner: str = "rrtc",
     sampler_name: str = "halton",
     skip_rng_iterations: int = 0,

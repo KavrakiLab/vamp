@@ -22,7 +22,7 @@ namespace vamp::collision
     inline void cdd_init()
     {
         static bool initialized = false;
-        if (!initialized)
+        if (not initialized)
         {
             dd_set_global_constants();
             initialized = true;
@@ -63,7 +63,7 @@ namespace vamp::collision
         dd_ErrorType err = dd_NoError;
         dd_PolyhedraPtr poly = dd_DDMatrix2Poly(vertices_matrix, &err);
 
-        if (err != dd_NoError || poly == nullptr)
+        if (err != dd_NoError or poly == nullptr)
         {
             dd_FreeMatrix(vertices_matrix);
             if (poly)
@@ -94,10 +94,10 @@ namespace vamp::collision
             double norm = std::sqrt(a1 * a1 + a2 * a2 + a3 * a3);
             if (norm > 1e-10)
             {
-                result.nx.push_back(static_cast<float>(-a1 / norm));
-                result.ny.push_back(static_cast<float>(-a2 / norm));
-                result.nz.push_back(static_cast<float>(-a3 / norm));
-                result.d.push_back(static_cast<float>(b / norm));
+                result.nx.emplace_back(static_cast<float>(-a1 / norm));
+                result.ny.emplace_back(static_cast<float>(-a2 / norm));
+                result.nz.emplace_back(static_cast<float>(-a3 / norm));
+                result.d.emplace_back(static_cast<float>(b / norm));
             }
         }
 
@@ -164,9 +164,9 @@ namespace vamp::collision
             double type = dd_get_d(generators->matrix[i][0]);
             if (type > 0.5)
             {
-                result.vx.push_back(static_cast<float>(dd_get_d(generators->matrix[i][1])));
-                result.vy.push_back(static_cast<float>(dd_get_d(generators->matrix[i][2])));
-                result.vz.push_back(static_cast<float>(dd_get_d(generators->matrix[i][3])));
+                result.vx.emplace_back(static_cast<float>(dd_get_d(generators->matrix[i][1])));
+                result.vy.emplace_back(static_cast<float>(dd_get_d(generators->matrix[i][2])));
+                result.vz.emplace_back(static_cast<float>(dd_get_d(generators->matrix[i][3])));
             }
         }
 
@@ -186,9 +186,9 @@ namespace vamp::collision
 
         for (const auto &v : vertices)
         {
-            vx.push_back(v[0]);
-            vy.push_back(v[1]);
-            vz.push_back(v[2]);
+            vx.emplace_back(v[0]);
+            vy.emplace_back(v[1]);
+            vz.emplace_back(v[2]);
         }
 
         return vertices_to_halfspaces(vx, vy, vz);
@@ -204,10 +204,10 @@ namespace vamp::collision
 
         for (const auto &p : planes)
         {
-            nx.push_back(p[0]);
-            ny.push_back(p[1]);
-            nz.push_back(p[2]);
-            d.push_back(p[3]);
+            nx.emplace_back(p[0]);
+            ny.emplace_back(p[1]);
+            nz.emplace_back(p[2]);
+            d.emplace_back(p[3]);
         }
 
         return halfspaces_to_vertices(nx, ny, nz, d);

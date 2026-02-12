@@ -128,9 +128,9 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
 
                 for (std::size_t i = 0; i < num_vertices; ++i)
                 {
-                    vx.push_back(vertices(i, 0));
-                    vy.push_back(vertices(i, 1));
-                    vz.push_back(vertices(i, 2));
+                    vx.emplace_back(vertices(i, 0));
+                    vy.emplace_back(vertices(i, 1));
+                    vz.emplace_back(vertices(i, 2));
                 }
 
                 new (q) vc::ConvexPolytope<float>(vf::polytope::from_vertices(vx, vy, vz));
@@ -154,15 +154,42 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
 
                 for (std::size_t i = 0; i < num_vertices; ++i)
                 {
-                    vx.push_back(vertices(i, 0));
-                    vy.push_back(vertices(i, 1));
-                    vz.push_back(vertices(i, 2));
+                    vx.emplace_back(vertices(i, 0));
+                    vy.emplace_back(vertices(i, 1));
+                    vz.emplace_back(vertices(i, 2));
                 }
 
                 return vf::polytope::from_vertices(vx, vy, vz);
             },
             "vertices"_a,
             "Create from vertices array.")
+        .def_static(
+            "from_both",
+            [](const nb::ndarray<float, nb::shape<-1, 3>, nb::device::cpu> &vertices,
+               const nb::ndarray<float, nb::shape<-1, 4>, nb::device::cpu> &planes)
+            {
+                std::vector<std::array<float, 3>> verts;
+                std::vector<std::array<float, 4>> plns;
+                const std::size_t num_vertices = vertices.shape(0);
+                const std::size_t num_planes = planes.shape(0);
+                verts.reserve(num_vertices);
+                plns.reserve(num_planes);
+
+                for (auto i = 0U; i < num_vertices; ++i)
+                {
+                    verts.emplace_back(std::array<float, 3>{vertices(i, 0), vertices(i, 1), vertices(i, 2)});
+                }
+
+                for (auto i = 0U; i < num_planes; ++i)
+                {
+                    plns.emplace_back(std::array<float, 4>{planes(i, 0), planes(i, 1), planes(i, 2), planes(i, 3)});
+                }
+
+                return vf::polytope::from_both(verts, plns);
+            },
+            "vertices"_a,
+            "planes"_a,
+            "Create from both vertices array and planes array.")
         .def_ro("num_planes", &vc::ConvexPolytope<float>::num_planes)
         .def_ro("nx", &vc::ConvexPolytope<float>::nx)
         .def_ro("ny", &vc::ConvexPolytope<float>::ny)

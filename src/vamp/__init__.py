@@ -83,6 +83,18 @@ def mesh_to_polytopes(
 
     mesh = trimesh.load(str(filename), force = 'mesh')
 
+    def hull_to_polytope(hull, scale, position, polytope_name):
+        vertices = (np.array(hull.vertices) * scale + position).astype(np.float32)
+        normals = np.array(hull.face_normals).astype(np.float32)
+        face_vertices = hull.vertices[hull.faces[:, 0]]
+        d_orig = np.sum(normals * face_vertices, axis=1)
+        d_transformed = (d_orig * scale + np.sum(normals * position, axis=1)).astype(np.float32)
+        planes = np.column_stack([normals, d_transformed]).astype(np.float32)
+
+        polytope = ConvexPolytope.from_both(vertices, planes)
+        polytope.name = polytope_name
+        return polytope
+
     if convex_decomposition:
         parts = trimesh.decomposition.convex_decomposition(mesh, **decomposition_kwargs)
         if not isinstance(parts, list):
@@ -96,19 +108,14 @@ def mesh_to_polytopes(
                 part_mesh = part_data
 
             hull = part_mesh.convex_hull
-            vertices = (np.array(hull.vertices) * scale + position).astype(np.float32)
-            polytope = ConvexPolytope(vertices)
-            polytope.name = f"{name}_{i}" if len(parts) > 1 else name
-            polytopes.append(polytope)
+            polytope_name = f"{name}_{i}" if len(parts) > 1 else name
+            polytopes.append(hull_to_polytope(hull, scale, position, polytope_name))
 
         return polytopes
 
     else:
         hull = mesh.convex_hull
-        vertices = (np.array(hull.vertices) * scale + position).astype(np.float32)
-        polytope = ConvexPolytope(vertices)
-        polytope.name = name
-        return [polytope]
+        return [hull_to_polytope(hull, scale, position, name)]
 
 
 def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, **kwargs):

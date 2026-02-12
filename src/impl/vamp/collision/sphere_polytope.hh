@@ -8,9 +8,6 @@
 
 namespace vamp::collision
 {
-    // Sphere-polytope collision: returns negative if collision
-    // Algorithm: find max signed distance across all planes
-    // If max > 0, separating plane exists (no collision)
     template <typename DataT>
     inline auto sphere_polytope(
         const ConvexPolytope<DataT> &p,
@@ -20,16 +17,16 @@ namespace vamp::collision
         const DataT &r) noexcept -> DataT
     {
         const auto rsq = r * r;
-        auto aabb_dist = sphere_cuboid(p.aabb, cx, cy, cz, rsq);
+        auto obb_dist = sphere_cuboid(p.obb, cx, cy, cz, rsq);
 
-        if (aabb_dist.test_zero())
+        if (obb_dist.test_zero())
         {
-            return aabb_dist;
+            return obb_dist;
         }
 
         DataT max_dist = DataT::fill(-std::numeric_limits<float>::max());
 
-        // TODO: Proper GJK...
+        // TODO: Proper GJK? Seems OK for now.
         for (auto i = 0U; i < p.num_planes; ++i)
         {
             // dist = n.C - d - r (positive = separated)

@@ -24,8 +24,7 @@ __all__ = [
     ]
 
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union, List
-import importlib
+from typing import Any, Dict, Tuple, Union, List
 
 from numpy import float32
 from numpy.typing import NDArray

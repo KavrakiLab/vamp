@@ -9,6 +9,7 @@
 #include <vamp/vector.hh>
 #include <vamp/collision/math.hh>
 
+#include <Eigen/Dense>
 #include <Eigen/Geometry>
 
 namespace vamp::collision
@@ -333,8 +334,8 @@ namespace vamp::collision
         std::vector<float> vy;
         std::vector<float> vz;
 
-        // Axis-aligned bounding box for fast collision pre-check
-        Cuboid<DataT> aabb;
+        // Oriented bounding box for fast collision pre-check
+        Cuboid<DataT> obb;
 
         ConvexPolytope() = default;
 
@@ -359,7 +360,7 @@ namespace vamp::collision
           , vy(vy)
           , vz(vz)
         {
-            aabb = compute_aabb();
+            obb = compute_obb();
             Shape<DataT>::min_distance = compute_min_distance();
         }
 
@@ -372,39 +373,89 @@ namespace vamp::collision
                 float dist = std::sqrt(vx[i] * vx[i] + vy[i] * vy[i] + vz[i] * vz[i]);
                 min_dist = std::min(min_dist, dist);
             }
+
             return DataT(min_dist);
         }
 
-        inline auto compute_aabb() -> Cuboid<DataT>
+        inline auto compute_obb() -> Cuboid<DataT>
         {
-            float min_x = vx[0], max_x = vx[0];
-            float min_y = vy[0], max_y = vy[0];
-            float min_z = vz[0], max_z = vz[0];
-
-            for (auto i = 1U; i < num_vertices; ++i)
+            float cx = 0, cy = 0, cz = 0;
+            for (auto i = 0U; i < num_vertices; ++i)
             {
-                min_x = std::min(min_x, vx[i]);
-                max_x = std::max(max_x, vx[i]);
-                min_y = std::min(min_y, vy[i]);
-                max_y = std::max(max_y, vy[i]);
-                min_z = std::min(min_z, vz[i]);
-                max_z = std::max(max_z, vz[i]);
+                cx += vx[i];
+                cy += vy[i];
+                cz += vz[i];
+            }
+            cx /= num_vertices;
+            cy /= num_vertices;
+            cz /= num_vertices;
+
+            Eigen::Matrix3f cov = Eigen::Matrix3f::Zero();
+            for (auto i = 0U; i < num_vertices; ++i)
+            {
+                const float dx = vx[i] - cx;
+                const float dy = vy[i] - cy;
+                const float dz = vz[i] - cz;
+                cov(0, 0) += dx * dx;
+                cov(0, 1) += dx * dy;
+                cov(0, 2) += dx * dz;
+                cov(1, 1) += dy * dy;
+                cov(1, 2) += dy * dz;
+                cov(2, 2) += dz * dz;
+            }
+            cov(1, 0) = cov(0, 1);
+            cov(2, 0) = cov(0, 2);
+            cov(2, 1) = cov(1, 2);
+
+            Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> solver(cov);
+            Eigen::Matrix3f axes = solver.eigenvectors();
+
+            if (axes.determinant() < 0)
+            {
+                axes.col(0) *= -1;
             }
 
-            // Center and half-extents
-            float cx = (min_x + max_x) * 0.5f;
-            float cy = (min_y + max_y) * 0.5f;
-            float cz = (min_z + max_z) * 0.5f;
-            float hx = (max_x - min_x) * 0.5f;
-            float hy = (max_y - min_y) * 0.5f;
-            float hz = (max_z - min_z) * 0.5f;
+            float min_0 = std::numeric_limits<float>::max();
+            float max_0 = std::numeric_limits<float>::lowest();
+            float min_1 = std::numeric_limits<float>::max();
+            float max_1 = std::numeric_limits<float>::lowest();
+            float min_2 = std::numeric_limits<float>::max();
+            float max_2 = std::numeric_limits<float>::lowest();
+
+            const Eigen::Vector3f axis_0 = axes.col(0);
+            const Eigen::Vector3f axis_1 = axes.col(1);
+            const Eigen::Vector3f axis_2 = axes.col(2);
+
+            for (auto i = 0U; i < num_vertices; ++i)
+            {
+                const Eigen::Vector3f v(vx[i], vy[i], vz[i]);
+                const float proj_0 = v.dot(axis_0);
+                const float proj_1 = v.dot(axis_1);
+                const float proj_2 = v.dot(axis_2);
+
+                min_0 = std::min(min_0, proj_0);
+                max_0 = std::max(max_0, proj_0);
+                min_1 = std::min(min_1, proj_1);
+                max_1 = std::max(max_1, proj_1);
+                min_2 = std::min(min_2, proj_2);
+                max_2 = std::max(max_2, proj_2);
+            }
+
+            const float mid_0 = (min_0 + max_0) * 0.5f;
+            const float mid_1 = (min_1 + max_1) * 0.5f;
+            const float mid_2 = (min_2 + max_2) * 0.5f;
+            Eigen::Vector3f center = mid_0 * axis_0 + mid_1 * axis_1 + mid_2 * axis_2;
+
+            const float half_0 = (max_0 - min_0) * 0.5f;
+            const float half_1 = (max_1 - min_1) * 0.5f;
+            const float half_2 = (max_2 - min_2) * 0.5f;
 
             return Cuboid<DataT>(
-                DataT(cx), DataT(cy), DataT(cz),
-                DataT(1), DataT(0), DataT(0),
-                DataT(0), DataT(1), DataT(0),
-                DataT(0), DataT(0), DataT(1),
-                DataT(hx), DataT(hy), DataT(hz));
+                DataT(center.x()), DataT(center.y()), DataT(center.z()),
+                DataT(axis_0.x()), DataT(axis_0.y()), DataT(axis_0.z()),
+                DataT(axis_1.x()), DataT(axis_1.y()), DataT(axis_1.z()),
+                DataT(axis_2.x()), DataT(axis_2.y()), DataT(axis_2.z()),
+                DataT(half_0), DataT(half_1), DataT(half_2));
         }
 
         template <typename OtherDataT>
@@ -419,7 +470,7 @@ namespace vamp::collision
           , vx(other.vx)
           , vy(other.vy)
           , vz(other.vz)
-          , aabb(other.aabb)
+          , obb(other.obb)
         {
             for (auto i = 0U; i < other.nx.size(); ++i)
             {

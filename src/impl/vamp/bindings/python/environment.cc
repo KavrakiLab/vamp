@@ -181,48 +181,47 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             "add_sphere",
             [](vc::Environment<float> &e, const vc::Sphere<float> &s)
             {
-        e.spheres.emplace_back(s);
-        e.sort();
+                e.spheres.emplace_back(s);
+                e.sort();
             })
         .def(
             "add_cuboid",
             [](vc::Environment<float> &e, const vc::Cuboid<float> &s)
             {
-        if (s.axis_3_z == 1.)
-        {
-            e.z_aligned_cuboids.emplace_back(s);
-        }
-        else
-        {
-            e.cuboids.emplace_back(s);
-        }
-        e.sort();
+                if (s.axis_3_z == 1.)
+                {
+                    e.z_aligned_cuboids.emplace_back(s);
+                }
+                else
+                {
+                    e.cuboids.emplace_back(s);
+                }
+                e.sort();
             })
         .def(
             "add_capsule",
             [](vc::Environment<float> &e, const vc::Cylinder<float> &s)
             {
-        if (s.xv == 0. and s.yv == 0.)
-        {
-            e.z_aligned_capsules.emplace_back(s);
-        }
-        else
-        {
-            e.capsules.emplace_back(s);
-        }
-        e.sort();
+                if (s.xv == 0. and s.yv == 0.)
+                {
+                    e.z_aligned_capsules.emplace_back(s);
+                }
+                else
+                {
+                    e.capsules.emplace_back(s);
+                }
+                e.sort();
             })
         .def(
             "add_heightfield",
             [](vc::Environment<float> &e, const vc::HeightField<float> &s)
-            {
-        e.heightfields.emplace_back(s); })
+            { e.heightfields.emplace_back(s); })
         .def(
             "add_polytope",
             [](vc::Environment<float> &e, const vc::ConvexPolytope<float> &p)
             {
-        e.polytopes.emplace_back(p);
-        e.sort();
+                e.polytopes.emplace_back(p);
+                e.sort();
             })
         .def(
             "add_pointcloud",
@@ -232,16 +231,14 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
                float r_max,
                float r_point)
             {
-        auto start_time = std::chrono::steady_clock::now();
-        e.pointclouds.emplace_back(pc, r_min, r_max, r_point);
-        return vamp::utils::get_elapsed_nanoseconds(start_time);
+                auto start_time = std::chrono::steady_clock::now();
+                e.pointclouds.emplace_back(pc, r_min, r_max, r_point);
+                return vamp::utils::get_elapsed_nanoseconds(start_time);
             })
         .def(
             "attach",
-            [](vc::Environment<float> &e, const vc::Attachment<float> &a) {
-        e.attachments.emplace(a); })
-        .def("detach", [](vc::Environment<float> &e) {
-        e.attachments.reset(); })
+            [](vc::Environment<float> &e, const vc::Attachment<float> &a) { e.attachments.emplace(a); })
+        .def("detach", [](vc::Environment<float> &e) { e.attachments.reset(); })
         .def_ro("spheres", &vc::Environment<float>::spheres)
         .def_ro("cuboids", &vc::Environment<float>::cuboids)
         .def_ro("z_aligned_cuboids", &vc::Environment<float>::z_aligned_cuboids)
@@ -260,10 +257,10 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
            const collision::Point &workcell_max,
            bool cull) -> std::pair<std::vector<collision::Point>, std::size_t>
         {
-        auto start_time = std::chrono::steady_clock::now();
-        auto filtered =
-            vc::filter_pointcloud(pc, min_dist, max_range, origin, workcell_min, workcell_max, cull);
-        return {filtered, vamp::utils::get_elapsed_nanoseconds(start_time)};
+            auto start_time = std::chrono::steady_clock::now();
+            auto filtered =
+                vc::filter_pointcloud(pc, min_dist, max_range, origin, workcell_min, workcell_max, cull);
+            return {filtered, vamp::utils::get_elapsed_nanoseconds(start_time)};
         });
 
     pymodule.def(
@@ -276,10 +273,10 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
            const collision::Point &workcell_max,
            bool cull) -> std::pair<std::vector<collision::Point>, std::size_t>
         {
-        auto start_time = std::chrono::steady_clock::now();
-        auto filtered =
-            vc::filter_pointcloud(pc, min_dist, max_range, origin, workcell_min, workcell_max, cull);
-        return {filtered, vamp::utils::get_elapsed_nanoseconds(start_time)};
+            auto start_time = std::chrono::steady_clock::now();
+            auto filtered =
+                vc::filter_pointcloud(pc, min_dist, max_range, origin, workcell_min, workcell_max, cull);
+            return {filtered, vamp::utils::get_elapsed_nanoseconds(start_time)};
         });
 
     nb::class_<vc::Attachment<float>>(pymodule, "Attachment")
@@ -287,30 +284,27 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             "__init__",
             [](vc::Attachment<float> *q, Eigen::Matrix4f &tf) noexcept
             {
-        Eigen::Isometry3f iso;
-        iso.matrix() = tf;
-        new (q) vc::Attachment<float>(iso);
+                Eigen::Isometry3f iso;
+                iso.matrix() = tf;
+                new (q) vc::Attachment<float>(iso);
             },
             "Constructor for an attachment centered at a relative transform from the end-effector.")
-        .def_prop_ro("relative_frame", [](vc::Attachment<float> &a) {
-        return a.tf; })
+        .def_prop_ro("relative_frame", [](vc::Attachment<float> &a) { return a.tf; })
         .def(
             "add_sphere",
             [](vc::Attachment<float> &a, collision::Sphere<float> &sphere)
-            {
-        a.spheres.emplace_back(sphere); })
+            { a.spheres.emplace_back(sphere); })
         .def(
             "add_spheres",
             [](vc::Attachment<float> &a, std::vector<collision::Sphere<float>> &spheres)
-            {
-        a.spheres.insert(a.spheres.end(), spheres.cbegin(), spheres.cend()); })
+            { a.spheres.insert(a.spheres.end(), spheres.cbegin(), spheres.cend()); })
         .def(
             "set_ee_pose",
             [](vc::Attachment<float> &a, Eigen::Matrix4f &tf)
             {
-        Eigen::Isometry3f iso;
-        iso.matrix() = tf;
-        a.pose(iso);
+                Eigen::Isometry3f iso;
+                iso.matrix() = tf;
+                a.pose(iso);
             },
             "tf"_a)
         .def_ro("posed_spheres", &vc::Attachment<float>::posed_spheres);

@@ -26,6 +26,19 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
     )
   endif()
 
+  # Append additional robots from environment variables
+  if(DEFINED ENV{VAMP_ROBOT_MODULES})
+    string(REPLACE ";" "," ENV_MODULES_TEMP "$ENV{VAMP_ROBOT_MODULES}")
+    string(REPLACE "," ";" ENV_MODULES_LIST "${ENV_MODULES_TEMP}")
+    list(APPEND VAMP_ROBOT_MODULES ${ENV_MODULES_LIST})
+  endif()
+
+  if(DEFINED ENV{VAMP_ROBOT_STRUCTS})
+    string(REPLACE ";" "," ENV_STRUCTS_TEMP "$ENV{VAMP_ROBOT_STRUCTS}")
+    string(REPLACE "," ";" ENV_STRUCTS_LIST "${ENV_STRUCTS_TEMP}")
+    list(APPEND VAMP_ROBOT_STRUCTS ${ENV_STRUCTS_LIST})
+  endif()
+
   foreach(robot ${VAMP_ROBOT_MODULES})
     string(APPEND VAMP_ROBOT_INITS "    vb::init_${robot}(pymodule);\n")
     string(APPEND VAMP_ROBOT_DECLS "    void init_${robot}(nanobind::module_ &pymodule);\n")

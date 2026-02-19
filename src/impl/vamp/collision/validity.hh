@@ -8,6 +8,7 @@
 #include <vamp/collision/sphere_heightfield.hh>
 #include <vamp/collision/cuboid_capsule.hh>
 #include <vamp/collision/cuboid_cuboid.hh>
+#include <vamp/collision/sphere_polytope.hh>
 #include <vamp/collision/math.hh>
 
 namespace vamp
@@ -150,6 +151,20 @@ namespace vamp
             }
         }
 
+        for (const auto &ep : e.polytopes)
+        {
+            const auto diff = ep.min_distance - max_extent;
+            if (diff.test_zero())
+            {
+                break;
+            }
+
+            if (not collision::sphere_polytope(ep, sx, sy, sz, sr).test_zero())
+            {
+                return true;
+            }
+        }
+
         const std::array<DataT, 3> positions = {sx, sy, sz};
         for (const auto &pc : e.pointclouds)
         {
@@ -255,6 +270,20 @@ namespace vamp
             if (not collision::sphere_heightfield(eh, sx, sy, sz, sr).test_zero())
             {
                 objects.emplace_back(eh.name);
+            }
+        }
+
+        for (const auto &ep : e.polytopes)
+        {
+            const auto diff = ep.min_distance - max_extent;
+            if (diff.test_zero())
+            {
+                break;
+            }
+
+            if (not collision::sphere_polytope(ep, sx, sy, sz, sr).test_zero())
+            {
+                objects.emplace_back(ep.name);
             }
         }
 

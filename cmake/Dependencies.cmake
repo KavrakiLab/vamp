@@ -30,6 +30,42 @@ if(VAMP_INSTALL_CPP_LIBRARY)
   export(EXPORT pdqsort_TARGETS FILE ${CMAKE_CURRENT_BINARY_DIR}/cmake/pdqsortTargets.cmake NAMESPACE pdqsort::)
 endif()
 
+# cddlib for convex polytope vertex/halfspace conversion
+CPMAddPackage(
+  NAME cddlib
+  GITHUB_REPOSITORY cddlib/cddlib
+  GIT_TAG 0.94m
+)
+
+if(cddlib_SOURCE_DIR)
+  # cddlib uses autotools...
+  add_library(cdd STATIC
+    ${cddlib_SOURCE_DIR}/lib-src/cddcore.c
+    ${cddlib_SOURCE_DIR}/lib-src/cddlp.c
+    ${cddlib_SOURCE_DIR}/lib-src/cddmp.c
+    ${cddlib_SOURCE_DIR}/lib-src/cddio.c
+    ${cddlib_SOURCE_DIR}/lib-src/cddlib.c
+    ${cddlib_SOURCE_DIR}/lib-src/cddproj.c
+    ${cddlib_SOURCE_DIR}/lib-src/setoper.c
+  )
+  target_include_directories(cdd PUBLIC
+    $<BUILD_INTERFACE:${cddlib_SOURCE_DIR}/lib-src>
+  )
+  set_target_properties(cdd PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+  if(VAMP_INSTALL_CPP_LIBRARY)
+    install(TARGETS cdd
+          EXPORT cdd_TARGETS
+          LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+          INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+    install(EXPORT cdd_TARGETS FILE cddTargets.cmake NAMESPACE cdd:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cdd)
+    export(EXPORT cdd_TARGETS FILE ${CMAKE_CURRENT_BINARY_DIR}/cmake/cddTargets.cmake NAMESPACE cdd::)
+  endif()
+endif()
+
 # SIMDxorshift for x86_64 systems (includes macOS Intel and Linux x86_64)
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
   CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")

@@ -21,6 +21,7 @@ namespace vamp::collision
         std::vector<Cuboid<DataT>> cuboids;
         std::vector<Cuboid<DataT>> z_aligned_cuboids;
         std::vector<HeightField<DataT>> heightfields;
+        std::vector<ConvexPolytope<DataT>> polytopes;
         std::vector<CAPT> pointclouds;
         std::optional<Attachment<DataT>> attachments;
 
@@ -35,6 +36,7 @@ namespace vamp::collision
           , cuboids(other.cuboids.begin(), other.cuboids.end())
           , z_aligned_cuboids(other.z_aligned_cuboids.begin(), other.z_aligned_cuboids.end())
           , heightfields(other.heightfields.begin(), other.heightfields.end())
+          , polytopes(other.polytopes.begin(), other.polytopes.end())
           , pointclouds(other.pointclouds.begin(), other.pointclouds.end())
           , attachments(other.template clone_attachments<DataT>())
         {
@@ -65,6 +67,10 @@ namespace vamp::collision
             std::sort(
                 z_aligned_cuboids.begin(),
                 z_aligned_cuboids.end(),
+                [](const auto &a, const auto &b) { return a.min_distance < b.min_distance; });
+            std::sort(
+                polytopes.begin(),
+                polytopes.end(),
                 [](const auto &a, const auto &b) { return a.min_distance < b.min_distance; });
         }
 

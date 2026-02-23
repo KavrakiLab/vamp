@@ -28,4 +28,15 @@ namespace vamp::collision
 
         return z - r - zhs;
     }
+
+    template <typename DataT>
+    inline constexpr auto sphere_heightfield_l2(
+        const HeightField<DataT> &a,
+        const DataT &x,
+        const DataT &y,
+        const DataT &z,
+        const DataT &r) noexcept -> DataT
+    {
+        return sphere_heightfield(a, x, y, z, r);
+    }
 }  // namespace vamp::collision

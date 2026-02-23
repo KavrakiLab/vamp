@@ -28,6 +28,17 @@ namespace vamp::collision
     }
 
     template <typename DataT>
+    inline constexpr auto sphere_capsule_l2(const Capsule<DataT> &c, const Sphere<DataT> &s) noexcept -> DataT
+    {
+        auto dot = dot_3(s.x - c.x1, s.y - c.y1, s.z - c.z1, c.xv, c.yv, c.zv);
+        auto cdf = (dot * c.rdv).clamp(0.F, 1.F);
+
+        auto sum = sql2_3(s.x, s.y, s.z, c.x1 + c.xv * cdf, c.y1 + c.yv * cdf, c.z1 + c.zv * cdf).sqrt();
+        auto rs = s.r + c.r;
+        return sum - rs;
+    }
+
+    template <typename DataT>
     inline constexpr auto sphere_z_aligned_capsule(
         const Capsule<DataT> &c,
         const DataT &x,
@@ -48,5 +59,17 @@ namespace vamp::collision
         -> DataT
     {
         return sphere_z_aligned_capsule(c, s.x, s.y, s.z, s.r);
+    }
+
+    template <typename DataT>
+    inline constexpr auto sphere_z_aligned_capsule_l2(const Capsule<DataT> &c, const Sphere<DataT> &s) noexcept
+        -> DataT
+    {
+        auto dot = (s.z - c.z1) * c.zv;
+        auto cdf = (dot * c.rdv).clamp(0.F, 1.F);
+
+        auto sum = sql2_3(s.x, s.y, s.z, c.x1, c.y1, c.z1 + c.zv * cdf).sqrt();
+        auto rs = s.r + c.r;
+        return sum - rs;
     }
 }  // namespace vamp::collision

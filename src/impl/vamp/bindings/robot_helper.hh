@@ -22,6 +22,7 @@
 #include <vamp/planning/fcit.hh>
 #include <vamp/planning/rrtc.hh>
 #include <vamp/planning/aorrtc.hh>
+#include <vamp/optimization/project.hh>
 #include <vamp/vector.hh>
 
 #include <nanobind/nanobind.h>
@@ -343,6 +344,23 @@ namespace vamp::binding
 
             return filtered;
         }
+
+        inline static auto project_to_valid(
+            const Type &c_in,
+            const EnvironmentInput &environment,
+            float alpha = 0.1f,
+            int max_iters = 100) -> Type
+        {
+            auto projected_config = vamp::optimization::project_to_valid<Robot, rake>(
+                Input::template block<rake>(c_in), EnvironmentVector(environment), alpha, max_iters);
+            auto result_data = projected_config.to_array();
+            std::array<float, Robot::dimension> config_arr;
+            for (auto i = 0U; i < Robot::dimension; ++i)
+            {
+                config_arr[i] = result_data[i*rake];
+            }
+            return Input::from(config_arr);
+        }
     };
 
     template <typename Robot>
@@ -619,6 +637,14 @@ namespace vamp::binding
            "environment"_a,
            "settings"_a,
            "rng"_a);
+
+        MF("project_to_valid",
+           project_to_valid,
+           "Projects a configuration to a valid one.",
+           "configuration"_a,
+           "environment"_a = vamp::collision::Environment<float>(),
+           "alpha"_a = 0.1f,
+           "max_iter"_a = 100);
 
 #define PLANNER(name, func, desc, ...)                                                                       \
     MF(name, func::single, desc, "start"_a, "goal"_a, "environment"_a, "settings"_a, "rng"_a);               \

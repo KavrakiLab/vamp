@@ -2,6 +2,7 @@ from viser.extras import ViserUrdf
 import viser
 import yourdfpy
 from typing import Sequence, Union
+import numpy as np
 
 
 def setup_viser_with_robot(robot_dir, robot_urdf_name):
@@ -17,6 +18,21 @@ def setup_viser_with_robot(robot_dir, robot_urdf_name):
         )
 
     return server, robot
+
+
+def add_point_cloud(
+    server: viser.ViserServer,
+    point_cloud: np.ndarray,
+    colors: Union[Sequence[int], Sequence[Sequence[int]]] = [],
+    prefix: str = "my_point_cloud",
+    ):
+    point_cloud_handle = server.scene.add_point_cloud(
+        name = prefix,
+        points = point_cloud,
+        colors = colors,
+        point_size = 0.01,
+        )
+    return point_cloud_handle
 
 
 def add_spheres(

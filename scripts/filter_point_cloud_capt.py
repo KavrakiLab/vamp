@@ -7,6 +7,7 @@ from viser_utils import (
 from pathlib import Path
 
 import vamp
+import vamp.pointcloud
 from fire import Fire
 
 # Starting configuration
@@ -33,21 +34,6 @@ problem = [
     [0.35, -0.35, 0.8],
     ]
 
-
-def sample_sphere_surface(center, radius, n_points):
-    # Random spherical coordinates
-    phi = np.random.uniform(0, 2 * np.pi, n_points)
-    cos_theta = np.random.uniform(-1, 1, n_points)
-    theta = np.arccos(cos_theta)
-
-    x = radius * np.sin(theta) * np.cos(phi)
-    y = radius * np.sin(theta) * np.sin(phi)
-    z = radius * np.cos(theta)
-
-    points = np.vstack((x, y, z)).T
-    return points + center
-
-
 def main(
     obstacle_radius: float = 0.2,
     points_per_sphere: int = 2000,
@@ -58,7 +44,7 @@ def main(
     ):
 
     point_cloud = np.vstack(
-        [sample_sphere_surface(center, obstacle_radius, points_per_sphere) for center in problem]
+        [vamp.pointcloud.sphere_sample_surface(center, obstacle_radius, points_per_sphere, 0.0) for center in problem]
         ).astype(np.float32)
 
     (vamp_module, planner_func, plan_settings,

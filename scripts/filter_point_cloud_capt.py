@@ -40,6 +40,11 @@ def main(
     attachment_radius: float = 0.07,
     attachment_offset: float = 0.02,
     planner: str = "rrtc",
+    max_range: float = 2.0,
+    origin: tuple = (0.0, 0.0, 0.0),
+    workcell_min: tuple = (-2.0, -2.0, -2.0),
+    workcell_max: tuple = (2.0, 2.0, 2.0),
+    cull: bool = True,
     **kwargs,
     ):
 
@@ -59,11 +64,11 @@ def main(
     filtered_pc_list, elapsed_ns = vamp.filter_pointcloud(
         point_cloud,
         r_min,  # min_dist
-        10, # max_range
-        [0.0, 0.0, 0.0], # origin
-        [-2.0, -2.0, -2.0], # workcell_min
-        [2.0, 2.0, 2.0], # workcell_max
-        True # cull
+        max_range, # max_range
+        list(origin), # origin
+        list(workcell_min), # workcell_min
+        list(workcell_max), # workcell_max
+        cull # cull
     )
     filtered_pc = np.array(filtered_pc_list)
     print(f"Filtered point cloud from {len(point_cloud)} to {len(filtered_pc)} points in {elapsed_ns} ns")

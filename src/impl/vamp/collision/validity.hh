@@ -203,7 +203,12 @@ namespace vamp
             min_dist = min_dist.blend(dist, dist < min_dist);
         }
 
-        // Skip pointclouds for now as SDF is not supported
+        const std::array<DataT, 3> positions = {sx, sy, sz};
+        for (const auto &pc : e.pointclouds)
+        {
+            auto dist = pc.min_clearance_simd(positions, sr);
+            min_dist = min_dist.blend(dist, dist < min_dist);
+        }
 
         return min_dist;
     }
@@ -497,6 +502,17 @@ namespace vamp
             if (mask.any())
             {
                 update(dist, DataT(0.0f), DataT(0.0f), DataT(1.0f)); // dummy gradient up
+            }
+        }
+
+        const std::array<DataT, 3> positions = {sx, sy, sz};
+        for (const auto &pc : e.pointclouds)
+        {
+            auto dist = pc.min_clearance_simd(positions, sr);
+            auto mask = dist < min_dist;
+            if (mask.any())
+            {
+                update(dist, DataT(0.0f), DataT(0.0f), DataT(0.0f)); // dummy gradient
             }
         }
 

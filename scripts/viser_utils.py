@@ -24,13 +24,14 @@ def add_point_cloud(
     server: viser.ViserServer,
     point_cloud: np.ndarray,
     colors: Union[Sequence[int], Sequence[Sequence[int]]] = [],
+    point_size: float = 0.01,
     prefix: str = "my_point_cloud",
     ):
     point_cloud_handle = server.scene.add_point_cloud(
         name = prefix,
         points = point_cloud,
         colors = colors,
-        point_size = 0.01,
+        point_size = point_size,
         )
     return point_cloud_handle
 

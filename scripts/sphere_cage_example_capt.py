@@ -38,6 +38,7 @@ problem = [
     [0.35, -0.35, 0.8],
     ]
 
+
 def main(
     obstacle_radius: float = 0.2,
     points_per_sphere: int = 1000,
@@ -48,7 +49,10 @@ def main(
     ):
 
     point_cloud = np.vstack(
-        [vamp.pointcloud.sphere_sample_surface(center, obstacle_radius, points_per_sphere, 0.0) for center in problem]
+        [
+            vamp.pointcloud.sphere_sample_surface(center, obstacle_radius, points_per_sphere, 0.0)
+            for center in problem
+            ]
         ).astype(np.float32)
     point_cloud_colors = np.random.randint(100, 200, (point_cloud.shape[0], 3))
 

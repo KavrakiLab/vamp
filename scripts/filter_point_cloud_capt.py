@@ -34,22 +34,26 @@ problem = [
     [0.35, -0.35, 0.8],
     ]
 
+
 def main(
-    obstacle_radius: float = 0.2,
-    points_per_sphere: int = 2000,
-    attachment_radius: float = 0.07,
-    attachment_offset: float = 0.02,
-    planner: str = "rrtc",
-    max_range: float = 2.0,
-    origin: tuple = (0.0, 0.0, 0.0),
-    workcell_min: tuple = (-2.0, -2.0, -2.0),
-    workcell_max: tuple = (2.0, 2.0, 2.0),
-    cull: bool = True,
-    **kwargs,
+        obstacle_radius: float = 0.2,
+        points_per_sphere: int = 2000,
+        attachment_radius: float = 0.07,
+        attachment_offset: float = 0.02,
+        planner: str = "rrtc",
+        max_range: float = 2.0,
+        origin: tuple = (0.0, 0.0, 0.0),
+        workcell_min: tuple = (-2.0, -2.0, -2.0),
+        workcell_max: tuple = (2.0, 2.0, 2.0),
+        cull: bool = True,
+        **kwargs,
     ):
 
     point_cloud = np.vstack(
-        [vamp.pointcloud.sphere_sample_surface(center, obstacle_radius, points_per_sphere, 0.0) for center in problem]
+        [
+            vamp.pointcloud.sphere_sample_surface(center, obstacle_radius, points_per_sphere, 0.0)
+            for center in problem
+            ]
         ).astype(np.float32)
 
     (vamp_module, planner_func, plan_settings,

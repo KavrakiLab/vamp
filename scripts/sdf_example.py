@@ -43,7 +43,13 @@ def main(
 
     robot_dir = Path(__file__).parents[1] / "resources" / "panda"
     server, robot_original = setup_viser_with_robot(robot_dir, "panda_spherized.urdf")
-    robot_projected = add_new_robot_to_server(server, robot_dir, "panda_spherized.urdf", root_node_name = "/robot_projected", mesh_color_override=(0, 255, 0, 0.5))
+    robot_projected = add_new_robot_to_server(
+        server,
+        robot_dir,
+        "panda_spherized.urdf",
+        root_node_name = "/robot_projected",
+        mesh_color_override = (0, 255, 0, 0.5)
+        )
 
     e = vamp.Environment()
     for sphere in problem:
@@ -56,13 +62,14 @@ def main(
     sampler = vamp_module.halton()
     # Add button to sample and project
     sample_button = server.gui.add_button("Sample and Project")
+
     @sample_button.on_click
     def _(event):
         q = sampler.next()
         q_projected = vamp.panda.project_to_valid(q, e)
         robot_original.update_cfg(q)
         robot_projected.update_cfg(q_projected)
-    
+
     while True:
         continue
 

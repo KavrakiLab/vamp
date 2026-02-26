@@ -19,6 +19,7 @@ def setup_viser_with_robot(robot_dir, robot_urdf_name):
 
     return server, robot
 
+
 def add_new_robot_to_server(server, robot_dir, robot_urdf_name, **kwargs):
     urdf = yourdfpy.URDF.load(str(robot_dir / robot_urdf_name))
     robot = ViserUrdf(

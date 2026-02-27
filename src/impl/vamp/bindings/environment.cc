@@ -162,6 +162,23 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             },
             "vertices"_a,
             "Create from vertices array.")
+        .def_static(
+            "from_both",
+            [](const nb::ndarray<float, nb::shape<-1, 3>, nb::device::cpu> &vertices,
+               const std::vector<std::array<float, 4>> &planes)
+            {
+                std::vector<std::array<float, 3>> verts;
+                const std::size_t num_vertices = vertices.shape(0);
+                verts.reserve(num_vertices);
+
+                for (std::size_t i = 0; i < num_vertices; ++i)
+                    verts.push_back({vertices(i, 0), vertices(i, 1), vertices(i, 2)});
+
+                return vf::polytope::from_both(verts, planes);
+            },
+            "vertices"_a,
+            "planes"_a,
+            "Create from both vertices (Nx3 float32 array) and halfplanes as List[[nx, ny, nz, d]].")
         .def_ro("num_planes", &vc::ConvexPolytope<float>::num_planes)
         .def_ro("nx", &vc::ConvexPolytope<float>::nx)
         .def_ro("ny", &vc::ConvexPolytope<float>::ny)

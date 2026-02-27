@@ -383,6 +383,8 @@ namespace vamp
             }
         }
 
+        // TODO: cuboid-polytope collisions
+
         return false;
     }
 

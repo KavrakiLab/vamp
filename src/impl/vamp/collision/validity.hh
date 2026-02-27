@@ -9,6 +9,7 @@
 #include <vamp/collision/cuboid_capsule.hh>
 #include <vamp/collision/cuboid_cuboid.hh>
 #include <vamp/collision/sphere_polytope.hh>
+#include <vamp/collision/cuboid_polytope.hh>
 #include <vamp/collision/math.hh>
 
 namespace vamp
@@ -383,7 +384,19 @@ namespace vamp
             }
         }
 
-        // TODO: cuboid-polytope collisions
+        for (const auto &ec : e.polytopes)
+        {
+            const auto diff = ec.min_distance - max_extent;
+            if (diff.test_zero())
+            {
+                break;
+            }
+
+            if (not collision::cuboid_polytope(c, ec).test_zero())
+            {
+                return true;
+            }
+        }
 
         return false;
     }

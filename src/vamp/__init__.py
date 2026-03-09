@@ -87,8 +87,8 @@ def mesh_to_polytopes(
         vertices = (np.array(hull.vertices) * scale + position).astype(np.float32)
         normals = np.array(hull.face_normals).astype(np.float32)
         face_vertices = hull.vertices[hull.faces[:, 0]]
-        d_orig = np.sum(normals * face_vertices, axis=1)
-        d_transformed = (d_orig * scale + np.sum(normals * position, axis=1)).astype(np.float32)
+        d_orig = np.sum(normals * face_vertices, axis = 1)
+        d_transformed = (d_orig * scale + np.sum(normals * position, axis = 1)).astype(np.float32)
         planes = np.column_stack([normals, d_transformed]).astype(np.float32)
 
         polytope = ConvexPolytope.from_both(vertices, planes)

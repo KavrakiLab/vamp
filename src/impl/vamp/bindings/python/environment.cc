@@ -182,7 +182,8 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
 
                 for (auto i = 0U; i < num_planes; ++i)
                 {
-                    plns.emplace_back(std::array<float, 4>{planes(i, 0), planes(i, 1), planes(i, 2), planes(i, 3)});
+                    plns.emplace_back(
+                        std::array<float, 4>{planes(i, 0), planes(i, 1), planes(i, 2), planes(i, 3)});
                 }
 
                 return vf::polytope::from_both(verts, plns);

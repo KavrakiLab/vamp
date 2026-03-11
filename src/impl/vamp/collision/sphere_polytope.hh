@@ -24,22 +24,37 @@ namespace vamp::collision
             return obb_dist;
         }
 
-        DataT max_dist = DataT::fill(-std::numeric_limits<float>::max());
+        // iteratively project (cx, cy, cz) onto the polytope and test distance between original centers and
+        // projected centers
 
-        // TODO: Proper GJK? Seems OK for now.
+        DataT lower_bound_dist = DataT::fill(-std::numeric_limits<float>::max());
+        DataT cx_proj = cx;
+        DataT cy_proj = cy;
+        DataT cz_proj = cz;
+
         for (auto i = 0U; i < p.num_planes; ++i)
         {
-            // dist = n.C - d - r (positive = separated)
-            auto dist = dot_3(p.nx[i], p.ny[i], p.nz[i], cx, cy, cz) - p.d[i] - r;
-            max_dist = max_dist.max(dist);
+            const DataT dot_product = dot_3(p.nx[i], p.ny[i], p.nz[i], cx_proj, cy_proj, cz_proj);
+            const DataT n_scale = (dot_product - p.d[i]).max(0.0);
 
-            if (max_dist.test_zero())
+            // project c onto the halfspace by subtracting out the part parallel to n that lies beyond the
+            // plane
+
+            cx_proj = cx_proj - n_scale * p.nx[i];
+            cy_proj = cy_proj - n_scale * p.ny[i];
+            cz_proj = cz_proj - n_scale * p.nz[i];
+
+            lower_bound_dist = sql2_3(cx, cy, cz, cx_proj, cy_proj, cz_proj) - rsq;
+
+            // if projected centers are all sufficiently far away from the original centers, we have proven
+            // the sphere is not in collision
+            if (lower_bound_dist.test_all_greater_equal(0.0))
             {
                 break;
             }
         }
 
-        return max_dist;
+        return lower_bound_dist;
     }
 
     template <typename DataT>

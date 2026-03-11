@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+
+<robot name="spot">
+
+    <group name="arm">
+        <chain base_link="body" tip_link="arm_link_wr1"/>
+    </group>
+
+    <group_state group="arm" name="zero">
+        <joint name="arm_sh0" value="0.0"/>
+        <joint name="arm_sh1" value="0.0"/>
+        <joint name="arm_el0" value="0.0"/>
+        <joint name="arm_el1" value="0.0"/>
+        <joint name="arm_wr0" value="0.0"/>
+        <joint name="arm_wr1" value="0.0"/>
+    </group_state>
+
+    <group_state group="arm" name="ready">
+        <joint name="arm_sh0" value="0.0"/>
+        <joint name="arm_sh1" value="-2.9"/>
+        <joint name="arm_el0" value="2.8"/>
+        <joint name="arm_el1" value="0.0"/>
+        <joint name="arm_wr0" value="-0.1"/>
+        <joint name="arm_wr1" value="0.0"/>
+    </group_state>
+
+    <group name="gripper">
+        <link name="arm_link_fngr"/>
+        <joint name="arm_f1x"/>
+    </group>
+
+    <group_state group="gripper" name="open">
+        <joint name="arm_f1x" value="-1.5"/>
+    </group_state>
+
+    <group_state group="gripper" name="close">
+        <joint name="arm_f1x" value="-0.075"/>
+    </group_state>
+
+    <end_effector group="gripper" name="gripper_ee" parent_group="arm" parent_link="arm_link_wr1"/>
+
+    <disable_collisions link1="arm_link_sh0" link2="arm_link_sh1" reason="Never"/>
+    <disable_collisions link1="arm_link_sh1" link2="arm_link_el0" reason="Never"/>
+    <disable_collisions link1="arm_link_el0" link2="arm_link_el1" reason="Never"/>
+    <disable_collisions link1="arm_link_el1" link2="arm_link_wr0" reason="Never"/>
+    <disable_collisions link1="arm_link_wr0" link2="arm_link_wr1" reason="Never"/>
+    <disable_collisions link1="arm_link_wr1" link2="arm_link_fngr" reason="Never"/>
+
+    <disable_collisions link1="arm_link_el0" link2="arm_link_hr0" reason="Never"/>
+    <disable_collisions link1="arm_link_hr0" link2="arm_link_sh0" reason="Never"/>
+
+    <disable_collisions link1="body" link2="arm_link_sh0" reason="Never"/>
+    <disable_collisions link1="body" link2="front_left_upper_leg" reason="Never"/>
+    <disable_collisions link1="body" link2="front_right_upper_leg" reason="Never"/>
+    <disable_collisions link1="body" link2="rear_left_upper_leg" reason="Never"/>
+    <disable_collisions link1="body" link2="rear_right_upper_leg" reason="Never"/>
+
+    <disable_collisions link1="front_left_upper_leg" link2="front_left_lower_leg" reason="Never"/>
+    <disable_collisions link1="front_right_upper_leg" link2="front_right_lower_leg" reason="Never"/>
+    <disable_collisions link1="rear_left_upper_leg" link2="rear_left_lower_leg" reason="Never"/>
+    <disable_collisions link1="rear_right_upper_leg" link2="rear_right_lower_leg" reason="Never"/>
+
+
+</robot>

@@ -19,7 +19,7 @@ namespace vamp
     template <typename S>
     inline constexpr void print_vector(std::ostream &out, typename S::VectorT vec) noexcept
     {
-        for (auto i = 0; i < S::VectorWidth - 1; ++i)
+        for (auto i = 0ul; i < S::VectorWidth - 1; ++i)
         {
             out << S::extract(vec, i) << ", ";
         }
@@ -1033,7 +1033,7 @@ namespace vamp
     {
         o << "[";
 
-        for (auto i = 0; i < v.data.size() - 1; ++i)
+        for (auto i = 0ul; i < v.data.size() - 1; ++i)
         {
             o << " [";
             print_vector<typename VectorIT::S>(o, v.data[i]);

@@ -20,6 +20,8 @@ namespace vamp::rng
             avx_xorshift128plus_init(key1, key2, &key);
         }
 
+        virtual ~XORShift() = default;
+
         uint64_t key1_init;
         uint64_t key2_init;
 

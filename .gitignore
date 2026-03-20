@@ -1,4 +1,5 @@
 build/
+build-wasm/
 .cache/
 compile_commands.json
 *.out.*
@@ -19,3 +20,4 @@ venv/
 /resources/panda/*.pkl
 src/vamp/_core/*.pyi
 /.mypy_cache/
+.DS_store

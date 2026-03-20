@@ -3,15 +3,21 @@
 #include <cstdint>
 #include <vamp/vector/interface.hh>
 
-#if defined(__x86_64__)
-#include <vamp/vector/avx.hh>
+#if defined(__EMSCRIPTEN__)
+#include <vamp/vector/isa/wasm.hh>
+#elif defined(__x86_64__)
+#include <vamp/vector/isa/avx.hh>
 #elif defined(__ARM_NEON) || defined(__ARM_NEON__)
-#include <vamp/vector/neon.hh>
+#include <vamp/vector/isa/neon.hh>
 #endif
 
 namespace vamp
 {
-#if defined(__x86_64__)
+#if defined(__EMSCRIPTEN__)
+    using FloatT = float;
+    using SimdFloatT = WasmFloatVec;
+    using SimdIntT = WasmIntVec;
+#elif defined(__x86_64__)
     using FloatT = float;
     using SimdFloatT = __m256;
     using SimdIntT = __m256i;

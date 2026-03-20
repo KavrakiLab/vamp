@@ -241,8 +241,7 @@ namespace vamp
         {
             alignas(16) int32_t idx_arr[4];
             wasm_v128_store(idx_arr, idxs.v);
-            return {wasm_i32x4_make(
-                base[idx_arr[0]], base[idx_arr[1]], base[idx_arr[2]], base[idx_arr[3]])};
+            return {wasm_i32x4_make(base[idx_arr[0]], base[idx_arr[1]], base[idx_arr[2]], base[idx_arr[3]])};
         }
 
         template <typename = void>
@@ -716,7 +715,8 @@ namespace vamp
                 return {wasm_v128_bitselect(
                     b.v,
                     a.v,
-                    wasm_i32x4_make(0, 0, static_cast<int32_t>(0xffffffff), static_cast<int32_t>(0xffffffff)))};
+                    wasm_i32x4_make(
+                        0, 0, static_cast<int32_t>(0xffffffff), static_cast<int32_t>(0xffffffff)))};
             }
             else if constexpr (blend_mask == 14)
             {
@@ -761,7 +761,8 @@ namespace vamp
             const auto v1_f = wasm_f32x4_convert_i32x4(v_1.v);
             const auto v_scaled = wasm_f32x4_add(wasm_f32x4_convert_i32x4(v.v), v1_f);
             return {wasm_f32x4_mul(
-                v_scaled, wasm_f32x4_splat(1.f / static_cast<float>(std::numeric_limits<unsigned int>::max())))};
+                v_scaled,
+                wasm_f32x4_splat(1.f / static_cast<float>(std::numeric_limits<unsigned int>::max())))};
         }
 
         template <typename = void>
@@ -769,8 +770,7 @@ namespace vamp
         {
             alignas(16) int32_t idx_arr[4];
             wasm_v128_store(idx_arr, idxs.v);
-            return {wasm_f32x4_make(
-                base[idx_arr[0]], base[idx_arr[1]], base[idx_arr[2]], base[idx_arr[3]])};
+            return {wasm_f32x4_make(base[idx_arr[0]], base[idx_arr[1]], base[idx_arr[2]], base[idx_arr[3]])};
         }
 
         template <typename = void>

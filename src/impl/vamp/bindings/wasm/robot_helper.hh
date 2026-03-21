@@ -50,16 +50,9 @@ namespace vamp::wasm
             env.sort();
         }
 
-        inline auto add_cuboid(
-            float cx,
-            float cy,
-            float cz,
-            float rx,
-            float ry,
-            float rz,
-            float hx,
-            float hy,
-            float hz) -> void
+        inline auto
+        add_cuboid(float cx, float cy, float cz, float rx, float ry, float rz, float hx, float hy, float hz)
+            -> void
         {
             auto cuboid = vamp::collision::factory::cuboid::array(
                 std::array<float, 3>{cx, cy, cz},
@@ -77,8 +70,8 @@ namespace vamp::wasm
             env.sort();
         }
 
-        inline auto
-        add_capsule(float x1, float y1, float z1, float x2, float y2, float z2, float radius) -> void
+        inline auto add_capsule(float x1, float y1, float z1, float x2, float y2, float z2, float radius)
+            -> void
         {
             auto capsule = vamp::collision::factory::cylinder::endpoints::array(
                 std::array<float, 3>{x1, y1, z1}, std::array<float, 3>{x2, y2, z2}, radius);
@@ -295,7 +288,7 @@ namespace vamp::wasm
         auto plan_result = vamp::planning::RRTC<Robot, vamp::FloatVectorWidth, Robot::resolution>::solve(
             js_array_to_config<Robot>(start), js_array_to_config<Robot>(goal), env_v, settings, rng.rng);
 
-        result.solved = plan_result.solved;
+        result.solved = !plan_result.path.empty();
         result.path = PathJS<Robot>(plan_result.path);
         result.nanoseconds = plan_result.nanoseconds;
         result.iterations = plan_result.iterations;
@@ -323,7 +316,7 @@ namespace vamp::wasm
         auto plan_result = vamp::planning::AORRTC<Robot, vamp::FloatVectorWidth, Robot::resolution>::solve(
             js_array_to_config<Robot>(start), js_array_to_config<Robot>(goal), env_v, settings, rng.rng);
 
-        result.solved = plan_result.solved;
+        result.solved = !plan_result.path.empty();
         result.path = PathJS<Robot>(plan_result.path);
         result.nanoseconds = plan_result.nanoseconds;
         result.iterations = plan_result.iterations;
@@ -345,7 +338,7 @@ namespace vamp::wasm
         auto simplify_result = vamp::planning::simplify<Robot, vamp::FloatVectorWidth, Robot::resolution>(
             path_js.path, env_v, settings, rng.rng);
 
-        result.solved = simplify_result.solved;
+        result.solved = !simplify_result.path.empty();
         result.path = PathJS<Robot>(simplify_result.path);
         result.nanoseconds = simplify_result.nanoseconds;
         result.iterations = simplify_result.iterations;
@@ -369,10 +362,9 @@ namespace vamp::wasm
     }
 
     template <typename Robot>
-    inline auto validate_motion(
-        const std::vector<float> &start,
-        const std::vector<float> &goal,
-        EnvironmentJS &env_js) -> bool
+    inline auto
+    validate_motion(const std::vector<float> &start, const std::vector<float> &goal, EnvironmentJS &env_js)
+        -> bool
     {
         if (start.size() != Robot::dimension || goal.size() != Robot::dimension)
         {

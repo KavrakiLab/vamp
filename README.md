@@ -160,6 +160,23 @@ See the `environment.yaml` file for a basic environment, and see `docker/ubuntu2
 We currently support x86 CPUs (e.g., Intel, AMD) with the [AVX2 vector instruction set](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) and ARM CPUs (e.g., Raspberry Pi, Mac M1) with [NEON](https://en.wikipedia.org/wiki/ARM_architecture_family#Advanced_SIMD_(Neon)).
 Please see the `docker/` folder for reference installation procedures.
 
+### WebAssembly (WASM)
+
+VAMP can be compiled to WebAssembly for use in web browsers via [Emscripten](https://emscripten.org/). 
+The WASM build uses 128-bit SIMD instructions.
+
+#### Building WASM Modules
+
+First, install Emscripten.
+Then build the WASM modules:
+```bash
+cd vamp
+emcmake cmake -Bbuild-wasm -DCMAKE_BUILD_TYPE=Release -DVAMP_BUILD_WASM=ON
+cmake --build build-wasm
+```
+
+This produces `{robot}_wasm.js` and `{robot}_wasm.wasm` files in `build-wasm/wasm/` for each robot (by default: `panda`, `fetch`, `ur5`).
+
 ### Using Clang instead of GCC
 You can force the use of Clang instead of GCC for compiling VAMP by uncommenting the line at the bottom of the `pyproject.toml` (or setting the corresponding CMake variable for C++ builds):
 ```toml

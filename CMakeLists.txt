@@ -141,10 +141,17 @@ endif()
 if(VAMP_BUILD_CPP_DEMO)
   add_executable(vamp_rrtc_example scripts/cpp/rrtc_example.cc)
   target_link_libraries(vamp_rrtc_example PRIVATE vamp_cpp)
-  
-  # Disable strict warnings for demos to maintain compatibility
+
+  add_executable(vamp_sdf_example scripts/cpp/sdf_example.cc)
+  target_link_libraries(vamp_sdf_example PRIVATE vamp_cpp)
+
+  add_executable(vamp_sdf_example_manual scripts/cpp/sdf_example_manual.cc)
+  target_link_libraries(vamp_sdf_example_manual PRIVATE vamp_cpp)
+
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(vamp_rrtc_example PRIVATE -Wno-c++11-narrowing -Wno-sign-compare)
+    target_compile_options(vamp_sdf_example PRIVATE -Wno-c++11-narrowing -Wno-sign-compare)
+    target_compile_options(vamp_sdf_example_manual PRIVATE -Wno-c++11-narrowing -Wno-sign-compare)
   endif()
 endif()
 

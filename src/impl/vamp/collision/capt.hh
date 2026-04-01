@@ -411,6 +411,51 @@ namespace vamp::collision
             return false;
         }
 
+        [[nodiscard]] float min_clearance(const Point& center, float r) const noexcept
+        {
+            // “Inflate” by point radius (same as collides)
+            const float R = r + r_point;
+
+            // Optional fast lower-bound reject: if top AABB is far, distance to AABB is a lower bound
+            // This doesn't give exact min distance, but you can use it as an early return if you want:
+            // float lb2 = aabb_top.distsq_to(center);
+            // if (lb2 > some_current_best2) ...
+
+            // Route to leaf (same as collides)
+            std::size_t test_idx = 0;
+            for (uint8_t i = 0, k = 0; i < nlog2; i++)
+            {
+                test_idx = 2 * test_idx + 1 + (center[k] >= tests[test_idx]);
+                k = (k + 1) % 3;
+            }
+            const std::size_t z = test_idx - tests.size();
+
+            // If leaf has no afforded points, you'd need a convention; in this build it should.
+            const uint32_t start = aff_starts[z];
+            const uint32_t end   = aff_starts[z + 1];
+
+            // Scan affordance blocks and track minimum squared distance
+            float best_d2 = std::numeric_limits<float>::infinity();
+
+            const auto xc = FVectorT::fill(center[0]);
+            const auto yc = FVectorT::fill(center[1]);
+            const auto zc = FVectorT::fill(center[2]);
+
+            for (uint32_t i = start; i < end; i++)
+            {
+                const auto d2v = sql2_3(affordances[0][i], affordances[1][i], affordances[2][i], xc, yc, zc);
+
+                // You need a way to reduce SIMD lanes -> scalar min.
+                // Common pattern:
+                auto arr = d2v.to_array();              // or store to aligned array
+                for (float d2 : arr) best_d2 = std::min(best_d2, d2);
+            }
+
+            // Convert to clearance (signed: negative means colliding)
+            const float best_d = std::sqrt(best_d2);
+            return best_d - R;
+        }
+        
         // Determine whether any of a set of spheres collides with a point in this tree.
         //
         // Templates
@@ -503,6 +548,60 @@ namespace vamp::collision
             }
 
             return false;
+        }
+
+        auto min_clearance_simd(const std::array<FVectorT, 3> &centers, FVectorT radii) const noexcept -> FVectorT
+        {
+            // Pad radii by radius of points.
+            radii = radii + r_point;
+
+            FVectorT these_tests = FVectorT::fill(tests[0]);
+            FVectorT cmp_results = centers[0].greater_equal(these_tests);
+            auto idxs = (cmp_results >> 31U).template as<IVectorT>() + 1;
+
+            // Search downward through the tree, parallel across each query lane
+            for (uint8_t i = 1, k = 1; i < nlog2; i++)
+            {
+                these_tests = FVectorT::gather(tests.data(), idxs);
+                cmp_results = centers[k].greater_equal(these_tests);
+                idxs = (idxs << 1U) + (cmp_results >> 31U).template as<IVectorT>() + 1;
+                k = (k + 1) % 3;
+            }
+
+            const IVectorT zs = idxs - tests.size();
+
+            // Convert the terminal test indices to reference indices for the affordance buffer
+            const auto *affdata = reinterpret_cast<const int32_t *>(aff_starts.data());
+            const IVectorT starts_v = IVectorT::gather(affdata, zs);
+            const IVectorT ends_v = IVectorT::gather(affdata, zs + 1);
+
+            const auto starts = starts_v.to_array();
+            const auto ends = ends_v.to_array();
+
+            std::array<float, FVectorT::num_scalars> dist_arr;
+
+            for (uint8_t j = 0; j < FVectorT::num_scalars; j++)
+            {
+                const auto xc = centers[0].broadcast(j);
+                const auto yc = centers[1].broadcast(j);
+                const auto zc = centers[2].broadcast(j);
+
+                float best_d2 = std::numeric_limits<float>::infinity();
+
+                for (auto i = starts[j]; i < ends[j]; ++i)
+                {
+                    const auto d2v =
+                        sql2_3(affordances[0][i], affordances[1][i], affordances[2][i], xc, yc, zc);
+                    auto arr = d2v.to_array();
+                    for (float d2 : arr) best_d2 = std::min(best_d2, d2);
+                }
+                
+                dist_arr[j] = best_d2;
+            }
+
+            auto best_d2_vec = FVectorT(dist_arr);
+            auto best_d_vec = best_d2_vec.sqrt();
+            return best_d_vec - radii;
         }
 
         auto is_valid() const noexcept -> bool

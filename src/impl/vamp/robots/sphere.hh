@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vamp/vector.hh>
+#include <cstdio>
 
 namespace vamp::robots
 {
@@ -145,6 +146,25 @@ namespace vamp::robots
             auto tf = Eigen::Isometry3f::Identity();
             tf.translation() = Eigen::Vector3f(q[0], q[1], q[2]);
             return tf;
+        }
+        
+        template <std::size_t rake>
+        inline static auto sdf_gradient(
+            const vamp::collision::Environment<FloatVector<rake>> &environment,
+            const ConfigurationBlock<rake> &q) noexcept -> std::pair<FloatVector<rake, 1>, FloatVector<rake, 3>>
+        {
+            printf("sdf_gradient not implemented for sphere\n");
+            return std::make_pair(FloatVector<rake, 1>(), FloatVector<rake, 3>());
+        }
+
+        template <std::size_t rake>
+        inline static void d_collision_d_q(
+            const ConfigurationBlock<rake> &q_in,
+            const FloatVector<rake, 3> &gradients,
+            ConfigurationBlock<rake> &out) noexcept
+        {
+            // Note: not tested
+            printf("d_collision_d_q not implemented for sphere\n");
         }
     };
 }  // namespace vamp::robots

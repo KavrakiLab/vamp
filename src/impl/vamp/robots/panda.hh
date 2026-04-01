@@ -944,141 +944,107 @@ namespace vamp::robots
             output.first.emplace_back(
                 sphere_environment_get_collisions<decltype(x[0])>(environment, y[96], y[97], y[98], y[99]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[100], y[101], y[102], y[103]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[100], y[101], y[102], y[103]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[104], y[105], y[106], y[107]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[104], y[105], y[106], y[107]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[108], y[109], y[110], y[111]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[108], y[109], y[110], y[111]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[112], y[113], y[114], y[115]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[112], y[113], y[114], y[115]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[116], y[117], y[118], y[119]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[116], y[117], y[118], y[119]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[120], y[121], y[122], y[123]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[120], y[121], y[122], y[123]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[124], y[125], y[126], y[127]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[124], y[125], y[126], y[127]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[128], y[129], y[130], y[131]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[128], y[129], y[130], y[131]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[132], y[133], y[134], y[135]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[132], y[133], y[134], y[135]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[136], y[137], y[138], y[139]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[136], y[137], y[138], y[139]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[140], y[141], y[142], y[143]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[140], y[141], y[142], y[143]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[144], y[145], y[146], y[147]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[144], y[145], y[146], y[147]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[148], y[149], y[150], y[151]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[148], y[149], y[150], y[151]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[152], y[153], y[154], y[155]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[152], y[153], y[154], y[155]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[156], y[157], y[158], y[159]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[156], y[157], y[158], y[159]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[160], y[161], y[162], y[163]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[160], y[161], y[162], y[163]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[164], y[165], y[166], y[167]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[164], y[165], y[166], y[167]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[168], y[169], y[170], y[171]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[168], y[169], y[170], y[171]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[172], y[173], y[174], y[175]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[172], y[173], y[174], y[175]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[176], y[177], y[178], y[179]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[176], y[177], y[178], y[179]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[180], y[181], y[182], y[183]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[180], y[181], y[182], y[183]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[184], y[185], y[186], y[187]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[184], y[185], y[186], y[187]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[188], y[189], y[190], y[191]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[188], y[189], y[190], y[191]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[192], y[193], y[194], y[195]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[192], y[193], y[194], y[195]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[196], y[197], y[198], y[199]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[196], y[197], y[198], y[199]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[200], y[201], y[202], y[203]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[200], y[201], y[202], y[203]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[204], y[205], y[206], y[207]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[204], y[205], y[206], y[207]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[208], y[209], y[210], y[211]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[208], y[209], y[210], y[211]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[212], y[213], y[214], y[215]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[212], y[213], y[214], y[215]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[216], y[217], y[218], y[219]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[216], y[217], y[218], y[219]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[220], y[221], y[222], y[223]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[220], y[221], y[222], y[223]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[224], y[225], y[226], y[227]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[224], y[225], y[226], y[227]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[228], y[229], y[230], y[231]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[228], y[229], y[230], y[231]));
 
-            output.first.emplace_back(
-                sphere_environment_get_collisions<decltype(x[0])>(
-                    environment, y[232], y[233], y[234], y[235]));
+            output.first.emplace_back(sphere_environment_get_collisions<decltype(x[0])>(
+                environment, y[232], y[233], y[234], y[235]));
 
             if (sphere_sphere_self_collision<decltype(x[0])>(
                     y[0], y[1], y[2], y[3], y[68], y[69], y[70], y[71]))
@@ -15549,6 +15515,2516 @@ namespace vamp::robots
             y[8] = 0.70710678118623 * v[12] + 0.707106781186865 * v[35];
 
             return to_isometry(y.data());
+        }
+
+        template <std::size_t rake>
+        inline static auto sdf_gradient(
+            const vamp::collision::Environment<FloatVector<rake>> &environment,
+            const ConfigurationBlock<rake> &x) noexcept
+            -> std::pair<FloatVector<rake, 59>, FloatVector<rake, 59 * 3>>
+        {
+            std::array<FloatVector<rake, 1>, 57> v;
+            std::array<FloatVector<rake, 1>, 280> y;
+
+            v[0] = sin(x[0]);
+            v[1] = -v[0];
+            y[4] = -0.08 * v[1];
+            v[2] = cos(x[0]);
+            y[5] = -0.08 * v[2];
+            y[8] = -0.03 * v[1];
+            y[9] = -0.03 * v[2];
+            y[20] = 0.03 * v[1];
+            y[21] = 0.03 * v[2];
+            y[24] = 0.08 * v[1];
+            y[25] = 0.08 * v[2];
+            v[3] = sin(x[1]);
+            v[4] = -v[3];
+            v[5] = cos(x[1]);
+            v[6] = 4.89663865010925e-12 * v[5];
+            v[7] = v[2] * v[4] + v[1] * v[6];
+            y[28] = -0.12 * v[7];
+            v[6] = v[0] * v[4] + v[2] * v[6];
+            y[29] = -0.12 * v[6];
+            v[4] = -1. * v[5];
+            y[30] = 0.333 + -0.12 * v[4];
+            y[32] = -0.17 * v[7];
+            y[33] = -0.17 * v[6];
+            y[34] = 0.333 + -0.17 * v[4];
+            v[8] = -1. * v[7] + 4.89663865010925e-12 * v[1];
+            v[9] = -0.316 * v[7];
+            y[36] = -0.1 * v[8] + v[9];
+            v[10] = -1. * v[6] + 4.89663865010925e-12 * v[2];
+            v[11] = -0.316 * v[6];
+            y[37] = -0.1 * v[10] + v[11];
+            v[12] = 2.39770700697438e-23 + -1. * v[4];
+            v[13] = 0.333 + -0.316 * v[4];
+            y[38] = -0.1 * v[12] + v[13];
+            y[40] = -0.06 * v[8] + v[9];
+            y[41] = -0.06 * v[10] + v[11];
+            y[42] = -0.06 * v[12] + v[13];
+            v[14] = 4.89663865010925e-12 * v[3];
+            v[15] = v[2] * v[5] + v[1] * v[14];
+            v[16] = cos(x[2]);
+            v[17] = sin(x[2]);
+            v[18] = 4.89663865010925e-12 * v[17];
+            v[19] = v[15] * v[16] + v[7] * v[18] + v[1] * v[17];
+            v[20] = -v[17];
+            v[21] = 4.89663865010925e-12 * v[16];
+            v[15] = v[15] * v[20] + v[7] * v[21] + v[1] * v[16];
+            y[44] = 0.08 * v[19] + 0.06 * v[15] + v[9];
+            v[14] = v[0] * v[5] + v[2] * v[14];
+            v[5] = v[14] * v[16] + v[6] * v[18] + v[2] * v[17];
+            v[14] = v[14] * v[20] + v[6] * v[21] + v[2] * v[16];
+            y[45] = 0.08 * v[5] + 0.06 * v[14] + v[11];
+            v[3] = -1. * v[3];
+            v[18] = v[3] * v[16] + v[4] * v[18] + 4.89663865010925e-12 * v[17];
+            v[3] = v[3] * v[20] + v[4] * v[21] + 4.89663865010925e-12 * v[16];
+            y[46] = 0.08 * v[18] + 0.06 * v[3] + v[13];
+            y[48] = 0.08 * v[19] + 0.02 * v[15] + v[9];
+            y[49] = 0.08 * v[5] + 0.02 * v[14] + v[11];
+            y[50] = 0.08 * v[18] + 0.02 * v[3] + v[13];
+            v[21] = cos(x[3]);
+            v[20] = sin(x[3]);
+            v[16] = 4.89663865010925e-12 * v[20];
+            v[17] = v[19] * v[21] + v[15] * v[16] + v[8] * v[20];
+            v[0] = -v[20];
+            v[22] = 4.89663865010925e-12 * v[21];
+            v[23] = v[19] * v[0] + v[15] * v[22] + v[8] * v[21];
+            v[24] = v[9] + 0.0825 * v[19];
+            y[52] = -0.08 * v[17] + 0.095 * v[23] + v[24];
+            v[25] = v[5] * v[21] + v[14] * v[16] + v[10] * v[20];
+            v[26] = v[5] * v[0] + v[14] * v[22] + v[10] * v[21];
+            v[27] = v[11] + 0.0825 * v[5];
+            y[53] = -0.08 * v[25] + 0.095 * v[26] + v[27];
+            v[16] = v[18] * v[21] + v[3] * v[16] + v[12] * v[20];
+            v[22] = v[18] * v[0] + v[3] * v[22] + v[12] * v[21];
+            v[0] = v[13] + 0.0825 * v[18];
+            y[54] = -0.08 * v[16] + 0.095 * v[22] + v[0];
+            v[21] = -1. * v[15] + 4.89663865010925e-12 * v[8];
+            y[56] = 0.02 * v[21] + v[24];
+            v[20] = -1. * v[14] + 4.89663865010925e-12 * v[10];
+            y[57] = 0.02 * v[20] + v[27];
+            v[28] = -1. * v[3] + 4.89663865010925e-12 * v[12];
+            y[58] = 0.02 * v[28] + v[0];
+            y[60] = 0.06 * v[21] + v[24];
+            y[61] = 0.06 * v[20] + v[27];
+            y[62] = 0.06 * v[28] + v[0];
+            y[64] = -0.08 * v[17] + 0.06 * v[23] + v[24];
+            y[65] = -0.08 * v[25] + 0.06 * v[26] + v[27];
+            y[66] = -0.08 * v[16] + 0.06 * v[22] + v[0];
+            v[29] = sin(x[4]);
+            v[30] = -v[29];
+            v[31] = cos(x[4]);
+            v[32] = 4.89663865010925e-12 * v[31];
+            v[33] = -1. * v[31];
+            v[34] = v[17] * v[30] + v[23] * v[32] + v[21] * v[33];
+            y[116] = v[24] + -0.0825 * v[17] + 0.384 * v[23];
+            y[68] = 0.055 * v[34] + y[116];
+            v[35] = v[25] * v[30] + v[26] * v[32] + v[20] * v[33];
+            y[117] = v[27] + -0.0825 * v[25] + 0.384 * v[26];
+            y[69] = 0.055 * v[35] + y[117];
+            v[33] = v[16] * v[30] + v[22] * v[32] + v[28] * v[33];
+            y[118] = v[0] + -0.0825 * v[16] + 0.384 * v[22];
+            y[70] = 0.055 * v[33] + y[118];
+            y[72] = 0.075 * v[34] + y[116];
+            y[73] = 0.075 * v[35] + y[117];
+            y[74] = 0.075 * v[33] + y[118];
+            v[32] = v[23] + 4.89663865010925e-12 * v[21];
+            y[76] = -0.22 * v[32] + y[116];
+            v[30] = v[26] + 4.89663865010925e-12 * v[20];
+            y[77] = -0.22 * v[30] + y[117];
+            v[36] = v[22] + 4.89663865010925e-12 * v[28];
+            y[78] = -0.22 * v[36] + y[118];
+            y[80] = 0.05 * v[34] + -0.18 * v[32] + y[116];
+            y[81] = 0.05 * v[35] + -0.18 * v[30] + y[117];
+            y[82] = 0.05 * v[33] + -0.18 * v[36] + y[118];
+            v[37] = 4.89663865010925e-12 * v[29];
+            v[29] = -1. * v[29];
+            v[38] = v[17] * v[31] + v[23] * v[37] + v[21] * v[29];
+            y[84] = 0.01 * v[38] + 0.08 * v[34] + -0.14 * v[32] + y[116];
+            v[39] = v[25] * v[31] + v[26] * v[37] + v[20] * v[29];
+            y[85] = 0.01 * v[39] + 0.08 * v[35] + -0.14 * v[30] + y[117];
+            v[29] = v[16] * v[31] + v[22] * v[37] + v[28] * v[29];
+            y[86] = 0.01 * v[29] + 0.08 * v[33] + -0.14 * v[36] + y[118];
+            y[88] = 0.01 * v[38] + 0.085 * v[34] + -0.11 * v[32] + y[116];
+            y[89] = 0.01 * v[39] + 0.085 * v[35] + -0.11 * v[30] + y[117];
+            y[90] = 0.01 * v[29] + 0.085 * v[33] + -0.11 * v[36] + y[118];
+            y[92] = 0.01 * v[38] + 0.09 * v[34] + -0.08 * v[32] + y[116];
+            y[93] = 0.01 * v[39] + 0.09 * v[35] + -0.08 * v[30] + y[117];
+            y[94] = 0.01 * v[29] + 0.09 * v[33] + -0.08 * v[36] + y[118];
+            y[96] = 0.01 * v[38] + 0.095 * v[34] + -0.05 * v[32] + y[116];
+            y[97] = 0.01 * v[39] + 0.095 * v[35] + -0.05 * v[30] + y[117];
+            y[98] = 0.01 * v[29] + 0.095 * v[33] + -0.05 * v[36] + y[118];
+            y[100] = -0.01 * v[38] + 0.08 * v[34] + -0.14 * v[32] + y[116];
+            y[101] = -0.01 * v[39] + 0.08 * v[35] + -0.14 * v[30] + y[117];
+            y[102] = -0.01 * v[29] + 0.08 * v[33] + -0.14 * v[36] + y[118];
+            y[104] = -0.01 * v[38] + 0.085 * v[34] + -0.11 * v[32] + y[116];
+            y[105] = -0.01 * v[39] + 0.085 * v[35] + -0.11 * v[30] + y[117];
+            y[106] = -0.01 * v[29] + 0.085 * v[33] + -0.11 * v[36] + y[118];
+            y[108] = -0.01 * v[38] + 0.09 * v[34] + -0.08 * v[32] + y[116];
+            y[109] = -0.01 * v[39] + 0.09 * v[35] + -0.08 * v[30] + y[117];
+            y[110] = -0.01 * v[29] + 0.09 * v[33] + -0.08 * v[36] + y[118];
+            y[112] = -0.01 * v[38] + 0.095 * v[34] + -0.05 * v[32] + y[116];
+            y[113] = -0.01 * v[39] + 0.095 * v[35] + -0.05 * v[30] + y[117];
+            y[114] = -0.01 * v[29] + 0.095 * v[33] + -0.05 * v[36] + y[118];
+            v[37] = cos(x[5]);
+            v[31] = sin(x[5]);
+            v[40] = 4.89663865010925e-12 * v[31];
+            v[41] = v[38] * v[37] + v[34] * v[40] + v[32] * v[31];
+            v[42] = -v[31];
+            v[43] = 4.89663865010925e-12 * v[37];
+            v[38] = v[38] * v[42] + v[34] * v[43] + v[32] * v[37];
+            y[120] = 0.08 * v[41] + -0.01 * v[38] + y[116];
+            v[44] = v[39] * v[37] + v[35] * v[40] + v[30] * v[31];
+            v[39] = v[39] * v[42] + v[35] * v[43] + v[30] * v[37];
+            y[121] = 0.08 * v[44] + -0.01 * v[39] + y[117];
+            v[40] = v[29] * v[37] + v[33] * v[40] + v[36] * v[31];
+            v[43] = v[29] * v[42] + v[33] * v[43] + v[36] * v[37];
+            y[122] = 0.08 * v[40] + -0.01 * v[43] + y[118];
+            y[124] = 0.08 * v[41] + 0.035 * v[38] + y[116];
+            y[125] = 0.08 * v[44] + 0.035 * v[39] + y[117];
+            y[126] = 0.08 * v[40] + 0.035 * v[43] + y[118];
+            v[42] = -1. * v[34] + 4.89663865010925e-12 * v[32];
+            v[37] = -1. * v[38] + 4.89663865010925e-12 * v[42];
+            v[29] = y[116] + 0.088 * v[41];
+            y[128] = 0.07 * v[37] + v[29];
+            v[31] = -1. * v[35] + 4.89663865010925e-12 * v[30];
+            v[45] = -1. * v[39] + 4.89663865010925e-12 * v[31];
+            v[46] = y[117] + 0.088 * v[44];
+            y[129] = 0.07 * v[45] + v[46];
+            v[47] = -1. * v[33] + 4.89663865010925e-12 * v[36];
+            v[48] = -1. * v[43] + 4.89663865010925e-12 * v[47];
+            v[49] = y[118] + 0.088 * v[40];
+            y[130] = 0.07 * v[48] + v[49];
+            v[50] = cos(x[6]);
+            v[51] = sin(x[6]);
+            v[52] = 4.89663865010925e-12 * v[51];
+            v[53] = v[41] * v[50] + v[38] * v[52] + v[42] * v[51];
+            v[54] = -v[51];
+            v[55] = 4.89663865010925e-12 * v[50];
+            v[42] = v[41] * v[54] + v[38] * v[55] + v[42] * v[50];
+            y[132] = 0.02 * v[53] + 0.04 * v[42] + 0.08 * v[37] + v[29];
+            v[56] = v[44] * v[50] + v[39] * v[52] + v[31] * v[51];
+            v[31] = v[44] * v[54] + v[39] * v[55] + v[31] * v[50];
+            y[133] = 0.02 * v[56] + 0.04 * v[31] + 0.08 * v[45] + v[46];
+            v[52] = v[40] * v[50] + v[43] * v[52] + v[47] * v[51];
+            v[55] = v[40] * v[54] + v[43] * v[55] + v[47] * v[50];
+            y[134] = 0.02 * v[52] + 0.04 * v[55] + 0.08 * v[48] + v[49];
+            y[136] = 0.04 * v[53] + 0.02 * v[42] + 0.08 * v[37] + v[29];
+            y[137] = 0.04 * v[56] + 0.02 * v[31] + 0.08 * v[45] + v[46];
+            y[138] = 0.04 * v[52] + 0.02 * v[55] + 0.08 * v[48] + v[49];
+            y[140] = 0.04 * v[53] + 0.06 * v[42] + 0.085 * v[37] + v[29];
+            y[141] = 0.04 * v[56] + 0.06 * v[31] + 0.085 * v[45] + v[46];
+            y[142] = 0.04 * v[52] + 0.06 * v[55] + 0.085 * v[48] + v[49];
+            y[144] = 0.06 * v[53] + 0.04 * v[42] + 0.085 * v[37] + v[29];
+            y[145] = 0.06 * v[56] + 0.04 * v[31] + 0.085 * v[45] + v[46];
+            y[146] = 0.06 * v[52] + 0.04 * v[55] + 0.085 * v[48] + v[49];
+            y[148] = -0.0530330085889673 * v[53] + -0.0530330085890148 * v[42] + 0.117 * v[37] + v[29];
+            y[149] = -0.0530330085889673 * v[56] + -0.0530330085890148 * v[31] + 0.117 * v[45] + v[46];
+            y[150] = -0.0530330085889673 * v[52] + -0.0530330085890148 * v[55] + 0.117 * v[48] + v[49];
+            y[152] = -0.0318198051533804 * v[53] + -0.0318198051534089 * v[42] + 0.117 * v[37] + v[29];
+            y[153] = -0.0318198051533804 * v[56] + -0.0318198051534089 * v[31] + 0.117 * v[45] + v[46];
+            y[154] = -0.0318198051533804 * v[52] + -0.0318198051534089 * v[55] + 0.117 * v[48] + v[49];
+            y[156] = -0.0106066017177935 * v[53] + -0.010606601717803 * v[42] + 0.117 * v[37] + v[29];
+            y[157] = -0.0106066017177935 * v[56] + -0.010606601717803 * v[31] + 0.117 * v[45] + v[46];
+            y[158] = -0.0106066017177935 * v[52] + -0.010606601717803 * v[55] + 0.117 * v[48] + v[49];
+            y[160] = 0.0106066017177935 * v[53] + 0.010606601717803 * v[42] + 0.117 * v[37] + v[29];
+            y[161] = 0.0106066017177935 * v[56] + 0.010606601717803 * v[31] + 0.117 * v[45] + v[46];
+            y[162] = 0.0106066017177935 * v[52] + 0.010606601717803 * v[55] + 0.117 * v[48] + v[49];
+            y[164] = 0.0318198051533804 * v[53] + 0.0318198051534089 * v[42] + 0.117 * v[37] + v[29];
+            y[165] = 0.0318198051533804 * v[56] + 0.0318198051534089 * v[31] + 0.117 * v[45] + v[46];
+            y[166] = 0.0318198051533804 * v[52] + 0.0318198051534089 * v[55] + 0.117 * v[48] + v[49];
+            y[168] = 0.0530330085889673 * v[53] + 0.0530330085890148 * v[42] + 0.117 * v[37] + v[29];
+            y[169] = 0.0530330085889673 * v[56] + 0.0530330085890148 * v[31] + 0.117 * v[45] + v[46];
+            y[170] = 0.0530330085889673 * v[52] + 0.0530330085890148 * v[55] + 0.117 * v[48] + v[49];
+            y[172] = -0.0530330085889673 * v[53] + -0.0530330085890148 * v[42] + 0.137 * v[37] + v[29];
+            y[173] = -0.0530330085889673 * v[56] + -0.0530330085890148 * v[31] + 0.137 * v[45] + v[46];
+            y[174] = -0.0530330085889673 * v[52] + -0.0530330085890148 * v[55] + 0.137 * v[48] + v[49];
+            y[176] = -0.0318198051533804 * v[53] + -0.0318198051534089 * v[42] + 0.137 * v[37] + v[29];
+            y[177] = -0.0318198051533804 * v[56] + -0.0318198051534089 * v[31] + 0.137 * v[45] + v[46];
+            y[178] = -0.0318198051533804 * v[52] + -0.0318198051534089 * v[55] + 0.137 * v[48] + v[49];
+            y[180] = -0.0106066017177935 * v[53] + -0.010606601717803 * v[42] + 0.137 * v[37] + v[29];
+            y[181] = -0.0106066017177935 * v[56] + -0.010606601717803 * v[31] + 0.137 * v[45] + v[46];
+            y[182] = -0.0106066017177935 * v[52] + -0.010606601717803 * v[55] + 0.137 * v[48] + v[49];
+            y[184] = 0.0106066017177935 * v[53] + 0.010606601717803 * v[42] + 0.137 * v[37] + v[29];
+            y[185] = 0.0106066017177935 * v[56] + 0.010606601717803 * v[31] + 0.137 * v[45] + v[46];
+            y[186] = 0.0106066017177935 * v[52] + 0.010606601717803 * v[55] + 0.137 * v[48] + v[49];
+            y[188] = 0.0318198051533804 * v[53] + 0.0318198051534089 * v[42] + 0.137 * v[37] + v[29];
+            y[189] = 0.0318198051533804 * v[56] + 0.0318198051534089 * v[31] + 0.137 * v[45] + v[46];
+            y[190] = 0.0318198051533804 * v[52] + 0.0318198051534089 * v[55] + 0.137 * v[48] + v[49];
+            y[192] = 0.0530330085889673 * v[53] + 0.0530330085890148 * v[42] + 0.137 * v[37] + v[29];
+            y[193] = 0.0530330085889673 * v[56] + 0.0530330085890148 * v[31] + 0.137 * v[45] + v[46];
+            y[194] = 0.0530330085889673 * v[52] + 0.0530330085890148 * v[55] + 0.137 * v[48] + v[49];
+            y[196] = -0.0530330085889673 * v[53] + -0.0530330085890148 * v[42] + 0.157 * v[37] + v[29];
+            y[197] = -0.0530330085889673 * v[56] + -0.0530330085890148 * v[31] + 0.157 * v[45] + v[46];
+            y[198] = -0.0530330085889673 * v[52] + -0.0530330085890148 * v[55] + 0.157 * v[48] + v[49];
+            y[200] = -0.0318198051533804 * v[53] + -0.0318198051534089 * v[42] + 0.157 * v[37] + v[29];
+            y[201] = -0.0318198051533804 * v[56] + -0.0318198051534089 * v[31] + 0.157 * v[45] + v[46];
+            y[202] = -0.0318198051533804 * v[52] + -0.0318198051534089 * v[55] + 0.157 * v[48] + v[49];
+            y[204] = -0.0106066017177935 * v[53] + -0.010606601717803 * v[42] + 0.157 * v[37] + v[29];
+            y[205] = -0.0106066017177935 * v[56] + -0.010606601717803 * v[31] + 0.157 * v[45] + v[46];
+            y[206] = -0.0106066017177935 * v[52] + -0.010606601717803 * v[55] + 0.157 * v[48] + v[49];
+            y[208] = 0.0106066017177935 * v[53] + 0.010606601717803 * v[42] + 0.157 * v[37] + v[29];
+            y[209] = 0.0106066017177935 * v[56] + 0.010606601717803 * v[31] + 0.157 * v[45] + v[46];
+            y[210] = 0.0106066017177935 * v[52] + 0.010606601717803 * v[55] + 0.157 * v[48] + v[49];
+            y[212] = 0.0318198051533804 * v[53] + 0.0318198051534089 * v[42] + 0.157 * v[37] + v[29];
+            y[213] = 0.0318198051533804 * v[56] + 0.0318198051534089 * v[31] + 0.157 * v[45] + v[46];
+            y[214] = 0.0318198051533804 * v[52] + 0.0318198051534089 * v[55] + 0.157 * v[48] + v[49];
+            y[216] = 0.0530330085889673 * v[53] + 0.0530330085890148 * v[42] + 0.157 * v[37] + v[29];
+            y[217] = 0.0530330085889673 * v[56] + 0.0530330085890148 * v[31] + 0.157 * v[45] + v[46];
+            y[218] = 0.0530330085889673 * v[52] + 0.0530330085890148 * v[55] + 0.157 * v[48] + v[49];
+            y[220] = 0.0565685424948984 * v[53] + 0.0565685424949492 * v[42] + 0.1874 * v[37] + v[29];
+            y[221] = 0.0565685424948984 * v[56] + 0.0565685424949492 * v[31] + 0.1874 * v[45] + v[46];
+            y[222] = 0.0565685424948984 * v[52] + 0.0565685424949492 * v[55] + 0.1874 * v[48] + v[49];
+            y[224] = 0.0516187950265948 * v[53] + 0.0516187950266411 * v[42] + 0.2094 * v[37] + v[29];
+            y[225] = 0.0516187950265948 * v[56] + 0.0516187950266411 * v[31] + 0.2094 * v[45] + v[46];
+            y[226] = 0.0516187950265948 * v[52] + 0.0516187950266411 * v[55] + 0.2094 * v[48] + v[49];
+            y[228] = -0.0565685424948984 * v[53] + -0.0565685424949492 * v[42] + 0.1874 * v[37] + v[29];
+            y[229] = -0.0565685424948984 * v[56] + -0.0565685424949492 * v[31] + 0.1874 * v[45] + v[46];
+            y[230] = -0.0565685424948984 * v[52] + -0.0565685424949492 * v[55] + 0.1874 * v[48] + v[49];
+            y[232] = -0.0516187950265948 * v[53] + -0.0516187950266411 * v[42] + 0.2094 * v[37] + v[29];
+            y[233] = -0.0516187950265948 * v[56] + -0.0516187950266411 * v[31] + 0.2094 * v[45] + v[46];
+            y[234] = -0.0516187950265948 * v[52] + -0.0516187950266411 * v[55] + 0.2094 * v[48] + v[49];
+            y[240] = -0.0399999991059303 * v[1];
+            y[241] = -0.0399999991059303 * v[2];
+            y[244] = -0.0850000008940697 * v[7] + 0.0399999991059303 * v[1];
+            y[245] = -0.0850000008940697 * v[6] + 0.0399999991059303 * v[2];
+            y[246] = 0.333 + 1.95865541626434e-13 + -0.0850000008940697 * v[4];
+            y[248] =
+                0.0385857857763767 * v[19] + 0.0289393402636051 * v[15] + -0.0517677664756775 * v[8] + v[9];
+            y[249] =
+                0.0385857857763767 * v[5] + 0.0289393402636051 * v[14] + -0.0517677664756775 * v[10] + v[11];
+            y[250] =
+                0.0385857857763767 * v[18] + 0.0289393402636051 * v[3] + -0.0517677664756775 * v[12] + v[13];
+            y[252] =
+                -0.041449997574091 * v[17] + 0.0492218732833862 * v[23] + 0.0289125014096498 * v[21] + v[24];
+            y[253] =
+                -0.041449997574091 * v[25] + 0.0492218732833862 * v[26] + 0.0289125014096498 * v[20] + v[27];
+            y[254] =
+                -0.041449997574091 * v[16] + 0.0492218732833862 * v[22] + 0.0289125014096498 * v[28] + v[0];
+            y[256] = 0.0375000014901161 * v[34] + -0.109999999403954 * v[32] + y[116];
+            y[257] = 0.0375000014901161 * v[35] + -0.109999999403954 * v[30] + y[117];
+            y[258] = 0.0375000014901161 * v[33] + -0.109999999403954 * v[36] + y[118];
+            y[260] = 0.0424309633672237 * v[41] + 0.0144476993009448 * v[38] + y[116];
+            y[261] = 0.0424309633672237 * v[44] + 0.0144476993009448 * v[39] + y[117];
+            y[262] = 0.0424309633672237 * v[40] + 0.0144476993009448 * v[43] + y[118];
+            y[264] =
+                0.0153005504980683 * v[53] + 0.0153005504980683 * v[42] + 0.0745901614427567 * v[37] + v[29];
+            y[265] =
+                0.0153005504980683 * v[56] + 0.0153005504980683 * v[31] + 0.0745901614427567 * v[45] + v[46];
+            y[266] =
+                0.0153005504980683 * v[52] + 0.0153005504980683 * v[55] + 0.0745901614427567 * v[48] + v[49];
+            y[268] = -5.20417042793042e-18 * v[53] + -2.16840434497101e-18 * v[42] +
+                     0.129201397299767 * v[37] + v[29];
+            y[269] = -5.20417042793042e-18 * v[56] + -2.16840434497101e-18 * v[31] +
+                     0.129201397299767 * v[45] + v[46];
+            y[270] = -5.20417042793042e-18 * v[52] + -2.16840434497101e-18 * v[55] +
+                     0.129201397299767 * v[48] + v[49];
+            y[272] =
+                0.0540936700999737 * v[53] + 0.0540936700999737 * v[42] + 0.198400005698204 * v[37] + v[29];
+            y[273] =
+                0.0540936700999737 * v[56] + 0.0540936700999737 * v[31] + 0.198400005698204 * v[45] + v[46];
+            y[274] =
+                0.0540936700999737 * v[52] + 0.0540936700999737 * v[55] + 0.198400005698204 * v[48] + v[49];
+            y[276] =
+                -0.0540936700999737 * v[53] + -0.0540936700999737 * v[42] + 0.198400005698204 * v[37] + v[29];
+            y[277] =
+                -0.0540936700999737 * v[56] + -0.0540936700999737 * v[31] + 0.198400005698204 * v[45] + v[46];
+            y[278] =
+                -0.0540936700999737 * v[52] + -0.0540936700999737 * v[55] + 0.198400005698204 * v[48] + v[49];
+            // dependent variables without operations
+            y[0] = 0.;
+            y[1] = 0.;
+            y[2] = 0.05;
+            y[3] = 0.0799999982118607;
+            y[6] = 0.333;
+            y[7] = 0.0599999986588955;
+            y[10] = 0.333;
+            y[11] = 0.0599999986588955;
+            y[12] = 0.;
+            y[13] = 0.;
+            y[14] = 0.213;
+            y[15] = 0.0599999986588955;
+            y[16] = 0.;
+            y[17] = 0.;
+            y[18] = 0.163;
+            y[19] = 0.0599999986588955;
+            y[22] = 0.333000000000147;
+            y[23] = 0.0599999986588955;
+            y[26] = 0.333000000000392;
+            y[27] = 0.0599999986588955;
+            y[31] = 0.0599999986588955;
+            y[35] = 0.0599999986588955;
+            y[39] = 0.0599999986588955;
+            y[43] = 0.0500000007450581;
+            y[47] = 0.0549999997019768;
+            y[51] = 0.0549999997019768;
+            y[55] = 0.0599999986588955;
+            y[59] = 0.0549999997019768;
+            y[63] = 0.0549999997019768;
+            y[67] = 0.0549999997019768;
+            y[71] = 0.0599999986588955;
+            y[75] = 0.0599999986588955;
+            y[79] = 0.0599999986588955;
+            y[83] = 0.0500000007450581;
+            y[87] = 0.025000000372529;
+            y[91] = 0.025000000372529;
+            y[95] = 0.025000000372529;
+            y[99] = 0.025000000372529;
+            y[103] = 0.025000000372529;
+            y[107] = 0.025000000372529;
+            y[111] = 0.025000000372529;
+            y[115] = 0.025000000372529;
+            y[119] = 0.0500000007450581;
+            y[123] = 0.0500000007450581;
+            y[127] = 0.0520000010728836;
+            y[131] = 0.0500000007450581;
+            y[135] = 0.025000000372529;
+            y[139] = 0.025000000372529;
+            y[143] = 0.0199999995529652;
+            y[147] = 0.0199999995529652;
+            y[151] = 0.0280000008642673;
+            y[155] = 0.0280000008642673;
+            y[159] = 0.0280000008642673;
+            y[163] = 0.0280000008642673;
+            y[167] = 0.0280000008642673;
+            y[171] = 0.0280000008642673;
+            y[175] = 0.0260000005364418;
+            y[179] = 0.0260000005364418;
+            y[183] = 0.0260000005364418;
+            y[187] = 0.0260000005364418;
+            y[191] = 0.0260000005364418;
+            y[195] = 0.0260000005364418;
+            y[199] = 0.0240000002086163;
+            y[203] = 0.0240000002086163;
+            y[207] = 0.0240000002086163;
+            y[211] = 0.0240000002086163;
+            y[215] = 0.0240000002086163;
+            y[219] = 0.0240000002086163;
+            y[223] = 0.0120000001043081;
+            y[227] = 0.0120000001043081;
+            y[231] = 0.0120000001043081;
+            y[235] = 0.0120000001043081;
+            y[236] = 0.;
+            y[237] = 0.;
+            y[238] = 0.0500000007450581;
+            y[239] = 0.0799999982118607;
+            y[242] = 0.24799999910593;
+            y[243] = 0.153941467404366;
+            y[247] = 0.153941467404366;
+            y[251] = 0.128210678696632;
+            y[255] = 0.126465573906898;
+            y[259] = 0.176216393709183;
+            y[263] = 0.0948232412338257;
+            y[267] = 0.0721197500824928;
+            y[271] = 0.103986009955406;
+            y[275] = 0.0235433969646692;
+            y[279] = 0.0235433969646692;
+
+            FloatVector<rake, 59> dists;
+            FloatVector<rake, 59 * 3> grads;
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[0], y[1], y[2], y[3]);
+                dists[0] = res.first;
+                grads[0] = res.second[0];
+                grads[1] = res.second[1];
+                grads[2] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[4], y[5], y[6], y[7]);
+                dists[1] = res.first;
+                grads[3] = res.second[0];
+                grads[4] = res.second[1];
+                grads[5] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[8], y[9], y[10], y[11]);
+                dists[2] = res.first;
+                grads[6] = res.second[0];
+                grads[7] = res.second[1];
+                grads[8] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[12], y[13], y[14], y[15]);
+                dists[3] = res.first;
+                grads[9] = res.second[0];
+                grads[10] = res.second[1];
+                grads[11] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[16], y[17], y[18], y[19]);
+                dists[4] = res.first;
+                grads[12] = res.second[0];
+                grads[13] = res.second[1];
+                grads[14] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[20], y[21], y[22], y[23]);
+                dists[5] = res.first;
+                grads[15] = res.second[0];
+                grads[16] = res.second[1];
+                grads[17] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[24], y[25], y[26], y[27]);
+                dists[6] = res.first;
+                grads[18] = res.second[0];
+                grads[19] = res.second[1];
+                grads[20] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[28], y[29], y[30], y[31]);
+                dists[7] = res.first;
+                grads[21] = res.second[0];
+                grads[22] = res.second[1];
+                grads[23] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[32], y[33], y[34], y[35]);
+                dists[8] = res.first;
+                grads[24] = res.second[0];
+                grads[25] = res.second[1];
+                grads[26] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[36], y[37], y[38], y[39]);
+                dists[9] = res.first;
+                grads[27] = res.second[0];
+                grads[28] = res.second[1];
+                grads[29] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[40], y[41], y[42], y[43]);
+                dists[10] = res.first;
+                grads[30] = res.second[0];
+                grads[31] = res.second[1];
+                grads[32] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[44], y[45], y[46], y[47]);
+                dists[11] = res.first;
+                grads[33] = res.second[0];
+                grads[34] = res.second[1];
+                grads[35] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[48], y[49], y[50], y[51]);
+                dists[12] = res.first;
+                grads[36] = res.second[0];
+                grads[37] = res.second[1];
+                grads[38] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[52], y[53], y[54], y[55]);
+                dists[13] = res.first;
+                grads[39] = res.second[0];
+                grads[40] = res.second[1];
+                grads[41] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[56], y[57], y[58], y[59]);
+                dists[14] = res.first;
+                grads[42] = res.second[0];
+                grads[43] = res.second[1];
+                grads[44] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[60], y[61], y[62], y[63]);
+                dists[15] = res.first;
+                grads[45] = res.second[0];
+                grads[46] = res.second[1];
+                grads[47] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[64], y[65], y[66], y[67]);
+                dists[16] = res.first;
+                grads[48] = res.second[0];
+                grads[49] = res.second[1];
+                grads[50] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[68], y[69], y[70], y[71]);
+                dists[17] = res.first;
+                grads[51] = res.second[0];
+                grads[52] = res.second[1];
+                grads[53] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[72], y[73], y[74], y[75]);
+                dists[18] = res.first;
+                grads[54] = res.second[0];
+                grads[55] = res.second[1];
+                grads[56] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[76], y[77], y[78], y[79]);
+                dists[19] = res.first;
+                grads[57] = res.second[0];
+                grads[58] = res.second[1];
+                grads[59] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[80], y[81], y[82], y[83]);
+                dists[20] = res.first;
+                grads[60] = res.second[0];
+                grads[61] = res.second[1];
+                grads[62] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[84], y[85], y[86], y[87]);
+                dists[21] = res.first;
+                grads[63] = res.second[0];
+                grads[64] = res.second[1];
+                grads[65] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[88], y[89], y[90], y[91]);
+                dists[22] = res.first;
+                grads[66] = res.second[0];
+                grads[67] = res.second[1];
+                grads[68] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[92], y[93], y[94], y[95]);
+                dists[23] = res.first;
+                grads[69] = res.second[0];
+                grads[70] = res.second[1];
+                grads[71] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[96], y[97], y[98], y[99]);
+                dists[24] = res.first;
+                grads[72] = res.second[0];
+                grads[73] = res.second[1];
+                grads[74] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[100], y[101], y[102], y[103]);
+                dists[25] = res.first;
+                grads[75] = res.second[0];
+                grads[76] = res.second[1];
+                grads[77] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[104], y[105], y[106], y[107]);
+                dists[26] = res.first;
+                grads[78] = res.second[0];
+                grads[79] = res.second[1];
+                grads[80] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[108], y[109], y[110], y[111]);
+                dists[27] = res.first;
+                grads[81] = res.second[0];
+                grads[82] = res.second[1];
+                grads[83] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[112], y[113], y[114], y[115]);
+                dists[28] = res.first;
+                grads[84] = res.second[0];
+                grads[85] = res.second[1];
+                grads[86] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[116], y[117], y[118], y[119]);
+                dists[29] = res.first;
+                grads[87] = res.second[0];
+                grads[88] = res.second[1];
+                grads[89] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[120], y[121], y[122], y[123]);
+                dists[30] = res.first;
+                grads[90] = res.second[0];
+                grads[91] = res.second[1];
+                grads[92] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[124], y[125], y[126], y[127]);
+                dists[31] = res.first;
+                grads[93] = res.second[0];
+                grads[94] = res.second[1];
+                grads[95] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[128], y[129], y[130], y[131]);
+                dists[32] = res.first;
+                grads[96] = res.second[0];
+                grads[97] = res.second[1];
+                grads[98] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[132], y[133], y[134], y[135]);
+                dists[33] = res.first;
+                grads[99] = res.second[0];
+                grads[100] = res.second[1];
+                grads[101] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[136], y[137], y[138], y[139]);
+                dists[34] = res.first;
+                grads[102] = res.second[0];
+                grads[103] = res.second[1];
+                grads[104] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[140], y[141], y[142], y[143]);
+                dists[35] = res.first;
+                grads[105] = res.second[0];
+                grads[106] = res.second[1];
+                grads[107] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[144], y[145], y[146], y[147]);
+                dists[36] = res.first;
+                grads[108] = res.second[0];
+                grads[109] = res.second[1];
+                grads[110] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[148], y[149], y[150], y[151]);
+                dists[37] = res.first;
+                grads[111] = res.second[0];
+                grads[112] = res.second[1];
+                grads[113] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[152], y[153], y[154], y[155]);
+                dists[38] = res.first;
+                grads[114] = res.second[0];
+                grads[115] = res.second[1];
+                grads[116] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[156], y[157], y[158], y[159]);
+                dists[39] = res.first;
+                grads[117] = res.second[0];
+                grads[118] = res.second[1];
+                grads[119] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[160], y[161], y[162], y[163]);
+                dists[40] = res.first;
+                grads[120] = res.second[0];
+                grads[121] = res.second[1];
+                grads[122] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[164], y[165], y[166], y[167]);
+                dists[41] = res.first;
+                grads[123] = res.second[0];
+                grads[124] = res.second[1];
+                grads[125] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[168], y[169], y[170], y[171]);
+                dists[42] = res.first;
+                grads[126] = res.second[0];
+                grads[127] = res.second[1];
+                grads[128] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[172], y[173], y[174], y[175]);
+                dists[43] = res.first;
+                grads[129] = res.second[0];
+                grads[130] = res.second[1];
+                grads[131] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[176], y[177], y[178], y[179]);
+                dists[44] = res.first;
+                grads[132] = res.second[0];
+                grads[133] = res.second[1];
+                grads[134] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[180], y[181], y[182], y[183]);
+                dists[45] = res.first;
+                grads[135] = res.second[0];
+                grads[136] = res.second[1];
+                grads[137] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[184], y[185], y[186], y[187]);
+                dists[46] = res.first;
+                grads[138] = res.second[0];
+                grads[139] = res.second[1];
+                grads[140] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[188], y[189], y[190], y[191]);
+                dists[47] = res.first;
+                grads[141] = res.second[0];
+                grads[142] = res.second[1];
+                grads[143] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[192], y[193], y[194], y[195]);
+                dists[48] = res.first;
+                grads[144] = res.second[0];
+                grads[145] = res.second[1];
+                grads[146] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[196], y[197], y[198], y[199]);
+                dists[49] = res.first;
+                grads[147] = res.second[0];
+                grads[148] = res.second[1];
+                grads[149] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[200], y[201], y[202], y[203]);
+                dists[50] = res.first;
+                grads[150] = res.second[0];
+                grads[151] = res.second[1];
+                grads[152] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[204], y[205], y[206], y[207]);
+                dists[51] = res.first;
+                grads[153] = res.second[0];
+                grads[154] = res.second[1];
+                grads[155] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[208], y[209], y[210], y[211]);
+                dists[52] = res.first;
+                grads[156] = res.second[0];
+                grads[157] = res.second[1];
+                grads[158] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[212], y[213], y[214], y[215]);
+                dists[53] = res.first;
+                grads[159] = res.second[0];
+                grads[160] = res.second[1];
+                grads[161] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[216], y[217], y[218], y[219]);
+                dists[54] = res.first;
+                grads[162] = res.second[0];
+                grads[163] = res.second[1];
+                grads[164] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[220], y[221], y[222], y[223]);
+                dists[55] = res.first;
+                grads[165] = res.second[0];
+                grads[166] = res.second[1];
+                grads[167] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[224], y[225], y[226], y[227]);
+                dists[56] = res.first;
+                grads[168] = res.second[0];
+                grads[169] = res.second[1];
+                grads[170] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[228], y[229], y[230], y[231]);
+                dists[57] = res.first;
+                grads[171] = res.second[0];
+                grads[172] = res.second[1];
+                grads[173] = res.second[2];
+            }
+
+            {
+                auto res = vamp::sphere_environment_signed_distance_and_gradient(
+                    environment, y[232], y[233], y[234], y[235]);
+                dists[58] = res.first;
+                grads[174] = res.second[0];
+                grads[175] = res.second[1];
+                grads[176] = res.second[2];
+            }
+
+            return {dists, grads};
+        }
+
+        template <std::size_t rake>
+        inline static void d_collision_d_q(
+            const ConfigurationBlock<rake> &q_in,
+            const FloatVector<rake, 59 * 3> &gradients,
+            ConfigurationBlock<rake> &out) noexcept
+        {
+            // Generated code expects a single input array 'x' containing
+            // [q_0, ..., q_n, gx_0, gy_0, gz_0, ..., gx_m, gy_m, gz_m]
+            std::array<FloatVector<rake, 1>, 7 + 59 * 3 + 11 * 3> x;
+
+            // Copy q
+            for (std::size_t i = 0; i < 7; ++i)
+            {
+                x[i] = q_in[i];
+            }
+
+            // Copy gradients
+            for (std::size_t i = 0; i < 59 * 3; ++i)
+            {
+                x[7 + i] = gradients[i];
+            }
+
+            std::array<FloatVector<rake, 1>, 232> v;
+            std::array<FloatVector<rake, 1>, 7> y;
+
+            v[0] = sin(x[0]);
+            v[1] = -v[0];
+            v[2] = cos(x[0]);
+            v[3] = 0.03 * v[1];
+            v[4] = 0.03 * v[2];
+            v[5] = v[3] * x[23] - v[4] * x[22];
+            v[6] = 0.08 * v[1];
+            v[7] = 0.08 * v[2];
+            v[8] = v[6] * x[26] - v[7] * x[25];
+            v[9] = sin(x[1]);
+            v[10] = -v[9];
+            v[11] = cos(x[1]);
+            v[12] = 4.89663865010925e-12 * v[11];
+            v[13] = v[2] * v[10] + v[1] * v[12];
+            v[14] = -0.12 * v[13];
+            v[12] = v[0] * v[10] + v[2] * v[12];
+            v[10] = -0.12 * v[12];
+            v[15] = v[14] * x[29] - v[10] * x[28];
+            v[16] = -0.17 * v[13];
+            v[17] = -0.17 * v[12];
+            v[18] = v[16] * x[32] - v[17] * x[31];
+            v[19] = -0.316 * v[12];
+            v[20] = -0.316 * v[13];
+            v[21] = -1. * v[13] + 4.89663865010925e-12 * v[1];
+            v[22] = -0.1 * v[21];
+            v[23] = -1. * v[12] + 4.89663865010925e-12 * v[2];
+            v[24] = -0.1 * v[23];
+            v[25] = v[22] * x[35] - v[24] * x[34];
+            v[26] = -0.06 * v[21];
+            v[27] = -0.06 * v[23];
+            v[28] = v[26] * x[38] - v[27] * x[37];
+            v[29] = 4.89663865010925e-12 * v[9];
+            v[30] = v[2] * v[11] + v[1] * v[29];
+            v[31] = cos(x[2]);
+            v[32] = sin(x[2]);
+            v[33] = 4.89663865010925e-12 * v[32];
+            v[34] = v[30] * v[31] + v[13] * v[33] + v[1] * v[32];
+            v[35] = -v[32];
+            v[36] = 4.89663865010925e-12 * v[31];
+            v[30] = v[30] * v[35] + v[13] * v[36] + v[1] * v[31];
+            v[37] = 0.08 * v[34] + 0.06 * v[30];
+            v[29] = v[0] * v[11] + v[2] * v[29];
+            v[0] = v[29] * v[31] + v[12] * v[33] + v[2] * v[32];
+            v[29] = v[29] * v[35] + v[12] * v[36] + v[2] * v[31];
+            v[38] = 0.08 * v[0] + 0.06 * v[29];
+            v[39] = v[37] * x[41] - v[38] * x[40];
+            v[40] = 0.08 * v[34] + 0.02 * v[30];
+            v[41] = 0.08 * v[0] + 0.02 * v[29];
+            v[42] = v[40] * x[44] - v[41] * x[43];
+            v[43] = v[19] + 0.0825 * v[0];
+            v[44] = v[20] + 0.0825 * v[34];
+            v[45] = cos(x[3]);
+            v[46] = sin(x[3]);
+            v[47] = 4.89663865010925e-12 * v[46];
+            v[48] = v[34] * v[45] + v[30] * v[47] + v[21] * v[46];
+            v[49] = -v[46];
+            v[50] = 4.89663865010925e-12 * v[45];
+            v[51] = v[34] * v[49] + v[30] * v[50] + v[21] * v[45];
+            v[52] = -0.08 * v[48] + 0.095 * v[51];
+            v[53] = v[0] * v[45] + v[29] * v[47] + v[23] * v[46];
+            v[54] = v[0] * v[49] + v[29] * v[50] + v[23] * v[45];
+            v[55] = -0.08 * v[53] + 0.095 * v[54];
+            v[56] = v[52] * x[47] - v[55] * x[46];
+            v[57] = -1. * v[30] + 4.89663865010925e-12 * v[21];
+            v[58] = 0.02 * v[57];
+            v[59] = -1. * v[29] + 4.89663865010925e-12 * v[23];
+            v[60] = 0.02 * v[59];
+            v[61] = v[58] * x[50] - v[60] * x[49];
+            v[62] = 0.06 * v[57];
+            v[63] = 0.06 * v[59];
+            v[64] = v[62] * x[53] - v[63] * x[52];
+            v[65] = -0.08 * v[48] + 0.06 * v[51];
+            v[66] = -0.08 * v[53] + 0.06 * v[54];
+            v[67] = v[65] * x[56] - v[66] * x[55];
+            v[68] = v[43] + -0.0825 * v[53] + 0.384 * v[54];
+            v[69] = v[44] + -0.0825 * v[48] + 0.384 * v[51];
+            v[70] = sin(x[4]);
+            v[71] = -v[70];
+            v[72] = cos(x[4]);
+            v[73] = 4.89663865010925e-12 * v[72];
+            v[74] = -1. * v[72];
+            v[75] = v[48] * v[71] + v[51] * v[73] + v[57] * v[74];
+            v[76] = 0.055 * v[75];
+            v[77] = v[53] * v[71] + v[54] * v[73] + v[59] * v[74];
+            v[78] = 0.055 * v[77];
+            v[79] = v[76] * x[59] - v[78] * x[58];
+            v[80] = 0.075 * v[75];
+            v[81] = 0.075 * v[77];
+            v[82] = v[80] * x[62] - v[81] * x[61];
+            v[83] = v[51] + 4.89663865010925e-12 * v[57];
+            v[84] = -0.22 * v[83];
+            v[85] = v[54] + 4.89663865010925e-12 * v[59];
+            v[86] = -0.22 * v[85];
+            v[87] = v[84] * x[65] - v[86] * x[64];
+            v[88] = 0.05 * v[75] + -0.18 * v[83];
+            v[89] = 0.05 * v[77] + -0.18 * v[85];
+            v[90] = v[88] * x[68] - v[89] * x[67];
+            v[91] = 4.89663865010925e-12 * v[70];
+            v[70] = -1. * v[70];
+            v[92] = v[48] * v[72] + v[51] * v[91] + v[57] * v[70];
+            v[93] = 0.01 * v[92] + 0.08 * v[75] + -0.14 * v[83];
+            v[94] = v[53] * v[72] + v[54] * v[91] + v[59] * v[70];
+            v[95] = 0.01 * v[94] + 0.08 * v[77] + -0.14 * v[85];
+            v[96] = v[93] * x[71] - v[95] * x[70];
+            v[97] = 0.01 * v[92] + 0.085 * v[75] + -0.11 * v[83];
+            v[98] = 0.01 * v[94] + 0.085 * v[77] + -0.11 * v[85];
+            v[99] = v[97] * x[74] - v[98] * x[73];
+            v[100] = 0.01 * v[92] + 0.09 * v[75] + -0.08 * v[83];
+            v[101] = 0.01 * v[94] + 0.09 * v[77] + -0.08 * v[85];
+            v[102] = v[100] * x[77] - v[101] * x[76];
+            v[103] = 0.01 * v[92] + 0.095 * v[75] + -0.05 * v[83];
+            v[104] = 0.01 * v[94] + 0.095 * v[77] + -0.05 * v[85];
+            v[105] = v[103] * x[80] - v[104] * x[79];
+            v[106] = -0.01 * v[92] + 0.08 * v[75] + -0.14 * v[83];
+            v[107] = -0.01 * v[94] + 0.08 * v[77] + -0.14 * v[85];
+            v[108] = v[106] * x[83] - v[107] * x[82];
+            v[109] = -0.01 * v[92] + 0.085 * v[75] + -0.11 * v[83];
+            v[110] = -0.01 * v[94] + 0.085 * v[77] + -0.11 * v[85];
+            v[111] = v[109] * x[86] - v[110] * x[85];
+            v[112] = -0.01 * v[92] + 0.09 * v[75] + -0.08 * v[83];
+            v[113] = -0.01 * v[94] + 0.09 * v[77] + -0.08 * v[85];
+            v[114] = v[112] * x[89] - v[113] * x[88];
+            v[115] = -0.01 * v[92] + 0.095 * v[75] + -0.05 * v[83];
+            v[116] = -0.01 * v[94] + 0.095 * v[77] + -0.05 * v[85];
+            v[117] = v[115] * x[92] - v[116] * x[91];
+            v[118] = cos(x[5]);
+            v[119] = sin(x[5]);
+            v[120] = 4.89663865010925e-12 * v[119];
+            v[121] = v[92] * v[118] + v[75] * v[120] + v[83] * v[119];
+            v[122] = -v[119];
+            v[123] = 4.89663865010925e-12 * v[118];
+            v[92] = v[92] * v[122] + v[75] * v[123] + v[83] * v[118];
+            v[124] = 0.08 * v[121] + -0.01 * v[92];
+            v[125] = v[94] * v[118] + v[77] * v[120] + v[85] * v[119];
+            v[94] = v[94] * v[122] + v[77] * v[123] + v[85] * v[118];
+            v[126] = 0.08 * v[125] + -0.01 * v[94];
+            v[127] = v[124] * x[98] - v[126] * x[97];
+            v[128] = 0.08 * v[121] + 0.035 * v[92];
+            v[129] = 0.08 * v[125] + 0.035 * v[94];
+            v[130] = v[128] * x[101] - v[129] * x[100];
+            v[131] = v[68] + 0.088 * v[125];
+            v[132] = v[69] + 0.088 * v[121];
+            v[133] = -1. * v[75] + 4.89663865010925e-12 * v[83];
+            v[134] = -1. * v[92] + 4.89663865010925e-12 * v[133];
+            v[135] = 0.07 * v[134];
+            v[136] = -1. * v[77] + 4.89663865010925e-12 * v[85];
+            v[137] = -1. * v[94] + 4.89663865010925e-12 * v[136];
+            v[138] = 0.07 * v[137];
+            v[139] = v[135] * x[104] - v[138] * x[103];
+            v[140] = cos(x[6]);
+            v[141] = sin(x[6]);
+            v[142] = 4.89663865010925e-12 * v[141];
+            v[143] = v[121] * v[140] + v[92] * v[142] + v[133] * v[141];
+            v[144] = -v[141];
+            v[145] = 4.89663865010925e-12 * v[140];
+            v[133] = v[121] * v[144] + v[92] * v[145] + v[133] * v[140];
+            v[146] = 0.02 * v[143] + 0.04 * v[133] + 0.08 * v[134];
+            v[147] = v[125] * v[140] + v[94] * v[142] + v[136] * v[141];
+            v[136] = v[125] * v[144] + v[94] * v[145] + v[136] * v[140];
+            v[148] = 0.02 * v[147] + 0.04 * v[136] + 0.08 * v[137];
+            v[149] = v[146] * x[107] - v[148] * x[106];
+            v[150] = 0.04 * v[143] + 0.02 * v[133] + 0.08 * v[134];
+            v[151] = 0.04 * v[147] + 0.02 * v[136] + 0.08 * v[137];
+            v[152] = v[150] * x[110] - v[151] * x[109];
+            v[153] = 0.04 * v[143] + 0.06 * v[133] + 0.085 * v[134];
+            v[154] = 0.04 * v[147] + 0.06 * v[136] + 0.085 * v[137];
+            v[155] = v[153] * x[113] - v[154] * x[112];
+            v[156] = 0.06 * v[143] + 0.04 * v[133] + 0.085 * v[134];
+            v[157] = 0.06 * v[147] + 0.04 * v[136] + 0.085 * v[137];
+            v[158] = v[156] * x[116] - v[157] * x[115];
+            v[159] = -0.0530330085889673 * v[143] + -0.0530330085890148 * v[133] + 0.117 * v[134];
+            v[160] = -0.0530330085889673 * v[147] + -0.0530330085890148 * v[136] + 0.117 * v[137];
+            v[161] = v[159] * x[119] - v[160] * x[118];
+            v[162] = -0.0318198051533804 * v[143] + -0.0318198051534089 * v[133] + 0.117 * v[134];
+            v[163] = -0.0318198051533804 * v[147] + -0.0318198051534089 * v[136] + 0.117 * v[137];
+            v[164] = v[162] * x[122] - v[163] * x[121];
+            v[165] = -0.0106066017177935 * v[143] + -0.010606601717803 * v[133] + 0.117 * v[134];
+            v[166] = -0.0106066017177935 * v[147] + -0.010606601717803 * v[136] + 0.117 * v[137];
+            v[167] = v[165] * x[125] - v[166] * x[124];
+            v[168] = 0.0106066017177935 * v[143] + 0.010606601717803 * v[133] + 0.117 * v[134];
+            v[169] = 0.0106066017177935 * v[147] + 0.010606601717803 * v[136] + 0.117 * v[137];
+            v[170] = v[168] * x[128] - v[169] * x[127];
+            v[171] = 0.0318198051533804 * v[143] + 0.0318198051534089 * v[133] + 0.117 * v[134];
+            v[172] = 0.0318198051533804 * v[147] + 0.0318198051534089 * v[136] + 0.117 * v[137];
+            v[173] = v[171] * x[131] - v[172] * x[130];
+            v[174] = 0.0530330085889673 * v[143] + 0.0530330085890148 * v[133] + 0.117 * v[134];
+            v[175] = 0.0530330085889673 * v[147] + 0.0530330085890148 * v[136] + 0.117 * v[137];
+            v[176] = v[174] * x[134] - v[175] * x[133];
+            v[177] = -0.0530330085889673 * v[143] + -0.0530330085890148 * v[133] + 0.137 * v[134];
+            v[178] = -0.0530330085889673 * v[147] + -0.0530330085890148 * v[136] + 0.137 * v[137];
+            v[179] = v[177] * x[137] - v[178] * x[136];
+            v[180] = -0.0318198051533804 * v[143] + -0.0318198051534089 * v[133] + 0.137 * v[134];
+            v[181] = -0.0318198051533804 * v[147] + -0.0318198051534089 * v[136] + 0.137 * v[137];
+            v[182] = v[180] * x[140] - v[181] * x[139];
+            v[183] = -0.0106066017177935 * v[143] + -0.010606601717803 * v[133] + 0.137 * v[134];
+            v[184] = -0.0106066017177935 * v[147] + -0.010606601717803 * v[136] + 0.137 * v[137];
+            v[185] = v[183] * x[143] - v[184] * x[142];
+            v[186] = 0.0106066017177935 * v[143] + 0.010606601717803 * v[133] + 0.137 * v[134];
+            v[187] = 0.0106066017177935 * v[147] + 0.010606601717803 * v[136] + 0.137 * v[137];
+            v[188] = v[186] * x[146] - v[187] * x[145];
+            v[189] = 0.0318198051533804 * v[143] + 0.0318198051534089 * v[133] + 0.137 * v[134];
+            v[190] = 0.0318198051533804 * v[147] + 0.0318198051534089 * v[136] + 0.137 * v[137];
+            v[191] = v[189] * x[149] - v[190] * x[148];
+            v[192] = 0.0530330085889673 * v[143] + 0.0530330085890148 * v[133] + 0.137 * v[134];
+            v[193] = 0.0530330085889673 * v[147] + 0.0530330085890148 * v[136] + 0.137 * v[137];
+            v[194] = v[192] * x[152] - v[193] * x[151];
+            v[195] = -0.0530330085889673 * v[143] + -0.0530330085890148 * v[133] + 0.157 * v[134];
+            v[196] = -0.0530330085889673 * v[147] + -0.0530330085890148 * v[136] + 0.157 * v[137];
+            v[197] = v[195] * x[155] - v[196] * x[154];
+            v[198] = -0.0318198051533804 * v[143] + -0.0318198051534089 * v[133] + 0.157 * v[134];
+            v[199] = -0.0318198051533804 * v[147] + -0.0318198051534089 * v[136] + 0.157 * v[137];
+            v[200] = v[198] * x[158] - v[199] * x[157];
+            v[201] = -0.0106066017177935 * v[143] + -0.010606601717803 * v[133] + 0.157 * v[134];
+            v[202] = -0.0106066017177935 * v[147] + -0.010606601717803 * v[136] + 0.157 * v[137];
+            v[203] = v[201] * x[161] - v[202] * x[160];
+            v[204] = 0.0106066017177935 * v[143] + 0.010606601717803 * v[133] + 0.157 * v[134];
+            v[205] = 0.0106066017177935 * v[147] + 0.010606601717803 * v[136] + 0.157 * v[137];
+            v[206] = v[204] * x[164] - v[205] * x[163];
+            v[207] = 0.0318198051533804 * v[143] + 0.0318198051534089 * v[133] + 0.157 * v[134];
+            v[208] = 0.0318198051533804 * v[147] + 0.0318198051534089 * v[136] + 0.157 * v[137];
+            v[209] = v[207] * x[167] - v[208] * x[166];
+            v[210] = 0.0530330085889673 * v[143] + 0.0530330085890148 * v[133] + 0.157 * v[134];
+            v[211] = 0.0530330085889673 * v[147] + 0.0530330085890148 * v[136] + 0.157 * v[137];
+            v[212] = v[210] * x[170] - v[211] * x[169];
+            v[213] = 0.0565685424948984 * v[143] + 0.0565685424949492 * v[133] + 0.1874 * v[134];
+            v[214] = 0.0565685424948984 * v[147] + 0.0565685424949492 * v[136] + 0.1874 * v[137];
+            v[215] = v[213] * x[173] - v[214] * x[172];
+            v[216] = 0.0516187950265948 * v[143] + 0.0516187950266411 * v[133] + 0.2094 * v[134];
+            v[217] = 0.0516187950265948 * v[147] + 0.0516187950266411 * v[136] + 0.2094 * v[137];
+            v[218] = v[216] * x[176] - v[217] * x[175];
+            v[219] = -0.0565685424948984 * v[143] + -0.0565685424949492 * v[133] + 0.1874 * v[134];
+            v[220] = -0.0565685424948984 * v[147] + -0.0565685424949492 * v[136] + 0.1874 * v[137];
+            v[221] = v[219] * x[179] - v[220] * x[178];
+            v[222] = -0.0516187950265948 * v[143] + -0.0516187950266411 * v[133] + 0.2094 * v[134];
+            v[223] = -0.0516187950265948 * v[147] + -0.0516187950266411 * v[136] + 0.2094 * v[137];
+            v[224] = v[222] * x[182] - v[223] * x[181];
+            v[13] = -0.0850000008940697 * v[13] + 0.0399999991059303 * v[1];
+            v[12] = -0.0850000008940697 * v[12] + 0.0399999991059303 * v[2];
+            v[225] = v[13] * x[191] - v[12] * x[190];
+            v[30] = 0.0385857857763767 * v[34] + 0.0289393402636051 * v[30] + -0.0517677664756775 * v[21];
+            v[29] = 0.0385857857763767 * v[0] + 0.0289393402636051 * v[29] + -0.0517677664756775 * v[23];
+            v[0] = v[30] * x[194] - v[29] * x[193];
+            v[57] = -0.041449997574091 * v[48] + 0.0492218732833862 * v[51] + 0.0289125014096498 * v[57];
+            v[59] = -0.041449997574091 * v[53] + 0.0492218732833862 * v[54] + 0.0289125014096498 * v[59];
+            v[54] = v[57] * x[197] - v[59] * x[196];
+            v[83] = 0.0375000014901161 * v[75] + -0.109999999403954 * v[83];
+            v[85] = 0.0375000014901161 * v[77] + -0.109999999403954 * v[85];
+            v[77] = v[83] * x[200] - v[85] * x[199];
+            v[92] = 0.0424309633672237 * v[121] + 0.0144476993009448 * v[92];
+            v[94] = 0.0424309633672237 * v[125] + 0.0144476993009448 * v[94];
+            v[125] = v[92] * x[203] - v[94] * x[202];
+            v[121] = 0.0153005504980683 * v[143] + 0.0153005504980683 * v[133] + 0.0745901614427567 * v[134];
+            v[75] = 0.0153005504980683 * v[147] + 0.0153005504980683 * v[136] + 0.0745901614427567 * v[137];
+            v[53] = v[121] * x[206] - v[75] * x[205];
+            v[51] =
+                -5.20417042793042e-18 * v[143] + -2.16840434497101e-18 * v[133] + 0.129201397299767 * v[134];
+            v[48] =
+                -5.20417042793042e-18 * v[147] + -2.16840434497101e-18 * v[136] + 0.129201397299767 * v[137];
+            v[23] = v[51] * x[209] - v[48] * x[208];
+            v[34] = 0.0540936700999737 * v[143] + 0.0540936700999737 * v[133] + 0.198400005698204 * v[134];
+            v[21] = 0.0540936700999737 * v[147] + 0.0540936700999737 * v[136] + 0.198400005698204 * v[137];
+            v[226] = v[34] * x[212] - v[21] * x[211];
+            v[133] = -0.0540936700999737 * v[143] + -0.0540936700999737 * v[133] + 0.198400005698204 * v[134];
+            v[136] = -0.0540936700999737 * v[147] + -0.0540936700999737 * v[136] + 0.198400005698204 * v[137];
+            v[147] = v[133] * x[215] - v[136] * x[214];
+            y[0] =
+                -0.08 * v[1] * x[11] - -0.08 * v[2] * x[10] + -0.03 * v[1] * x[14] - -0.03 * v[2] * x[13] +
+                v[5] + v[8] + v[15] + v[18] + (0. - v[19]) * x[34] + (0. - (0. - v[20])) * x[35] + v[25] +
+                (0. - v[19]) * x[37] + (0. - (0. - v[20])) * x[38] + v[28] + (0. - v[19]) * x[40] +
+                (0. - (0. - v[20])) * x[41] + v[39] + (0. - v[19]) * x[43] + (0. - (0. - v[20])) * x[44] +
+                v[42] + (0. - v[43]) * x[46] + (0. - (0. - v[44])) * x[47] + v[56] + (0. - v[43]) * x[49] +
+                (0. - (0. - v[44])) * x[50] + v[61] + (0. - v[43]) * x[52] + (0. - (0. - v[44])) * x[53] +
+                v[64] + (0. - v[43]) * x[55] + (0. - (0. - v[44])) * x[56] + v[67] + (0. - v[68]) * x[58] +
+                (0. - (0. - v[69])) * x[59] + v[79] + (0. - v[68]) * x[61] + (0. - (0. - v[69])) * x[62] +
+                v[82] + (0. - v[68]) * x[64] + (0. - (0. - v[69])) * x[65] + v[87] + (0. - v[68]) * x[67] +
+                (0. - (0. - v[69])) * x[68] + v[90] + (0. - v[68]) * x[70] + (0. - (0. - v[69])) * x[71] +
+                v[96] + (0. - v[68]) * x[73] + (0. - (0. - v[69])) * x[74] + v[99] + (0. - v[68]) * x[76] +
+                (0. - (0. - v[69])) * x[77] + v[102] + (0. - v[68]) * x[79] + (0. - (0. - v[69])) * x[80] +
+                v[105] + (0. - v[68]) * x[82] + (0. - (0. - v[69])) * x[83] + v[108] + (0. - v[68]) * x[85] +
+                (0. - (0. - v[69])) * x[86] + v[111] + (0. - v[68]) * x[88] + (0. - (0. - v[69])) * x[89] +
+                v[114] + (0. - v[68]) * x[91] + (0. - (0. - v[69])) * x[92] + v[117] + (0. - v[68]) * x[94] +
+                (0. - (0. - v[69])) * x[95] + (0. - v[68]) * x[97] + (0. - (0. - v[69])) * x[98] + v[127] +
+                (0. - v[68]) * x[100] + (0. - (0. - v[69])) * x[101] + v[130] + (0. - v[131]) * x[103] +
+                (0. - (0. - v[132])) * x[104] + v[139] + (0. - v[131]) * x[106] +
+                (0. - (0. - v[132])) * x[107] + v[149] + (0. - v[131]) * x[109] +
+                (0. - (0. - v[132])) * x[110] + v[152] + (0. - v[131]) * x[112] +
+                (0. - (0. - v[132])) * x[113] + v[155] + (0. - v[131]) * x[115] +
+                (0. - (0. - v[132])) * x[116] + v[158] + (0. - v[131]) * x[118] +
+                (0. - (0. - v[132])) * x[119] + v[161] + (0. - v[131]) * x[121] +
+                (0. - (0. - v[132])) * x[122] + v[164] + (0. - v[131]) * x[124] +
+                (0. - (0. - v[132])) * x[125] + v[167] + (0. - v[131]) * x[127] +
+                (0. - (0. - v[132])) * x[128] + v[170] + (0. - v[131]) * x[130] +
+                (0. - (0. - v[132])) * x[131] + v[173] + (0. - v[131]) * x[133] +
+                (0. - (0. - v[132])) * x[134] + v[176] + (0. - v[131]) * x[136] +
+                (0. - (0. - v[132])) * x[137] + v[179] + (0. - v[131]) * x[139] +
+                (0. - (0. - v[132])) * x[140] + v[182] + (0. - v[131]) * x[142] +
+                (0. - (0. - v[132])) * x[143] + v[185] + (0. - v[131]) * x[145] +
+                (0. - (0. - v[132])) * x[146] + v[188] + (0. - v[131]) * x[148] +
+                (0. - (0. - v[132])) * x[149] + v[191] + (0. - v[131]) * x[151] +
+                (0. - (0. - v[132])) * x[152] + v[194] + (0. - v[131]) * x[154] +
+                (0. - (0. - v[132])) * x[155] + v[197] + (0. - v[131]) * x[157] +
+                (0. - (0. - v[132])) * x[158] + v[200] + (0. - v[131]) * x[160] +
+                (0. - (0. - v[132])) * x[161] + v[203] + (0. - v[131]) * x[163] +
+                (0. - (0. - v[132])) * x[164] + v[206] + (0. - v[131]) * x[166] +
+                (0. - (0. - v[132])) * x[167] + v[209] + (0. - v[131]) * x[169] +
+                (0. - (0. - v[132])) * x[170] + v[212] + (0. - v[131]) * x[172] +
+                (0. - (0. - v[132])) * x[173] + v[215] + (0. - v[131]) * x[175] +
+                (0. - (0. - v[132])) * x[176] + v[218] + (0. - v[131]) * x[178] +
+                (0. - (0. - v[132])) * x[179] + v[221] + (0. - v[131]) * x[181] +
+                (0. - (0. - v[132])) * x[182] + v[224] + -0.0399999991059303 * v[1] * x[188] -
+                -0.0399999991059303 * v[2] * x[187] + v[225] + (0. - v[19]) * x[193] +
+                (0. - (0. - v[20])) * x[194] + v[0] + (0. - v[43]) * x[196] + (0. - (0. - v[44])) * x[197] +
+                v[54] + (0. - v[68]) * x[199] + (0. - (0. - v[69])) * x[200] + v[77] + (0. - v[68]) * x[202] +
+                (0. - (0. - v[69])) * x[203] + v[125] + (0. - v[131]) * x[205] +
+                (0. - (0. - v[132])) * x[206] + v[53] + (0. - v[131]) * x[208] +
+                (0. - (0. - v[132])) * x[209] + v[23] + (0. - v[131]) * x[211] +
+                (0. - (0. - v[132])) * x[212] + v[226] + (0. - v[131]) * x[214] +
+                (0. - (0. - v[132])) * x[215] + v[147];
+            v[2] = cos(x[0]);
+            v[1] = 0. - 0.333 * v[2];
+            v[137] = sin(x[0]);
+            v[143] = -v[137];
+            v[134] = 0.333 * v[143];
+            v[11] = -1. * v[11];
+            v[227] = -0.12 * v[11];
+            v[228] = -0.17 * v[11];
+            v[229] = 0.333 + -0.316 * v[11];
+            v[230] = 2.39770700697438e-23 + -1. * v[11];
+            v[231] = -0.1 * v[230];
+            v[24] = v[24] * x[36] - v[231] * x[35];
+            v[231] = v[231] * x[34] - v[22] * x[36];
+            v[22] = -0.06 * v[230];
+            v[27] = v[27] * x[39] - v[22] * x[38];
+            v[22] = v[22] * x[37] - v[26] * x[39];
+            v[9] = -1. * v[9];
+            v[33] = v[9] * v[31] + v[11] * v[33] + 4.89663865010925e-12 * v[32];
+            v[9] = v[9] * v[35] + v[11] * v[36] + 4.89663865010925e-12 * v[31];
+            v[36] = 0.08 * v[33] + 0.06 * v[9];
+            v[38] = v[38] * x[42] - v[36] * x[41];
+            v[36] = v[36] * x[40] - v[37] * x[42];
+            v[37] = 0.08 * v[33] + 0.02 * v[9];
+            v[41] = v[41] * x[45] - v[37] * x[44];
+            v[37] = v[37] * x[43] - v[40] * x[45];
+            v[40] = v[229] + 0.0825 * v[33];
+            v[47] = v[33] * v[45] + v[9] * v[47] + v[230] * v[46];
+            v[50] = v[33] * v[49] + v[9] * v[50] + v[230] * v[45];
+            v[49] = -0.08 * v[47] + 0.095 * v[50];
+            v[55] = v[55] * x[48] - v[49] * x[47];
+            v[49] = v[49] * x[46] - v[52] * x[48];
+            v[52] = -1. * v[9] + 4.89663865010925e-12 * v[230];
+            v[45] = 0.02 * v[52];
+            v[60] = v[60] * x[51] - v[45] * x[50];
+            v[45] = v[45] * x[49] - v[58] * x[51];
+            v[58] = 0.06 * v[52];
+            v[63] = v[63] * x[54] - v[58] * x[53];
+            v[58] = v[58] * x[52] - v[62] * x[54];
+            v[62] = -0.08 * v[47] + 0.06 * v[50];
+            v[66] = v[66] * x[57] - v[62] * x[56];
+            v[62] = v[62] * x[55] - v[65] * x[57];
+            v[65] = v[40] + -0.0825 * v[47] + 0.384 * v[50];
+            v[74] = v[47] * v[71] + v[50] * v[73] + v[52] * v[74];
+            v[73] = 0.055 * v[74];
+            v[78] = v[78] * x[60] - v[73] * x[59];
+            v[73] = v[73] * x[58] - v[76] * x[60];
+            v[76] = 0.075 * v[74];
+            v[81] = v[81] * x[63] - v[76] * x[62];
+            v[76] = v[76] * x[61] - v[80] * x[63];
+            v[80] = v[50] + 4.89663865010925e-12 * v[52];
+            v[71] = -0.22 * v[80];
+            v[86] = v[86] * x[66] - v[71] * x[65];
+            v[71] = v[71] * x[64] - v[84] * x[66];
+            v[84] = 0.05 * v[74] + -0.18 * v[80];
+            v[89] = v[89] * x[69] - v[84] * x[68];
+            v[84] = v[84] * x[67] - v[88] * x[69];
+            v[70] = v[47] * v[72] + v[50] * v[91] + v[52] * v[70];
+            v[91] = 0.01 * v[70] + 0.08 * v[74] + -0.14 * v[80];
+            v[95] = v[95] * x[72] - v[91] * x[71];
+            v[91] = v[91] * x[70] - v[93] * x[72];
+            v[93] = 0.01 * v[70] + 0.085 * v[74] + -0.11 * v[80];
+            v[98] = v[98] * x[75] - v[93] * x[74];
+            v[93] = v[93] * x[73] - v[97] * x[75];
+            v[97] = 0.01 * v[70] + 0.09 * v[74] + -0.08 * v[80];
+            v[101] = v[101] * x[78] - v[97] * x[77];
+            v[97] = v[97] * x[76] - v[100] * x[78];
+            v[100] = 0.01 * v[70] + 0.095 * v[74] + -0.05 * v[80];
+            v[104] = v[104] * x[81] - v[100] * x[80];
+            v[100] = v[100] * x[79] - v[103] * x[81];
+            v[103] = -0.01 * v[70] + 0.08 * v[74] + -0.14 * v[80];
+            v[107] = v[107] * x[84] - v[103] * x[83];
+            v[103] = v[103] * x[82] - v[106] * x[84];
+            v[106] = -0.01 * v[70] + 0.085 * v[74] + -0.11 * v[80];
+            v[110] = v[110] * x[87] - v[106] * x[86];
+            v[106] = v[106] * x[85] - v[109] * x[87];
+            v[109] = -0.01 * v[70] + 0.09 * v[74] + -0.08 * v[80];
+            v[113] = v[113] * x[90] - v[109] * x[89];
+            v[109] = v[109] * x[88] - v[112] * x[90];
+            v[112] = -0.01 * v[70] + 0.095 * v[74] + -0.05 * v[80];
+            v[116] = v[116] * x[93] - v[112] * x[92];
+            v[112] = v[112] * x[91] - v[115] * x[93];
+            v[120] = v[70] * v[118] + v[74] * v[120] + v[80] * v[119];
+            v[70] = v[70] * v[122] + v[74] * v[123] + v[80] * v[118];
+            v[123] = 0.08 * v[120] + -0.01 * v[70];
+            v[126] = v[126] * x[99] - v[123] * x[98];
+            v[123] = v[123] * x[97] - v[124] * x[99];
+            v[124] = 0.08 * v[120] + 0.035 * v[70];
+            v[129] = v[129] * x[102] - v[124] * x[101];
+            v[124] = v[124] * x[100] - v[128] * x[102];
+            v[128] = v[65] + 0.088 * v[120];
+            v[122] = -1. * v[74] + 4.89663865010925e-12 * v[80];
+            v[118] = -1. * v[70] + 4.89663865010925e-12 * v[122];
+            v[119] = 0.07 * v[118];
+            v[138] = v[138] * x[105] - v[119] * x[104];
+            v[119] = v[119] * x[103] - v[135] * x[105];
+            v[142] = v[120] * v[140] + v[70] * v[142] + v[122] * v[141];
+            v[122] = v[120] * v[144] + v[70] * v[145] + v[122] * v[140];
+            v[145] = 0.02 * v[142] + 0.04 * v[122] + 0.08 * v[118];
+            v[148] = v[148] * x[108] - v[145] * x[107];
+            v[145] = v[145] * x[106] - v[146] * x[108];
+            v[146] = 0.04 * v[142] + 0.02 * v[122] + 0.08 * v[118];
+            v[151] = v[151] * x[111] - v[146] * x[110];
+            v[146] = v[146] * x[109] - v[150] * x[111];
+            v[150] = 0.04 * v[142] + 0.06 * v[122] + 0.085 * v[118];
+            v[154] = v[154] * x[114] - v[150] * x[113];
+            v[150] = v[150] * x[112] - v[153] * x[114];
+            v[153] = 0.06 * v[142] + 0.04 * v[122] + 0.085 * v[118];
+            v[157] = v[157] * x[117] - v[153] * x[116];
+            v[153] = v[153] * x[115] - v[156] * x[117];
+            v[156] = -0.0530330085889673 * v[142] + -0.0530330085890148 * v[122] + 0.117 * v[118];
+            v[160] = v[160] * x[120] - v[156] * x[119];
+            v[156] = v[156] * x[118] - v[159] * x[120];
+            v[159] = -0.0318198051533804 * v[142] + -0.0318198051534089 * v[122] + 0.117 * v[118];
+            v[163] = v[163] * x[123] - v[159] * x[122];
+            v[159] = v[159] * x[121] - v[162] * x[123];
+            v[162] = -0.0106066017177935 * v[142] + -0.010606601717803 * v[122] + 0.117 * v[118];
+            v[166] = v[166] * x[126] - v[162] * x[125];
+            v[162] = v[162] * x[124] - v[165] * x[126];
+            v[165] = 0.0106066017177935 * v[142] + 0.010606601717803 * v[122] + 0.117 * v[118];
+            v[169] = v[169] * x[129] - v[165] * x[128];
+            v[165] = v[165] * x[127] - v[168] * x[129];
+            v[168] = 0.0318198051533804 * v[142] + 0.0318198051534089 * v[122] + 0.117 * v[118];
+            v[172] = v[172] * x[132] - v[168] * x[131];
+            v[168] = v[168] * x[130] - v[171] * x[132];
+            v[171] = 0.0530330085889673 * v[142] + 0.0530330085890148 * v[122] + 0.117 * v[118];
+            v[175] = v[175] * x[135] - v[171] * x[134];
+            v[171] = v[171] * x[133] - v[174] * x[135];
+            v[174] = -0.0530330085889673 * v[142] + -0.0530330085890148 * v[122] + 0.137 * v[118];
+            v[178] = v[178] * x[138] - v[174] * x[137];
+            v[174] = v[174] * x[136] - v[177] * x[138];
+            v[177] = -0.0318198051533804 * v[142] + -0.0318198051534089 * v[122] + 0.137 * v[118];
+            v[181] = v[181] * x[141] - v[177] * x[140];
+            v[177] = v[177] * x[139] - v[180] * x[141];
+            v[180] = -0.0106066017177935 * v[142] + -0.010606601717803 * v[122] + 0.137 * v[118];
+            v[184] = v[184] * x[144] - v[180] * x[143];
+            v[180] = v[180] * x[142] - v[183] * x[144];
+            v[183] = 0.0106066017177935 * v[142] + 0.010606601717803 * v[122] + 0.137 * v[118];
+            v[187] = v[187] * x[147] - v[183] * x[146];
+            v[183] = v[183] * x[145] - v[186] * x[147];
+            v[186] = 0.0318198051533804 * v[142] + 0.0318198051534089 * v[122] + 0.137 * v[118];
+            v[190] = v[190] * x[150] - v[186] * x[149];
+            v[186] = v[186] * x[148] - v[189] * x[150];
+            v[189] = 0.0530330085889673 * v[142] + 0.0530330085890148 * v[122] + 0.137 * v[118];
+            v[193] = v[193] * x[153] - v[189] * x[152];
+            v[189] = v[189] * x[151] - v[192] * x[153];
+            v[192] = -0.0530330085889673 * v[142] + -0.0530330085890148 * v[122] + 0.157 * v[118];
+            v[196] = v[196] * x[156] - v[192] * x[155];
+            v[192] = v[192] * x[154] - v[195] * x[156];
+            v[195] = -0.0318198051533804 * v[142] + -0.0318198051534089 * v[122] + 0.157 * v[118];
+            v[199] = v[199] * x[159] - v[195] * x[158];
+            v[195] = v[195] * x[157] - v[198] * x[159];
+            v[198] = -0.0106066017177935 * v[142] + -0.010606601717803 * v[122] + 0.157 * v[118];
+            v[202] = v[202] * x[162] - v[198] * x[161];
+            v[198] = v[198] * x[160] - v[201] * x[162];
+            v[201] = 0.0106066017177935 * v[142] + 0.010606601717803 * v[122] + 0.157 * v[118];
+            v[205] = v[205] * x[165] - v[201] * x[164];
+            v[201] = v[201] * x[163] - v[204] * x[165];
+            v[204] = 0.0318198051533804 * v[142] + 0.0318198051534089 * v[122] + 0.157 * v[118];
+            v[208] = v[208] * x[168] - v[204] * x[167];
+            v[204] = v[204] * x[166] - v[207] * x[168];
+            v[207] = 0.0530330085889673 * v[142] + 0.0530330085890148 * v[122] + 0.157 * v[118];
+            v[211] = v[211] * x[171] - v[207] * x[170];
+            v[207] = v[207] * x[169] - v[210] * x[171];
+            v[210] = 0.0565685424948984 * v[142] + 0.0565685424949492 * v[122] + 0.1874 * v[118];
+            v[214] = v[214] * x[174] - v[210] * x[173];
+            v[210] = v[210] * x[172] - v[213] * x[174];
+            v[213] = 0.0516187950265948 * v[142] + 0.0516187950266411 * v[122] + 0.2094 * v[118];
+            v[217] = v[217] * x[177] - v[213] * x[176];
+            v[213] = v[213] * x[175] - v[216] * x[177];
+            v[216] = -0.0565685424948984 * v[142] + -0.0565685424949492 * v[122] + 0.1874 * v[118];
+            v[220] = v[220] * x[180] - v[216] * x[179];
+            v[216] = v[216] * x[178] - v[219] * x[180];
+            v[219] = -0.0516187950265948 * v[142] + -0.0516187950266411 * v[122] + 0.2094 * v[118];
+            v[223] = v[223] * x[183] - v[219] * x[182];
+            v[219] = v[219] * x[181] - v[222] * x[183];
+            v[11] = 1.95865541626434e-13 + -0.0850000008940697 * v[11];
+            v[9] = 0.0385857857763767 * v[33] + 0.0289393402636051 * v[9] + -0.0517677664756775 * v[230];
+            v[29] = v[29] * x[195] - v[9] * x[194];
+            v[9] = v[9] * x[193] - v[30] * x[195];
+            v[52] = -0.041449997574091 * v[47] + 0.0492218732833862 * v[50] + 0.0289125014096498 * v[52];
+            v[59] = v[59] * x[198] - v[52] * x[197];
+            v[52] = v[52] * x[196] - v[57] * x[198];
+            v[80] = 0.0375000014901161 * v[74] + -0.109999999403954 * v[80];
+            v[85] = v[85] * x[201] - v[80] * x[200];
+            v[80] = v[80] * x[199] - v[83] * x[201];
+            v[70] = 0.0424309633672237 * v[120] + 0.0144476993009448 * v[70];
+            v[94] = v[94] * x[204] - v[70] * x[203];
+            v[70] = v[70] * x[202] - v[92] * x[204];
+            v[92] = 0.0153005504980683 * v[142] + 0.0153005504980683 * v[122] + 0.0745901614427567 * v[118];
+            v[75] = v[75] * x[207] - v[92] * x[206];
+            v[92] = v[92] * x[205] - v[121] * x[207];
+            v[121] =
+                -5.20417042793042e-18 * v[142] + -2.16840434497101e-18 * v[122] + 0.129201397299767 * v[118];
+            v[48] = v[48] * x[210] - v[121] * x[209];
+            v[121] = v[121] * x[208] - v[51] * x[210];
+            v[51] = 0.0540936700999737 * v[142] + 0.0540936700999737 * v[122] + 0.198400005698204 * v[118];
+            v[21] = v[21] * x[213] - v[51] * x[212];
+            v[51] = v[51] * x[211] - v[34] * x[213];
+            v[122] = -0.0540936700999737 * v[142] + -0.0540936700999737 * v[122] + 0.198400005698204 * v[118];
+            v[136] = v[136] * x[216] - v[122] * x[215];
+            v[122] = v[122] * x[214] - v[133] * x[216];
+            y[1] = (v[1] - (0. - 0.333 * v[2])) * x[22] + (v[134] - 0.333 * v[143]) * x[23] +
+                   v[143] * (v[4] * x[24] - 1.46899159503278e-13 * x[23]) +
+                   v[2] * (1.46899159503278e-13 * x[22] - v[3] * x[24]) + 4.89663865010925e-12 * v[5] +
+                   (v[1] - (0. - 0.333 * v[2])) * x[25] + (v[134] - 0.333 * v[143]) * x[26] +
+                   v[143] * (v[7] * x[27] - 3.9173109200874e-13 * x[26]) +
+                   v[2] * (3.9173109200874e-13 * x[25] - v[6] * x[27]) + 4.89663865010925e-12 * v[8] +
+                   (v[1] - (0. - 0.333 * v[2])) * x[28] + (v[134] - 0.333 * v[143]) * x[29] +
+                   v[143] * (v[10] * x[30] - v[227] * x[29]) + v[2] * (v[227] * x[28] - v[14] * x[30]) +
+                   4.89663865010925e-12 * v[15] + (v[1] - (0. - 0.333 * v[2])) * x[31] +
+                   (v[134] - 0.333 * v[143]) * x[32] + v[143] * (v[17] * x[33] - v[228] * x[32]) +
+                   v[2] * (v[228] * x[31] - v[16] * x[33]) + 4.89663865010925e-12 * v[18] +
+                   (v[1] - (4.89663865010925e-12 * v[19] - v[229] * v[2])) * x[34] +
+                   (v[134] - (v[229] * v[143] - 4.89663865010925e-12 * v[20])) * x[35] +
+                   (0. - (v[20] * v[2] - v[19] * v[143])) * x[36] + v[143] * v[24] + v[2] * v[231] +
+                   4.89663865010925e-12 * v[25] +
+                   (v[1] - (4.89663865010925e-12 * v[19] - v[229] * v[2])) * x[37] +
+                   (v[134] - (v[229] * v[143] - 4.89663865010925e-12 * v[20])) * x[38] +
+                   (0. - (v[20] * v[2] - v[19] * v[143])) * x[39] + v[143] * v[27] + v[2] * v[22] +
+                   4.89663865010925e-12 * v[28] +
+                   (v[1] - (4.89663865010925e-12 * v[19] - v[229] * v[2])) * x[40] +
+                   (v[134] - (v[229] * v[143] - 4.89663865010925e-12 * v[20])) * x[41] +
+                   (0. - (v[20] * v[2] - v[19] * v[143])) * x[42] + v[143] * v[38] + v[2] * v[36] +
+                   4.89663865010925e-12 * v[39] +
+                   (v[1] - (4.89663865010925e-12 * v[19] - v[229] * v[2])) * x[43] +
+                   (v[134] - (v[229] * v[143] - 4.89663865010925e-12 * v[20])) * x[44] +
+                   (0. - (v[20] * v[2] - v[19] * v[143])) * x[45] + v[143] * v[41] + v[2] * v[37] +
+                   4.89663865010925e-12 * v[42] +
+                   (v[1] - (4.89663865010925e-12 * v[43] - v[40] * v[2])) * x[46] +
+                   (v[134] - (v[40] * v[143] - 4.89663865010925e-12 * v[44])) * x[47] +
+                   (0. - (v[44] * v[2] - v[43] * v[143])) * x[48] + v[143] * v[55] + v[2] * v[49] +
+                   4.89663865010925e-12 * v[56] +
+                   (v[1] - (4.89663865010925e-12 * v[43] - v[40] * v[2])) * x[49] +
+                   (v[134] - (v[40] * v[143] - 4.89663865010925e-12 * v[44])) * x[50] +
+                   (0. - (v[44] * v[2] - v[43] * v[143])) * x[51] + v[143] * v[60] + v[2] * v[45] +
+                   4.89663865010925e-12 * v[61] +
+                   (v[1] - (4.89663865010925e-12 * v[43] - v[40] * v[2])) * x[52] +
+                   (v[134] - (v[40] * v[143] - 4.89663865010925e-12 * v[44])) * x[53] +
+                   (0. - (v[44] * v[2] - v[43] * v[143])) * x[54] + v[143] * v[63] + v[2] * v[58] +
+                   4.89663865010925e-12 * v[64] +
+                   (v[1] - (4.89663865010925e-12 * v[43] - v[40] * v[2])) * x[55] +
+                   (v[134] - (v[40] * v[143] - 4.89663865010925e-12 * v[44])) * x[56] +
+                   (0. - (v[44] * v[2] - v[43] * v[143])) * x[57] + v[143] * v[66] + v[2] * v[62] +
+                   4.89663865010925e-12 * v[67] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[58] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[59] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[60] + v[143] * v[78] + v[2] * v[73] +
+                   4.89663865010925e-12 * v[79] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[61] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[62] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[63] + v[143] * v[81] + v[2] * v[76] +
+                   4.89663865010925e-12 * v[82] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[64] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[65] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[66] + v[143] * v[86] + v[2] * v[71] +
+                   4.89663865010925e-12 * v[87] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[67] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[68] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[69] + v[143] * v[89] + v[2] * v[84] +
+                   4.89663865010925e-12 * v[90] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[70] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[71] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[72] + v[143] * v[95] + v[2] * v[91] +
+                   4.89663865010925e-12 * v[96] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[73] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[74] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[75] + v[143] * v[98] + v[2] * v[93] +
+                   4.89663865010925e-12 * v[99] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[76] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[77] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[78] + v[143] * v[101] + v[2] * v[97] +
+                   4.89663865010925e-12 * v[102] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[79] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[80] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[81] + v[143] * v[104] + v[2] * v[100] +
+                   4.89663865010925e-12 * v[105] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[82] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[83] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[84] + v[143] * v[107] + v[2] * v[103] +
+                   4.89663865010925e-12 * v[108] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[85] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[86] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[87] + v[143] * v[110] + v[2] * v[106] +
+                   4.89663865010925e-12 * v[111] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[88] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[89] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[90] + v[143] * v[113] + v[2] * v[109] +
+                   4.89663865010925e-12 * v[114] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[91] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[92] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[93] + v[143] * v[116] + v[2] * v[112] +
+                   4.89663865010925e-12 * v[117] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[94] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[95] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[96] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[97] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[98] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[99] + v[143] * v[126] + v[2] * v[123] +
+                   4.89663865010925e-12 * v[127] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[100] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[101] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[102] + v[143] * v[129] + v[2] * v[124] +
+                   4.89663865010925e-12 * v[130] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[103] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[104] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[105] + v[143] * v[138] + v[2] * v[119] +
+                   4.89663865010925e-12 * v[139] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[106] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[107] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[108] + v[143] * v[148] + v[2] * v[145] +
+                   4.89663865010925e-12 * v[149] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[109] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[110] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[111] + v[143] * v[151] + v[2] * v[146] +
+                   4.89663865010925e-12 * v[152] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[112] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[113] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[114] + v[143] * v[154] + v[2] * v[150] +
+                   4.89663865010925e-12 * v[155] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[115] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[116] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[117] + v[143] * v[157] + v[2] * v[153] +
+                   4.89663865010925e-12 * v[158] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[118] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[119] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[120] + v[143] * v[160] + v[2] * v[156] +
+                   4.89663865010925e-12 * v[161] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[121] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[122] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[123] + v[143] * v[163] + v[2] * v[159] +
+                   4.89663865010925e-12 * v[164] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[124] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[125] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[126] + v[143] * v[166] + v[2] * v[162] +
+                   4.89663865010925e-12 * v[167] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[127] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[128] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[129] + v[143] * v[169] + v[2] * v[165] +
+                   4.89663865010925e-12 * v[170] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[130] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[131] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[132] + v[143] * v[172] + v[2] * v[168] +
+                   4.89663865010925e-12 * v[173] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[133] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[134] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[135] + v[143] * v[175] + v[2] * v[171] +
+                   4.89663865010925e-12 * v[176] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[136] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[137] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[138] + v[143] * v[178] + v[2] * v[174] +
+                   4.89663865010925e-12 * v[179] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[139] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[140] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[141] + v[143] * v[181] + v[2] * v[177] +
+                   4.89663865010925e-12 * v[182] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[142] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[143] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[144] + v[143] * v[184] + v[2] * v[180] +
+                   4.89663865010925e-12 * v[185] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[145] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[146] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[147] + v[143] * v[187] + v[2] * v[183] +
+                   4.89663865010925e-12 * v[188] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[148] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[149] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[150] + v[143] * v[190] + v[2] * v[186] +
+                   4.89663865010925e-12 * v[191] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[151] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[152] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[153] + v[143] * v[193] + v[2] * v[189] +
+                   4.89663865010925e-12 * v[194] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[154] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[155] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[156] + v[143] * v[196] + v[2] * v[192] +
+                   4.89663865010925e-12 * v[197] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[157] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[158] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[159] + v[143] * v[199] + v[2] * v[195] +
+                   4.89663865010925e-12 * v[200] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[160] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[161] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[162] + v[143] * v[202] + v[2] * v[198] +
+                   4.89663865010925e-12 * v[203] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[163] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[164] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[165] + v[143] * v[205] + v[2] * v[201] +
+                   4.89663865010925e-12 * v[206] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[166] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[167] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[168] + v[143] * v[208] + v[2] * v[204] +
+                   4.89663865010925e-12 * v[209] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[169] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[170] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[171] + v[143] * v[211] + v[2] * v[207] +
+                   4.89663865010925e-12 * v[212] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[172] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[173] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[174] + v[143] * v[214] + v[2] * v[210] +
+                   4.89663865010925e-12 * v[215] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[175] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[176] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[177] + v[143] * v[217] + v[2] * v[213] +
+                   4.89663865010925e-12 * v[218] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[178] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[179] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[180] + v[143] * v[220] + v[2] * v[216] +
+                   4.89663865010925e-12 * v[221] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[181] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[182] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[183] + v[143] * v[223] + v[2] * v[219] +
+                   4.89663865010925e-12 * v[224] + (v[1] - (0. - 0.333 * v[2])) * x[190] +
+                   (v[134] - 0.333 * v[143]) * x[191] + v[143] * (v[12] * x[192] - v[11] * x[191]) +
+                   v[2] * (v[11] * x[190] - v[13] * x[192]) + 4.89663865010925e-12 * v[225] +
+                   (v[1] - (4.89663865010925e-12 * v[19] - v[229] * v[2])) * x[193] +
+                   (v[134] - (v[229] * v[143] - 4.89663865010925e-12 * v[20])) * x[194] +
+                   (0. - (v[20] * v[2] - v[19] * v[143])) * x[195] + v[143] * v[29] + v[2] * v[9] +
+                   4.89663865010925e-12 * v[0] +
+                   (v[1] - (4.89663865010925e-12 * v[43] - v[40] * v[2])) * x[196] +
+                   (v[134] - (v[40] * v[143] - 4.89663865010925e-12 * v[44])) * x[197] +
+                   (0. - (v[44] * v[2] - v[43] * v[143])) * x[198] + v[143] * v[59] + v[2] * v[52] +
+                   4.89663865010925e-12 * v[54] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[199] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[200] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[201] + v[143] * v[85] + v[2] * v[80] +
+                   4.89663865010925e-12 * v[77] +
+                   (v[1] - (4.89663865010925e-12 * v[68] - v[65] * v[2])) * x[202] +
+                   (v[134] - (v[65] * v[143] - 4.89663865010925e-12 * v[69])) * x[203] +
+                   (0. - (v[69] * v[2] - v[68] * v[143])) * x[204] + v[143] * v[94] + v[2] * v[70] +
+                   4.89663865010925e-12 * v[125] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[205] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[206] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[207] + v[143] * v[75] + v[2] * v[92] +
+                   4.89663865010925e-12 * v[53] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[208] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[209] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[210] + v[143] * v[48] + v[2] * v[121] +
+                   4.89663865010925e-12 * v[23] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[211] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[212] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[213] + v[143] * v[21] + v[2] * v[51] +
+                   4.89663865010925e-12 * v[226] +
+                   (v[1] - (4.89663865010925e-12 * v[131] - v[128] * v[2])) * x[214] +
+                   (v[134] - (v[128] * v[143] - 4.89663865010925e-12 * v[132])) * x[215] +
+                   (0. - (v[132] * v[2] - v[131] * v[143])) * x[216] + v[143] * v[136] + v[2] * v[122] +
+                   4.89663865010925e-12 * v[147];
+            v[11] = sin(x[1]);
+            v[228] = -v[11];
+            v[227] = cos(x[1]);
+            v[134] = 4.89663865010925e-12 * v[227];
+            v[1] = v[137] * v[228] + v[2] * v[134];
+            v[225] = -0.316 * v[1];
+            v[12] = -1. * v[227];
+            v[13] = 2.39770700697438e-23 + -1. * v[12];
+            v[18] = 0.333 + -0.316 * v[12];
+            v[17] = -1. * v[1] + 4.89663865010925e-12 * v[2];
+            v[16] = v[225] * v[13] - v[18] * v[17];
+            v[134] = v[2] * v[228] + v[143] * v[134];
+            v[228] = -1. * v[134] + 4.89663865010925e-12 * v[143];
+            v[15] = -0.316 * v[134];
+            v[10] = v[18] * v[228] - v[15] * v[13];
+            v[14] = v[15] * v[17] - v[225] * v[228];
+            y[2] = (v[16] - (v[19] * v[13] - v[229] * v[17])) * x[34] +
+                   (v[10] - (v[229] * v[228] - v[20] * v[13])) * x[35] +
+                   (v[14] - (v[20] * v[17] - v[19] * v[228])) * x[36] + v[228] * v[24] + v[17] * v[231] +
+                   v[13] * v[25] + (v[16] - (v[19] * v[13] - v[229] * v[17])) * x[37] +
+                   (v[10] - (v[229] * v[228] - v[20] * v[13])) * x[38] +
+                   (v[14] - (v[20] * v[17] - v[19] * v[228])) * x[39] + v[228] * v[27] + v[17] * v[22] +
+                   v[13] * v[28] + (v[16] - (v[19] * v[13] - v[229] * v[17])) * x[40] +
+                   (v[10] - (v[229] * v[228] - v[20] * v[13])) * x[41] +
+                   (v[14] - (v[20] * v[17] - v[19] * v[228])) * x[42] + v[228] * v[38] + v[17] * v[36] +
+                   v[13] * v[39] + (v[16] - (v[19] * v[13] - v[229] * v[17])) * x[43] +
+                   (v[10] - (v[229] * v[228] - v[20] * v[13])) * x[44] +
+                   (v[14] - (v[20] * v[17] - v[19] * v[228])) * x[45] + v[228] * v[41] + v[17] * v[37] +
+                   v[13] * v[42] + (v[16] - (v[43] * v[13] - v[40] * v[17])) * x[46] +
+                   (v[10] - (v[40] * v[228] - v[44] * v[13])) * x[47] +
+                   (v[14] - (v[44] * v[17] - v[43] * v[228])) * x[48] + v[228] * v[55] + v[17] * v[49] +
+                   v[13] * v[56] + (v[16] - (v[43] * v[13] - v[40] * v[17])) * x[49] +
+                   (v[10] - (v[40] * v[228] - v[44] * v[13])) * x[50] +
+                   (v[14] - (v[44] * v[17] - v[43] * v[228])) * x[51] + v[228] * v[60] + v[17] * v[45] +
+                   v[13] * v[61] + (v[16] - (v[43] * v[13] - v[40] * v[17])) * x[52] +
+                   (v[10] - (v[40] * v[228] - v[44] * v[13])) * x[53] +
+                   (v[14] - (v[44] * v[17] - v[43] * v[228])) * x[54] + v[228] * v[63] + v[17] * v[58] +
+                   v[13] * v[64] + (v[16] - (v[43] * v[13] - v[40] * v[17])) * x[55] +
+                   (v[10] - (v[40] * v[228] - v[44] * v[13])) * x[56] +
+                   (v[14] - (v[44] * v[17] - v[43] * v[228])) * x[57] + v[228] * v[66] + v[17] * v[62] +
+                   v[13] * v[67] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[58] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[59] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[60] + v[228] * v[78] + v[17] * v[73] +
+                   v[13] * v[79] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[61] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[62] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[63] + v[228] * v[81] + v[17] * v[76] +
+                   v[13] * v[82] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[64] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[65] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[66] + v[228] * v[86] + v[17] * v[71] +
+                   v[13] * v[87] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[67] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[68] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[69] + v[228] * v[89] + v[17] * v[84] +
+                   v[13] * v[90] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[70] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[71] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[72] + v[228] * v[95] + v[17] * v[91] +
+                   v[13] * v[96] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[73] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[74] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[75] + v[228] * v[98] + v[17] * v[93] +
+                   v[13] * v[99] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[76] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[77] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[78] + v[228] * v[101] + v[17] * v[97] +
+                   v[13] * v[102] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[79] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[80] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[81] + v[228] * v[104] + v[17] * v[100] +
+                   v[13] * v[105] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[82] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[83] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[84] + v[228] * v[107] + v[17] * v[103] +
+                   v[13] * v[108] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[85] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[86] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[87] + v[228] * v[110] + v[17] * v[106] +
+                   v[13] * v[111] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[88] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[89] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[90] + v[228] * v[113] + v[17] * v[109] +
+                   v[13] * v[114] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[91] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[92] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[93] + v[228] * v[116] + v[17] * v[112] +
+                   v[13] * v[117] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[94] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[95] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[96] +
+                   (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[97] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[98] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[99] + v[228] * v[126] + v[17] * v[123] +
+                   v[13] * v[127] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[100] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[101] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[102] + v[228] * v[129] + v[17] * v[124] +
+                   v[13] * v[130] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[103] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[104] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[105] + v[228] * v[138] + v[17] * v[119] +
+                   v[13] * v[139] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[106] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[107] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[108] + v[228] * v[148] + v[17] * v[145] +
+                   v[13] * v[149] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[109] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[110] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[111] + v[228] * v[151] + v[17] * v[146] +
+                   v[13] * v[152] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[112] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[113] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[114] + v[228] * v[154] + v[17] * v[150] +
+                   v[13] * v[155] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[115] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[116] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[117] + v[228] * v[157] + v[17] * v[153] +
+                   v[13] * v[158] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[118] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[119] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[120] + v[228] * v[160] + v[17] * v[156] +
+                   v[13] * v[161] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[121] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[122] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[123] + v[228] * v[163] + v[17] * v[159] +
+                   v[13] * v[164] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[124] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[125] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[126] + v[228] * v[166] + v[17] * v[162] +
+                   v[13] * v[167] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[127] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[128] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[129] + v[228] * v[169] + v[17] * v[165] +
+                   v[13] * v[170] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[130] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[131] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[132] + v[228] * v[172] + v[17] * v[168] +
+                   v[13] * v[173] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[133] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[134] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[135] + v[228] * v[175] + v[17] * v[171] +
+                   v[13] * v[176] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[136] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[137] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[138] + v[228] * v[178] + v[17] * v[174] +
+                   v[13] * v[179] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[139] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[140] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[141] + v[228] * v[181] + v[17] * v[177] +
+                   v[13] * v[182] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[142] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[143] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[144] + v[228] * v[184] + v[17] * v[180] +
+                   v[13] * v[185] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[145] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[146] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[147] + v[228] * v[187] + v[17] * v[183] +
+                   v[13] * v[188] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[148] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[149] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[150] + v[228] * v[190] + v[17] * v[186] +
+                   v[13] * v[191] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[151] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[152] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[153] + v[228] * v[193] + v[17] * v[189] +
+                   v[13] * v[194] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[154] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[155] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[156] + v[228] * v[196] + v[17] * v[192] +
+                   v[13] * v[197] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[157] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[158] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[159] + v[228] * v[199] + v[17] * v[195] +
+                   v[13] * v[200] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[160] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[161] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[162] + v[228] * v[202] + v[17] * v[198] +
+                   v[13] * v[203] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[163] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[164] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[165] + v[228] * v[205] + v[17] * v[201] +
+                   v[13] * v[206] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[166] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[167] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[168] + v[228] * v[208] + v[17] * v[204] +
+                   v[13] * v[209] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[169] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[170] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[171] + v[228] * v[211] + v[17] * v[207] +
+                   v[13] * v[212] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[172] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[173] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[174] + v[228] * v[214] + v[17] * v[210] +
+                   v[13] * v[215] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[175] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[176] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[177] + v[228] * v[217] + v[17] * v[213] +
+                   v[13] * v[218] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[178] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[179] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[180] + v[228] * v[220] + v[17] * v[216] +
+                   v[13] * v[221] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[181] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[182] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[183] + v[228] * v[223] + v[17] * v[219] +
+                   v[13] * v[224] + (v[16] - (v[19] * v[13] - v[229] * v[17])) * x[193] +
+                   (v[10] - (v[229] * v[228] - v[20] * v[13])) * x[194] +
+                   (v[14] - (v[20] * v[17] - v[19] * v[228])) * x[195] + v[228] * v[29] + v[17] * v[9] +
+                   v[13] * v[0] + (v[16] - (v[43] * v[13] - v[40] * v[17])) * x[196] +
+                   (v[10] - (v[40] * v[228] - v[44] * v[13])) * x[197] +
+                   (v[14] - (v[44] * v[17] - v[43] * v[228])) * x[198] + v[228] * v[59] + v[17] * v[52] +
+                   v[13] * v[54] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[199] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[200] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[201] + v[228] * v[85] + v[17] * v[80] +
+                   v[13] * v[77] + (v[16] - (v[68] * v[13] - v[65] * v[17])) * x[202] +
+                   (v[10] - (v[65] * v[228] - v[69] * v[13])) * x[203] +
+                   (v[14] - (v[69] * v[17] - v[68] * v[228])) * x[204] + v[228] * v[94] + v[17] * v[70] +
+                   v[13] * v[125] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[205] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[206] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[207] + v[228] * v[75] + v[17] * v[92] +
+                   v[13] * v[53] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[208] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[209] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[210] + v[228] * v[48] + v[17] * v[121] +
+                   v[13] * v[23] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[211] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[212] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[213] + v[228] * v[21] + v[17] * v[51] +
+                   v[13] * v[226] + (v[16] - (v[131] * v[13] - v[128] * v[17])) * x[214] +
+                   (v[10] - (v[128] * v[228] - v[132] * v[13])) * x[215] +
+                   (v[14] - (v[132] * v[17] - v[131] * v[228])) * x[216] + v[228] * v[136] + v[17] * v[122] +
+                   v[13] * v[147];
+            v[14] = 4.89663865010925e-12 * v[11];
+            v[137] = v[137] * v[227] + v[2] * v[14];
+            v[10] = cos(x[2]);
+            v[16] = sin(x[2]);
+            v[9] = 4.89663865010925e-12 * v[16];
+            v[29] = v[137] * v[10] + v[1] * v[9] + v[2] * v[16];
+            v[225] = v[225] + 0.0825 * v[29];
+            v[11] = -1. * v[11];
+            v[37] = -v[16];
+            v[41] = 4.89663865010925e-12 * v[10];
+            v[36] = v[11] * v[37] + v[12] * v[41] + 4.89663865010925e-12 * v[10];
+            v[38] = -1. * v[36] + 4.89663865010925e-12 * v[13];
+            v[11] = v[11] * v[10] + v[12] * v[9] + 4.89663865010925e-12 * v[16];
+            v[18] = v[18] + 0.0825 * v[11];
+            v[137] = v[137] * v[37] + v[1] * v[41] + v[2] * v[10];
+            v[1] = -1. * v[137] + 4.89663865010925e-12 * v[17];
+            v[12] = v[225] * v[38] - v[18] * v[1];
+            v[14] = v[2] * v[227] + v[143] * v[14];
+            v[41] = v[14] * v[37] + v[134] * v[41] + v[143] * v[10];
+            v[37] = -1. * v[41] + 4.89663865010925e-12 * v[228];
+            v[14] = v[14] * v[10] + v[134] * v[9] + v[143] * v[16];
+            v[15] = v[15] + 0.0825 * v[14];
+            v[9] = v[18] * v[37] - v[15] * v[38];
+            v[16] = v[15] * v[1] - v[225] * v[37];
+            y[3] = (v[12] - (v[43] * v[38] - v[40] * v[1])) * x[46] +
+                   (v[9] - (v[40] * v[37] - v[44] * v[38])) * x[47] +
+                   (v[16] - (v[44] * v[1] - v[43] * v[37])) * x[48] + v[37] * v[55] + v[1] * v[49] +
+                   v[38] * v[56] + (v[12] - (v[43] * v[38] - v[40] * v[1])) * x[49] +
+                   (v[9] - (v[40] * v[37] - v[44] * v[38])) * x[50] +
+                   (v[16] - (v[44] * v[1] - v[43] * v[37])) * x[51] + v[37] * v[60] + v[1] * v[45] +
+                   v[38] * v[61] + (v[12] - (v[43] * v[38] - v[40] * v[1])) * x[52] +
+                   (v[9] - (v[40] * v[37] - v[44] * v[38])) * x[53] +
+                   (v[16] - (v[44] * v[1] - v[43] * v[37])) * x[54] + v[37] * v[63] + v[1] * v[58] +
+                   v[38] * v[64] + (v[12] - (v[43] * v[38] - v[40] * v[1])) * x[55] +
+                   (v[9] - (v[40] * v[37] - v[44] * v[38])) * x[56] +
+                   (v[16] - (v[44] * v[1] - v[43] * v[37])) * x[57] + v[37] * v[66] + v[1] * v[62] +
+                   v[38] * v[67] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[58] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[59] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[60] + v[37] * v[78] + v[1] * v[73] +
+                   v[38] * v[79] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[61] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[62] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[63] + v[37] * v[81] + v[1] * v[76] +
+                   v[38] * v[82] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[64] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[65] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[66] + v[37] * v[86] + v[1] * v[71] +
+                   v[38] * v[87] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[67] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[68] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[69] + v[37] * v[89] + v[1] * v[84] +
+                   v[38] * v[90] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[70] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[71] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[72] + v[37] * v[95] + v[1] * v[91] +
+                   v[38] * v[96] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[73] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[74] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[75] + v[37] * v[98] + v[1] * v[93] +
+                   v[38] * v[99] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[76] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[77] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[78] + v[37] * v[101] + v[1] * v[97] +
+                   v[38] * v[102] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[79] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[80] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[81] + v[37] * v[104] + v[1] * v[100] +
+                   v[38] * v[105] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[82] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[83] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[84] + v[37] * v[107] + v[1] * v[103] +
+                   v[38] * v[108] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[85] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[86] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[87] + v[37] * v[110] + v[1] * v[106] +
+                   v[38] * v[111] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[88] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[89] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[90] + v[37] * v[113] + v[1] * v[109] +
+                   v[38] * v[114] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[91] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[92] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[93] + v[37] * v[116] + v[1] * v[112] +
+                   v[38] * v[117] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[94] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[95] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[96] +
+                   (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[97] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[98] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[99] + v[37] * v[126] + v[1] * v[123] +
+                   v[38] * v[127] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[100] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[101] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[102] + v[37] * v[129] + v[1] * v[124] +
+                   v[38] * v[130] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[103] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[104] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[105] + v[37] * v[138] + v[1] * v[119] +
+                   v[38] * v[139] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[106] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[107] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[108] + v[37] * v[148] + v[1] * v[145] +
+                   v[38] * v[149] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[109] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[110] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[111] + v[37] * v[151] + v[1] * v[146] +
+                   v[38] * v[152] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[112] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[113] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[114] + v[37] * v[154] + v[1] * v[150] +
+                   v[38] * v[155] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[115] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[116] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[117] + v[37] * v[157] + v[1] * v[153] +
+                   v[38] * v[158] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[118] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[119] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[120] + v[37] * v[160] + v[1] * v[156] +
+                   v[38] * v[161] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[121] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[122] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[123] + v[37] * v[163] + v[1] * v[159] +
+                   v[38] * v[164] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[124] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[125] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[126] + v[37] * v[166] + v[1] * v[162] +
+                   v[38] * v[167] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[127] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[128] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[129] + v[37] * v[169] + v[1] * v[165] +
+                   v[38] * v[170] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[130] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[131] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[132] + v[37] * v[172] + v[1] * v[168] +
+                   v[38] * v[173] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[133] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[134] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[135] + v[37] * v[175] + v[1] * v[171] +
+                   v[38] * v[176] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[136] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[137] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[138] + v[37] * v[178] + v[1] * v[174] +
+                   v[38] * v[179] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[139] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[140] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[141] + v[37] * v[181] + v[1] * v[177] +
+                   v[38] * v[182] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[142] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[143] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[144] + v[37] * v[184] + v[1] * v[180] +
+                   v[38] * v[185] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[145] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[146] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[147] + v[37] * v[187] + v[1] * v[183] +
+                   v[38] * v[188] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[148] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[149] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[150] + v[37] * v[190] + v[1] * v[186] +
+                   v[38] * v[191] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[151] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[152] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[153] + v[37] * v[193] + v[1] * v[189] +
+                   v[38] * v[194] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[154] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[155] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[156] + v[37] * v[196] + v[1] * v[192] +
+                   v[38] * v[197] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[157] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[158] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[159] + v[37] * v[199] + v[1] * v[195] +
+                   v[38] * v[200] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[160] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[161] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[162] + v[37] * v[202] + v[1] * v[198] +
+                   v[38] * v[203] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[163] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[164] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[165] + v[37] * v[205] + v[1] * v[201] +
+                   v[38] * v[206] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[166] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[167] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[168] + v[37] * v[208] + v[1] * v[204] +
+                   v[38] * v[209] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[169] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[170] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[171] + v[37] * v[211] + v[1] * v[207] +
+                   v[38] * v[212] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[172] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[173] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[174] + v[37] * v[214] + v[1] * v[210] +
+                   v[38] * v[215] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[175] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[176] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[177] + v[37] * v[217] + v[1] * v[213] +
+                   v[38] * v[218] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[178] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[179] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[180] + v[37] * v[220] + v[1] * v[216] +
+                   v[38] * v[221] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[181] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[182] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[183] + v[37] * v[223] + v[1] * v[219] +
+                   v[38] * v[224] + (v[12] - (v[43] * v[38] - v[40] * v[1])) * x[196] +
+                   (v[9] - (v[40] * v[37] - v[44] * v[38])) * x[197] +
+                   (v[16] - (v[44] * v[1] - v[43] * v[37])) * x[198] + v[37] * v[59] + v[1] * v[52] +
+                   v[38] * v[54] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[199] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[200] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[201] + v[37] * v[85] + v[1] * v[80] +
+                   v[38] * v[77] + (v[12] - (v[68] * v[38] - v[65] * v[1])) * x[202] +
+                   (v[9] - (v[65] * v[37] - v[69] * v[38])) * x[203] +
+                   (v[16] - (v[69] * v[1] - v[68] * v[37])) * x[204] + v[37] * v[94] + v[1] * v[70] +
+                   v[38] * v[125] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[205] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[206] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[207] + v[37] * v[75] + v[1] * v[92] +
+                   v[38] * v[53] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[208] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[209] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[210] + v[37] * v[48] + v[1] * v[121] +
+                   v[38] * v[23] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[211] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[212] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[213] + v[37] * v[21] + v[1] * v[51] +
+                   v[38] * v[226] + (v[12] - (v[131] * v[38] - v[128] * v[1])) * x[214] +
+                   (v[9] - (v[128] * v[37] - v[132] * v[38])) * x[215] +
+                   (v[16] - (v[132] * v[1] - v[131] * v[37])) * x[216] + v[37] * v[136] + v[1] * v[122] +
+                   v[38] * v[147];
+            v[16] = cos(x[3]);
+            v[9] = sin(x[3]);
+            v[12] = 4.89663865010925e-12 * v[9];
+            v[52] = v[29] * v[16] + v[137] * v[12] + v[17] * v[9];
+            v[59] = -v[9];
+            v[62] = 4.89663865010925e-12 * v[16];
+            v[137] = v[29] * v[59] + v[137] * v[62] + v[17] * v[16];
+            v[225] = v[225] + -0.0825 * v[52] + 0.384 * v[137];
+            v[29] = v[11] * v[59] + v[36] * v[62] + v[13] * v[16];
+            v[17] = v[29] + 4.89663865010925e-12 * v[38];
+            v[11] = v[11] * v[16] + v[36] * v[12] + v[13] * v[9];
+            v[18] = v[18] + -0.0825 * v[11] + 0.384 * v[29];
+            v[36] = v[137] + 4.89663865010925e-12 * v[1];
+            v[13] = v[225] * v[17] - v[18] * v[36];
+            v[62] = v[14] * v[59] + v[41] * v[62] + v[228] * v[16];
+            v[59] = v[62] + 4.89663865010925e-12 * v[37];
+            v[12] = v[14] * v[16] + v[41] * v[12] + v[228] * v[9];
+            v[15] = v[15] + -0.0825 * v[12] + 0.384 * v[62];
+            v[9] = v[18] * v[59] - v[15] * v[17];
+            v[16] = v[15] * v[36] - v[225] * v[59];
+            y[4] = (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[58] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[59] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[60] + v[59] * v[78] + v[36] * v[73] +
+                   v[17] * v[79] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[61] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[62] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[63] + v[59] * v[81] + v[36] * v[76] +
+                   v[17] * v[82] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[64] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[65] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[66] + v[59] * v[86] + v[36] * v[71] +
+                   v[17] * v[87] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[67] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[68] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[69] + v[59] * v[89] + v[36] * v[84] +
+                   v[17] * v[90] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[70] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[71] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[72] + v[59] * v[95] + v[36] * v[91] +
+                   v[17] * v[96] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[73] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[74] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[75] + v[59] * v[98] + v[36] * v[93] +
+                   v[17] * v[99] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[76] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[77] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[78] + v[59] * v[101] + v[36] * v[97] +
+                   v[17] * v[102] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[79] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[80] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[81] + v[59] * v[104] + v[36] * v[100] +
+                   v[17] * v[105] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[82] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[83] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[84] + v[59] * v[107] + v[36] * v[103] +
+                   v[17] * v[108] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[85] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[86] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[87] + v[59] * v[110] + v[36] * v[106] +
+                   v[17] * v[111] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[88] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[89] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[90] + v[59] * v[113] + v[36] * v[109] +
+                   v[17] * v[114] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[91] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[92] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[93] + v[59] * v[116] + v[36] * v[112] +
+                   v[17] * v[117] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[94] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[95] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[96] +
+                   (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[97] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[98] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[99] + v[59] * v[126] + v[36] * v[123] +
+                   v[17] * v[127] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[100] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[101] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[102] + v[59] * v[129] + v[36] * v[124] +
+                   v[17] * v[130] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[103] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[104] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[105] + v[59] * v[138] + v[36] * v[119] +
+                   v[17] * v[139] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[106] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[107] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[108] + v[59] * v[148] + v[36] * v[145] +
+                   v[17] * v[149] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[109] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[110] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[111] + v[59] * v[151] + v[36] * v[146] +
+                   v[17] * v[152] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[112] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[113] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[114] + v[59] * v[154] + v[36] * v[150] +
+                   v[17] * v[155] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[115] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[116] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[117] + v[59] * v[157] + v[36] * v[153] +
+                   v[17] * v[158] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[118] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[119] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[120] + v[59] * v[160] + v[36] * v[156] +
+                   v[17] * v[161] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[121] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[122] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[123] + v[59] * v[163] + v[36] * v[159] +
+                   v[17] * v[164] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[124] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[125] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[126] + v[59] * v[166] + v[36] * v[162] +
+                   v[17] * v[167] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[127] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[128] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[129] + v[59] * v[169] + v[36] * v[165] +
+                   v[17] * v[170] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[130] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[131] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[132] + v[59] * v[172] + v[36] * v[168] +
+                   v[17] * v[173] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[133] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[134] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[135] + v[59] * v[175] + v[36] * v[171] +
+                   v[17] * v[176] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[136] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[137] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[138] + v[59] * v[178] + v[36] * v[174] +
+                   v[17] * v[179] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[139] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[140] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[141] + v[59] * v[181] + v[36] * v[177] +
+                   v[17] * v[182] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[142] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[143] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[144] + v[59] * v[184] + v[36] * v[180] +
+                   v[17] * v[185] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[145] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[146] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[147] + v[59] * v[187] + v[36] * v[183] +
+                   v[17] * v[188] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[148] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[149] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[150] + v[59] * v[190] + v[36] * v[186] +
+                   v[17] * v[191] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[151] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[152] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[153] + v[59] * v[193] + v[36] * v[189] +
+                   v[17] * v[194] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[154] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[155] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[156] + v[59] * v[196] + v[36] * v[192] +
+                   v[17] * v[197] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[157] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[158] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[159] + v[59] * v[199] + v[36] * v[195] +
+                   v[17] * v[200] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[160] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[161] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[162] + v[59] * v[202] + v[36] * v[198] +
+                   v[17] * v[203] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[163] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[164] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[165] + v[59] * v[205] + v[36] * v[201] +
+                   v[17] * v[206] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[166] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[167] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[168] + v[59] * v[208] + v[36] * v[204] +
+                   v[17] * v[209] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[169] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[170] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[171] + v[59] * v[211] + v[36] * v[207] +
+                   v[17] * v[212] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[172] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[173] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[174] + v[59] * v[214] + v[36] * v[210] +
+                   v[17] * v[215] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[175] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[176] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[177] + v[59] * v[217] + v[36] * v[213] +
+                   v[17] * v[218] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[178] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[179] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[180] + v[59] * v[220] + v[36] * v[216] +
+                   v[17] * v[221] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[181] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[182] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[183] + v[59] * v[223] + v[36] * v[219] +
+                   v[17] * v[224] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[199] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[200] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[201] + v[59] * v[85] + v[36] * v[80] +
+                   v[17] * v[77] + (v[13] - (v[68] * v[17] - v[65] * v[36])) * x[202] +
+                   (v[9] - (v[65] * v[59] - v[69] * v[17])) * x[203] +
+                   (v[16] - (v[69] * v[36] - v[68] * v[59])) * x[204] + v[59] * v[94] + v[36] * v[70] +
+                   v[17] * v[125] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[205] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[206] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[207] + v[59] * v[75] + v[36] * v[92] +
+                   v[17] * v[53] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[208] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[209] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[210] + v[59] * v[48] + v[36] * v[121] +
+                   v[17] * v[23] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[211] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[212] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[213] + v[59] * v[21] + v[36] * v[51] +
+                   v[17] * v[226] + (v[13] - (v[131] * v[17] - v[128] * v[36])) * x[214] +
+                   (v[9] - (v[128] * v[59] - v[132] * v[17])) * x[215] +
+                   (v[16] - (v[132] * v[36] - v[131] * v[59])) * x[216] + v[59] * v[136] + v[36] * v[122] +
+                   v[17] * v[147];
+            v[16] = sin(x[4]);
+            v[9] = -v[16];
+            v[13] = cos(x[4]);
+            v[80] = 4.89663865010925e-12 * v[13];
+            v[85] = -1. * v[13];
+            v[112] = v[11] * v[9] + v[29] * v[80] + v[38] * v[85];
+            v[116] = -1. * v[112] + 4.89663865010925e-12 * v[17];
+            v[109] = v[52] * v[9] + v[137] * v[80] + v[1] * v[85];
+            v[113] = -1. * v[109] + 4.89663865010925e-12 * v[36];
+            v[106] = v[225] * v[116] - v[18] * v[113];
+            v[85] = v[12] * v[9] + v[62] * v[80] + v[37] * v[85];
+            v[80] = -1. * v[85] + 4.89663865010925e-12 * v[59];
+            v[9] = v[18] * v[80] - v[15] * v[116];
+            v[110] = v[15] * v[113] - v[225] * v[80];
+            y[5] = (v[106] - (v[68] * v[116] - v[65] * v[113])) * x[94] +
+                   (v[9] - (v[65] * v[80] - v[69] * v[116])) * x[95] +
+                   (v[110] - (v[69] * v[113] - v[68] * v[80])) * x[96] +
+                   (v[106] - (v[68] * v[116] - v[65] * v[113])) * x[97] +
+                   (v[9] - (v[65] * v[80] - v[69] * v[116])) * x[98] +
+                   (v[110] - (v[69] * v[113] - v[68] * v[80])) * x[99] + v[80] * v[126] + v[113] * v[123] +
+                   v[116] * v[127] + (v[106] - (v[68] * v[116] - v[65] * v[113])) * x[100] +
+                   (v[9] - (v[65] * v[80] - v[69] * v[116])) * x[101] +
+                   (v[110] - (v[69] * v[113] - v[68] * v[80])) * x[102] + v[80] * v[129] + v[113] * v[124] +
+                   v[116] * v[130] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[103] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[104] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[105] + v[80] * v[138] + v[113] * v[119] +
+                   v[116] * v[139] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[106] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[107] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[108] + v[80] * v[148] + v[113] * v[145] +
+                   v[116] * v[149] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[109] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[110] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[111] + v[80] * v[151] + v[113] * v[146] +
+                   v[116] * v[152] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[112] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[113] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[114] + v[80] * v[154] + v[113] * v[150] +
+                   v[116] * v[155] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[115] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[116] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[117] + v[80] * v[157] + v[113] * v[153] +
+                   v[116] * v[158] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[118] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[119] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[120] + v[80] * v[160] + v[113] * v[156] +
+                   v[116] * v[161] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[121] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[122] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[123] + v[80] * v[163] + v[113] * v[159] +
+                   v[116] * v[164] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[124] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[125] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[126] + v[80] * v[166] + v[113] * v[162] +
+                   v[116] * v[167] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[127] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[128] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[129] + v[80] * v[169] + v[113] * v[165] +
+                   v[116] * v[170] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[130] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[131] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[132] + v[80] * v[172] + v[113] * v[168] +
+                   v[116] * v[173] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[133] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[134] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[135] + v[80] * v[175] + v[113] * v[171] +
+                   v[116] * v[176] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[136] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[137] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[138] + v[80] * v[178] + v[113] * v[174] +
+                   v[116] * v[179] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[139] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[140] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[141] + v[80] * v[181] + v[113] * v[177] +
+                   v[116] * v[182] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[142] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[143] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[144] + v[80] * v[184] + v[113] * v[180] +
+                   v[116] * v[185] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[145] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[146] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[147] + v[80] * v[187] + v[113] * v[183] +
+                   v[116] * v[188] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[148] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[149] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[150] + v[80] * v[190] + v[113] * v[186] +
+                   v[116] * v[191] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[151] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[152] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[153] + v[80] * v[193] + v[113] * v[189] +
+                   v[116] * v[194] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[154] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[155] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[156] + v[80] * v[196] + v[113] * v[192] +
+                   v[116] * v[197] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[157] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[158] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[159] + v[80] * v[199] + v[113] * v[195] +
+                   v[116] * v[200] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[160] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[161] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[162] + v[80] * v[202] + v[113] * v[198] +
+                   v[116] * v[203] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[163] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[164] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[165] + v[80] * v[205] + v[113] * v[201] +
+                   v[116] * v[206] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[166] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[167] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[168] + v[80] * v[208] + v[113] * v[204] +
+                   v[116] * v[209] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[169] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[170] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[171] + v[80] * v[211] + v[113] * v[207] +
+                   v[116] * v[212] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[172] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[173] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[174] + v[80] * v[214] + v[113] * v[210] +
+                   v[116] * v[215] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[175] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[176] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[177] + v[80] * v[217] + v[113] * v[213] +
+                   v[116] * v[218] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[178] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[179] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[180] + v[80] * v[220] + v[113] * v[216] +
+                   v[116] * v[221] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[181] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[182] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[183] + v[80] * v[223] + v[113] * v[219] +
+                   v[116] * v[224] + (v[106] - (v[68] * v[116] - v[65] * v[113])) * x[202] +
+                   (v[9] - (v[65] * v[80] - v[69] * v[116])) * x[203] +
+                   (v[110] - (v[69] * v[113] - v[68] * v[80])) * x[204] + v[80] * v[94] + v[113] * v[70] +
+                   v[116] * v[125] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[205] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[206] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[207] + v[80] * v[75] + v[113] * v[92] +
+                   v[116] * v[53] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[208] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[209] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[210] + v[80] * v[48] + v[113] * v[121] +
+                   v[116] * v[23] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[211] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[212] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[213] + v[80] * v[21] + v[113] * v[51] +
+                   v[116] * v[226] + (v[106] - (v[131] * v[116] - v[128] * v[113])) * x[214] +
+                   (v[9] - (v[128] * v[80] - v[132] * v[116])) * x[215] +
+                   (v[110] - (v[132] * v[113] - v[131] * v[80])) * x[216] + v[80] * v[136] + v[113] * v[122] +
+                   v[116] * v[147];
+            v[110] = 4.89663865010925e-12 * v[16];
+            v[16] = -1. * v[16];
+            v[137] = v[52] * v[13] + v[137] * v[110] + v[1] * v[16];
+            v[52] = cos(x[5]);
+            v[1] = sin(x[5]);
+            v[9] = 4.89663865010925e-12 * v[1];
+            v[225] = v[225] + 0.088 * (v[137] * v[52] + v[109] * v[9] + v[36] * v[1]);
+            v[11] = v[11] * v[13] + v[29] * v[110] + v[38] * v[16];
+            v[29] = -v[1];
+            v[38] = 4.89663865010925e-12 * v[52];
+            v[116] = -1. * (v[11] * v[29] + v[112] * v[38] + v[17] * v[52]) + 4.89663865010925e-12 * v[116];
+            v[11] = v[18] + 0.088 * (v[11] * v[52] + v[112] * v[9] + v[17] * v[1]);
+            v[137] = -1. * (v[137] * v[29] + v[109] * v[38] + v[36] * v[52]) + 4.89663865010925e-12 * v[113];
+            v[113] = v[225] * v[116] - v[11] * v[137];
+            v[16] = v[12] * v[13] + v[62] * v[110] + v[37] * v[16];
+            v[38] = -1. * (v[16] * v[29] + v[85] * v[38] + v[59] * v[52]) + 4.89663865010925e-12 * v[80];
+            v[16] = v[15] + 0.088 * (v[16] * v[52] + v[85] * v[9] + v[59] * v[1]);
+            v[11] = v[11] * v[38] - v[16] * v[116];
+            v[16] = v[16] * v[137] - v[225] * v[38];
+            y[6] = (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[103] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[104] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[105] + v[38] * v[138] + v[137] * v[119] +
+                   v[116] * v[139] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[106] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[107] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[108] + v[38] * v[148] + v[137] * v[145] +
+                   v[116] * v[149] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[109] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[110] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[111] + v[38] * v[151] + v[137] * v[146] +
+                   v[116] * v[152] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[112] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[113] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[114] + v[38] * v[154] + v[137] * v[150] +
+                   v[116] * v[155] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[115] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[116] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[117] + v[38] * v[157] + v[137] * v[153] +
+                   v[116] * v[158] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[118] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[119] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[120] + v[38] * v[160] + v[137] * v[156] +
+                   v[116] * v[161] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[121] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[122] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[123] + v[38] * v[163] + v[137] * v[159] +
+                   v[116] * v[164] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[124] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[125] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[126] + v[38] * v[166] + v[137] * v[162] +
+                   v[116] * v[167] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[127] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[128] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[129] + v[38] * v[169] + v[137] * v[165] +
+                   v[116] * v[170] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[130] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[131] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[132] + v[38] * v[172] + v[137] * v[168] +
+                   v[116] * v[173] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[133] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[134] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[135] + v[38] * v[175] + v[137] * v[171] +
+                   v[116] * v[176] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[136] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[137] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[138] + v[38] * v[178] + v[137] * v[174] +
+                   v[116] * v[179] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[139] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[140] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[141] + v[38] * v[181] + v[137] * v[177] +
+                   v[116] * v[182] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[142] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[143] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[144] + v[38] * v[184] + v[137] * v[180] +
+                   v[116] * v[185] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[145] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[146] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[147] + v[38] * v[187] + v[137] * v[183] +
+                   v[116] * v[188] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[148] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[149] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[150] + v[38] * v[190] + v[137] * v[186] +
+                   v[116] * v[191] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[151] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[152] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[153] + v[38] * v[193] + v[137] * v[189] +
+                   v[116] * v[194] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[154] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[155] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[156] + v[38] * v[196] + v[137] * v[192] +
+                   v[116] * v[197] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[157] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[158] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[159] + v[38] * v[199] + v[137] * v[195] +
+                   v[116] * v[200] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[160] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[161] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[162] + v[38] * v[202] + v[137] * v[198] +
+                   v[116] * v[203] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[163] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[164] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[165] + v[38] * v[205] + v[137] * v[201] +
+                   v[116] * v[206] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[166] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[167] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[168] + v[38] * v[208] + v[137] * v[204] +
+                   v[116] * v[209] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[169] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[170] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[171] + v[38] * v[211] + v[137] * v[207] +
+                   v[116] * v[212] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[172] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[173] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[174] + v[38] * v[214] + v[137] * v[210] +
+                   v[116] * v[215] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[175] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[176] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[177] + v[38] * v[217] + v[137] * v[213] +
+                   v[116] * v[218] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[178] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[179] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[180] + v[38] * v[220] + v[137] * v[216] +
+                   v[116] * v[221] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[181] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[182] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[183] + v[38] * v[223] + v[137] * v[219] +
+                   v[116] * v[224] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[205] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[206] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[207] + v[38] * v[75] + v[137] * v[92] +
+                   v[116] * v[53] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[208] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[209] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[210] + v[38] * v[48] + v[137] * v[121] +
+                   v[116] * v[23] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[211] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[212] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[213] + v[38] * v[21] + v[137] * v[51] +
+                   v[116] * v[226] + (v[113] - (v[131] * v[116] - v[128] * v[137])) * x[214] +
+                   (v[11] - (v[128] * v[38] - v[132] * v[116])) * x[215] +
+                   (v[16] - (v[132] * v[137] - v[131] * v[38])) * x[216] + v[38] * v[136] + v[137] * v[122] +
+                   v[116] * v[147];
+
+            // Copy result to output
+            for (std::size_t i = 0; i < 7; ++i)
+            {
+                out[i] = y[i];
+            }
         }
     };
 }  // namespace vamp::robots

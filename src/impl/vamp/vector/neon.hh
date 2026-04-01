@@ -184,15 +184,12 @@ namespace vamp
         template <unsigned int = 0>
         inline static auto mask(VectorT v) noexcept -> unsigned int
         {
-            auto MSB = vsliq_n_u32(vdupq_n_u32(0), vreinterpretq_u32_s32(v), 16);
-            auto sumtwo = vreinterpret_u32_u16(
-                vpadd_u16(vreinterpret_u16_u32(vget_low_u32(MSB)), vreinterpret_u16_u32(vget_high_u32(MSB))));
-            auto attempt = vreinterpret_u16_u32(sumtwo);
-            auto attempt2 = vreinterpret_u8_u16(attempt);
-            auto reorg = vshrn_n_u16(vreinterpretq_u16_u8(vcombine_u8(attempt2, attempt2)), 8);
-            return vget_lane_u32(vreinterpret_u32_u8(reorg), 0);
-            // IT MAY NEED A REVERSE vrev32_u8
-            // vget_lane_u32(vreinterpret_u32_u8(vrev32_u8(reorg)), 0);
+            // Extract MSB (sign bit) of each lane, producing 1 bit per lane
+            // to match x86 movemask semantics expected by all_true/any_true
+            uint32x4_t u = vreinterpretq_u32_s32(v);
+            uint32x4_t shifted = vshrq_n_u32(u, 31);
+            return vgetq_lane_u32(shifted, 0) | (vgetq_lane_u32(shifted, 1) << 1) |
+                   (vgetq_lane_u32(shifted, 2) << 2) | (vgetq_lane_u32(shifted, 3) << 3);
         }
 
         template <typename = void>
@@ -425,15 +422,12 @@ namespace vamp
         template <unsigned int = 0>
         inline static auto mask(VectorT v) noexcept -> unsigned int
         {
-            auto MSB = vsliq_n_u32(vdupq_n_u32(0), vreinterpretq_u32_f32(v), 16);
-            auto sumtwo = vreinterpret_u32_u16(
-                vpadd_u16(vreinterpret_u16_u32(vget_low_u32(MSB)), vreinterpret_u16_u32(vget_high_u32(MSB))));
-            auto attempt = vreinterpret_u16_u32(sumtwo);
-            auto attempt2 = vreinterpret_u8_u16(attempt);
-            auto reorg = vshrn_n_u16(vreinterpretq_u16_u8(vcombine_u8(attempt2, attempt2)), 8);
-            return vget_lane_u32(vreinterpret_u32_u8(reorg), 0);
-            // IT MAY NEED A REVERSE vrev32_u8
-            // vget_lane_u32(vreinterpret_u32_u8(vrev32_u8(reorg)), 0);
+            // Extract MSB (sign bit) of each lane, producing 1 bit per lane
+            // to match x86 movemask semantics expected by all_true/any_true
+            uint32x4_t u = vreinterpretq_u32_f32(v);
+            uint32x4_t shifted = vshrq_n_u32(u, 31);
+            return vgetq_lane_u32(shifted, 0) | (vgetq_lane_u32(shifted, 1) << 1) |
+                   (vgetq_lane_u32(shifted, 2) << 2) | (vgetq_lane_u32(shifted, 3) << 3);
         }
 
         template <unsigned int = 0>

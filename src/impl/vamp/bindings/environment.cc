@@ -106,6 +106,101 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
         .def_ro("zs", &vc::HeightField<float>::zs)
         .def_ro("data", &vc::HeightField<float>::data);
 
+    nb::class_<vc::ConvexPolytope<float>>(pymodule, "ConvexPolytope")
+        .def(
+            "__init__",
+            [](vc::ConvexPolytope<float> *q, const std::vector<std::array<float, 4>> &planes)
+            { new (q) vc::ConvexPolytope<float>(vf::polytope::from_planes(planes)); },
+            "planes"_a,
+            "Constructor from halfplanes as [nx, ny, nz, d].")
+        .def(
+            "__init__",
+            [](vc::ConvexPolytope<float> *q,
+               const nb::ndarray<float, nb::shape<-1, 3>, nb::device::cpu> &vertices)
+            {
+                std::vector<float> vx, vy, vz;
+                const std::size_t num_vertices = vertices.shape(0);
+                vx.reserve(num_vertices);
+                vy.reserve(num_vertices);
+                vz.reserve(num_vertices);
+
+                for (std::size_t i = 0; i < num_vertices; ++i)
+                {
+                    vx.emplace_back(vertices(i, 0));
+                    vy.emplace_back(vertices(i, 1));
+                    vz.emplace_back(vertices(i, 2));
+                }
+
+                new (q) vc::ConvexPolytope<float>(vf::polytope::from_vertices(vx, vy, vz));
+            },
+            "vertices"_a,
+            "Constructor from vertices array.")
+        .def_static(
+            "from_planes",
+            &vf::polytope::from_planes,
+            "planes"_a,
+            "Create from halfplanes as List[[nx, ny, nz, d]].")
+        .def_static(
+            "from_vertices",
+            [](const nb::ndarray<float, nb::shape<-1, 3>, nb::device::cpu> &vertices)
+            {
+                std::vector<float> vx, vy, vz;
+                const std::size_t num_vertices = vertices.shape(0);
+                vx.reserve(num_vertices);
+                vy.reserve(num_vertices);
+                vz.reserve(num_vertices);
+
+                for (std::size_t i = 0; i < num_vertices; ++i)
+                {
+                    vx.emplace_back(vertices(i, 0));
+                    vy.emplace_back(vertices(i, 1));
+                    vz.emplace_back(vertices(i, 2));
+                }
+
+                return vf::polytope::from_vertices(vx, vy, vz);
+            },
+            "vertices"_a,
+            "Create from vertices array.")
+        .def_static(
+            "from_both",
+            [](const nb::ndarray<float, nb::shape<-1, 3>, nb::device::cpu> &vertices,
+               const nb::ndarray<float, nb::shape<-1, 4>, nb::device::cpu> &planes)
+            {
+                std::vector<std::array<float, 3>> verts;
+                std::vector<std::array<float, 4>> plns;
+                const std::size_t num_vertices = vertices.shape(0);
+                const std::size_t num_planes = planes.shape(0);
+                verts.reserve(num_vertices);
+                plns.reserve(num_planes);
+
+                for (auto i = 0U; i < num_vertices; ++i)
+                {
+                    verts.emplace_back(std::array<float, 3>{vertices(i, 0), vertices(i, 1), vertices(i, 2)});
+                }
+
+                for (auto i = 0U; i < num_planes; ++i)
+                {
+                    plns.emplace_back(
+                        std::array<float, 4>{planes(i, 0), planes(i, 1), planes(i, 2), planes(i, 3)});
+                }
+
+                return vf::polytope::from_both(verts, plns);
+            },
+            "vertices"_a,
+            "planes"_a,
+            "Create from both vertices array and planes array.")
+        .def_ro("num_planes", &vc::ConvexPolytope<float>::num_planes)
+        .def_ro("nx", &vc::ConvexPolytope<float>::nx)
+        .def_ro("ny", &vc::ConvexPolytope<float>::ny)
+        .def_ro("nz", &vc::ConvexPolytope<float>::nz)
+        .def_ro("d", &vc::ConvexPolytope<float>::d)
+        .def_ro("num_vertices", &vc::ConvexPolytope<float>::num_vertices)
+        .def_ro("vx", &vc::ConvexPolytope<float>::vx)
+        .def_ro("vy", &vc::ConvexPolytope<float>::vy)
+        .def_ro("vz", &vc::ConvexPolytope<float>::vz)
+        .def_ro("min_distance", &vc::ConvexPolytope<float>::min_distance)
+        .def_rw("name", &vc::ConvexPolytope<float>::name);
+
     nb::class_<vc::Environment<float>>(pymodule, "Environment")
         .def(nb::init<>())
         .def(
@@ -147,6 +242,13 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             "add_heightfield",
             [](vc::Environment<float> &e, const vc::HeightField<float> &s)
             { e.heightfields.emplace_back(s); })
+        .def(
+            "add_polytope",
+            [](vc::Environment<float> &e, const vc::ConvexPolytope<float> &p)
+            {
+                e.polytopes.emplace_back(p);
+                e.sort();
+            })
         .def(
             "add_pointcloud",
             [](vc::Environment<float> &e,

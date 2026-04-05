@@ -69,6 +69,7 @@ target_link_libraries_system(vamp_cpp
     Eigen3::Eigen
     nigh
     pdqsort
+    cdd
 )
 
 # Link SIMDxorshift if available

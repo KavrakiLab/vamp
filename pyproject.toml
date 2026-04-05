@@ -20,6 +20,7 @@ dependencies = ["numpy"]
 [project.optional-dependencies]
 examples = ["fire", "pybullet", "pyyaml", "tqdm", "pandas", "tabulate", "xmltodict"]
 heightmaps = ["pillow"]
+polytopes = ["trimesh", "vhacdx", "scipy"]
 
 [project.urls]
 Homepage = "https://github.com/KavrakiLab/vamp"

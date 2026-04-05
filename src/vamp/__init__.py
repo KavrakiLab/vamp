@@ -1,6 +1,7 @@
 __all__ = [
     "robots",
     "png_to_heightfield",
+    "mesh_to_polytopes",
     "configure_robot_and_planner_with_kwargs",
     "problem_dict_to_vamp",
     "results_to_dict",
@@ -9,6 +10,7 @@ __all__ = [
     "Sphere",
     "Cuboid",
     "Cylinder",
+    "ConvexPolytope",
     "RRTCSettings",
     "PRMSettings",
     "PRMNeighborParams",
@@ -21,8 +23,7 @@ __all__ = [
     ]
 
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union, List
-import importlib
+from typing import Any, Dict, Tuple, Union, List
 
 from numpy import float32
 from numpy.typing import NDArray
@@ -32,6 +33,7 @@ from . import _core
 from ._core import Sphere as Sphere
 from ._core import Cuboid as Cuboid
 from ._core import Cylinder as Cylinder
+from ._core import ConvexPolytope as ConvexPolytope
 from ._core import Attachment as Attachment
 from ._core import Environment as Environment
 from ._core import PRMNeighborParams as PRMNeighborParams
@@ -64,6 +66,54 @@ def png_to_heightfield(
     array = np.flip(array, axis = 0)
 
     return _core.make_heightfield(center, scaling, array.shape, list(array.flatten()))
+
+
+def mesh_to_polytopes(
+    filename: Path,
+    position: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+    scale: float = 1.0,
+    convex_decomposition: bool = False,
+    name: str = "mesh",
+    **decomposition_kwargs,
+    ) -> List[ConvexPolytope]:
+    import trimesh
+    import numpy as np
+
+    mesh = trimesh.load(str(filename), force = 'mesh')
+
+    def hull_to_polytope(hull, scale, position, polytope_name):
+        vertices = (np.array(hull.vertices) * scale + position).astype(np.float32)
+        normals = np.array(hull.face_normals).astype(np.float32)
+        face_vertices = hull.vertices[hull.faces[:, 0]]
+        d_orig = np.sum(normals * face_vertices, axis = 1)
+        d_transformed = (d_orig * scale + np.sum(normals * position, axis = 1)).astype(np.float32)
+        planes = np.column_stack([normals, d_transformed]).astype(np.float32)
+
+        polytope = ConvexPolytope.from_both(vertices, planes)
+        polytope.name = polytope_name
+        return polytope
+
+    if convex_decomposition:
+        parts = trimesh.decomposition.convex_decomposition(mesh, **decomposition_kwargs)
+        if not isinstance(parts, list):
+            parts = [parts]
+
+        polytopes = []
+        for i, part_data in enumerate(parts):
+            if isinstance(part_data, dict):
+                part_mesh = trimesh.Trimesh(**part_data)
+            else:
+                part_mesh = part_data
+
+            hull = part_mesh.convex_hull
+            polytope_name = f"{name}_{i}" if len(parts) > 1 else name
+            polytopes.append(hull_to_polytope(hull, scale, position, polytope_name))
+
+        return polytopes
+
+    else:
+        hull = mesh.convex_hull
+        return [hull_to_polytope(hull, scale, position, name)]
 
 
 def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, **kwargs):

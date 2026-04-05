@@ -100,6 +100,7 @@ VAMP fetches the following external dependencies via [CPM](https://github.com/cp
 - [`nigh`](https://github.com/KavrakiLab/nigh): a fork of the original [`nigh`](https://github.com/UNC-Robotics/nigh) [[4]](#4) to better use our vector types
 - [`pdqsort`](https://github.com/orlp/pdqsort): for fast sorting
 - [`SIMDxorshift`](https://github.com/lemire/SIMDxorshift): alternative fast random numbers for x86 machines
+- [`cddlib`](https://github.com/cddlib/cddlib): for convex polytope vertex/halfspace conversion
 
 Download the code:
 ```bash
@@ -114,7 +115,7 @@ pip install .
 ```
 If you want to install all Python dependencies to run the examples, specify those optional dependencies:
 ```bash
-pip install .[examples,heightmaps]
+pip install .[examples,heightmaps,polytopes]
 ```
 If you have installed the `examples` dependencies, test your installation by running:
 ```bash
@@ -295,6 +296,12 @@ These objects can be created with the following:
 - `vamp.Cuboid(center, euler_xyz, half_extents)`: a cuboid specified by the frame and then half-extents (radii) along the X, Y, and Z axes in its local frame.
 - `vamp.Heightfield` via `vamp.make_heightfield` / `vamp.png_to_heightfield`: a heightfield specified by pixel intensity in an image file, scaled over specified dimensions.
 - Pointclouds via `add_pointcloud()` in `vamp.Environment`. This will construct a CAPT from the provided list of points, the minimum and maximum robot sphere radii, and radius for each point in the pointcloud.
+- `vamp.ConvexPolytope`: a convex polytope obstacle defined by halfspace planes and/or vertices. Can be constructed in several ways:
+  - `ConvexPolytope.from_vertices(vertices)`: from a numpy array of vertices
+  - `ConvexPolytope.from_planes(planes)`: from halfspace planes as `List[[nx, ny, nz, d]]` where the interior satisfies `nx*x + ny*y + nz*z <= d`
+  - `ConvexPolytope.from_both(vertices, planes)`: from both representations simultaneously
+  - `vamp.mesh_to_polytopes(filename, position, scale, convex_decomposition, name)`: helper function to load a mesh file and convert it to a list of `ConvexPolytope` obstacles. Supports convex hull or convex decomposition of non-convex meshes. Requires `trimesh`.
+
 See the `src/impl/vamp/collision/` folder for more information.
 
 Some robots (currently, the UR5, Panda, and Fetch) support attaching custom geometry (a collection of spheres) to the end-effector via `vamp.Attachment(relative_position, relative_quaternion_xyzw)`.
@@ -346,7 +353,7 @@ Inside `impl/vamp`, the code is divided into the following directories:
 - [ ] Batch configuration validation
 - [ ] Planning subgroups
 - [X] Object attachment at end-effector
-- [ ] Mesh collision checking
+- [X] Mesh collision checking
 - [X] Pointcloud collision checking
 - [ ] Manifold-constrained planning
 - [ ] Time-optimal trajectory parameterization

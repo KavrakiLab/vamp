@@ -2,10 +2,14 @@
 
 #include <string>
 #include <memory>
+#include <vector>
+#include <limits>
+#include <cmath>
 
 #include <vamp/vector.hh>
 #include <vamp/collision/math.hh>
 
+#include <Eigen/Dense>
 #include <Eigen/Geometry>
 
 namespace vamp::collision
@@ -308,6 +312,183 @@ namespace vamp::collision
           , yd2(other.yd2)
           , data(other.data)
         {
+        }
+    };
+
+    // A convex polytope with dual representation:
+    // - H-representation: half-planes
+    // - V-representation: vertices
+    template <typename DataT>
+    struct ConvexPolytope : public Shape<DataT>
+    {
+        // Halfspaces
+        std::size_t num_planes;
+        std::vector<DataT> nx;  // plane normals
+        std::vector<DataT> ny;
+        std::vector<DataT> nz;
+        std::vector<DataT> d;  // plane offsets (n.x <= d defines interior)
+
+        // Vertices
+        std::size_t num_vertices;
+        std::vector<float> vx;
+        std::vector<float> vy;
+        std::vector<float> vz;
+
+        // Oriented bounding box for broadphase
+        Cuboid<DataT> obb;
+
+        ConvexPolytope() = default;
+
+        explicit ConvexPolytope(
+            std::size_t num_planes,
+            const std::vector<DataT> &nx,
+            const std::vector<DataT> &ny,
+            const std::vector<DataT> &nz,
+            const std::vector<DataT> &d,
+            std::size_t num_vertices,
+            const std::vector<float> &vx,
+            const std::vector<float> &vy,
+            const std::vector<float> &vz)
+          : Shape<DataT>()
+          , num_planes(num_planes)
+          , nx(nx)
+          , ny(ny)
+          , nz(nz)
+          , d(d)
+          , num_vertices(num_vertices)
+          , vx(vx)
+          , vy(vy)
+          , vz(vz)
+        {
+            obb = compute_obb();
+            Shape<DataT>::min_distance = compute_min_distance();
+        }
+
+        inline auto compute_min_distance() -> DataT
+        {
+            // Minimum distance from origin to any vertex
+            float min_dist = std::numeric_limits<float>::max();
+            for (auto i = 0U; i < num_vertices; ++i)
+            {
+                float dist = std::sqrt(vx[i] * vx[i] + vy[i] * vy[i] + vz[i] * vz[i]);
+                min_dist = std::min(min_dist, dist);
+            }
+
+            return DataT(min_dist);
+        }
+
+        inline auto compute_obb() -> Cuboid<DataT>
+        {
+            float cx = 0, cy = 0, cz = 0;
+            for (auto i = 0U; i < num_vertices; ++i)
+            {
+                cx += vx[i];
+                cy += vy[i];
+                cz += vz[i];
+            }
+            cx /= num_vertices;
+            cy /= num_vertices;
+            cz /= num_vertices;
+
+            Eigen::Matrix3f cov = Eigen::Matrix3f::Zero();
+            for (auto i = 0U; i < num_vertices; ++i)
+            {
+                const float dx = vx[i] - cx;
+                const float dy = vy[i] - cy;
+                const float dz = vz[i] - cz;
+                cov(0, 0) += dx * dx;
+                cov(0, 1) += dx * dy;
+                cov(0, 2) += dx * dz;
+                cov(1, 1) += dy * dy;
+                cov(1, 2) += dy * dz;
+                cov(2, 2) += dz * dz;
+            }
+            cov(1, 0) = cov(0, 1);
+            cov(2, 0) = cov(0, 2);
+            cov(2, 1) = cov(1, 2);
+
+            Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> solver(cov);
+            Eigen::Matrix3f axes = solver.eigenvectors();
+
+            if (axes.determinant() < 0)
+            {
+                axes.col(0) *= -1;
+            }
+
+            float min_0 = std::numeric_limits<float>::max();
+            float max_0 = std::numeric_limits<float>::lowest();
+            float min_1 = std::numeric_limits<float>::max();
+            float max_1 = std::numeric_limits<float>::lowest();
+            float min_2 = std::numeric_limits<float>::max();
+            float max_2 = std::numeric_limits<float>::lowest();
+
+            const Eigen::Vector3f axis_0 = axes.col(0);
+            const Eigen::Vector3f axis_1 = axes.col(1);
+            const Eigen::Vector3f axis_2 = axes.col(2);
+
+            for (auto i = 0U; i < num_vertices; ++i)
+            {
+                const Eigen::Vector3f v(vx[i], vy[i], vz[i]);
+                const float proj_0 = v.dot(axis_0);
+                const float proj_1 = v.dot(axis_1);
+                const float proj_2 = v.dot(axis_2);
+
+                min_0 = std::min(min_0, proj_0);
+                max_0 = std::max(max_0, proj_0);
+                min_1 = std::min(min_1, proj_1);
+                max_1 = std::max(max_1, proj_1);
+                min_2 = std::min(min_2, proj_2);
+                max_2 = std::max(max_2, proj_2);
+            }
+
+            const float mid_0 = (min_0 + max_0) * 0.5f;
+            const float mid_1 = (min_1 + max_1) * 0.5f;
+            const float mid_2 = (min_2 + max_2) * 0.5f;
+            Eigen::Vector3f center = mid_0 * axis_0 + mid_1 * axis_1 + mid_2 * axis_2;
+
+            const float half_0 = (max_0 - min_0) * 0.5f;
+            const float half_1 = (max_1 - min_1) * 0.5f;
+            const float half_2 = (max_2 - min_2) * 0.5f;
+
+            return Cuboid<DataT>(
+                DataT(center.x()),
+                DataT(center.y()),
+                DataT(center.z()),
+                DataT(axis_0.x()),
+                DataT(axis_0.y()),
+                DataT(axis_0.z()),
+                DataT(axis_1.x()),
+                DataT(axis_1.y()),
+                DataT(axis_1.z()),
+                DataT(axis_2.x()),
+                DataT(axis_2.y()),
+                DataT(axis_2.z()),
+                DataT(half_0),
+                DataT(half_1),
+                DataT(half_2));
+        }
+
+        template <typename OtherDataT>
+        explicit ConvexPolytope(const ConvexPolytope<OtherDataT> &other)
+          : Shape<DataT>(other)
+          , num_planes(other.num_planes)
+          , nx(other.nx.size())
+          , ny(other.ny.size())
+          , nz(other.nz.size())
+          , d(other.d.size())
+          , num_vertices(other.num_vertices)
+          , vx(other.vx)
+          , vy(other.vy)
+          , vz(other.vz)
+          , obb(other.obb)
+        {
+            for (auto i = 0U; i < other.nx.size(); ++i)
+            {
+                nx[i] = DataT(other.nx[i]);
+                ny[i] = DataT(other.ny[i]);
+                nz[i] = DataT(other.nz[i]);
+                d[i] = DataT(other.d[i]);
+            }
         }
     };
 }  // namespace vamp::collision

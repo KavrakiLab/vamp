@@ -171,7 +171,7 @@ First, install Emscripten.
 Then build the WASM modules:
 ```bash
 cd vamp
-emcmake cmake -Bbuild-wasm -DCMAKE_BUILD_TYPE=Release -DVAMP_BUILD_WASM=ON -DVAMP_BUILD_PYTHON=OFF
+emcmake cmake -Bbuild-wasm -DCMAKE_BUILD_TYPE=Release -DVAMP_BUILD_WASM=ON -DVAMP_BUILD_PYTHON_BINDINGS=OFF
 cmake --build build-wasm
 ```
 

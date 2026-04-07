@@ -89,7 +89,7 @@ jobs:
         emcmake cmake -B build-wasm
         -DCMAKE_BUILD_TYPE=Release
         -DVAMP_BUILD_WASM=ON
-        -DVAMP_BUILD_PYTHON=OFF
+        -DVAMP_BUILD_PYTHON_BINDINGS=OFF
 
     - name: Build WASM
       run: cmake --build build-wasm

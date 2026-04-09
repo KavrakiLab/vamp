@@ -9,9 +9,12 @@
 [![arXiv FCIT](https://img.shields.io/badge/arXiv-2411.17902-b31b1b.svg)](https://arxiv.org/abs/2411.17902)
 [![arXiv AORRTC](https://img.shields.io/badge/arXiv-2505.10542-b31b1b.svg)](https://arxiv.org/abs/2505.10542)
 
+[![Interactive Website](https://img.shields.io/badge/Interactive%20Website-8A2BE2)](https://zkingston.com/vamp-web)
+
 ![Demo video](resources/capt_demo.gif)
 
 _For a full demonstration of VAMP running in real-time, see [this video](https://www.youtube.com/watch?v=BzDKdrU1VpM)_.
+_You can also [play with an interactive demonstration here!](https://zkingston.com/vamp-web)_.
 
 This repository hosts the code for:
 - the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545),

@@ -1,3 +1,4 @@
+#include "vamp/collision/environment.hh"
 #include <vamp_python_init.hh>
 
 #include <vamp/collision/filter.hh>
@@ -162,7 +163,14 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
         .def(
             "attach",
             [](vc::Environment<float> &e, const vc::Attachment<float> &a) { e.attachments.emplace(a); })
-        .def("detach", [](vc::Environment<float> &e) { e.attachments.reset(); });
+        .def("detach", [](vc::Environment<float> &e) { e.attachments.reset(); })
+        .def_ro("spheres", &vc::Environment<float>::spheres)
+        .def_ro("cuboids", &vc::Environment<float>::cuboids)
+        .def_ro("z_aligned_cuboids", &vc::Environment<float>::z_aligned_cuboids)
+        .def_ro("capsules", &vc::Environment<float>::capsules)
+        .def_ro("z_aligned_capsules", &vc::Environment<float>::z_aligned_capsules)
+        .def_ro("heightfields", &vc::Environment<float>::heightfields)
+        .def_ro("pointclouds", &vc::Environment<float>::pointclouds);
 
     pymodule.def(
         "filter_pointcloud",

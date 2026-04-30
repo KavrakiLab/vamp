@@ -1,6 +1,6 @@
-#include "vamp/collision/environment.hh"
 #include <vamp_python_init.hh>
 
+#include <vamp/collision/environment.hh>
 #include <vamp/collision/filter.hh>
 #include <vamp/collision/capt.hh>
 #include <vamp/collision/factory.hh>

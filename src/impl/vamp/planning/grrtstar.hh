@@ -1,3 +1,27 @@
+/**
+ * @brief Greedy-RRT* (G-RRT*) is a greedy version of the anytime Rapidly-exploring Random Trees algorithm.
+ * It finds initial solutions as quickly as RRT-Connect by maintaining two balanced trees
+ * rooted at the start and goal, advancing toward each other using greedy connection heuristics.
+ * The algorithm then performs incremental rewiring of the growing trees to asymptotically find
+ * better solutions, similar to RRT*. Both approximation and search in G-RRT* use a greedy version of
+ * the direct informed sampling heuristic to focus exploration on promising regions of the state space.
+ *
+ * @author Phone Thiha Kyaw (University of Toronto)
+ *
+ * @par Associated publications:
+ *
+ * Kyaw, P. T., Le, A. V., Elara, M. R., & Kelly, J. (2025).
+ * Greedy heuristics for sampling-based motion planning in high-dimensional state spaces.
+ * arXiv preprint arXiv:2405.03411.
+ * DOI: https://doi.org/10.48550/arXiv.2405.03411
+ * arXiv: https://arxiv.org/abs/2405.03411 [cs.RO]
+ *
+ * Kyaw, P. T., et al. (2022).
+ * Energy-efficient path planning of reconfigurable robots in complex environments.
+ * IEEE Transactions on Robotics, 38(4), 2481-2494.
+ * DOI: https://doi.org/10.1109/TRO.2022.3147408
+ */
+
 #pragma once
 
 #include <algorithm>

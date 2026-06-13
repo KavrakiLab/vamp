@@ -368,7 +368,35 @@ namespace vamp::planning
                     (reach) ? nearest_vector : nearest_vector * (settings.range / nearest_distance);
                 float extension_distance = reach ? nearest_distance : settings.range;
 
-                // Validate extension edge
+                auto new_configuration = nearest_configuration + extension_vector;
+                float new_cost = costs[nearest_node.index] + extension_distance;
+                std::size_t best_parent = nearest_node.index;
+
+                // Cost gate on the new state BEFORE the collision check (mirrors OMPL
+                // GreedyRRTstar): reject an extension that cannot improve the current best
+                // before paying for the motion-validity check.
+                if (has_solution)
+                {
+                    float h_hat;
+                    if (tree_a_is_start)
+                    {
+                        h_hat = std::numeric_limits<float>::max();
+                        for (const auto &g : goals)
+                        {
+                            h_hat = std::min(h_hat, new_configuration.distance(g));
+                        }
+                    }
+                    else
+                    {
+                        h_hat = new_configuration.distance(start);
+                    }
+                    if (new_cost + h_hat >= best_cost)
+                    {
+                        continue;
+                    }
+                }
+
+                // Validate extension edge (collision check)
                 if (not validate_vector<Robot, rake, resolution>(
                         nearest_configuration, extension_vector, extension_distance, environment))
                 {
@@ -387,10 +415,6 @@ namespace vamp::planning
                     }
                     continue;
                 }
-
-                auto new_configuration = nearest_configuration + extension_vector;
-                float new_cost = costs[nearest_node.index] + extension_distance;
-                std::size_t best_parent = nearest_node.index;
 
                 // Write config to buffer once (before both parent selection and node addition)
                 float *new_config_ptr = buffer_index(free_index);
@@ -469,31 +493,6 @@ namespace vamp::planning
                                 }
                             }
                         }
-                    }
-                }
-
-                // Tight cost gating: use actual tree cost (after parent selection) + heuristic.
-                // Placed after parent selection so new_cost reflects the best parent, not just nearest.
-                if (has_solution)
-                {
-                    float h_hat;
-                    if (tree_a_is_start)
-                    {
-                        h_hat = std::numeric_limits<float>::max();
-                        for (const auto &g : goals)
-                        {
-                            h_hat = std::min(h_hat, new_configuration.distance(g));
-                        }
-                    }
-                    else
-                    {
-                        h_hat = new_configuration.distance(start);
-                    }
-
-                    float tight_f = new_cost + h_hat;
-                    if (tight_f >= best_cost)
-                    {
-                        continue;
                     }
                 }
 

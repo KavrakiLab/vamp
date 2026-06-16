@@ -1,6 +1,11 @@
-if(EMSCRIPTEN)
-  # Fetch Eigen header-only library for WASM builds
-  # Emscripten doesn't have access to system packages
+# Fetch Eigen header-only library for WASM builds
+# Emscripten doesn't have access to system packages
+# Some build environments may also not have Eigen
+if(NOT EMSCRIPTEN)
+  find_package(Eigen3 QUIET NO_MODULE)
+endif()
+
+if(NOT Eigen3_FOUND)
   CPMAddPackage(
     NAME Eigen3
     VERSION 3.4.0
@@ -13,8 +18,6 @@ if(EMSCRIPTEN)
       INTERFACE_INCLUDE_DIRECTORIES "$<BUILD_INTERFACE:${Eigen3_SOURCE_DIR}>"
     )
   endif()
-else()
-  find_package(Eigen3 REQUIRED NO_MODULE)
 endif()
 
 CPMAddPackage("gh:kavrakilab/nigh#97130999440647c204e0265d05a997dbd8da4e70")

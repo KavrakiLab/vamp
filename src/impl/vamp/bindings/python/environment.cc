@@ -53,7 +53,8 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             [](vc::Cylinder<float> *q,
                const std::array<float, 3> &endpoint1,
                const std::array<float, 3> &endpoint2,
-               float radius) noexcept { *q = vf::cylinder::endpoints::array(endpoint1, endpoint2, radius); },
+               float radius) noexcept
+            { new (q) vc::Cylinder<float>(vf::cylinder::endpoints::array(endpoint1, endpoint2, radius)); },
             "Constructor from endpoints and radius.")
         .def_ro("x1", &vc::Cylinder<float>::x1)
         .def_ro("y1", &vc::Cylinder<float>::y1)

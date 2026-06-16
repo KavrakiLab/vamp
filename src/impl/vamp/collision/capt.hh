@@ -424,7 +424,7 @@ namespace vamp::collision
         // - `radii`: SIMD vector of the radii of each sphere.
         auto collides_simd(const std::array<FVectorT, 3> &centers, FVectorT radii) const noexcept -> bool
         {
-            // Padd radii by radius of points.
+            // Pad radii by radius of points.
             radii = radii + r_point;
             // Test against top AABB
             FVectorT inbounds =
@@ -441,20 +441,28 @@ namespace vamp::collision
                 return false;
             }
 
-            FVectorT these_tests = FVectorT::fill(tests[0]);
-            FVectorT cmp_results = centers[0].greater_equal(these_tests);
-            auto idxs = (cmp_results >> 31U).template as<IVectorT>() + 1;
-
-            // Search downward through the tree, parallel across each point
-            for (uint8_t i = 1, k = 1; i < nlog2; i++)
+            IVectorT zs;
+            if (nlog2 == 0)
             {
-                these_tests = FVectorT::gather(tests.data(), idxs);
-                cmp_results = centers[k].greater_equal(these_tests);
-                idxs = (idxs << 1U) + (cmp_results >> 31U).template as<IVectorT>() + 1;
-                k = (k + 1) % 3;
+                zs = IVectorT::fill(0);
             }
+            else
+            {
+                FVectorT these_tests = FVectorT::fill(tests[0]);
+                FVectorT cmp_results = centers[0].greater_equal(these_tests);
+                auto idxs = (cmp_results >> 31U).template as<IVectorT>() + 1;
 
-            const IVectorT zs = idxs - tests.size();
+                // Search downward through the tree, parallel across each point
+                for (uint8_t i = 1, k = 1; i < nlog2; i++)
+                {
+                    these_tests = FVectorT::gather(tests.data(), idxs);
+                    cmp_results = centers[k].greater_equal(these_tests);
+                    idxs = (idxs << 1U) + (cmp_results >> 31U).template as<IVectorT>() + 1;
+                    k = (k + 1) % 3;
+                }
+
+                zs = idxs - tests.size();
+            }
 
             IVectorT zs6 = zs * 6;
             const float *const aabb_ptr = &aabbs.front().lower.front();

@@ -1,4 +1,21 @@
-find_package(Eigen3 REQUIRED NO_MODULE)
+if(EMSCRIPTEN)
+  # Fetch Eigen header-only library for WASM builds
+  # Emscripten doesn't have access to system packages
+  CPMAddPackage(
+    NAME Eigen3
+    VERSION 3.4.0
+    URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
+    DOWNLOAD_ONLY YES
+  )
+  if(Eigen3_ADDED)
+    add_library(Eigen3::Eigen INTERFACE IMPORTED)
+    set_target_properties(Eigen3::Eigen PROPERTIES
+      INTERFACE_INCLUDE_DIRECTORIES "$<BUILD_INTERFACE:${Eigen3_SOURCE_DIR}>"
+    )
+  endif()
+else()
+  find_package(Eigen3 REQUIRED NO_MODULE)
+endif()
 
 CPMAddPackage("gh:kavrakilab/nigh#97130999440647c204e0265d05a997dbd8da4e70")
 add_library(nigh INTERFACE)
@@ -31,7 +48,8 @@ if(VAMP_INSTALL_CPP_LIBRARY)
 endif()
 
 # SIMDxorshift for x86_64 systems (includes macOS Intel and Linux x86_64)
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
+# Explicitly exclude Emscripten since it doesn't support AVX
+if(NOT EMSCRIPTEN AND (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64"))
   CPMAddPackage("gh:lemire/SIMDxorshift#857c1a01df53cf1ee1ae8db3238f0ef42ef8e490")
   
   if(SIMDxorshift_SOURCE_DIR)

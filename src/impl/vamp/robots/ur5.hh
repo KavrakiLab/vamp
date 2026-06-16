@@ -10,7 +10,7 @@ namespace vamp::robots
 {
     struct UR5
     {
-        static constexpr char *name = "ur5";
+        static constexpr const char *name = "ur5";
         static constexpr std::size_t dimension = 6;
         static constexpr std::size_t n_spheres = 40;
         static constexpr float min_radius = 0.014999999664723873;
@@ -24,7 +24,7 @@ namespace vamp::robots
             "wrist_1_joint",
             "wrist_2_joint",
             "wrist_3_joint"};
-        static constexpr char *end_effector = "robotiq_85_base_link";
+        static constexpr const char *end_effector = "robotiq_85_base_link";
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;

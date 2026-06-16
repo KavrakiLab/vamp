@@ -41,25 +41,25 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
   list(JOIN VAMP_ROBOT_QUOTED ", " VAMP_ROBOT_NAMES)
 
   configure_file(
-    src/impl/vamp/bindings/init.hh.in
+    src/impl/vamp/bindings/python/init.hh.in
     ${CMAKE_CURRENT_BINARY_DIR}/vamp_python_init.hh
     @ONLY
   )
 
   configure_file(
-    src/impl/vamp/bindings/python.cc.in
+    src/impl/vamp/bindings/python/python.cc.in
     ${CMAKE_CURRENT_BINARY_DIR}/python.cc
     @ONLY
   )
 
   list(APPEND VAMP_EXT_SOURCES
-    src/impl/vamp/bindings/environment.cc
-    src/impl/vamp/bindings/settings.cc
+    src/impl/vamp/bindings/python/environment.cc
+    src/impl/vamp/bindings/python/settings.cc
     ${CMAKE_CURRENT_BINARY_DIR}/python.cc
   )
   foreach(robot_name robot_struct IN ZIP_LISTS VAMP_ROBOT_MODULES VAMP_ROBOT_STRUCTS)
   configure_file(
-    src/impl/vamp/bindings/robot.cc.in
+    src/impl/vamp/bindings/python/robot.cc.in
     ${CMAKE_CURRENT_BINARY_DIR}/${robot_name}.cc
     @ONLY
   )

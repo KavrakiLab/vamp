@@ -14,10 +14,10 @@ namespace vamp::robots
 
     struct Sphere
     {
-        static constexpr auto name = "sphere";
-        static constexpr auto dimension = 3;
-        static constexpr auto n_spheres = 1;
-        static constexpr auto resolution = 32;
+        static constexpr const char *name = "sphere";
+        static constexpr std::size_t dimension = 3;
+        static constexpr std::size_t n_spheres = 1;
+        static constexpr std::size_t resolution = 32;
 
         static constexpr float &min_radius = radius;
         static constexpr float &max_radius = radius;
@@ -34,7 +34,7 @@ namespace vamp::robots
         };
 
         static constexpr std::array<std::string_view, dimension> joint_names = {"x", "y", "z"};
-        static constexpr char *end_effector = "";
+        static constexpr const char *end_effector = "";
 
         template <std::size_t rake>
         struct Spheres

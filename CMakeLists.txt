@@ -10,6 +10,7 @@ option(VAMP_INSTALL_CPP_LIBRARY "Install VAMP C++ library (disable for Python wh
 option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" OFF)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
 option(VAMP_OMPL_PATH "Search Path for OMPL Installation - Only Needed for Demo Script" "")
+option(VAMP_BUILD_WASM "Build VAMP WebAssembly module" OFF)
 
 if(VAMP_FORCE_CLANG)
   find_program(CLANG "clang")
@@ -165,6 +166,32 @@ if(VAMP_BUILD_OMPL_DEMO)
   endif()
 endif()
 
+# WebAssembly build
+if(VAMP_BUILD_WASM)
+  include(EmscriptenBuild)
+
+  if(NOT VAMP_WASM_ROBOT_MODULES)
+    set(VAMP_WASM_ROBOT_MODULES panda fetch ur5)
+    set(VAMP_WASM_ROBOT_STRUCTS Panda Fetch UR5)
+  endif()
+
+  foreach(robot_name ROBOT_STRUCT IN ZIP_LISTS VAMP_WASM_ROBOT_MODULES VAMP_WASM_ROBOT_STRUCTS)
+    configure_file(
+      ${CMAKE_CURRENT_SOURCE_DIR}/src/impl/vamp/bindings/wasm/bindings.cc.in
+      ${CMAKE_CURRENT_BINARY_DIR}/wasm/${robot_name}_wasm_bindings.cc
+      @ONLY
+    )
+
+    vamp_create_wasm_module(${robot_name}_wasm
+      ${CMAKE_CURRENT_BINARY_DIR}/wasm/${robot_name}_wasm_bindings.cc
+    )
+
+    target_include_directories(${robot_name}_wasm PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src/impl
+    )
+  endforeach()
+endif()
+
 # Print build configuration
 message(STATUS "VAMP build configuration:")
 message(STATUS "  - C++ library: ON")
@@ -172,3 +199,4 @@ message(STATUS "  - Install C++ library: ${VAMP_INSTALL_CPP_LIBRARY}")
 message(STATUS "  - Python bindings: ${VAMP_BUILD_PYTHON_BINDINGS}")
 message(STATUS "  - C++ demos: ${VAMP_BUILD_CPP_DEMO}")
 message(STATUS "  - OMPL demos: ${VAMP_BUILD_OMPL_DEMO}")
+message(STATUS "  - WASM module: ${VAMP_BUILD_WASM}")

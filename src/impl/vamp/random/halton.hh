@@ -43,6 +43,8 @@ namespace vamp::rng
         {
         }
 
+        virtual ~Halton() = default;
+
         inline constexpr auto bases() noexcept -> Configuration
         {
             alignas(FloatVectorAlignment) std::array<float, Robot::dimension> a;

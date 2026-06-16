@@ -1,0 +1,10 @@
+#include <vamp/bindings/wasm/robot_helper.hh>
+#include <vamp/robots/@robot_name@.hh>
+
+using Robot = vamp::robots::@ROBOT_STRUCT@;
+
+EMSCRIPTEN_BINDINGS(@robot_name@_wasm)
+{
+    vamp::wasm::register_common_types();
+    vamp::wasm::register_robot_types<Robot>();
+}

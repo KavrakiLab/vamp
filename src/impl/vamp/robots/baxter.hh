@@ -10,7 +10,7 @@ namespace vamp::robots
 {
     struct Baxter
     {
-        static constexpr char *name = "baxter";
+        static constexpr const char *name = "baxter";
         static constexpr std::size_t dimension = 14;
         static constexpr std::size_t n_spheres = 75;
         static constexpr float min_radius = 0.012000000104308128;
@@ -32,7 +32,7 @@ namespace vamp::robots
             "right_w0",
             "right_w1",
             "right_w2"};
-        static constexpr char *end_effector = "right_gripper";
+        static constexpr const char *end_effector = "right_gripper";
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;

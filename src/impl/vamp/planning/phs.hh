@@ -152,6 +152,8 @@ namespace vamp::planning
         {
         }
 
+        virtual ~ProlateHyperspheroidRNG() = default;
+
         inline void reset() noexcept override
         {
             rng->reset();

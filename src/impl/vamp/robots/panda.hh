@@ -10,7 +10,7 @@ namespace vamp::robots
 {
     struct Panda
     {
-        static constexpr char *name = "panda";
+        static constexpr const char *name = "panda";
         static constexpr std::size_t dimension = 7;
         static constexpr std::size_t n_spheres = 59;
         static constexpr float min_radius = 0.012000000104308128;
@@ -25,7 +25,7 @@ namespace vamp::robots
             "panda_joint5",
             "panda_joint6",
             "panda_joint7"};
-        static constexpr char *end_effector = "panda_grasptarget";
+        static constexpr const char *end_effector = "panda_grasptarget";
 
         using Configuration = FloatVector<dimension>;
         using ConfigurationArray = std::array<FloatT, dimension>;

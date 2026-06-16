@@ -9,9 +9,12 @@
 [![arXiv FCIT](https://img.shields.io/badge/arXiv-2411.17902-b31b1b.svg)](https://arxiv.org/abs/2411.17902)
 [![arXiv AORRTC](https://img.shields.io/badge/arXiv-2505.10542-b31b1b.svg)](https://arxiv.org/abs/2505.10542)
 
+[![Interactive Website](https://img.shields.io/badge/Interactive%20Website-8A2BE2)](https://zkingston.com/vamp-web)
+
 ![Demo video](resources/capt_demo.gif)
 
 _For a full demonstration of VAMP running in real-time, see [this video](https://www.youtube.com/watch?v=BzDKdrU1VpM)_.
+_You can also [play with an interactive demonstration here!](https://zkingston.com/vamp-web)_.
 
 This repository hosts the code for:
 - the ICRA 2024 paper [“Motions in Microseconds via Vectorized Sampling-Based Planning”](https://arxiv.org/abs/2309.14545),
@@ -159,6 +162,23 @@ See the `environment.yaml` file for a basic environment, and see `docker/ubuntu2
 ### Supported Platforms
 We currently support x86 CPUs (e.g., Intel, AMD) with the [AVX2 vector instruction set](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions) and ARM CPUs (e.g., Raspberry Pi, Mac M1) with [NEON](https://en.wikipedia.org/wiki/ARM_architecture_family#Advanced_SIMD_(Neon)).
 Please see the `docker/` folder for reference installation procedures.
+
+### WebAssembly (WASM)
+
+VAMP can be compiled to WebAssembly for use in web browsers via [Emscripten](https://emscripten.org/). 
+The WASM build uses 128-bit SIMD instructions.
+
+#### Building WASM Modules
+
+First, install Emscripten.
+Then build the WASM modules:
+```bash
+cd vamp
+emcmake cmake -Bbuild-wasm -DCMAKE_BUILD_TYPE=Release -DVAMP_BUILD_WASM=ON -DVAMP_BUILD_PYTHON_BINDINGS=OFF
+cmake --build build-wasm
+```
+
+This produces `{robot}_wasm.js` and `{robot}_wasm.wasm` files in `build-wasm/wasm/` for each robot (by default: `panda`, `fetch`, `ur5`).
 
 ### Using Clang instead of GCC
 You can force the use of Clang instead of GCC for compiling VAMP by uncommenting the line at the bottom of the `pyproject.toml` (or setting the corresponding CMake variable for C++ builds):

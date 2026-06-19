@@ -133,6 +133,44 @@ cd vamp
 pip install --no-build-isolation -Ceditable.rebuild=true -ve .
 ```
 
+### JIT (Just-in-Time Robot Compilation and Loading)
+VAMP optionally ships a runtime that JIT-compiles a planner specialization for an arbitrary robot loaded from a URDF, no rebuild of the entire VAMP codebase required.
+The pipeline is wrapped by `vamp.load_robot(...)` and runs at the same speed as a statically-compiled robot.
+
+JIT support is **off by default**, enable it by setting `VAMP_BUILD_JIT=ON` at install time and pulling in the `[jit]` extra:
+```bash
+VAMP_BUILD_JIT=ON pip install vamp-planner[jit]
+```
+
+For dev installs, the same toggle works:
+```bash
+VAMP_BUILD_JIT=ON pip install --no-build-isolation -e .[jit]
+```
+
+Note, on top of VAMP's regular build deps, the JIT path also needs:
+- **Pinocchio**, **CGAL**, **fmt**, **nlohmann-json**, **CppAD**
+- **LLVM + Clang development libraries**
+- A `clang` executable on `PATH` at runtime.
+
+#### JIT Usage
+```python
+import vamp
+
+robot = vamp.load_robot(
+    urdf="/path/to/my_robot_spherized.urdf",
+    srdf="/path/to/my_robot.srdf",       # optional
+    end_effector="tool0",
+    planners=["rrtc"],
+)
+
+env = vamp.Environment()
+settings = vamp.RRTCSettings()
+result = robot.rrtc(start, goal, env, settings, seed=42)
+print(result.path, result.cost, result.nanoseconds)
+```
+First `load_robot()` call on a given URDF takes a few seconds to compile.
+Subsequent calls use a cached version of the JIT'd code.
+
 ### C++
 If you wish to extend `vamp` via C++, please build directly with CMake, e.g.:
 ```

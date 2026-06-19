@@ -1,7 +1,9 @@
 build/
+build_local/
 build-wasm/
 .cache/
 compile_commands.json
+*.so
 *.out.*
 *.swp
 *.swo

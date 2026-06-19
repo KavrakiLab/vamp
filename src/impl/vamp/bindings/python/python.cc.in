@@ -10,6 +10,9 @@ NB_MODULE(_core_ext, pymodule)
 {
     vb::init_settings(pymodule);
     vb::init_environment(pymodule);
+#ifdef VAMP_HAVE_JIT
+    vb::init_dynamic(pymodule);
+#endif
 
     @VAMP_ROBOT_INITS@
 

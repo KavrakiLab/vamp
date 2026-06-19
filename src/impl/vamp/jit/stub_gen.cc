@@ -9,34 +9,38 @@
 #include <stdexcept>
 #include <string>
 
-namespace
-{
-    struct PlannerDescriptor
-    {
-        std::string_view name;
-        std::string_view class_name;
-        std::string_view settings_class;
-        std::string_view header;
-        std::string_view settings_header;
-    };
-
-    constexpr PlannerDescriptor planner_table[] = {
-        {"rrtc", "RRTC", "RRTCSettings", "rrtc.hh", "rrtc_settings.hh"},
-        {"prm", "PRM", "RoadmapSettings<vamp::planning::PRMStarNeighborParams>", "prm.hh", "roadmap.hh"},
-        {"fcit", "FCIT", "RoadmapSettings<vamp::planning::FCITStarNeighborParams>", "fcit.hh", "roadmap.hh"},
-        {"aorrtc", "AORRTC", "AORRTCSettings", "aorrtc.hh", "aorrtc_settings.hh"},
-        {"grrtstar", "GRRTStar", "GRRTStarSettings", "grrtstar.hh", "grrtstar_settings.hh"},
-    };
-
-    constexpr auto descriptor(Planner p) -> const PlannerDescriptor &
-    {
-        return planner_table[static_cast<std::size_t>(p)];
-    }
-}  // namespace
-
 namespace vamp::jit
 {
-    auto planner_symbol(Planner p, std::string_view suffix) -> std::string
+    namespace
+    {
+        struct PlannerDescriptor
+        {
+            std::string_view name;
+            std::string_view class_name;
+            std::string_view settings_class;
+            std::string_view header;
+            std::string_view settings_header;
+        };
+
+        constexpr PlannerDescriptor planner_table[] = {
+            {"rrtc", "RRTC", "RRTCSettings", "rrtc.hh", "rrtc_settings.hh"},
+            {"prm", "PRM", "RoadmapSettings<vamp::planning::PRMStarNeighborParams>", "prm.hh", "roadmap.hh"},
+            {"fcit",
+             "FCIT",
+             "RoadmapSettings<vamp::planning::FCITStarNeighborParams>",
+             "fcit.hh",
+             "roadmap.hh"},
+            {"aorrtc", "AORRTC", "AORRTCSettings", "aorrtc.hh", "aorrtc_settings.hh"},
+            {"grrtstar", "GRRTStar", "GRRTStarSettings", "grrtstar.hh", "grrtstar_settings.hh"},
+        };
+
+        constexpr auto descriptor(vamp::planning::Planner p) -> const PlannerDescriptor &
+        {
+            return planner_table[static_cast<std::size_t>(p)];
+        }
+    }  // namespace
+
+    auto planner_symbol(vamp::planning::Planner p, std::string_view suffix) -> std::string
     {
         return std::string("vamp_jit_") + std::string(descriptor(p).name) + "_" + std::string(suffix);
     }

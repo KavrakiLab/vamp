@@ -8,13 +8,18 @@
 #include <vamp/collision/environment.hh>
 #include <vamp/planning/aorrtc_settings.hh>
 #include <vamp/planning/grrtstar_settings.hh>
+#include <vamp/planning/planner.hh>
 #include <vamp/planning/roadmap.hh>
 #include <vamp/planning/rrtc_settings.hh>
 #include <vamp/planning/simplify_settings.hh>
 
 #include <cricket/codegen.hh>
 
+#include <Eigen/Dense>
+
+#include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
+#include <nanobind/ndarray.h>
 #include <nanobind/stl/optional.h>
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/shared_ptr.h>
@@ -41,35 +46,12 @@ namespace
     namespace vjf = vamp::jit::ffi;
     namespace vp = vamp::planning;
 
-    auto planner_from_name(const std::string &name) -> vj::Planner
-    {
-        if (name == "rrtc")
-        {
-            return vj::Planner::RRTC;
-        }
+    // Configuration inputs accept either a Python list (std::vector<float>)
+    // or a 1-D numpy ndarray — mirroring the static MF() dual-overload pattern.
+    using ConfigNd = nb::ndarray<const float, nb::ndim<1>, nb::device::cpu>;
 
-        if (name == "prm")
-        {
-            return vj::Planner::PRM;
-        }
-
-        if (name == "fcit")
-        {
-            return vj::Planner::FCIT;
-        }
-
-        if (name == "aorrtc")
-        {
-            return vj::Planner::AORRTC;
-        }
-
-        if (name == "grrtstar")
-        {
-            return vj::Planner::GRRTSTAR;
-        }
-
-        throw std::runtime_error("vamp.load_robot: unknown planner '" + name + "'");
-    }
+    // Path / goals inputs accept either a list-of-lists or a 2-D numpy ndarray.
+    using PathNd = nb::ndarray<const float, nb::ndim<2>, nb::device::cpu>;
 
     // Python mirror of an FFI plan result
     struct DynamicPlanResult
@@ -142,31 +124,110 @@ namespace
         return result;
     }
 
+    // ---- input-extraction helpers --------------------------------------------
+    //
+    // Each `as_config` / `as_path` overload returns a (data*, n) view into
+    // either a Python list or a numpy ndarray. For ndarrays we tolerate any
+    // stride layout: if it's not C-contiguous we copy into the supplied
+    // scratch buffer. Lists are always contiguous by construction.
+
+    auto as_config(
+        const std::vector<float> &v,
+        std::size_t dim,
+        std::vector<float> & /*scratch*/,
+        const char *what) -> const float *
+    {
+        if (v.size() != dim)
+        {
+            throw std::runtime_error(std::string(what) + " has wrong dimension");
+        }
+        return v.data();
+    }
+
+    auto as_config(const ConfigNd &a, std::size_t dim, std::vector<float> &scratch, const char *what) -> const
+        float *
+    {
+        if (a.shape(0) != dim)
+        {
+            throw std::runtime_error(std::string(what) + " has wrong dimension");
+        }
+
+        // Strided slices (e.g. wide_buffer[::2]) need to be flattened — reading
+        // a.data() linearly would step through interleaved elements.
+        if (a.stride(0) != 1)
+        {
+            scratch.resize(dim);
+            for (std::size_t i = 0; i < dim; ++i)
+            {
+                scratch[i] = a(i);
+            }
+            return scratch.data();
+        }
+        return a.data();
+    }
+
+    auto as_path(
+        const std::vector<std::vector<float>> &v,
+        std::size_t dim,
+        std::vector<float> &scratch,
+        const char *what) -> std::pair<const float *, std::uint64_t>
+    {
+        scratch.clear();
+        scratch.reserve(dim * v.size());
+        for (const auto &wp : v)
+        {
+            if (wp.size() != dim)
+            {
+                throw std::runtime_error(std::string(what) + " has wrong waypoint dimension");
+            }
+            scratch.insert(scratch.end(), wp.begin(), wp.end());
+        }
+        return {scratch.data(), v.size()};
+    }
+
+    auto as_path(const PathNd &a, std::size_t dim, std::vector<float> &scratch, const char *what)
+        -> std::pair<const float *, std::uint64_t>
+    {
+        if (a.shape(1) != dim)
+        {
+            throw std::runtime_error(std::string(what) + " has wrong waypoint dimension");
+        }
+
+        const std::uint64_t n = a.shape(0);
+        const bool contiguous = (a.stride(0) == static_cast<int64_t>(dim) and a.stride(1) == 1);
+        if (contiguous)
+        {
+            return {a.data(), n};
+        }
+
+        // Strided input — flatten into scratch.
+        scratch.resize(n * dim);
+        for (std::uint64_t i = 0; i < n; ++i)
+        {
+            for (std::size_t j = 0; j < dim; ++j)
+            {
+                scratch[i * dim + j] = a(i, j);
+            }
+        }
+        return {scratch.data(), n};
+    }
+
+    // ---- core dispatch (takes raw pointers so all input shapes share one path)
+
     template <typename SettingsT>
-    auto run_planner(
+    auto run_planner_impl(
         vj::DynamicRobot &self,
-        vj::Planner planner,
-        const std::vector<float> &start,
-        const std::vector<float> &goal,
+        vp::Planner planner,
+        const float *start,
+        const float *goal,
         const vamp::collision::Environment<float> &env,
         const SettingsT &settings,
         DynamicSampler &sampler) -> DynamicPlanResult
     {
-        const auto dim = self.dimension();
-        if (start.size() != dim)
-        {
-            throw std::runtime_error("start has wrong dimension");
-        }
-
-        if (goal.size() != dim)
-        {
-            throw std::runtime_error("goal has wrong dimension");
-        }
-
         auto *handle = self.solve(
             planner,
-            start.data(),
-            goal.data(),
+            start,
+            goal,
             static_cast<const void *>(&env),
             static_cast<const void *>(&settings),
             sampler.handle);
@@ -184,38 +245,21 @@ namespace
     }
 
     template <typename SettingsT>
-    auto run_planner_multi(
+    auto run_planner_multi_impl(
         vj::DynamicRobot &self,
-        vj::Planner planner,
-        const std::vector<float> &start,
-        const std::vector<std::vector<float>> &goals,
+        vp::Planner planner,
+        const float *start,
+        const float *goals,
+        std::uint64_t n_goals,
         const vamp::collision::Environment<float> &env,
         const SettingsT &settings,
         DynamicSampler &sampler) -> DynamicPlanResult
     {
-        const auto dim = self.dimension();
-        if (start.size() != dim)
-        {
-            throw std::runtime_error("start has wrong dimension");
-        }
-
-        std::vector<float> goals_flat;
-        goals_flat.reserve(dim * goals.size());
-        for (const auto &g : goals)
-        {
-            if (g.size() != dim)
-            {
-                throw std::runtime_error("goal has wrong dimension");
-            }
-
-            goals_flat.insert(goals_flat.end(), g.begin(), g.end());
-        }
-
         auto *handle = self.solve_multi(
             planner,
-            start.data(),
-            goals_flat.data(),
-            goals.size(),
+            start,
+            goals,
+            n_goals,
             static_cast<const void *>(&env),
             static_cast<const void *>(&settings),
             sampler.handle);
@@ -230,6 +274,48 @@ namespace
             [&](auto *h) { return self.result_meta(planner, h); },
             [&](auto *h, std::uint64_t i, float *out) { self.result_copy_waypoint(planner, h, i, out); },
             [&](auto *h) { self.result_destroy(planner, h); });
+    }
+
+    auto run_simplify_impl(
+        vj::DynamicRobot &self,
+        const float *path,
+        std::uint64_t n_waypoints,
+        const vamp::collision::Environment<float> &env,
+        const vp::SimplifySettings &settings,
+        DynamicSampler &sampler) -> DynamicPlanResult
+    {
+        auto *handle = self.simplify(
+            path,
+            n_waypoints,
+            static_cast<const void *>(&env),
+            static_cast<const void *>(&settings),
+            sampler.handle);
+        return drain_handle(
+            handle,
+            [&](auto *h) { return self.simplify_result_meta(h); },
+            [&](auto *h, std::uint64_t i, float *out) { self.simplify_result_copy_waypoint(h, i, out); },
+            [&](auto *h) { self.simplify_result_destroy(h); });
+    }
+
+    using DebugType =
+        std::pair<std::vector<std::vector<std::string>>, std::vector<std::pair<std::size_t, std::size_t>>>;
+
+    auto run_debug_impl(
+        vj::DynamicRobot &self,
+        const float *config,
+        const vamp::collision::Environment<float> &env) -> DebugType
+    {
+        auto *handle = self.debug(config, static_cast<const void *>(&env));
+        DebugType copy = *reinterpret_cast<DebugType *>(handle);
+        self.debug_destroy(handle);
+        return copy;
+    }
+
+    auto run_eefk_impl(vj::DynamicRobot &self, const float *config) -> Eigen::Matrix4f
+    {
+        Eigen::Matrix4f result;
+        self.eefk(config, result.data());
+        return result;
     }
 }  // namespace
 
@@ -237,12 +323,11 @@ namespace vamp::binding
 {
     void init_dynamic(nb::module_ &pymodule)
     {
-        // Re-dlopen _core_ext.so with RTLD_GLOBAL so template instantiations become
-        // visible to the JIT's process-symbol search as Python loads extension
-        // modules with RTLD_LOCAL by default
+        // Re-dlopen _core_ext.so with RTLD_GLOBAL so template instantiations
+        // become visible to the JIT's process-symbol search — Python loads
+        // extension modules with RTLD_LOCAL by default.
         Dl_info info{};
-        if (dladdr(reinterpret_cast<void *>(&promote_self_to_rtld_global), &info) == 0 or
-            info.dli_fname == nullptr)
+        if (dladdr(reinterpret_cast<void *>(&init_dynamic), &info) == 0 or info.dli_fname == nullptr)
         {
             throw std::runtime_error("Failed to promote RTLD to global.");
         }
@@ -269,14 +354,30 @@ namespace vamp::binding
                 "Skip the next n samples.")
             .def(
                 "next",
-                [](DynamicSampler &s) -> std::vector<float>
+                // Mirrors vamp.<robot>.RNG.next(): returns a numpy ndarray
+                // owning a fresh float buffer (capsule-backed).
+                [](DynamicSampler &s) -> nb::ndarray<nb::numpy, float, nb::device::cpu>
                 {
-                    std::vector<float> out(s.robot->dimension());
-                    s.robot->sampler_next(s.handle, out.data());
-                    return out;
+                    const auto dim = s.robot->dimension();
+                    auto *buf = new float[dim];
+                    s.robot->sampler_next(s.handle, buf);
+                    nb::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
+                    return nb::ndarray<nb::numpy, float, nb::device::cpu>(buf, {dim}, owner);
                 },
                 "Sample the next configuration.");
 
+        // ---- DynamicRobot --------------------------------------------------
+
+        using PRMSettings = vp::RoadmapSettings<vp::PRMStarNeighborParams>;
+        using FCITSettings = vp::RoadmapSettings<vp::FCITStarNeighborParams>;
+
+        auto klass = nb::class_<vj::DynamicRobot>(pymodule, "DynamicRobot")
+                         .def_prop_ro("dimension", &vj::DynamicRobot::dimension)
+                         .def_prop_ro("rake", &vj::DynamicRobot::rake);
+
+        // Per-planner overloads: list × {single, multi} and ndarray × {single, multi}.
+        // Mirrors the static MF/PLANNER macros which generate parallel
+        // overloads for std::array and numpy ndarray.
 #define VAMP_JIT_DEF_PLANNER(KLASS, NAME, ENUM, SETTINGS)                                                    \
     KLASS                                                                                                    \
         .def(                                                                                                \
@@ -287,7 +388,44 @@ namespace vamp::binding
                const vamp::collision::Environment<float> &env,                                               \
                const SETTINGS &settings,                                                                     \
                DynamicSampler &sampler) -> DynamicPlanResult                                                 \
-            { return run_planner(*self, ENUM, start, goal, env, settings, sampler); },                       \
+            {                                                                                                \
+                const auto d = self->dimension();                                                            \
+                std::vector<float> s_scratch, g_scratch;                                                     \
+                return run_planner_impl(                                                                     \
+                    *self,                                                                                   \
+                    ENUM,                                                                                    \
+                    as_config(start, d, s_scratch, "start"),                                                 \
+                    as_config(goal, d, g_scratch, "goal"),                                                   \
+                    env,                                                                                     \
+                    settings,                                                                                \
+                    sampler);                                                                                \
+            },                                                                                               \
+            "start"_a,                                                                                       \
+            "goal"_a,                                                                                        \
+            "environment"_a,                                                                                 \
+            "settings"_a,                                                                                    \
+            "sampler"_a,                                                                                     \
+            "JIT'd " NAME)                                                                                   \
+        .def(                                                                                                \
+            NAME,                                                                                            \
+            [](std::shared_ptr<vj::DynamicRobot> self,                                                       \
+               const ConfigNd &start,                                                                        \
+               const ConfigNd &goal,                                                                         \
+               const vamp::collision::Environment<float> &env,                                               \
+               const SETTINGS &settings,                                                                     \
+               DynamicSampler &sampler) -> DynamicPlanResult                                                 \
+            {                                                                                                \
+                const auto d = self->dimension();                                                            \
+                std::vector<float> s_scratch, g_scratch;                                                     \
+                return run_planner_impl(                                                                     \
+                    *self,                                                                                   \
+                    ENUM,                                                                                    \
+                    as_config(start, d, s_scratch, "start"),                                                 \
+                    as_config(goal, d, g_scratch, "goal"),                                                   \
+                    env,                                                                                     \
+                    settings,                                                                                \
+                    sampler);                                                                                \
+            },                                                                                               \
             "start"_a,                                                                                       \
             "goal"_a,                                                                                        \
             "environment"_a,                                                                                 \
@@ -302,7 +440,34 @@ namespace vamp::binding
                const vamp::collision::Environment<float> &env,                                               \
                const SETTINGS &settings,                                                                     \
                DynamicSampler &sampler) -> DynamicPlanResult                                                 \
-            { return run_planner_multi(*self, ENUM, start, goals, env, settings, sampler); },                \
+            {                                                                                                \
+                const auto d = self->dimension();                                                            \
+                std::vector<float> s_scratch, g_scratch;                                                     \
+                auto [gptr, n] = as_path(goals, d, g_scratch, "goals");                                      \
+                return run_planner_multi_impl(                                                               \
+                    *self, ENUM, as_config(start, d, s_scratch, "start"), gptr, n, env, settings, sampler);  \
+            },                                                                                               \
+            "start"_a,                                                                                       \
+            "goal"_a,                                                                                        \
+            "environment"_a,                                                                                 \
+            "settings"_a,                                                                                    \
+            "sampler"_a,                                                                                     \
+            "JIT'd " NAME)                                                                                   \
+        .def(                                                                                                \
+            NAME,                                                                                            \
+            [](std::shared_ptr<vj::DynamicRobot> self,                                                       \
+               const ConfigNd &start,                                                                        \
+               const PathNd &goals,                                                                          \
+               const vamp::collision::Environment<float> &env,                                               \
+               const SETTINGS &settings,                                                                     \
+               DynamicSampler &sampler) -> DynamicPlanResult                                                 \
+            {                                                                                                \
+                const auto d = self->dimension();                                                            \
+                std::vector<float> s_scratch, g_scratch;                                                     \
+                auto [gptr, n] = as_path(goals, d, g_scratch, "goals");                                      \
+                return run_planner_multi_impl(                                                               \
+                    *self, ENUM, as_config(start, d, s_scratch, "start"), gptr, n, env, settings, sampler);  \
+            },                                                                                               \
             "start"_a,                                                                                       \
             "goal"_a,                                                                                        \
             "environment"_a,                                                                                 \
@@ -310,18 +475,13 @@ namespace vamp::binding
             "sampler"_a,                                                                                     \
             "JIT'd " NAME)
 
-        using PRMSettings = vp::RoadmapSettings<vp::PRMStarNeighborParams>;
-        using FCITSettings = vp::RoadmapSettings<vp::FCITStarNeighborParams>;
+        VAMP_JIT_DEF_PLANNER(klass, "rrtc", vp::Planner::RRTC, vp::RRTCSettings);
+        VAMP_JIT_DEF_PLANNER(klass, "prm", vp::Planner::PRM, PRMSettings);
+        VAMP_JIT_DEF_PLANNER(klass, "fcit", vp::Planner::FCIT, FCITSettings);
+        VAMP_JIT_DEF_PLANNER(klass, "aorrtc", vp::Planner::AORRTC, vp::AORRTCSettings);
+        VAMP_JIT_DEF_PLANNER(klass, "grrtstar", vp::Planner::GRRTSTAR, vp::GRRTStarSettings);
 
-        auto klass = nb::class_<vj::DynamicRobot>(pymodule, "DynamicRobot")
-                         .def_prop_ro("dimension", &vj::DynamicRobot::dimension)
-                         .def_prop_ro("rake", &vj::DynamicRobot::rake);
-
-        VAMP_JIT_DEF_PLANNER(klass, "rrtc", vj::Planner::RRTC, vp::RRTCSettings);
-        VAMP_JIT_DEF_PLANNER(klass, "prm", vj::Planner::PRM, PRMSettings);
-        VAMP_JIT_DEF_PLANNER(klass, "fcit", vj::Planner::FCIT, FCITSettings);
-        VAMP_JIT_DEF_PLANNER(klass, "aorrtc", vj::Planner::AORRTC, vp::AORRTCSettings);
-        VAMP_JIT_DEF_PLANNER(klass, "grrtstar", vj::Planner::GRRTSTAR, vp::GRRTStarSettings);
+#undef VAMP_JIT_DEF_PLANNER
 
         // Sampler factories — mirror vamp.<robot>.halton() / xorshift().
         klass.def(
@@ -336,30 +496,54 @@ namespace vamp::binding
             "seed"_a = 0,
             "Create an XORShift sampler for this robot.");
 
-        using DebugType = std::
-            pair<std::vector<std::vector<std::string>>, std::vector<std::pair<std::size_t, std::size_t>>>;
+        // debug — mirror vamp.<robot>.debug(). list and ndarray overloads.
         klass.def(
             "debug",
             [](vj::DynamicRobot &self,
                const std::vector<float> &config,
                const vamp::collision::Environment<float> &env) -> DebugType
             {
-                if (config.size() != self.dimension())
-                {
-                    throw std::runtime_error("config has wrong dimension");
-                }
-                auto *handle = self.debug(config.data(), static_cast<const void *>(&env));
-                DebugType copy = *reinterpret_cast<DebugType *>(handle);
-                self.debug_destroy(handle);
-                return copy;
+                std::vector<float> scratch;
+                return run_debug_impl(self, as_config(config, self.dimension(), scratch, "config"), env);
+            },
+            "configuration"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "Check which spheres of a robot configuration are in collision (JIT).");
+        klass.def(
+            "debug",
+            [](vj::DynamicRobot &self,
+               const ConfigNd &config,
+               const vamp::collision::Environment<float> &env) -> DebugType
+            {
+                std::vector<float> scratch;
+                return run_debug_impl(self, as_config(config, self.dimension(), scratch, "config"), env);
             },
             "configuration"_a,
             "environment"_a = vamp::collision::Environment<float>(),
             "Check which spheres of a robot configuration are in collision (JIT).");
 
-        // simplify — mirror vamp.<robot>.simplify. Takes the path as a list
-        // of waypoints (each a list/array of floats); we flatten before
-        // crossing the FFI boundary.
+        // eefk — mirror vamp.<robot>.eefk(). Returns a 4x4 Eigen::Matrix4f
+        // (nanobind/eigen marshals to numpy).
+        klass.def(
+            "eefk",
+            [](vj::DynamicRobot &self, const std::vector<float> &config) -> Eigen::Matrix4f
+            {
+                std::vector<float> scratch;
+                return run_eefk_impl(self, as_config(config, self.dimension(), scratch, "config"));
+            },
+            "configuration"_a,
+            "End-effector forward kinematics. Returns a 4x4 transform (JIT).");
+        klass.def(
+            "eefk",
+            [](vj::DynamicRobot &self, const ConfigNd &config) -> Eigen::Matrix4f
+            {
+                std::vector<float> scratch;
+                return run_eefk_impl(self, as_config(config, self.dimension(), scratch, "config"));
+            },
+            "configuration"_a,
+            "End-effector forward kinematics. Returns a 4x4 transform (JIT).");
+
+        // simplify — list-of-lists or 2-D ndarray.
         klass.def(
             "simplify",
             [](vj::DynamicRobot &self,
@@ -368,29 +552,26 @@ namespace vamp::binding
                const vp::SimplifySettings &settings,
                DynamicSampler &sampler) -> DynamicPlanResult
             {
-                const auto dim = self.dimension();
-                std::vector<float> flat;
-                flat.reserve(dim * path.size());
-                for (const auto &wp : path)
-                {
-                    if (wp.size() != dim)
-                    {
-                        throw std::runtime_error("waypoint has wrong dimension");
-                    }
-                    flat.insert(flat.end(), wp.begin(), wp.end());
-                }
-                auto *handle = self.simplify(
-                    flat.data(),
-                    path.size(),
-                    static_cast<const void *>(&env),
-                    static_cast<const void *>(&settings),
-                    sampler.handle);
-                return drain_handle(
-                    handle,
-                    [&](auto *h) { return self.simplify_result_meta(h); },
-                    [&](auto *h, std::uint64_t i, float *out)
-                    { self.simplify_result_copy_waypoint(h, i, out); },
-                    [&](auto *h) { self.simplify_result_destroy(h); });
+                std::vector<float> scratch;
+                auto [pptr, n] = as_path(path, self.dimension(), scratch, "path");
+                return run_simplify_impl(self, pptr, n, env, settings, sampler);
+            },
+            "path"_a,
+            "environment"_a,
+            "settings"_a,
+            "sampler"_a,
+            "JIT'd path simplification.");
+        klass.def(
+            "simplify",
+            [](vj::DynamicRobot &self,
+               const PathNd &path,
+               const vamp::collision::Environment<float> &env,
+               const vp::SimplifySettings &settings,
+               DynamicSampler &sampler) -> DynamicPlanResult
+            {
+                std::vector<float> scratch;
+                auto [pptr, n] = as_path(path, self.dimension(), scratch, "path");
+                return run_simplify_impl(self, pptr, n, env, settings, sampler);
             },
             "path"_a,
             "environment"_a,
@@ -431,7 +612,7 @@ namespace vamp::binding
                 opts.resolution = resolution;
                 for (const auto &p : planners)
                 {
-                    opts.planners.push_back(planner_from_name(p));
+                    opts.planners.push_back(vp::planner_from_name(p));
                 }
 
                 return std::make_shared<vj::DynamicRobot>(opts);

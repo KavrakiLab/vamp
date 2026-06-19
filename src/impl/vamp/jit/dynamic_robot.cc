@@ -8,34 +8,36 @@
 #include <stdexcept>
 #include <utility>
 
-namespace
-{
-    auto lookup(cricket::jit::JitSession &session, const std::string &symbol) -> void *
-    {
-        auto addr = session.lookup(symbol);
-        if (not addr)
-        {
-            throw std::runtime_error(
-                "vamp::jit: cannot resolve symbol '" + symbol + "': " + llvm::toString(addr.takeError()));
-        }
-        return addr->toPtr<void *>();
-    }
-
-    template <typename F>
-    auto resolve_planner(cricket::jit::JitSession &s, Planner p, std::string_view suffix) -> F
-    {
-        return reinterpret_cast<F>(lookup(s, planner_symbol(p, suffix)));
-    }
-
-    template <typename F>
-    auto resolve_robot(cricket::jit::JitSession &s, const std::string &robot, std::string_view suffix) -> F
-    {
-        return reinterpret_cast<F>(lookup(s, robot_symbol(robot, suffix)));
-    }
-}  // namespace
-
 namespace vamp::jit
 {
+    namespace
+    {
+        auto lookup(cricket::jit::JitSession &session, const std::string &symbol) -> void *
+        {
+            auto addr = session.lookup(symbol);
+            if (not addr)
+            {
+                throw std::runtime_error(
+                    "vamp::jit: cannot resolve symbol '" + symbol + "': " + llvm::toString(addr.takeError()));
+            }
+            return addr->toPtr<void *>();
+        }
+
+        template <typename F>
+        auto resolve_planner(cricket::jit::JitSession &s, vamp::planning::Planner p, std::string_view suffix)
+            -> F
+        {
+            return reinterpret_cast<F>(lookup(s, planner_symbol(p, suffix)));
+        }
+
+        template <typename F>
+        auto resolve_robot(cricket::jit::JitSession &s, const std::string &robot, std::string_view suffix)
+            -> F
+        {
+            return reinterpret_cast<F>(lookup(s, robot_symbol(robot, suffix)));
+        }
+    }  // namespace
+
     auto default_load_options() -> LoadOptions
     {
         LoadOptions opts;
@@ -82,7 +84,7 @@ namespace vamp::jit
             e.meta = resolve_planner<ffi::ResultMetaFn>(*session_, p, "result_meta");
             e.copy = resolve_planner<ffi::ResultCopyWaypointFn>(*session_, p, "result_copy_waypoint");
             e.destroy = resolve_planner<ffi::ResultDestroyFn>(*session_, p, "result_destroy");
-            planners_.emplace(static_cast<int>(p), e);
+            planners_.emplace(p, e);
         }
 
         const auto &r = opts.robot_name;
@@ -101,24 +103,27 @@ namespace vamp::jit
 
         debug_.debug = resolve_robot<ffi::DebugFn>(*session_, r, "debug");
         debug_.destroy = resolve_robot<ffi::DebugDestroyFn>(*session_, r, "debug_destroy");
+
+        // Per-robot: end-effector FK.
+        eefk_ = resolve_robot<ffi::EefkFn>(*session_, r, "eefk");
     }
 
     DynamicRobot::~DynamicRobot() = default;
 
-    auto DynamicRobot::has_planner(Planner p) const -> bool
+    auto DynamicRobot::has_planner(vamp::planning::Planner p) const -> bool
     {
-        return planners_.count(static_cast<int>(p)) > 0;
+        return planners_.count(p) > 0;
     }
 
     auto DynamicRobot::solve(
-        Planner p,
+        vamp::planning::Planner p,
         const float *start,
         const float *goal,
         const void *env,
         const void *settings,
         ffi::SamplerHandle *sampler) -> ffi::PlanResultHandle *
     {
-        auto it = planners_.find(static_cast<int>(p));
+        auto it = planners_.find(p);
         if (it == planners_.end())
         {
             return nullptr;
@@ -127,7 +132,7 @@ namespace vamp::jit
     }
 
     auto DynamicRobot::solve_multi(
-        Planner p,
+        vamp::planning::Planner p,
         const float *start,
         const float *goals,
         std::uint64_t n_goals,
@@ -135,7 +140,7 @@ namespace vamp::jit
         const void *settings,
         ffi::SamplerHandle *sampler) -> ffi::PlanResultHandle *
     {
-        auto it = planners_.find(static_cast<int>(p));
+        auto it = planners_.find(p);
         if (it == planners_.end())
         {
             return nullptr;
@@ -143,23 +148,24 @@ namespace vamp::jit
         return it->second.solve_multi(start, goals, n_goals, env, settings, sampler);
     }
 
-    auto DynamicRobot::result_meta(Planner p, const ffi::PlanResultHandle *h) -> ffi::PlanResultMeta
+    auto DynamicRobot::result_meta(vamp::planning::Planner p, const ffi::PlanResultHandle *h)
+        -> ffi::PlanResultMeta
     {
-        return planners_.at(static_cast<int>(p)).meta(h);
+        return planners_.at(p).meta(h);
     }
 
     auto DynamicRobot::result_copy_waypoint(
-        Planner p,
+        vamp::planning::Planner p,
         const ffi::PlanResultHandle *h,
         std::uint64_t idx,
         float *out) -> void
     {
-        planners_.at(static_cast<int>(p)).copy(h, idx, out);
+        planners_.at(p).copy(h, idx, out);
     }
 
-    auto DynamicRobot::result_destroy(Planner p, ffi::PlanResultHandle *h) -> void
+    auto DynamicRobot::result_destroy(vamp::planning::Planner p, ffi::PlanResultHandle *h) -> void
     {
-        planners_.at(static_cast<int>(p)).destroy(h);
+        planners_.at(p).destroy(h);
     }
 
     auto DynamicRobot::simplify(
@@ -227,5 +233,10 @@ namespace vamp::jit
     auto DynamicRobot::debug_destroy(ffi::DebugHandle *h) -> void
     {
         debug_.destroy(h);
+    }
+
+    auto DynamicRobot::eefk(const float *config, float *out_matrix) -> void
+    {
+        eefk_(config, out_matrix);
     }
 }  // namespace vamp::jit

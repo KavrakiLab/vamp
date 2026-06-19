@@ -22,7 +22,7 @@ namespace vamp::jit
         std::size_t rake = 8;
         std::size_t resolution = 32;
 
-        std::vector<Planner> planners;
+        std::vector<vamp::planning::Planner> planners;
 
         std::vector<std::string> include_dirs;
         std::vector<std::string> system_include_dirs;
@@ -43,7 +43,7 @@ namespace vamp::jit
         DynamicRobot(const DynamicRobot &) = delete;
         DynamicRobot &operator=(const DynamicRobot &) = delete;
 
-        auto has_planner(Planner p) const -> bool;
+        auto has_planner(vamp::planning::Planner p) const -> bool;
 
         auto dimension() const -> std::size_t
         {
@@ -56,7 +56,7 @@ namespace vamp::jit
         }
 
         auto solve(
-            Planner p,
+            vamp::planning::Planner p,
             const float *start,
             const float *goal,
             const void *env,
@@ -64,7 +64,7 @@ namespace vamp::jit
             ffi::SamplerHandle *sampler) -> ffi::PlanResultHandle *;
 
         auto solve_multi(
-            Planner p,
+            vamp::planning::Planner p,
             const float *start,
             const float *goals,
             std::uint64_t n_goals,
@@ -72,10 +72,13 @@ namespace vamp::jit
             const void *settings,
             ffi::SamplerHandle *sampler) -> ffi::PlanResultHandle *;
 
-        auto result_meta(Planner p, const ffi::PlanResultHandle *h) -> ffi::PlanResultMeta;
-        auto result_copy_waypoint(Planner p, const ffi::PlanResultHandle *h, std::uint64_t idx, float *out)
-            -> void;
-        auto result_destroy(Planner p, ffi::PlanResultHandle *h) -> void;
+        auto result_meta(vamp::planning::Planner p, const ffi::PlanResultHandle *h) -> ffi::PlanResultMeta;
+        auto result_copy_waypoint(
+            vamp::planning::Planner p,
+            const ffi::PlanResultHandle *h,
+            std::uint64_t idx,
+            float *out) -> void;
+        auto result_destroy(vamp::planning::Planner p, ffi::PlanResultHandle *h) -> void;
 
         auto simplify(
             const float *path,
@@ -98,6 +101,11 @@ namespace vamp::jit
 
         auto debug(const float *config, const void *env) -> ffi::DebugHandle *;
         auto debug_destroy(ffi::DebugHandle *h) -> void;
+
+        // ---- end-effector forward kinematics ----------------------------------
+
+        // Writes a 4x4 column-major matrix (16 floats) into out_matrix.
+        auto eefk(const float *config, float *out_matrix) -> void;
 
     private:
         struct PlannerEntry
@@ -136,9 +144,10 @@ namespace vamp::jit
         std::size_t dimension_;
         std::size_t rake_;
         std::unique_ptr<cricket::jit::JitSession> session_;
-        std::unordered_map<Planner, PlannerEntry> planners_;
+        std::unordered_map<vamp::planning::Planner, PlannerEntry> planners_;
         SimplifyEntry simplify_{};
         SamplerEntry sampler_{};
         DebugEntry debug_{};
+        ffi::EefkFn eefk_{nullptr};
     };
 }  // namespace vamp::jit

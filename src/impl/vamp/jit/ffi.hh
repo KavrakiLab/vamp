@@ -51,4 +51,6 @@ namespace vamp::jit::ffi
 
     using DebugFn = DebugHandle *(*)(const float *config, const void *env_ptr);
     using DebugDestroyFn = void (*)(DebugHandle *);
+
+    using EefkFn = void (*)(const float *config, float *out_matrix);
 }  // namespace vamp::jit::ffi

@@ -15,9 +15,9 @@
 
 namespace vamp::jit::embedded
 {
-    inline constexpr std::string_view preamble      = R"VAMPJIT_DELIM(@VAMP_JIT_PREAMBLE@)VAMPJIT_DELIM";
-    inline constexpr std::string_view sampler_stub  = R"VAMPJIT_DELIM(@VAMP_JIT_SAMPLER_STUB@)VAMPJIT_DELIM";
+    inline constexpr std::string_view preamble = R"VAMPJIT_DELIM(@VAMP_JIT_PREAMBLE@)VAMPJIT_DELIM";
+    inline constexpr std::string_view sampler_stub = R"VAMPJIT_DELIM(@VAMP_JIT_SAMPLER_STUB@)VAMPJIT_DELIM";
     inline constexpr std::string_view simplify_stub = R"VAMPJIT_DELIM(@VAMP_JIT_SIMPLIFY_STUB@)VAMPJIT_DELIM";
-    inline constexpr std::string_view debug_stub    = R"VAMPJIT_DELIM(@VAMP_JIT_DEBUG_STUB@)VAMPJIT_DELIM";
-    inline constexpr std::string_view planner_stub  = R"VAMPJIT_DELIM(@VAMP_JIT_PLANNER_STUB@)VAMPJIT_DELIM";
+    inline constexpr std::string_view debug_stub = R"VAMPJIT_DELIM(@VAMP_JIT_DEBUG_STUB@)VAMPJIT_DELIM";
+    inline constexpr std::string_view planner_stub = R"VAMPJIT_DELIM(@VAMP_JIT_PLANNER_STUB@)VAMPJIT_DELIM";
 }  // namespace vamp::jit::embedded

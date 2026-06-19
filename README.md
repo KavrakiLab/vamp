@@ -133,6 +133,15 @@ cd vamp
 pip install --no-build-isolation -Ceditable.rebuild=true -ve .
 ```
 
+### C++
+If you wish to extend `vamp` via C++, please build directly with CMake, e.g.:
+```
+cd vamp
+cmake -Bbuild -DCMAKE_BUILD_TYPE=Release .
+cmake --build build
+```
+Please see `CMakeLists.txt` for further build configuration options.
+
 ### JIT (Just-in-Time Robot Compilation and Loading)
 VAMP optionally ships a runtime that JIT-compiles a planner specialization for an arbitrary robot loaded from a URDF, no rebuild of the entire VAMP codebase required.
 The pipeline is wrapped by `vamp.load_robot(...)` and runs at the same speed as a statically-compiled robot.
@@ -171,14 +180,13 @@ print(result.path, result.cost, result.nanoseconds)
 First `load_robot()` call on a given URDF takes a few seconds to compile.
 Subsequent calls use a cached version of the JIT'd code.
 
-### C++
-If you wish to extend `vamp` via C++, please build directly with CMake, e.g.:
+```c++
+auto robot   = std::make_shared<vamp::jit::DynamicRobot>(opts);
+auto sampler = vamp::jit::make_halton_sampler(robot);
+auto result  = vamp::jit::solve(robot, vamp::planning::Planner::RRTC,
+                                start_ptr, goal_ptr, env, settings, *sampler);
+if (result.solved()) { /* ... */ }
 ```
-cd vamp
-cmake -Bbuild -DCMAKE_BUILD_TYPE=Release .
-cmake --build build
-```
-Please see `CMakeLists.txt` for further build configuration options.
 
 #### Architecture-Specific Build Options
 By default, VAMP builds with `-march=native` for optimal performance on the build machine. For builds targeting different hardware (e.g., Docker containers), you can override the architecture flags:

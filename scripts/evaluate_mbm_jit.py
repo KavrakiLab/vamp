@@ -131,7 +131,7 @@ def main(
                 if seed:
                     sampler.skip(seed)
                 result = jit_robot.rrtc(start, goal, env, settings, sampler)
-                if not result.success:
+                if not result.solved:
                     failures.append(i)
                     break
                 rows.append({
@@ -141,7 +141,7 @@ def main(
                     "waypoints": len(result.path),
                     "planning_time_us": result.nanoseconds / 1000.0,
                     "iterations": result.iterations,
-                    "cost": result.cost,
+                    "cost": result.path.cost(),
                 })
 
         failed += len(failures)

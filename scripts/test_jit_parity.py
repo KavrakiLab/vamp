@@ -97,21 +97,21 @@ def _compare(planner: str, static_res, jit_res):
     print(f"  [{planner}] static: success={static_res.solved} "
           f"waypoints={len(static_path)} cost={static_path.cost():.4f} "
           f"iter={static_res.iterations}")
-    print(f"  [{planner}]    jit: success={jit_res.success} "
-          f"waypoints={len(jit_path)} cost={jit_res.cost:.4f} "
+    print(f"  [{planner}]    jit: success={jit_res.solved} "
+          f"waypoints={len(jit_path)} cost={jit_res.path.cost():.4f} "
           f"iter={jit_res.iterations}")
 
-    if static_res.solved != jit_res.success:
+    if static_res.solved != jit_res.solved:
         print(f"  [{planner}] MISMATCH: success differs")
         return False
-    if not jit_res.success:
+    if not jit_res.solved:
         return True  # both failed — that's parity too
 
     tol = 0.05 if planner.split("-")[0] in _ANYTIME_PLANNERS else 1e-4
-    cost_diff = abs(static_path.cost() - jit_res.cost) / max(1.0, abs(static_path.cost()))
+    cost_diff = abs(static_path.cost() - jit_res.path.cost()) / max(1.0, abs(static_path.cost()))
     if cost_diff > tol:
         print(f"  [{planner}] MISMATCH: cost differs by {cost_diff:.2%} "
-              f"({static_path.cost()} vs {jit_res.cost})")
+              f"({static_path.cost()} vs {jit_res.path.cost()})")
         return False
     print(f"  [{planner}] OK (cost diff {cost_diff:.2%})")
     return True
@@ -166,7 +166,7 @@ def main():
 
     # ---- Simplify ---------------------------------------------------------
     print("\n[simplify] post-process RRTC path")
-    if jit_multi.success:
+    if jit_multi.solved:
         s_settings = vamp.SimplifySettings()
         # static: pass vamp.panda.Path; jit: pass plain list[list[float]]
         # Build a static Path from the JIT result so both routes start with

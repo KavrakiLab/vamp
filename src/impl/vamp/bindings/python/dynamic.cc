@@ -41,20 +41,37 @@ namespace
     namespace vjf = vamp::jit::ffi;
     namespace vp = vamp::planning;
 
-    // Resolves a planner name string to the enum. Throws on unknown names so
-    // typos surface immediately at load_robot() time instead of at solve() time.
     auto planner_from_name(const std::string &name) -> vj::Planner
     {
-        if (name == "rrtc")     return vj::Planner::RRTC;
-        if (name == "prm")      return vj::Planner::PRM;
-        if (name == "fcit")     return vj::Planner::FCIT;
-        if (name == "aorrtc")   return vj::Planner::AORRTC;
-        if (name == "grrtstar") return vj::Planner::GRRTSTAR;
+        if (name == "rrtc")
+        {
+            return vj::Planner::RRTC;
+        }
+
+        if (name == "prm")
+        {
+            return vj::Planner::PRM;
+        }
+
+        if (name == "fcit")
+        {
+            return vj::Planner::FCIT;
+        }
+
+        if (name == "aorrtc")
+        {
+            return vj::Planner::AORRTC;
+        }
+
+        if (name == "grrtstar")
+        {
+            return vj::Planner::GRRTSTAR;
+        }
+
         throw std::runtime_error("vamp.load_robot: unknown planner '" + name + "'");
     }
 
-    // Python-side mirror of an FFI plan result. Plain Python types so the
-    // FFI handle is destroyed before this object reaches the user.
+    // Python mirror of an FFI plan result
     struct DynamicPlanResult
     {
         bool success;
@@ -65,9 +82,8 @@ namespace
         std::vector<std::vector<float>> path;
     };
 
-    // Wraps an opaque ffi::SamplerHandle along with a shared_ptr to the
-    // DynamicRobot that created it, so we can safely free it on dtor without
-    // outliving the JIT session.
+    // Wraps ffi::SamplerHandle along with a shared_ptr to the DynamicRobot that created it,
+    // so we can safely free it on dtor.
     struct DynamicSampler
     {
         std::shared_ptr<vj::DynamicRobot> robot;
@@ -80,7 +96,7 @@ namespace
 
         ~DynamicSampler()
         {
-            if (handle != nullptr && robot)
+            if (handle != nullptr and robot)
             {
                 robot->sampler_destroy(handle);
             }
@@ -114,12 +130,14 @@ namespace
         auto meta = meta_call(handle);
         auto result = meta_to_result(meta);
         result.path.reserve(meta.waypoints);
+
         std::vector<float> wp(meta.dimension);
-        for (std::uint64_t i = 0; i < meta.waypoints; ++i)
+        for (auto i = 0U; i < meta.waypoints; ++i)
         {
             copy_call(handle, i, wp.data());
             result.path.emplace_back(wp);
         }
+
         destroy_call(handle);
         return result;
     }
@@ -135,8 +153,15 @@ namespace
         DynamicSampler &sampler) -> DynamicPlanResult
     {
         const auto dim = self.dimension();
-        if (start.size() != dim) throw std::runtime_error("start has wrong dimension");
-        if (goal.size() != dim)  throw std::runtime_error("goal has wrong dimension");
+        if (start.size() != dim)
+        {
+            throw std::runtime_error("start has wrong dimension");
+        }
+
+        if (goal.size() != dim)
+        {
+            throw std::runtime_error("goal has wrong dimension");
+        }
 
         auto *handle = self.solve(
             planner,
@@ -145,10 +170,12 @@ namespace
             static_cast<const void *>(&env),
             static_cast<const void *>(&settings),
             sampler.handle);
+
         if (handle == nullptr)
         {
             throw std::runtime_error("planner not loaded on this DynamicRobot");
         }
+
         return drain_handle(
             handle,
             [&](auto *h) { return self.result_meta(planner, h); },
@@ -167,13 +194,20 @@ namespace
         DynamicSampler &sampler) -> DynamicPlanResult
     {
         const auto dim = self.dimension();
-        if (start.size() != dim) throw std::runtime_error("start has wrong dimension");
+        if (start.size() != dim)
+        {
+            throw std::runtime_error("start has wrong dimension");
+        }
 
         std::vector<float> goals_flat;
         goals_flat.reserve(dim * goals.size());
         for (const auto &g : goals)
         {
-            if (g.size() != dim) throw std::runtime_error("goal has wrong dimension");
+            if (g.size() != dim)
+            {
+                throw std::runtime_error("goal has wrong dimension");
+            }
+
             goals_flat.insert(goals_flat.end(), g.begin(), g.end());
         }
 
@@ -185,10 +219,12 @@ namespace
             static_cast<const void *>(&env),
             static_cast<const void *>(&settings),
             sampler.handle);
+
         if (handle == nullptr)
         {
             throw std::runtime_error("planner not loaded on this DynamicRobot");
         }
+
         return drain_handle(
             handle,
             [&](auto *h) { return self.result_meta(planner, h); },
@@ -199,29 +235,19 @@ namespace
 
 namespace vamp::binding
 {
-    namespace
-    {
-        // Re-dlopen _core_ext.so with RTLD_GLOBAL so the libstdc++ / libgomp
-        // / libpinocchio / vamp template instantiations it pulled in become
-        // visible to the JIT's process-symbol search. Python loads extension
-        // modules with RTLD_LOCAL by default — without this promotion, ORC
-        // fails to materialise the JIT'd module with cascading "symbol not
-        // found" errors for operator new, std::chrono, etc.
-        auto promote_self_to_rtld_global() -> void
-        {
-            Dl_info info{};
-            if (dladdr(reinterpret_cast<void *>(&promote_self_to_rtld_global), &info) == 0 ||
-                info.dli_fname == nullptr)
-            {
-                return;  // best-effort; if it fails the user can still setdlopenflags
-            }
-            dlopen(info.dli_fname, RTLD_NOW | RTLD_GLOBAL | RTLD_NOLOAD);
-        }
-    }  // namespace
-
     void init_dynamic(nb::module_ &pymodule)
     {
-        promote_self_to_rtld_global();
+        // Re-dlopen _core_ext.so with RTLD_GLOBAL so template instantiations become
+        // visible to the JIT's process-symbol search as Python loads extension
+        // modules with RTLD_LOCAL by default
+        Dl_info info{};
+        if (dladdr(reinterpret_cast<void *>(&promote_self_to_rtld_global), &info) == 0 or
+            info.dli_fname == nullptr)
+        {
+            throw std::runtime_error("Failed to promote RTLD to global.");
+        }
+
+        dlopen(info.dli_fname, RTLD_NOW | RTLD_GLOBAL | RTLD_NOLOAD);
 
         nb::class_<DynamicPlanResult>(pymodule, "DynamicPlanResult")
             .def_ro("success", &DynamicPlanResult::success)
@@ -231,8 +257,6 @@ namespace vamp::binding
             .def_ro("cost", &DynamicPlanResult::cost)
             .def_ro("path", &DynamicPlanResult::path);
 
-        // DynamicSampler mirrors vamp.<robot>.RNG: reset/skip/next. Lifetime
-        // is tied to the originating DynamicRobot via shared_ptr.
         nb::class_<DynamicSampler>(pymodule, "DynamicSampler")
             .def(
                 "reset",
@@ -253,8 +277,6 @@ namespace vamp::binding
                 },
                 "Sample the next configuration.");
 
-        // PlannerHelper macro generates the .def(single) + .def(multi) overload
-        // pair for one planner on the DynamicRobot class.
 #define VAMP_JIT_DEF_PLANNER(KLASS, NAME, ENUM, SETTINGS)                                                    \
     KLASS                                                                                                    \
         .def(                                                                                                \
@@ -271,7 +293,7 @@ namespace vamp::binding
             "environment"_a,                                                                                 \
             "settings"_a,                                                                                    \
             "sampler"_a,                                                                                     \
-            "JIT'd " NAME " (single-goal).")                                                                 \
+            "JIT'd " NAME)                                                                                   \
         .def(                                                                                                \
             NAME,                                                                                            \
             [](std::shared_ptr<vj::DynamicRobot> self,                                                       \
@@ -280,13 +302,13 @@ namespace vamp::binding
                const vamp::collision::Environment<float> &env,                                               \
                const SETTINGS &settings,                                                                     \
                DynamicSampler &sampler) -> DynamicPlanResult                                                 \
-            { return run_planner_multi(*self, ENUM, start, goals, env, settings, sampler); },               \
+            { return run_planner_multi(*self, ENUM, start, goals, env, settings, sampler); },                \
             "start"_a,                                                                                       \
             "goal"_a,                                                                                        \
             "environment"_a,                                                                                 \
             "settings"_a,                                                                                    \
             "sampler"_a,                                                                                     \
-            "JIT'd " NAME " (multi-goal).")
+            "JIT'd " NAME)
 
         using PRMSettings = vp::RoadmapSettings<vp::PRMStarNeighborParams>;
         using FCITSettings = vp::RoadmapSettings<vp::FCITStarNeighborParams>;
@@ -294,6 +316,12 @@ namespace vamp::binding
         auto klass = nb::class_<vj::DynamicRobot>(pymodule, "DynamicRobot")
                          .def_prop_ro("dimension", &vj::DynamicRobot::dimension)
                          .def_prop_ro("rake", &vj::DynamicRobot::rake);
+
+        VAMP_JIT_DEF_PLANNER(klass, "rrtc", vj::Planner::RRTC, vp::RRTCSettings);
+        VAMP_JIT_DEF_PLANNER(klass, "prm", vj::Planner::PRM, PRMSettings);
+        VAMP_JIT_DEF_PLANNER(klass, "fcit", vj::Planner::FCIT, FCITSettings);
+        VAMP_JIT_DEF_PLANNER(klass, "aorrtc", vj::Planner::AORRTC, vp::AORRTCSettings);
+        VAMP_JIT_DEF_PLANNER(klass, "grrtstar", vj::Planner::GRRTSTAR, vp::GRRTStarSettings);
 
         // Sampler factories — mirror vamp.<robot>.halton() / xorshift().
         klass.def(
@@ -308,23 +336,8 @@ namespace vamp::binding
             "seed"_a = 0,
             "Create an XORShift sampler for this robot.");
 
-        // Planners — mirror vamp.<robot>.rrtc / prm / fcit / aorrtc / grrtstar.
-        VAMP_JIT_DEF_PLANNER(klass, "rrtc",     vj::Planner::RRTC,     vp::RRTCSettings);
-        VAMP_JIT_DEF_PLANNER(klass, "prm",      vj::Planner::PRM,      PRMSettings);
-        VAMP_JIT_DEF_PLANNER(klass, "fcit",     vj::Planner::FCIT,     FCITSettings);
-        VAMP_JIT_DEF_PLANNER(klass, "aorrtc",   vj::Planner::AORRTC,   vp::AORRTCSettings);
-        VAMP_JIT_DEF_PLANNER(klass, "grrtstar", vj::Planner::GRRTSTAR, vp::GRRTStarSettings);
-
-#undef VAMP_JIT_DEF_PLANNER
-
-        // debug — mirror vamp.<robot>.debug(). Returns the same type as the
-        // static binding: (per-sphere environment-collision string lists,
-        // self-colliding sphere-index pairs). R::Debug isn't templated on R,
-        // so we can reinterpret the opaque FFI handle as the concrete type
-        // safely (both sides compile against the same libstdc++ ABI).
-        using DebugType = std::pair<
-            std::vector<std::vector<std::string>>,
-            std::vector<std::pair<std::size_t, std::size_t>>>;
+        using DebugType = std::
+            pair<std::vector<std::vector<std::string>>, std::vector<std::pair<std::size_t, std::size_t>>>;
         klass.def(
             "debug",
             [](vj::DynamicRobot &self,
@@ -360,7 +373,10 @@ namespace vamp::binding
                 flat.reserve(dim * path.size());
                 for (const auto &wp : path)
                 {
-                    if (wp.size() != dim) throw std::runtime_error("waypoint has wrong dimension");
+                    if (wp.size() != dim)
+                    {
+                        throw std::runtime_error("waypoint has wrong dimension");
+                    }
                     flat.insert(flat.end(), wp.begin(), wp.end());
                 }
                 auto *handle = self.simplify(
@@ -392,27 +408,21 @@ namespace vamp::binding
                std::size_t resolution,
                const std::string &name) -> std::shared_ptr<vj::DynamicRobot>
             {
-                // Cricket pipeline: URDF + templates → robot source string.
                 cricket::GenOptions g;
                 g.urdf = urdf;
                 if (srdf)
                 {
                     g.srdf = std::filesystem::path(*srdf);
                 }
-                if (!end_effector.empty())
+
+                if (not end_effector.empty())
                 {
                     g.end_effector = end_effector;
                 }
 
-                // template_path / subtemplates left empty → cricket uses its
-                // embedded defaults (cricket/embedded_templates.hh). No
-                // runtime filesystem lookup of cricket's installed
-                // resources tree.
                 g.data = {{"name", name}, {"resolution", resolution}};
-
                 auto gen = cricket::generate_robot_source(g);
 
-                // Build LoadOptions from defaults + per-call settings.
                 vj::LoadOptions opts = vj::default_load_options();
                 opts.robot_source = gen.source;
                 opts.robot_name = gen.robot_name.empty() ? name : gen.robot_name;
@@ -429,10 +439,6 @@ namespace vamp::binding
             "urdf"_a,
             "srdf"_a = nb::none(),
             "end_effector"_a = std::string(""),
-            // Default to RRTC only — each additional planner adds a heavy
-            // template instantiation to the JIT'd TU. Pass an explicit list
-            // (e.g. ["rrtc", "prm", "fcit", "aorrtc", "grrtstar"]) to enable
-            // the others.
             "planners"_a = std::vector<std::string>{"rrtc"},
             "rake"_a = 8,
             "resolution"_a = 32,

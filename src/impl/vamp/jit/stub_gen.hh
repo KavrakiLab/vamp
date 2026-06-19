@@ -26,16 +26,6 @@ namespace vamp::jit
     };
 
     auto generate_stub_source(const StubOptions &opts) -> std::string;
-
-    // extern "C" symbol the stub source exports for a (planner, suffix) pair.
-    // suffix is one of: "solve", "solve_multi", "result_meta",
-    // "result_copy_waypoint", "result_destroy".
     auto planner_symbol(Planner p, std::string_view suffix) -> std::string;
-
-    // extern "C" symbol the stub source exports for a (robot, suffix) pair.
-    // suffix is one of: "simplify", "simplify_result_meta",
-    // "simplify_result_copy_waypoint", "simplify_result_destroy",
-    // "sampler_halton", "sampler_xorshift", "sampler_reset", "sampler_skip",
-    // "sampler_next", "sampler_destroy".
     auto robot_symbol(const std::string &robot_name, std::string_view suffix) -> std::string;
 }  // namespace vamp::jit

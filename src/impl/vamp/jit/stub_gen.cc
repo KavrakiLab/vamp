@@ -9,50 +9,33 @@
 #include <stdexcept>
 #include <string>
 
+namespace
+{
+    struct PlannerDescriptor
+    {
+        std::string_view name;
+        std::string_view class_name;
+        std::string_view settings_class;
+        std::string_view header;
+        std::string_view settings_header;
+    };
+
+    constexpr PlannerDescriptor planner_table[] = {
+        {"rrtc", "RRTC", "RRTCSettings", "rrtc.hh", "rrtc_settings.hh"},
+        {"prm", "PRM", "RoadmapSettings<vamp::planning::PRMStarNeighborParams>", "prm.hh", "roadmap.hh"},
+        {"fcit", "FCIT", "RoadmapSettings<vamp::planning::FCITStarNeighborParams>", "fcit.hh", "roadmap.hh"},
+        {"aorrtc", "AORRTC", "AORRTCSettings", "aorrtc.hh", "aorrtc_settings.hh"},
+        {"grrtstar", "GRRTStar", "GRRTStarSettings", "grrtstar.hh", "grrtstar_settings.hh"},
+    };
+
+    constexpr auto descriptor(Planner p) -> const PlannerDescriptor &
+    {
+        return planner_table[static_cast<std::size_t>(p)];
+    }
+}  // namespace
+
 namespace vamp::jit
 {
-    namespace
-    {
-        // Per-planner metadata that drives templates/planner_stub.cc's inja
-        // substitutions. To add a new planner: append an entry here (keeping
-        // the table in the same order as the Planner enum) and add the
-        // corresponding enumerator to stub_gen.hh.
-        struct PlannerDescriptor
-        {
-            std::string_view name;             // lowercase, for extern "C" symbol prefix
-            std::string_view class_name;       // vamp::planning template class
-            std::string_view settings_class;   // settings struct name
-            std::string_view header;           // header under vamp/planning/
-            std::string_view settings_header;  // settings header under vamp/planning/
-        };
-
-        constexpr PlannerDescriptor planner_table[] = {
-            {"rrtc", "RRTC", "RRTCSettings", "rrtc.hh", "rrtc_settings.hh"},
-            // PRM uses RoadmapSettings<PRMStarNeighborParams>, which is parsed
-            // as a non-type template arg by clang inside `using SettingsT =`
-            // unless we wrap it. The settings_class field is fed straight into
-            // `using SettingsT = vamp::planning::{{settings_class}};`, so we
-            // include the full template name here.
-            {"prm",
-             "PRM",
-             "RoadmapSettings<vamp::planning::PRMStarNeighborParams>",
-             "prm.hh",
-             "roadmap.hh"},
-            {"fcit",
-             "FCIT",
-             "RoadmapSettings<vamp::planning::FCITStarNeighborParams>",
-             "fcit.hh",
-             "roadmap.hh"},
-            {"aorrtc", "AORRTC", "AORRTCSettings", "aorrtc.hh", "aorrtc_settings.hh"},
-            {"grrtstar", "GRRTStar", "GRRTStarSettings", "grrtstar.hh", "grrtstar_settings.hh"},
-        };
-
-        constexpr auto descriptor(Planner p) -> const PlannerDescriptor &
-        {
-            return planner_table[static_cast<std::size_t>(p)];
-        }
-    }  // namespace
-
     auto planner_symbol(Planner p, std::string_view suffix) -> std::string
     {
         return std::string("vamp_jit_") + std::string(descriptor(p).name) + "_" + std::string(suffix);
@@ -69,10 +52,12 @@ namespace vamp::jit
         {
             throw std::runtime_error("vamp::jit::generate_stub_source: empty robot_source");
         }
+
         if (opts.robot_name.empty())
         {
             throw std::runtime_error("vamp::jit::generate_stub_source: empty robot_name");
         }
+
         if (opts.planners.empty())
         {
             throw std::runtime_error("vamp::jit::generate_stub_source: no planners requested");
@@ -83,14 +68,12 @@ namespace vamp::jit
 
         inja::Environment env;
 
-        // Robot-level base data shared across all rendered templates.
         nlohmann::json base = {
             {"robot_name", opts.robot_name},
             {"rake", opts.rake},
             {"resolution", opts.resolution},
         };
 
-        // Sampler / simplify / debug stubs are robot-scoped, not per-planner.
         out << env.render(std::string(embedded::sampler_stub), base);
         out << env.render(std::string(embedded::simplify_stub), base);
         out << env.render(std::string(embedded::debug_stub), base);
@@ -106,6 +89,7 @@ namespace vamp::jit
             data["settings_header"] = std::string(d.settings_header);
             out << env.render(std::string(embedded::planner_stub), data);
         }
+
         return out.str();
     }
 }  // namespace vamp::jit

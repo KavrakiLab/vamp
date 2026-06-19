@@ -1,34 +1,25 @@
 #pragma once
 
-// AUTO-GENERATED — configured by CMake from build_paths.hh.in.
-// Contains the include dirs / cc1 flags / cricket-resources path that match
-// the host vamp build, so vamp::jit::LoadOptions defaults are correct without
-// the caller re-deriving them.
-//
-// Build-tree paths are emitted here. An install-time variant should be
-// configured by `install(...)` rules — TODO when packaging.
-
 #include <array>
 #include <string_view>
 
 namespace vamp::jit::paths
 {
-    // Headers the JIT'd stub source needs (-I flags).
+    // Headers the JIT'd stub source needs
     inline constexpr std::array<std::string_view, 3> include_dirs = {
         "@VAMP_SRC_IMPL_DIR@",
         "@VAMP_SIMDXORSHIFT_INCLUDE@",
         "@VAMP_CRICKET_INCLUDE_DIR@",
     };
 
-    // System headers (-isystem flags). Suppresses warnings from third-party
-    // template-heavy code.
+    // System headers 
     inline constexpr std::array<std::string_view, 3> system_include_dirs = {
         "@VAMP_EIGEN3_INCLUDE_DIR@",
         "@VAMP_NIGH_INCLUDE_DIR@",
         "@VAMP_PDQSORT_INCLUDE_DIR@",
     };
 
-    // Defines that affect ABI / std layout. Must match vamp's own build.
+    // Defines that affect ABI / std layout, must match vamp's own build
     inline constexpr std::array<std::string_view, 2> defines = {
         "_GLIBCXX_USE_CXX11_ABI=1",
         "NDEBUG",
@@ -50,9 +41,4 @@ namespace vamp::jit::paths
         "-ffp-contract=fast",
         "-fassociative-math",
     };
-
-    // cricket's resources/ tree (templates, sample URDFs) is resolved at
-    // runtime by asking Python's `cricket.resources_dir()` — that's where the
-    // pip-installed wheel actually lives. The vamp.load_robot binding hands
-    // the path to DynamicRobot per call.
 }  // namespace vamp::jit::paths

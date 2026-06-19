@@ -6,6 +6,8 @@
 #include <vamp/jit/stub_gen.hh>
 
 #include <vamp/collision/environment.hh>
+#include <vamp/collision/math.hh>
+#include <vamp/collision/shapes.hh>
 #include <vamp/planning/aorrtc_settings.hh>
 #include <vamp/planning/grrtstar_settings.hh>
 #include <vamp/planning/planner.hh>
@@ -20,10 +22,12 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
+#include <nanobind/stl/array.h>
 #include <nanobind/stl/optional.h>
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/shared_ptr.h>
 #include <nanobind/stl/string.h>
+#include <nanobind/stl/tuple.h>
 #include <nanobind/stl/vector.h>
 
 #include <dlfcn.h>
@@ -86,6 +90,30 @@ namespace
 
         DynamicSampler(const DynamicSampler &) = delete;
         DynamicSampler &operator=(const DynamicSampler &) = delete;
+    };
+
+    // Same pattern for vamp::planning::ProlateHyperspheroid<R> behind the
+    // ffi::PhsHandle opaque pointer.
+    struct DynamicPhs
+    {
+        std::shared_ptr<vj::DynamicRobot> robot;
+        vjf::PhsHandle *handle{nullptr};
+
+        DynamicPhs(std::shared_ptr<vj::DynamicRobot> r, vjf::PhsHandle *h)
+          : robot(std::move(r)), handle(h)
+        {
+        }
+
+        ~DynamicPhs()
+        {
+            if (handle != nullptr and robot)
+            {
+                robot->phs_destroy(handle);
+            }
+        }
+
+        DynamicPhs(const DynamicPhs &) = delete;
+        DynamicPhs &operator=(const DynamicPhs &) = delete;
     };
 
     auto meta_to_result(const vjf::PlanResultMeta &meta) -> DynamicPlanResult
@@ -317,6 +345,88 @@ namespace
         self.eefk(config, result.data());
         return result;
     }
+
+    auto run_fk_impl(vj::DynamicRobot &self, const float *config)
+        -> std::vector<vamp::collision::Sphere<float>>
+    {
+        const auto n = self.n_spheres();
+        std::vector<float> buf(n * 4);
+        self.fk(config, buf.data());
+
+        std::vector<vamp::collision::Sphere<float>> out;
+        out.reserve(n);
+        for (std::size_t i = 0; i < n; ++i)
+        {
+            out.emplace_back(buf[i * 4 + 0], buf[i * 4 + 1], buf[i * 4 + 2], buf[i * 4 + 3]);
+        }
+        return out;
+    }
+
+    auto run_filter_pc_impl(
+        vj::DynamicRobot &self,
+        const float *points,
+        std::uint64_t n_points,
+        float point_radius,
+        const float *config,
+        const vamp::collision::Environment<float> &env) -> std::vector<vamp::collision::Point>
+    {
+        std::vector<vamp::collision::Point> out;
+        self.filter_self_from_pointcloud(
+            points, n_points, point_radius, config, static_cast<const void *>(&env), &out);
+        return out;
+    }
+
+    // Pointcloud inputs accept either a list of (x, y, z) points or an
+    // (n_points, 3) float ndarray. Flattens lists into the scratch buffer.
+    auto as_points(
+        const std::vector<vamp::collision::Point> &v,
+        std::vector<float> &scratch,
+        const char *) -> std::pair<const float *, std::uint64_t>
+    {
+        scratch.clear();
+        scratch.reserve(v.size() * 3);
+        for (const auto &p : v)
+        {
+            scratch.insert(scratch.end(), p.begin(), p.end());
+        }
+        return {scratch.data(), v.size()};
+    }
+
+    auto as_points(const PathNd &a, std::vector<float> &scratch, const char *what)
+        -> std::pair<const float *, std::uint64_t>
+    {
+        if (a.shape(1) != 3)
+        {
+            throw std::runtime_error(std::string(what) + " must have shape (N, 3)");
+        }
+        const std::uint64_t n = a.shape(0);
+        const bool contiguous = (a.stride(0) == 3 and a.stride(1) == 1);
+        if (contiguous)
+        {
+            return {a.data(), n};
+        }
+
+        scratch.resize(n * 3);
+        for (std::uint64_t i = 0; i < n; ++i)
+        {
+            for (std::size_t j = 0; j < 3; ++j)
+            {
+                scratch[i * 3 + j] = a(i, j);
+            }
+        }
+        return {scratch.data(), n};
+    }
+
+    // Convert a std::vector<float> of known length into a numpy float32 ndarray
+    // backed by a capsule, mirroring the static binding's `from(Configuration)`
+    // helper. Used for the bounds accessors.
+    auto vec_to_ndarray(const std::vector<float> &v) -> nb::ndarray<nb::numpy, float, nb::device::cpu>
+    {
+        auto *buf = new float[v.size()];
+        std::memcpy(buf, v.data(), v.size() * sizeof(float));
+        nb::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
+        return nb::ndarray<nb::numpy, float, nb::device::cpu>(buf, {v.size()}, owner);
+    }
 }  // namespace
 
 namespace vamp::binding
@@ -373,7 +483,28 @@ namespace vamp::binding
 
         auto klass = nb::class_<vj::DynamicRobot>(pymodule, "DynamicRobot")
                          .def_prop_ro("dimension", &vj::DynamicRobot::dimension)
-                         .def_prop_ro("rake", &vj::DynamicRobot::rake);
+                         .def_prop_ro("rake", &vj::DynamicRobot::rake)
+                         .def_prop_ro("n_spheres", &vj::DynamicRobot::n_spheres)
+                         .def_prop_ro(
+                             "space_measure",
+                             &vj::DynamicRobot::space_measure,
+                             "Measure of robot's C-space.")
+                         .def_prop_ro(
+                             "joint_names",
+                             &vj::DynamicRobot::joint_names,
+                             "Joint names for the robot in order of DoF.")
+                         .def(
+                             "min_max_radii",
+                             [](const vj::DynamicRobot &self) -> std::pair<float, float>
+                             { return {self.min_radius(), self.max_radius()}; },
+                             "Minimum and maximum radii sizes of robot spheres.")
+                         .def(
+                             "upper_bounds",
+                             [](const vj::DynamicRobot &self) { return vec_to_ndarray(self.upper_bounds()); })
+                         .def(
+                             "lower_bounds",
+                             [](const vj::DynamicRobot &self)
+                             { return vec_to_ndarray(self.lower_bounds()); });
 
         // Per-planner overloads: list × {single, multi} and ndarray × {single, multi}.
         // Mirrors the static MF/PLANNER macros which generate parallel
@@ -542,6 +673,230 @@ namespace vamp::binding
             },
             "configuration"_a,
             "End-effector forward kinematics. Returns a 4x4 transform (JIT).");
+
+        // fk — mirror vamp.<robot>.fk(). Returns vector<Sphere<float>>.
+        klass.def(
+            "fk",
+            [](vj::DynamicRobot &self, const std::vector<float> &config)
+            {
+                std::vector<float> scratch;
+                return run_fk_impl(self, as_config(config, self.dimension(), scratch, "config"));
+            },
+            "configuration"_a,
+            "Computes the forward kinematics of the robot (JIT). Returns spheres.");
+        klass.def(
+            "fk",
+            [](vj::DynamicRobot &self, const ConfigNd &config)
+            {
+                std::vector<float> scratch;
+                return run_fk_impl(self, as_config(config, self.dimension(), scratch, "config"));
+            },
+            "configuration"_a,
+            "Computes the forward kinematics of the robot (JIT). Returns spheres.");
+
+        // validate — mirror vamp.<robot>.validate().
+        klass.def(
+            "validate",
+            [](vj::DynamicRobot &self,
+               const std::vector<float> &config,
+               const vamp::collision::Environment<float> &env,
+               bool check_bounds)
+            {
+                std::vector<float> scratch;
+                return self.validate(
+                    as_config(config, self.dimension(), scratch, "config"),
+                    static_cast<const void *>(&env),
+                    check_bounds);
+            },
+            "configuration"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "check_bounds"_a = false,
+            "Check if a configuration is valid (JIT).");
+        klass.def(
+            "validate",
+            [](vj::DynamicRobot &self,
+               const ConfigNd &config,
+               const vamp::collision::Environment<float> &env,
+               bool check_bounds)
+            {
+                std::vector<float> scratch;
+                return self.validate(
+                    as_config(config, self.dimension(), scratch, "config"),
+                    static_cast<const void *>(&env),
+                    check_bounds);
+            },
+            "configuration"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "check_bounds"_a = false,
+            "Check if a configuration is valid (JIT).");
+
+        // validate_motion — mirror vamp.<robot>.validate_motion().
+        klass.def(
+            "validate_motion",
+            [](vj::DynamicRobot &self,
+               const std::vector<float> &c_in,
+               const std::vector<float> &c_out,
+               const vamp::collision::Environment<float> &env,
+               bool check_bounds)
+            {
+                std::vector<float> s_in, s_out;
+                return self.validate_motion(
+                    as_config(c_in, self.dimension(), s_in, "configuration_in"),
+                    as_config(c_out, self.dimension(), s_out, "configuration_out"),
+                    static_cast<const void *>(&env),
+                    check_bounds);
+            },
+            "configuration_in"_a,
+            "configuration_out"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "check_bounds"_a = true,
+            "Check if a configuration-to-configuration motion is valid (JIT).");
+        klass.def(
+            "validate_motion",
+            [](vj::DynamicRobot &self,
+               const ConfigNd &c_in,
+               const ConfigNd &c_out,
+               const vamp::collision::Environment<float> &env,
+               bool check_bounds)
+            {
+                std::vector<float> s_in, s_out;
+                return self.validate_motion(
+                    as_config(c_in, self.dimension(), s_in, "configuration_in"),
+                    as_config(c_out, self.dimension(), s_out, "configuration_out"),
+                    static_cast<const void *>(&env),
+                    check_bounds);
+            },
+            "configuration_in"_a,
+            "configuration_out"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "check_bounds"_a = true,
+            "Check if a configuration-to-configuration motion is valid (JIT).");
+
+        // filter_self_from_pointcloud — mirror vamp.<robot>.filter_self_from_pointcloud().
+        klass.def(
+            "filter_self_from_pointcloud",
+            [](vj::DynamicRobot &self,
+               const std::vector<vamp::collision::Point> &pc,
+               float point_radius,
+               const std::vector<float> &config,
+               const vamp::collision::Environment<float> &env)
+            {
+                std::vector<float> cfg_scratch, pc_scratch;
+                auto [pptr, n] = as_points(pc, pc_scratch, "pc");
+                return run_filter_pc_impl(
+                    self,
+                    pptr,
+                    n,
+                    point_radius,
+                    as_config(config, self.dimension(), cfg_scratch, "config"),
+                    env);
+            },
+            "pc"_a,
+            "point_radius"_a,
+            "configuration"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "Filters points colliding with the robot or environment (JIT).");
+        klass.def(
+            "filter_self_from_pointcloud",
+            [](vj::DynamicRobot &self,
+               const PathNd &pc,
+               float point_radius,
+               const ConfigNd &config,
+               const vamp::collision::Environment<float> &env)
+            {
+                std::vector<float> cfg_scratch, pc_scratch;
+                auto [pptr, n] = as_points(pc, pc_scratch, "pc");
+                return run_filter_pc_impl(
+                    self,
+                    pptr,
+                    n,
+                    point_radius,
+                    as_config(config, self.dimension(), cfg_scratch, "config"),
+                    env);
+            },
+            "pc"_a,
+            "point_radius"_a,
+            "configuration"_a,
+            "environment"_a = vamp::collision::Environment<float>(),
+            "Filters points colliding with the robot or environment (JIT).");
+
+        // ---- PHS class + phs_sampler factory --------------------------------
+        nb::class_<DynamicPhs>(pymodule, "DynamicPhs")
+            .def(
+                "set_transverse_diameter",
+                [](DynamicPhs &p, float d)
+                { p.robot->phs_set_transverse_diameter(p.handle, d); },
+                "diameter"_a)
+            .def(
+                "transform",
+                [](DynamicPhs &p, const std::vector<float> &x)
+                {
+                    const auto dim = p.robot->dimension();
+                    std::vector<float> scratch;
+                    auto *xptr = as_config(x, dim, scratch, "x");
+                    std::vector<float> out(dim);
+                    p.robot->phs_transform(p.handle, xptr, out.data());
+                    return vec_to_ndarray(out);
+                },
+                "x"_a)
+            .def(
+                "transform",
+                [](DynamicPhs &p, const ConfigNd &x)
+                {
+                    const auto dim = p.robot->dimension();
+                    std::vector<float> scratch;
+                    auto *xptr = as_config(x, dim, scratch, "x");
+                    std::vector<float> out(dim);
+                    p.robot->phs_transform(p.handle, xptr, out.data());
+                    return vec_to_ndarray(out);
+                },
+                "x"_a);
+
+        klass.def(
+            "phs",
+            [](std::shared_ptr<vj::DynamicRobot> self,
+               const std::vector<float> &focus_a,
+               const std::vector<float> &focus_b)
+            {
+                const auto dim = self->dimension();
+                std::vector<float> sa, sb;
+                auto *h = self->phs_new(
+                    as_config(focus_a, dim, sa, "focus_a"),
+                    as_config(focus_b, dim, sb, "focus_b"));
+                return std::make_shared<DynamicPhs>(self, h);
+            },
+            "focus_a"_a,
+            "focus_b"_a,
+            "Construct a prolate hyperspheroid from two foci.");
+        klass.def(
+            "phs",
+            [](std::shared_ptr<vj::DynamicRobot> self,
+               const ConfigNd &focus_a,
+               const ConfigNd &focus_b)
+            {
+                const auto dim = self->dimension();
+                std::vector<float> sa, sb;
+                auto *h = self->phs_new(
+                    as_config(focus_a, dim, sa, "focus_a"),
+                    as_config(focus_b, dim, sb, "focus_b"));
+                return std::make_shared<DynamicPhs>(self, h);
+            },
+            "focus_a"_a,
+            "focus_b"_a,
+            "Construct a prolate hyperspheroid from two foci.");
+
+        klass.def(
+            "phs_sampler",
+            [](std::shared_ptr<vj::DynamicRobot> self,
+               const DynamicPhs &phs,
+               DynamicSampler &inner) -> std::shared_ptr<DynamicSampler>
+            {
+                auto *handle = self->sampler_phs(phs.handle, inner.handle);
+                return std::make_shared<DynamicSampler>(self, handle);
+            },
+            "phs"_a,
+            "rng"_a,
+            "Create a new PHS-rejection sampler wrapping an inner RNG.");
 
         // simplify — list-of-lists or 2-D ndarray.
         klass.def(

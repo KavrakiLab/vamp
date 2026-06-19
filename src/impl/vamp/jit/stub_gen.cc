@@ -81,6 +81,7 @@ namespace vamp::jit
         out << env.render(std::string(embedded::sampler_stub), base);
         out << env.render(std::string(embedded::simplify_stub), base);
         out << env.render(std::string(embedded::debug_stub), base);
+        out << env.render(std::string(embedded::phs_stub), base);
 
         for (auto p : opts.planners)
         {

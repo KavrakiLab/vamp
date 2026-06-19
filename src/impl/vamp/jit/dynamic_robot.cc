@@ -106,6 +106,41 @@ namespace vamp::jit
 
         // Per-robot: end-effector FK.
         eefk_ = resolve_robot<ffi::EefkFn>(*session_, r, "eefk");
+
+        // Per-robot: sphere FK + validity + pointcloud-filter entrypoints.
+        inspect_.fk = resolve_robot<ffi::FkFn>(*session_, r, "fk");
+        inspect_.validate = resolve_robot<ffi::ValidateFn>(*session_, r, "validate");
+        inspect_.validate_motion = resolve_robot<ffi::ValidateMotionFn>(*session_, r, "validate_motion");
+        inspect_.filter_pointcloud =
+            resolve_robot<ffi::FilterPointcloudFn>(*session_, r, "filter_self_from_pointcloud");
+
+        // Per-robot: PHS class + PHS-sampler factory.
+        phs_.create = resolve_robot<ffi::PhsNewFn>(*session_, r, "phs_new");
+        phs_.destroy = resolve_robot<ffi::PhsDestroyFn>(*session_, r, "phs_destroy");
+        phs_.set_diameter =
+            resolve_robot<ffi::PhsSetDiameterFn>(*session_, r, "phs_set_transverse_diameter");
+        phs_.transform = resolve_robot<ffi::PhsTransformFn>(*session_, r, "phs_transform");
+        phs_.sampler = resolve_robot<ffi::SamplerPhsFn>(*session_, r, "sampler_phs");
+
+        // Cache the static per-robot metadata so the Python accessors don't
+        // pay an FFI hop. n_spheres / space_measure / radii / joint names /
+        // joint bounds are all compile-time constants of the robot struct.
+        auto space_measure_fn = resolve_robot<ffi::SpaceMeasureFn>(*session_, r, "space_measure");
+        auto min_max_fn = resolve_robot<ffi::MinMaxRadiiFn>(*session_, r, "min_max_radii");
+        auto n_spheres_fn = resolve_robot<ffi::NSpheresFn>(*session_, r, "n_spheres");
+        auto joint_names_fn = resolve_robot<ffi::JointNamesFn>(*session_, r, "joint_names");
+        auto upper_fn = resolve_robot<ffi::BoundsFn>(*session_, r, "upper_bounds");
+        auto lower_fn = resolve_robot<ffi::BoundsFn>(*session_, r, "lower_bounds");
+
+        space_measure_ = space_measure_fn();
+        min_max_fn(&min_radius_, &max_radius_);
+        n_spheres_ = n_spheres_fn();
+        joint_names_fn(&joint_names_);
+
+        upper_bounds_.resize(dimension_);
+        lower_bounds_.resize(dimension_);
+        upper_fn(upper_bounds_.data());
+        lower_fn(lower_bounds_.data());
     }
 
     DynamicRobot::~DynamicRobot() = default;
@@ -238,5 +273,61 @@ namespace vamp::jit
     auto DynamicRobot::eefk(const float *config, float *out_matrix) -> void
     {
         eefk_(config, out_matrix);
+    }
+
+    auto DynamicRobot::fk(const float *config, float *out_spheres) -> void
+    {
+        inspect_.fk(config, out_spheres);
+    }
+
+    auto DynamicRobot::validate(const float *config, const void *env, bool check_bounds) -> bool
+    {
+        return inspect_.validate(config, env, check_bounds ? 1 : 0) != 0;
+    }
+
+    auto DynamicRobot::validate_motion(
+        const float *c_in,
+        const float *c_out,
+        const void *env,
+        bool check_bounds) -> bool
+    {
+        return inspect_.validate_motion(c_in, c_out, env, check_bounds ? 1 : 0) != 0;
+    }
+
+    auto DynamicRobot::filter_self_from_pointcloud(
+        const float *points,
+        std::uint64_t n_points,
+        float point_radius,
+        const float *config,
+        const void *env,
+        void *out_filtered) -> void
+    {
+        inspect_.filter_pointcloud(points, n_points, point_radius, config, env, out_filtered);
+    }
+
+    auto DynamicRobot::phs_new(const float *focus_a, const float *focus_b) -> ffi::PhsHandle *
+    {
+        return phs_.create(focus_a, focus_b);
+    }
+
+    auto DynamicRobot::phs_destroy(ffi::PhsHandle *h) -> void
+    {
+        phs_.destroy(h);
+    }
+
+    auto DynamicRobot::phs_set_transverse_diameter(ffi::PhsHandle *h, float diameter) -> void
+    {
+        phs_.set_diameter(h, diameter);
+    }
+
+    auto DynamicRobot::phs_transform(const ffi::PhsHandle *h, const float *in, float *out) -> void
+    {
+        phs_.transform(h, in, out);
+    }
+
+    auto DynamicRobot::sampler_phs(const ffi::PhsHandle *phs, ffi::SamplerHandle *inner)
+        -> ffi::SamplerHandle *
+    {
+        return phs_.sampler(phs, inner);
     }
 }  // namespace vamp::jit

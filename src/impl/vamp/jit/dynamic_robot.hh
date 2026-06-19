@@ -107,6 +107,65 @@ namespace vamp::jit
         // Writes a 4x4 column-major matrix (16 floats) into out_matrix.
         auto eefk(const float *config, float *out_matrix) -> void;
 
+        // ---- sphere FK / validity / pointcloud filter -------------------------
+
+        // Writes 4 * n_spheres() floats (x, y, z, r) into out_spheres.
+        auto fk(const float *config, float *out_spheres) -> void;
+
+        auto validate(const float *config, const void *env, bool check_bounds) -> bool;
+        auto validate_motion(const float *c_in, const float *c_out, const void *env, bool check_bounds)
+            -> bool;
+
+        // out_filtered is a host-owned std::vector<vamp::collision::Point>*.
+        auto filter_self_from_pointcloud(
+            const float *points,
+            std::uint64_t n_points,
+            float point_radius,
+            const float *config,
+            const void *env,
+            void *out_filtered) -> void;
+
+        // ---- static per-robot metadata ----------------------------------------
+        //
+        // Queried once at construction and cached in the fields below.
+
+        auto n_spheres() const -> std::size_t
+        {
+            return n_spheres_;
+        }
+        auto space_measure() const -> float
+        {
+            return space_measure_;
+        }
+        auto min_radius() const -> float
+        {
+            return min_radius_;
+        }
+        auto max_radius() const -> float
+        {
+            return max_radius_;
+        }
+        auto joint_names() const -> const std::vector<std::string> &
+        {
+            return joint_names_;
+        }
+        auto upper_bounds() const -> const std::vector<float> &
+        {
+            return upper_bounds_;
+        }
+        auto lower_bounds() const -> const std::vector<float> &
+        {
+            return lower_bounds_;
+        }
+
+        // ---- PHS --------------------------------------------------------------
+
+        auto phs_new(const float *focus_a, const float *focus_b) -> ffi::PhsHandle *;
+        auto phs_destroy(ffi::PhsHandle *h) -> void;
+        auto phs_set_transverse_diameter(ffi::PhsHandle *h, float diameter) -> void;
+        auto phs_transform(const ffi::PhsHandle *h, const float *in, float *out) -> void;
+        auto sampler_phs(const ffi::PhsHandle *phs, ffi::SamplerHandle *inner) -> ffi::SamplerHandle *;
+
     private:
         struct PlannerEntry
         {
@@ -141,6 +200,23 @@ namespace vamp::jit
             ffi::DebugDestroyFn destroy;
         };
 
+        struct InspectEntry
+        {
+            ffi::FkFn fk;
+            ffi::ValidateFn validate;
+            ffi::ValidateMotionFn validate_motion;
+            ffi::FilterPointcloudFn filter_pointcloud;
+        };
+
+        struct PhsEntry
+        {
+            ffi::PhsNewFn create;
+            ffi::PhsDestroyFn destroy;
+            ffi::PhsSetDiameterFn set_diameter;
+            ffi::PhsTransformFn transform;
+            ffi::SamplerPhsFn sampler;
+        };
+
         std::size_t dimension_;
         std::size_t rake_;
         std::unique_ptr<cricket::jit::JitSession> session_;
@@ -148,6 +224,17 @@ namespace vamp::jit
         SimplifyEntry simplify_{};
         SamplerEntry sampler_{};
         DebugEntry debug_{};
+        InspectEntry inspect_{};
+        PhsEntry phs_{};
         ffi::EefkFn eefk_{nullptr};
+
+        // Cached static metadata.
+        std::size_t n_spheres_{0};
+        float space_measure_{0.0F};
+        float min_radius_{0.0F};
+        float max_radius_{0.0F};
+        std::vector<std::string> joint_names_;
+        std::vector<float> upper_bounds_;
+        std::vector<float> lower_bounds_;
     };
 }  // namespace vamp::jit

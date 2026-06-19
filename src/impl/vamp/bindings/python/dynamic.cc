@@ -1,7 +1,8 @@
 #include <vamp_python_init.hh>
 
-#include <vamp/jit/build_paths.hh>
+#include <vamp/bindings/python/array_helpers.hh>
 #include <vamp/jit/api.hh>
+#include <vamp/jit/build_paths.hh>
 #include <vamp/jit/dynamic_robot.hh>
 #include <vamp/jit/ffi.hh>
 #include <vamp/jit/stub_gen.hh>
@@ -81,26 +82,12 @@ namespace
         return v.data();
     }
 
-    auto as_config(const ConfigNd &a, std::size_t dim, std::vector<float> &scratch, const char *what) -> const
-        float *
+    // ndarray overloads delegate to the shared helpers in
+    // vamp/bindings/python/array_helpers.hh (used by the static side too).
+    auto as_config(const ConfigNd &a, std::size_t dim, std::vector<float> &scratch, const char *what)
+        -> const float *
     {
-        if (a.shape(0) != dim)
-        {
-            throw std::runtime_error(std::string(what) + " has wrong dimension");
-        }
-
-        // Strided slices (e.g. wide_buffer[::2]) need to be flattened —
-        // reading a.data() linearly would step through interleaved elements.
-        if (a.stride(0) != 1)
-        {
-            scratch.resize(dim);
-            for (std::size_t i = 0; i < dim; ++i)
-            {
-                scratch[i] = a(i);
-            }
-            return scratch.data();
-        }
-        return a.data();
+        return vamp::binding::as_flat_1d(a, dim, scratch, what);
     }
 
     auto as_path(
@@ -125,27 +112,7 @@ namespace
     auto as_path(const PathNd &a, std::size_t dim, std::vector<float> &scratch, const char *what)
         -> std::pair<const float *, std::uint64_t>
     {
-        if (a.shape(1) != dim)
-        {
-            throw std::runtime_error(std::string(what) + " has wrong waypoint dimension");
-        }
-
-        const std::uint64_t n = a.shape(0);
-        const bool contiguous = (a.stride(0) == static_cast<int64_t>(dim) and a.stride(1) == 1);
-        if (contiguous)
-        {
-            return {a.data(), n};
-        }
-
-        scratch.resize(n * dim);
-        for (std::uint64_t i = 0; i < n; ++i)
-        {
-            for (std::size_t j = 0; j < dim; ++j)
-            {
-                scratch[i * dim + j] = a(i, j);
-            }
-        }
-        return {scratch.data(), n};
+        return vamp::binding::as_flat_2d(a, dim, scratch, what);
     }
 
     auto as_points(const std::vector<vamp::collision::Point> &v, std::vector<float> &scratch, const char *)
@@ -163,36 +130,7 @@ namespace
     auto as_points(const PathNd &a, std::vector<float> &scratch, const char *what)
         -> std::pair<const float *, std::uint64_t>
     {
-        if (a.shape(1) != 3)
-        {
-            throw std::runtime_error(std::string(what) + " must have shape (N, 3)");
-        }
-        const std::uint64_t n = a.shape(0);
-        const bool contiguous = (a.stride(0) == 3 and a.stride(1) == 1);
-        if (contiguous)
-        {
-            return {a.data(), n};
-        }
-
-        scratch.resize(n * 3);
-        for (std::uint64_t i = 0; i < n; ++i)
-        {
-            for (std::size_t j = 0; j < 3; ++j)
-            {
-                scratch[i * 3 + j] = a(i, j);
-            }
-        }
-        return {scratch.data(), n};
-    }
-
-    // Wrap a std::vector<float> in a capsule-owning numpy ndarray. Used by
-    // the bounds accessors and DynamicSampler.next().
-    auto vec_to_ndarray(const std::vector<float> &v) -> nb::ndarray<nb::numpy, float, nb::device::cpu>
-    {
-        auto *buf = new float[v.size()];
-        std::memcpy(buf, v.data(), v.size() * sizeof(float));
-        nb::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
-        return nb::ndarray<nb::numpy, float, nb::device::cpu>(buf, {v.size()}, owner);
+        return vamp::binding::as_flat_2d(a, 3, scratch, what);
     }
 }  // namespace
 
@@ -201,7 +139,7 @@ namespace vamp::binding
     void init_dynamic(nb::module_ &pymodule)
     {
         // Re-dlopen _core_ext.so with RTLD_GLOBAL so template instantiations
-        // become visible to the JIT's process-symbol search — Python loads
+        // become visible to the JIT's process-symbol search. Python loads
         // extension modules with RTLD_LOCAL by default.
         Dl_info info{};
         if (dladdr(reinterpret_cast<void *>(&init_dynamic), &info) == 0 or info.dli_fname == nullptr)
@@ -225,7 +163,7 @@ namespace vamp::binding
                     {
                         throw nb::index_error();
                     }
-                    return vec_to_ndarray(p.waypoints[i]);
+                    return vamp::binding::make_ndarray<1>(p.waypoints[i].data(), {p.dim});
                 },
                 "Get the i-th configuration in the path.")
             .def(
@@ -356,16 +294,18 @@ namespace vamp::binding
                 "Validate the path in an environment.")
             .def(
                 "numpy",
-                [](const vj::DynamicPath &p) noexcept -> nb::ndarray<nb::numpy, const float, nb::device::cpu>
+                [](const vj::DynamicPath &p)
                 {
+                    // Flatten the row vectors into a contiguous buffer, then
+                    // wrap as an (n, dim) ndarray via the shared helper.
                     const auto n = p.waypoints.size();
-                    auto *buf = new float[n * p.dim];
+                    std::vector<float> flat(n * p.dim);
                     for (std::size_t i = 0; i < n; ++i)
                     {
-                        std::memcpy(buf + i * p.dim, p.waypoints[i].data(), p.dim * sizeof(float));
+                        std::memcpy(
+                            flat.data() + i * p.dim, p.waypoints[i].data(), p.dim * sizeof(float));
                     }
-                    nb::capsule owner(buf, [](void *q) noexcept { delete[] reinterpret_cast<float *>(q); });
-                    return nb::ndarray<nb::numpy, const float, nb::device::cpu>(buf, {n, p.dim}, owner);
+                    return vamp::binding::make_ndarray<2>(flat.data(), {n, p.dim});
                 },
                 "Convert this path to an (n_waypoints, dimension) numpy array.");
 
@@ -386,13 +326,12 @@ namespace vamp::binding
             .def("skip", &vj::DynamicSampler::skip, "n"_a, "Skip the next n samples.")
             .def(
                 "next",
-                [](vj::DynamicSampler &s) -> nb::ndarray<nb::numpy, float, nb::device::cpu>
+                [](vj::DynamicSampler &s)
                 {
                     const auto dim = s.robot->dimension();
-                    auto *buf = new float[dim];
-                    s.next(buf);
-                    nb::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
-                    return nb::ndarray<nb::numpy, float, nb::device::cpu>(buf, {dim}, owner);
+                    std::vector<float> out(dim);
+                    s.next(out.data());
+                    return vamp::binding::make_ndarray<1>(out.data(), {dim});
                 },
                 "Sample the next configuration.");
 
@@ -408,7 +347,7 @@ namespace vamp::binding
                     auto *xptr = as_config(x, dim, scratch, "x");
                     std::vector<float> out(dim);
                     p.transform(xptr, out.data());
-                    return vec_to_ndarray(out);
+                    return vamp::binding::make_ndarray<1>(out.data(), {dim});
                 },
                 "x"_a)
             .def(
@@ -420,7 +359,7 @@ namespace vamp::binding
                     auto *xptr = as_config(x, dim, scratch, "x");
                     std::vector<float> out(dim);
                     p.transform(xptr, out.data());
-                    return vec_to_ndarray(out);
+                    return vamp::binding::make_ndarray<1>(out.data(), {dim});
                 },
                 "x"_a);
 
@@ -446,10 +385,10 @@ namespace vamp::binding
                     "Minimum and maximum radii sizes of robot spheres.")
                 .def(
                     "upper_bounds",
-                    [](const vj::DynamicRobot &self) { return vec_to_ndarray(self.upper_bounds()); })
+                    [](const vj::DynamicRobot &self) { { const auto &b = self.upper_bounds(); return vamp::binding::make_ndarray<1>(b.data(), {b.size()}); } })
                 .def(
                     "lower_bounds",
-                    [](const vj::DynamicRobot &self) { return vec_to_ndarray(self.lower_bounds()); });
+                    [](const vj::DynamicRobot &self) { { const auto &b = self.lower_bounds(); return vamp::binding::make_ndarray<1>(b.data(), {b.size()}); } });
 
         // Per-planner overloads: list × {single, multi} and ndarray × {single, multi}.
         // Each lambda just normalises inputs and calls vamp::jit::solve / solve_multi.

@@ -3,6 +3,8 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
+#include <vamp/bindings/python/array_helpers.hh>
+
 #include <vamp/planning/phs.hh>
 #include <vamp/random/rng.hh>
 #include <vamp/random/halton.hh>
@@ -70,16 +72,11 @@ namespace vamp::binding
 
         inline static auto from(const Configuration &c) -> Type
         {
-            auto *arr = new FloatT[Robot::dimension];
             auto c_arr = c.to_array();
-            for (auto i = 0U; i < Robot::dimension; ++i)
-            {
-                arr[i] = c_arr[i];
-            }
-
-            nanobind::capsule arr_owner(
-                arr, [](void *a) noexcept { delete[] reinterpret_cast<FloatT *>(a); });
-            return Type(arr, {Robot::dimension}, arr_owner);
+            // make_ndarray returns nb::ndarray<numpy, float, cpu>; Type
+            // additionally specifies nb::shape<dim>, which is shape-compatible
+            // so the conversion is a no-op at runtime.
+            return make_ndarray<Type, 1>(c_arr.data(), {Robot::dimension});
         };
 
         inline static auto to(const Type &a) -> Configuration
@@ -90,23 +87,25 @@ namespace vamp::binding
         inline static auto array(const Type &a) -> ConfigurationArray
         {
             ConfigurationArray c;
-            for (auto i = 0U; i < Robot::dimension; ++i)
-            {
-                c[i] = a(i);
-            }
-
+            std::vector<float> scratch;
+            const auto *ptr = as_flat_1d(a, Robot::dimension, scratch, "configuration");
+            std::memcpy(c.data(), ptr, Robot::dimension * sizeof(float));
             return c;
         };
 
         template <std::size_t rake>
         inline static auto block(const Type &a) -> ConfigurationBlock<rake>
         {
+            // block() broadcasts a scalar per-DoF into a rake-wide row via
+            // FloatVector's row-assign operator (`out[i] = scalar`). The
+            // stride-aware read of `a` is delegated to as_flat_1d.
             ConfigurationBlock<rake> out;
+            std::vector<float> scratch;
+            const auto *ptr = as_flat_1d(a, Robot::dimension, scratch, "configuration");
             for (auto i = 0U; i < Robot::dimension; ++i)
             {
-                out[i] = a(i);
+                out[i] = ptr[i];
             }
-
             return out;
         }
     };

@@ -8,6 +8,7 @@
 #include <vamp/jit/ffi.hh>
 #include <vamp/planning/plan.hh>
 #include <vamp/planning/planner.hh>
+#include <vamp/planning/simplify_settings.hh>
 
 #include <Eigen/Dense>
 

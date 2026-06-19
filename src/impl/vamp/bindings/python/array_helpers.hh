@@ -44,7 +44,8 @@ namespace vamp::binding
         auto *buf = new float[total];
         std::memcpy(buf, data, total * sizeof(float));
         nb_::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
-        return NDArray(buf, shape, owner);
+        // nanobind's ndarray ctor takes (data, ndim, shape_ptr, owner).
+        return NDArray(buf, Ndim, shape.data(), owner);
     }
 
     template <std::size_t Ndim>

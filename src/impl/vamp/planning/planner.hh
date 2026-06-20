@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <cstddef>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -15,45 +17,43 @@ namespace vamp::planning
         GRRTSTAR,
     };
 
-    inline auto planner_name(Planner p) -> std::string_view
+    struct PlannerDescriptor
     {
-        switch (p)
-        {
-            case Planner::RRTC:
-                return "rrtc";
-            case Planner::PRM:
-                return "prm";
-            case Planner::FCIT:
-                return "fcit";
-            case Planner::AORRTC:
-                return "aorrtc";
-            case Planner::GRRTSTAR:
-                return "grrtstar";
-        }
-        return "";
+        std::string_view name;
+        std::string_view class_name;
+        std::string_view settings_class;
+        std::string_view header;
+        std::string_view settings_header;
+    };
+
+    inline constexpr std::array<PlannerDescriptor, 5> PLANNERS = {{
+        {"rrtc", "RRTC", "RRTCSettings", "rrtc.hh", "rrtc_settings.hh"},
+        {"prm", "PRM", "RoadmapSettings<vamp::planning::PRMStarNeighborParams>", "prm.hh", "roadmap.hh"},
+        {"fcit", "FCIT", "RoadmapSettings<vamp::planning::FCITStarNeighborParams>", "fcit.hh", "roadmap.hh"},
+        {"aorrtc", "AORRTC", "AORRTCSettings", "aorrtc.hh", "aorrtc_settings.hh"},
+        {"grrtstar", "GRRTStar", "GRRTStarSettings", "grrtstar.hh", "grrtstar_settings.hh"},
+    }};
+
+    inline constexpr std::size_t N_PLANNERS = PLANNERS.size();
+
+    constexpr auto planner_descriptor(Planner p) -> const PlannerDescriptor &
+    {
+        return PLANNERS[static_cast<std::size_t>(p)];
+    }
+
+    constexpr auto planner_name(Planner p) -> std::string_view
+    {
+        return planner_descriptor(p).name;
     }
 
     inline auto planner_from_name(std::string_view name) -> Planner
     {
-        if (name == "rrtc")
+        for (std::size_t i = 0; i < PLANNERS.size(); ++i)
         {
-            return Planner::RRTC;
-        }
-        if (name == "prm")
-        {
-            return Planner::PRM;
-        }
-        if (name == "fcit")
-        {
-            return Planner::FCIT;
-        }
-        if (name == "aorrtc")
-        {
-            return Planner::AORRTC;
-        }
-        if (name == "grrtstar")
-        {
-            return Planner::GRRTSTAR;
+            if (PLANNERS[i].name == name)
+            {
+                return static_cast<Planner>(i);
+            }
         }
         throw std::runtime_error("vamp::planning: unknown planner '" + std::string(name) + "'");
     }

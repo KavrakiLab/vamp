@@ -226,9 +226,10 @@ namespace vamp::binding
             -> bool
         {
             std::vector<float> scratch;
-            return self.validate(
+            return vj::validate(
+                self,
                 ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"),
-                static_cast<const void *>(&env),
+                env,
                 check_bounds);
         }
 
@@ -240,10 +241,11 @@ namespace vamp::binding
             bool check_bounds) -> bool
         {
             std::vector<float> s_in, s_out;
-            return self.validate_motion(
+            return vj::validate_motion(
+                self,
                 ConfigInput::as_ptr(c_in, self.dimension(), s_in, "configuration_in"),
                 ConfigInput::as_ptr(c_out, self.dimension(), s_out, "configuration_out"),
-                static_cast<const void *>(&env),
+                env,
                 check_bounds);
         }
 

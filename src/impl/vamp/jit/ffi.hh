@@ -54,36 +54,25 @@ namespace vamp::jit::ffi
     using DebugDestroyFn = void (*)(DebugHandle *);
 
     using EefkFn = void (*)(const float *config, float *out_matrix);
-
-    // Sphere FK. Writes 4 * n_spheres floats (x, y, z, r per sphere).
     using FkFn = void (*)(const float *config, float *out_spheres);
+    using ValidateFn = std::int32_t (*)(const float *config, const void *env_ptr, std::int32_t check_bounds);
+    using ValidateMotionFn = std::int32_t (
+            *)(const float *c_in, const float *c_out, const void *env_ptr, std::int32_t check_bounds);
 
-    // Single / pairwise validity check. Returns 1 if valid, 0 if not.
-    using ValidateFn =
-        std::int32_t (*)(const float *config, const void *env_ptr, std::int32_t check_bounds);
-    using ValidateMotionFn = std::int32_t (*)(const float *c_in,
-                                              const float *c_out,
-                                              const void *env_ptr,
-                                              std::int32_t check_bounds);
+    using FilterPointcloudFn = void (*)(
+        const float *points_in,
+        std::uint64_t n_points,
+        float point_radius,
+        const float *config,
+        const void *env_ptr,
+        void *out_filtered);
 
-    // Pointcloud self-filter. `out_filtered` is a host-owned
-    // std::vector<vamp::collision::Point>* (== vector<array<float,3>>).
-    using FilterPointcloudFn = void (*)(const float *points_in,
-                                        std::uint64_t n_points,
-                                        float point_radius,
-                                        const float *config,
-                                        const void *env_ptr,
-                                        void *out_filtered);
-
-    // Static per-robot metadata getters. None take a config; they're queried
-    // once at DynamicRobot construction and cached host-side.
     using SpaceMeasureFn = float (*)();
     using MinMaxRadiiFn = void (*)(float *out_min, float *out_max);
     using NSpheresFn = std::uint64_t (*)();
-    using BoundsFn = void (*)(float *out);              // dim floats
-    using JointNamesFn = void (*)(void *out_strings);   // std::vector<std::string>*
+    using BoundsFn = void (*)(float *out);
+    using JointNamesFn = void (*)(void *out_strings);
 
-    // Prolate hyperspheroid + PHS-based sampler factory.
     using PhsNewFn = PhsHandle *(*)(const float *focus_a, const float *focus_b);
     using PhsDestroyFn = void (*)(PhsHandle *);
     using PhsSetDiameterFn = void (*)(PhsHandle *, float diameter);

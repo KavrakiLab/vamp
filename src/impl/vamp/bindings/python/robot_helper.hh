@@ -26,6 +26,7 @@
 #include <vamp/planning/aorrtc.hh>
 #include <vamp/planning/grrtstar.hh>
 #include <vamp/vector.hh>
+#include <vamp/utils.hh>
 
 #include <nanobind/nanobind.h>
 #include <nanobind/make_iterator.h>
@@ -37,23 +38,9 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/ndarray.h>
 
-#define DEFINE_HAS_METHOD(method_name)                                                                       \
-    template <typename T, typename = void>                                                                   \
-    struct has_##method_name : std::false_type                                                               \
-    {                                                                                                        \
-    };                                                                                                       \
-                                                                                                             \
-    template <typename T>                                                                                    \
-    struct has_##method_name<T, std::void_t<decltype(T::method_name)>> : std::true_type                      \
-    {                                                                                                        \
-    };                                                                                                       \
-                                                                                                             \
-    template <typename T>                                                                                    \
-    constexpr bool has_##method_name##_v = has_##method_name<T>::value;
-
-DEFINE_HAS_METHOD(set_lows)
-DEFINE_HAS_METHOD(set_highs)
-DEFINE_HAS_METHOD(set_radius)
+VAMP_DEFINE_HAS_METHOD(set_lows)
+VAMP_DEFINE_HAS_METHOD(set_highs)
+VAMP_DEFINE_HAS_METHOD(set_radius)
 
 namespace vamp::binding
 {
@@ -515,18 +502,22 @@ namespace vamp::binding
                 "numpy",
                 [](const Path &p) noexcept
                 {
-                    auto *path_arr = new FloatT
-                        [Robot::dimension * p.size() +
-                         (Robot::Configuration::num_scalars_rounded - Robot::dimension)];
-                    for (auto i = 0U; i < p.size(); ++i)
-                    {
-                        p[i].to_array_unaligned(path_arr + i * Robot::dimension);
-                    }
-
-                    nb::capsule arr_owner(
-                        path_arr, [](void *a) noexcept { delete[] reinterpret_cast<FloatT *>(a); });
-                    return nb::ndarray<nb::numpy, const FloatT, nb::device::cpu>(
-                        path_arr, {p.size(), Robot::dimension}, arr_owner);
+                    using ND = nb::ndarray<nb::numpy, const FloatT, nb::device::cpu>;
+                    // Extra slop so the last to_array_unaligned write of the
+                    // tail Configuration can safely run past `dimension` —
+                    // FloatVector::num_scalars_rounded includes SIMD padding.
+                    const std::size_t slop =
+                        Robot::Configuration::num_scalars_rounded - Robot::dimension;
+                    return make_ndarray_filled<ND, 2>(
+                        {p.size(), Robot::dimension},
+                        [&](FloatT *dst)
+                        {
+                            for (auto i = 0U; i < p.size(); ++i)
+                            {
+                                p[i].to_array_unaligned(dst + i * Robot::dimension);
+                            }
+                        },
+                        slop);
                 },
                 "Convert this path to a numpy matrix.");
 

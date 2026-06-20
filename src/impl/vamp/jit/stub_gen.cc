@@ -11,38 +11,10 @@
 
 namespace vamp::jit
 {
-    namespace
-    {
-        struct PlannerDescriptor
-        {
-            std::string_view name;
-            std::string_view class_name;
-            std::string_view settings_class;
-            std::string_view header;
-            std::string_view settings_header;
-        };
-
-        constexpr PlannerDescriptor planner_table[] = {
-            {"rrtc", "RRTC", "RRTCSettings", "rrtc.hh", "rrtc_settings.hh"},
-            {"prm", "PRM", "RoadmapSettings<vamp::planning::PRMStarNeighborParams>", "prm.hh", "roadmap.hh"},
-            {"fcit",
-             "FCIT",
-             "RoadmapSettings<vamp::planning::FCITStarNeighborParams>",
-             "fcit.hh",
-             "roadmap.hh"},
-            {"aorrtc", "AORRTC", "AORRTCSettings", "aorrtc.hh", "aorrtc_settings.hh"},
-            {"grrtstar", "GRRTStar", "GRRTStarSettings", "grrtstar.hh", "grrtstar_settings.hh"},
-        };
-
-        constexpr auto descriptor(vamp::planning::Planner p) -> const PlannerDescriptor &
-        {
-            return planner_table[static_cast<std::size_t>(p)];
-        }
-    }  // namespace
-
     auto planner_symbol(vamp::planning::Planner p, std::string_view suffix) -> std::string
     {
-        return std::string("vamp_jit_") + std::string(descriptor(p).name) + "_" + std::string(suffix);
+        return std::string("vamp_jit_") + std::string(vamp::planning::planner_name(p)) + "_" +
+               std::string(suffix);
     }
 
     auto robot_symbol(const std::string &robot_name, std::string_view suffix) -> std::string
@@ -78,14 +50,11 @@ namespace vamp::jit
             {"resolution", opts.resolution},
         };
 
-        out << env.render(std::string(embedded::sampler_stub), base);
-        out << env.render(std::string(embedded::simplify_stub), base);
-        out << env.render(std::string(embedded::debug_stub), base);
-        out << env.render(std::string(embedded::phs_stub), base);
+        out << env.render(std::string(embedded::robot_stub), base);
 
         for (auto p : opts.planners)
         {
-            const auto &d = descriptor(p);
+            const auto &d = vamp::planning::planner_descriptor(p);
             nlohmann::json data = base;
             data["planner_name"] = std::string(d.name);
             data["planner_class"] = std::string(d.class_name);

@@ -51,10 +51,7 @@ if(VAMP_BUILD_JIT)
   # Embed the JIT stub templates
   foreach(stub IN ITEMS
       preamble:VAMP_JIT_PREAMBLE
-      sampler_stub:VAMP_JIT_SAMPLER_STUB
-      simplify_stub:VAMP_JIT_SIMPLIFY_STUB
-      debug_stub:VAMP_JIT_DEBUG_STUB
-      phs_stub:VAMP_JIT_PHS_STUB
+      robot_stub:VAMP_JIT_ROBOT_STUB
       planner_stub:VAMP_JIT_PLANNER_STUB
   )
     string(REPLACE ":" ";" stub "${stub}")

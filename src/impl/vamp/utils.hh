@@ -5,6 +5,20 @@
 #include <utility>
 #include <cstdint>
 
+#define VAMP_DEFINE_HAS_METHOD(method_name)                                                                       \
+    template <typename T, typename = void>                                                                   \
+    struct has_##method_name : std::false_type                                                               \
+    {                                                                                                        \
+    };                                                                                                       \
+                                                                                                             \
+    template <typename T>                                                                                    \
+    struct has_##method_name<T, std::void_t<decltype(T::method_name)>> : std::true_type                      \
+    {                                                                                                        \
+    };                                                                                                       \
+                                                                                                             \
+    template <typename T>                                                                                    \
+    constexpr bool has_##method_name##_v = has_##method_name<T>::value;
+
 namespace vamp::utils
 {
     inline constexpr auto round_size(std::size_t size, std::size_t block) noexcept -> std::size_t

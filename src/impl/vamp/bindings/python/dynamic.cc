@@ -174,28 +174,41 @@ namespace vamp::binding
                     p.waypoints.insert(p.waypoints.cbegin() + i, std::vector<float>(ptr, ptr + p.dim));
                 },
                 "Insert a configuration at index i.")
-            .def("cost", &vj::DynamicPath::cost,
-                 "Compute the total path length (by the l2-norm) of the path.")
-            .def("subdivide", &vj::DynamicPath::subdivide,
-                 "Subdivide the path by inserting a configuration at the midpoint of every segment.")
-            .def("interpolate_to_n_states", &vj::DynamicPath::interpolate_to_n_states,
-                 "n"_a, "Refine the path by interpolating to n states as evenly as possible.")
-            .def("interpolate_to_resolution", &vj::DynamicPath::interpolate_to_resolution,
-                 "resolution"_a, "Refine the path by interpolating segments up to the given resolution.")
-            .def("validate", &vj::DynamicPath::validate,
-                 "environment"_a, "Validate the path in an environment.")
+            .def(
+                "cost", &vj::DynamicPath::cost, "Compute the total path length (by the l2-norm) of the path.")
+            .def(
+                "subdivide",
+                &vj::DynamicPath::subdivide,
+                "Subdivide the path by inserting a configuration at the midpoint of every segment.")
+            .def(
+                "interpolate_to_n_states",
+                &vj::DynamicPath::interpolate_to_n_states,
+                "n"_a,
+                "Refine the path by interpolating to n states as evenly as possible.")
+            .def(
+                "interpolate_to_resolution",
+                &vj::DynamicPath::interpolate_to_resolution,
+                "resolution"_a,
+                "Refine the path by interpolating segments up to the given resolution.")
+            .def(
+                "validate",
+                &vj::DynamicPath::validate,
+                "environment"_a,
+                "Validate the path in an environment.")
             .def(
                 "numpy",
                 [](const vj::DynamicPath &p)
                 {
                     const auto n = p.waypoints.size();
-                    std::vector<float> flat(n * p.dim);
-                    for (std::size_t i = 0; i < n; ++i)
-                    {
-                        std::memcpy(
-                            flat.data() + i * p.dim, p.waypoints[i].data(), p.dim * sizeof(float));
-                    }
-                    return make_ndarray<2>(flat.data(), {n, p.dim});
+                    return make_ndarray_filled<2>(
+                        {n, p.dim},
+                        [&](float *dst)
+                        {
+                            for (std::size_t i = 0; i < n; ++i)
+                            {
+                                std::memcpy(dst + i * p.dim, p.waypoints[i].data(), p.dim * sizeof(float));
+                            }
+                        });
                 },
                 "Convert this path to an (n_waypoints, dimension) numpy array.");
 
@@ -205,8 +218,10 @@ namespace vamp::binding
             .def_prop_ro("solved", &vj::DynamicPlanResult::solved, "Returns true if solution found.")
             .def_ro("path", &vj::DynamicPlanResult::path, "The solution path, if found.")
             .def_ro("nanoseconds", &vj::DynamicPlanResult::nanoseconds, "Nanoseconds taken to find the path.")
-            .def_ro("iterations", &vj::DynamicPlanResult::iterations,
-                    "Number of planner iterations used to find the path.");
+            .def_ro(
+                "iterations",
+                &vj::DynamicPlanResult::iterations,
+                "Number of planner iterations used to find the path.");
 
         // ---- DynamicSampler -----------------------------------------------
         nb::class_<vj::DynamicSampler>(pymodule, "DynamicSampler")
@@ -223,15 +238,10 @@ namespace vamp::binding
                 },
                 "Sample the next configuration.");
 
-        // ---- DynamicPhs ----------------------------------------------------
-        // transform() registered via VJF_MF below to pick up list + ndarray.
-        auto phs_klass = nb::class_<vj::DynamicPhs>(pymodule, "DynamicPhs")
-                             .def("set_transverse_diameter",
-                                  &vj::DynamicPhs::set_transverse_diameter,
-                                  "diameter"_a);
+        auto phs_klass =
+            nb::class_<vj::DynamicPhs>(pymodule, "DynamicPhs")
+                .def("set_transverse_diameter", &vj::DynamicPhs::set_transverse_diameter, "diameter"_a);
         VJF_MF(phs_klass, "transform", phs_transform, "x"_a);
-
-        // ---- DynamicRobot --------------------------------------------------
 
         using PRMSettings = vp::RoadmapSettings<vp::PRMStarNeighborParams>;
         using FCITSettings = vp::RoadmapSettings<vp::FCITStarNeighborParams>;
@@ -241,10 +251,11 @@ namespace vamp::binding
                 .def_prop_ro("dimension", &vj::DynamicRobot::dimension)
                 .def_prop_ro("rake", &vj::DynamicRobot::rake)
                 .def_prop_ro("n_spheres", &vj::DynamicRobot::n_spheres)
-                .def_prop_ro("space_measure", &vj::DynamicRobot::space_measure,
-                             "Measure of robot's C-space.")
-                .def_prop_ro("joint_names", &vj::DynamicRobot::joint_names,
-                             "Joint names for the robot in order of DoF.")
+                .def_prop_ro("space_measure", &vj::DynamicRobot::space_measure, "Measure of robot's C-space.")
+                .def_prop_ro(
+                    "joint_names",
+                    &vj::DynamicRobot::joint_names,
+                    "Joint names for the robot in order of DoF.")
                 .def(
                     "min_max_radii",
                     [](const vj::DynamicRobot &self) -> std::pair<float, float>
@@ -265,41 +276,74 @@ namespace vamp::binding
                         return make_ndarray<1>(b.data(), {b.size()});
                     });
 
-        // ---- Planners (single + multi × list + ndarray) -------------------
         VJF_PLANNER(klass, "rrtc", vp::Planner::RRTC, vp::RRTCSettings);
         VJF_PLANNER(klass, "prm", vp::Planner::PRM, PRMSettings);
         VJF_PLANNER(klass, "fcit", vp::Planner::FCIT, FCITSettings);
         VJF_PLANNER(klass, "aorrtc", vp::Planner::AORRTC, vp::AORRTCSettings);
         VJF_PLANNER(klass, "grrtstar", vp::Planner::GRRTSTAR, vp::GRRTStarSettings);
 
-        // ---- Introspection / validation / filter / PHS factory / simplify -
-        // Each registered once via VJF_MF and gets both list + ndarray
-        // overloads from DHV / DHN.
-        VJF_MF(klass, "fk", fk, "configuration"_a,
-               "Computes the forward kinematics of the robot (JIT). Returns spheres.");
-        VJF_MF(klass, "eefk", eefk, "configuration"_a,
-               "End-effector forward kinematics. Returns a 4x4 transform (JIT).");
-        VJF_MF(klass, "debug", debug,
-               "configuration"_a, "environment"_a = default_env,
-               "Check which spheres of a robot configuration are in collision (JIT).");
-        VJF_MF(klass, "validate", validate,
-               "configuration"_a, "environment"_a = default_env, "check_bounds"_a = false,
-               "Check if a configuration is valid (JIT).");
-        VJF_MF(klass, "validate_motion", validate_motion,
-               "configuration_in"_a, "configuration_out"_a,
-               "environment"_a = default_env, "check_bounds"_a = true,
-               "Check if a configuration-to-configuration motion is valid (JIT).");
-        VJF_MF(klass, "filter_self_from_pointcloud", filter_self_from_pointcloud,
-               "pc"_a, "point_radius"_a, "configuration"_a, "environment"_a = default_env,
-               "Filters points colliding with the robot or environment (JIT).");
-        VJF_MF(klass, "phs", make_phs, "focus_a"_a, "focus_b"_a,
-               "Construct a prolate hyperspheroid from two foci.");
-        VJF_MF(klass, "simplify", simplify,
-               "path"_a, "environment"_a, "settings"_a, "sampler"_a,
-               "JIT'd path simplification.");
+        VJF_MF(
+            klass,
+            "fk",
+            fk,
+            "configuration"_a,
+            "Computes the forward kinematics of the robot (JIT). Returns spheres.");
+        VJF_MF(
+            klass,
+            "eefk",
+            eefk,
+            "configuration"_a,
+            "End-effector forward kinematics. Returns a 4x4 transform (JIT).");
+        VJF_MF(
+            klass,
+            "debug",
+            debug,
+            "configuration"_a,
+            "environment"_a = default_env,
+            "Check which spheres of a robot configuration are in collision (JIT).");
+        VJF_MF(
+            klass,
+            "validate",
+            validate,
+            "configuration"_a,
+            "environment"_a = default_env,
+            "check_bounds"_a = false,
+            "Check if a configuration is valid (JIT).");
+        VJF_MF(
+            klass,
+            "validate_motion",
+            validate_motion,
+            "configuration_in"_a,
+            "configuration_out"_a,
+            "environment"_a = default_env,
+            "check_bounds"_a = true,
+            "Check if a configuration-to-configuration motion is valid (JIT).");
+        VJF_MF(
+            klass,
+            "filter_self_from_pointcloud",
+            filter_self_from_pointcloud,
+            "pc"_a,
+            "point_radius"_a,
+            "configuration"_a,
+            "environment"_a = default_env,
+            "Filters points colliding with the robot or environment (JIT).");
+        VJF_MF(
+            klass,
+            "phs",
+            make_phs,
+            "focus_a"_a,
+            "focus_b"_a,
+            "Construct a prolate hyperspheroid from two foci.");
+        VJF_MF(
+            klass,
+            "simplify",
+            simplify,
+            "path"_a,
+            "environment"_a,
+            "settings"_a,
+            "sampler"_a,
+            "JIT'd path simplification.");
 
-        // simplify also accepts DynamicPath directly (delegate to the helper
-        // since DynamicPath isn't one of the templated input flavours).
         klass.def(
             "simplify",
             [](std::shared_ptr<vj::DynamicRobot> self,
@@ -308,10 +352,12 @@ namespace vamp::binding
                const vp::SimplifySettings &settings,
                vj::DynamicSampler &sampler)
             { return DHV::simplify(self, path.waypoints, env, settings, sampler); },
-            "path"_a, "environment"_a, "settings"_a, "sampler"_a,
+            "path"_a,
+            "environment"_a,
+            "settings"_a,
+            "sampler"_a,
             "JIT'd path simplification (DynamicPath input).");
 
-        // ---- Sampler factories --------------------------------------------
         klass.def(
             "halton",
             [](std::shared_ptr<vj::DynamicRobot> self) { return vj::make_halton_sampler(std::move(self)); },
@@ -324,14 +370,12 @@ namespace vamp::binding
             "Create an XORShift sampler for this robot.");
         klass.def(
             "phs_sampler",
-            [](std::shared_ptr<vj::DynamicRobot> self,
-               const vj::DynamicPhs &phs,
-               vj::DynamicSampler &inner)
+            [](std::shared_ptr<vj::DynamicRobot> self, const vj::DynamicPhs &phs, vj::DynamicSampler &inner)
             { return vj::make_phs_sampler(std::move(self), phs, inner); },
-            "phs"_a, "rng"_a,
+            "phs"_a,
+            "rng"_a,
             "Create a new PHS-rejection sampler wrapping an inner RNG.");
 
-        // ---- load_robot ----------------------------------------------------
         pymodule.def(
             "load_robot",
             [](const std::string &urdf,
@@ -376,7 +420,7 @@ namespace vamp::binding
             "planners"_a = std::vector<std::string>{"rrtc"},
             "rake"_a = 8,
             "resolution"_a = 32,
-            "name"_a = std::string("DynRobot"),
-            "JIT-compile a robot from a URDF and return a DynamicRobot handle.");
+            "name"_a = std::string("DynamicRobot"),
+            "JIT-compile a robot from a URDF.");
     }
 }  // namespace vamp::binding

@@ -55,6 +55,41 @@ namespace vamp::binding
         return make_ndarray<nb_::ndarray<nb_::numpy, float, nb_::device::cpu>, Ndim>(data, shape);
     }
 
+    // Same as make_ndarray, but the caller fills the freshly-allocated buffer
+    // in-place via `fill(float* dst)` — avoids the extra copy you'd otherwise
+    // need (build a std::vector<float>, fill it, then memcpy into make_ndarray).
+    //
+    // `extra_slop` lets the static side over-allocate by a few floats so a
+    // SIMD-width write past the logical end (e.g. FloatVector's
+    // `to_array_unaligned` writing a full SIMD lane) stays in-bounds. The
+    // ndarray itself still reports the original `shape`.
+    template <typename NDArray, std::size_t Ndim, typename FillFn>
+    inline auto make_ndarray_filled(
+        std::array<std::size_t, Ndim> shape,
+        FillFn &&fill,
+        std::size_t extra_slop = 0) -> NDArray
+    {
+        std::size_t total = 1;
+        for (auto s : shape)
+        {
+            total *= s;
+        }
+        auto *buf = new float[total + extra_slop];
+        fill(buf);
+        nb_::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
+        return NDArray(buf, Ndim, shape.data(), owner);
+    }
+
+    template <std::size_t Ndim, typename FillFn>
+    inline auto make_ndarray_filled(
+        std::array<std::size_t, Ndim> shape,
+        FillFn &&fill,
+        std::size_t extra_slop = 0) -> nb_::ndarray<nb_::numpy, float, nb_::device::cpu>
+    {
+        return make_ndarray_filled<nb_::ndarray<nb_::numpy, float, nb_::device::cpu>, Ndim>(
+            shape, std::forward<FillFn>(fill), extra_slop);
+    }
+
     // Read a 1-D nanobind ndarray as a const float*. If the array is
     // unit-stride we return the underlying pointer (zero-copy view);
     // otherwise we flatten into `scratch`. Caller keeps `scratch` alive

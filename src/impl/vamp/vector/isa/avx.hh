@@ -437,6 +437,7 @@ namespace vamp
         {
             return _mm256_max_ps(v, other);
         }
+
         template <unsigned int = 0>
         inline static constexpr auto min(VectorT v, VectorT other) noexcept -> VectorT
         {
@@ -551,6 +552,7 @@ namespace vamp
 
             return y;
         }
+
         template <unsigned int = 0>
         inline static constexpr auto asin(VectorT x) noexcept -> VectorT
         {
@@ -559,14 +561,14 @@ namespace vamp
 
             // Cephes coefficients
             const auto ps_425 = constant(0.5f);
-            const auto ps_1   = constant(1.0f);
-            const auto ps_pi2 = constant(1.5707963267948966f); // pi/2
+            const auto ps_1 = constant(1.0f);
+            const auto ps_pi2 = constant(1.5707963267948966f);  // pi/2
 
-            const auto ps_A0 = constant( 4.2163199048E-2f);
-            const auto ps_A1 = constant( 2.4181311049E-2f);
-            const auto ps_A2 = constant( 4.5470025998E-2f);
-            const auto ps_A3 = constant( 7.4953002686E-2f);
-            const auto ps_A4 = constant( 1.6666752422E-1f);
+            const auto ps_A0 = constant(4.2163199048E-2f);
+            const auto ps_A1 = constant(2.4181311049E-2f);
+            const auto ps_A2 = constant(4.5470025998E-2f);
+            const auto ps_A3 = constant(7.4953002686E-2f);
+            const auto ps_A4 = constant(1.6666752422E-1f);
 
             auto sign_bit = and_(x, ps_sign_mask);
             auto a = abs(x);
@@ -612,20 +614,17 @@ namespace vamp
         template <unsigned int = 0>
         inline static constexpr auto acos(VectorT x) noexcept -> VectorT
         {
-
             const auto ps_cephes_morebits = constant(6.123233995736765886130E-17);
 
-            const auto ps_05 = constant(0.5); // 0.5
-            const auto ps_cephes_pi4 = constant(7.85398163397448309616E-1); // pi/4
-            const auto ps_2 = constant(2.0f); // 0.5
-
+            const auto ps_05 = constant(0.5);                                // 0.5
+            const auto ps_cephes_pi4 = constant(7.85398163397448309616E-1);  // pi/4
+            const auto ps_2 = constant(2.0f);                                // 0.5
 
             auto z = mul(ps_05, x);
             z = sub(ps_05, z);
             z = _mm256_sqrt_ps(z);
             z = asin(z);
             z = mul(ps_2, z);
-
 
             auto z2 = asin(x);
             z2 = sub(ps_cephes_pi4, z2);
@@ -638,26 +637,25 @@ namespace vamp
             z = add(z, z2);
 
             return z;
-
         }
+
         template <unsigned int = 0>
         inline static auto atan(VectorT x) noexcept -> VectorT
         {
-
             const auto ps_cephes_P0 = constant(-8.750608600031904122785E-1f);
             const auto ps_cephes_P1 = constant(-1.615753718733365076637E1f);
             const auto ps_cephes_P2 = constant(-7.500855792314704667340E1f);
             const auto ps_cephes_P3 = constant(-1.228866684490136173410E2f);
             const auto ps_cephes_P4 = constant(-6.485021904942025371773E1f);
 
-            const auto ps_cephes_Q0 = constant( 2.485846490142306297962E1f);
-            const auto ps_cephes_Q1 = constant( 1.650270098316988542046E2f);
-            const auto ps_cephes_Q2 = constant( 4.328810604912902668951E2f);
-            const auto ps_cephes_Q3 = constant( 4.853903996359136964868E2f);
-            const auto ps_cephes_Q4 = constant( 1.945506571482613964425E2f);
+            const auto ps_cephes_Q0 = constant(2.485846490142306297962E1f);
+            const auto ps_cephes_Q1 = constant(1.650270098316988542046E2f);
+            const auto ps_cephes_Q2 = constant(4.328810604912902668951E2f);
+            const auto ps_cephes_Q3 = constant(4.853903996359136964868E2f);
+            const auto ps_cephes_Q4 = constant(1.945506571482613964425E2f);
 
-            const auto ps_0      = constant(0.0f);
-            const auto ps_1      = constant(1.0f);
+            const auto ps_0 = constant(0.0f);
+            const auto ps_1 = constant(1.0f);
 
             // tan(pi/8)
             const auto ps_tan_pi8 = constant(0.41421356237309504880f);
@@ -672,11 +670,10 @@ namespace vamp
             // sign extraction
             //--------------------------------------------------------
 
-            const __m256 sign_mask =
-                _mm256_castsi256_ps(_mm256_set1_epi32(0x80000000));
+            const __m256 sign_mask = _mm256_castsi256_ps(_mm256_set1_epi32(0x80000000));
 
             auto sign_bit = _mm256_and_ps(x, sign_mask);
-            auto a        = abs(x);
+            auto a = abs(x);
 
             //--------------------------------------------------------
             // range reduction
@@ -685,7 +682,7 @@ namespace vamp
             //--------------------------------------------------------
 
             auto gt_3pi8 = cmp_greater_than(a, ps_tan_3pi8);
-            auto gt_pi8  = cmp_greater_than(a, ps_tan_pi8);
+            auto gt_pi8 = cmp_greater_than(a, ps_tan_pi8);
 
             auto mid_mask = _mm256_andnot_ps(gt_3pi8, gt_pi8);
 
@@ -731,12 +728,11 @@ namespace vamp
             return z;
         }
 
-
         template <unsigned int = 0>
         inline static auto atan2(VectorT y, VectorT x) noexcept -> VectorT
         {
             const auto ps_zero = constant(0.0f);
-            const auto ps_pi   = constant(3.14159265358979323846f);
+            const auto ps_pi = constant(3.14159265358979323846f);
             const auto ps_pi_2 = constant(1.57079632679489661923f);
 
             auto z = atan(div(y, x));
@@ -782,7 +778,7 @@ namespace vamp
             z = blend(z, ps_zero, both_zero);
 
             return z;
-        }        
+        }
 
         // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
         template <unsigned int = 0>

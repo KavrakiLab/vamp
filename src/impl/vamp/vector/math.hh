@@ -33,7 +33,6 @@ inline constexpr auto cos(const DataT &v) -> DataT
 template <typename DataT>
 inline constexpr auto sqrt(const DataT &v) -> DataT
 {
-
     if constexpr (std::is_arithmetic_v<DataT>)
     {
         return std::sqrt(v);
@@ -42,9 +41,7 @@ inline constexpr auto sqrt(const DataT &v) -> DataT
     {
         return v.sqrt();
     }
-
 }
-
 
 template <typename DataT, typename DataTB>
 inline constexpr auto max(const DataT &x, const DataTB &y) -> DataT
@@ -59,11 +56,11 @@ inline constexpr auto min(const DataT &x, const DataTB &y) -> DataT
 }
 
 template <typename DataA, typename DataB, typename DataC>
-inline constexpr auto blend(const DataA &a, const DataB &b, const DataC &mask ) -> DataC
+inline constexpr auto blend(const DataA &a, const DataB &b, const DataC &mask) -> DataC
 {
     if constexpr (std::is_arithmetic_v<DataC>)
     {
-        return (mask >=0) ? a:b;
+        return (mask >= 0) ? a : b;
     }
     else
     {
@@ -76,7 +73,6 @@ inline constexpr auto blend(const DataA &a, const DataB &b, const DataC &mask ) 
 template <typename DataT>
 inline constexpr auto asin(const DataT &v) -> DataT
 {
-
     if constexpr (std::is_arithmetic_v<DataT>)
     {
         return std::asin(v);
@@ -85,13 +81,11 @@ inline constexpr auto asin(const DataT &v) -> DataT
     {
         return v.asin();
     }
-
 }
 
 template <typename DataT>
 inline constexpr auto acos(const DataT &v) -> DataT
 {
-
     if constexpr (std::is_arithmetic_v<DataT>)
     {
         return std::acos(v);
@@ -100,13 +94,11 @@ inline constexpr auto acos(const DataT &v) -> DataT
     {
         return v.acos();
     }
-
 }
 
 template <typename DataT>
 inline constexpr auto atan(const DataT &v) -> DataT
 {
-
     if constexpr (std::is_arithmetic_v<DataT>)
     {
         return std::atan(v);
@@ -115,13 +107,11 @@ inline constexpr auto atan(const DataT &v) -> DataT
     {
         return v.atan();
     }
-
 }
 
 template <typename DataT>
 inline constexpr auto atan2(const DataT &y, const DataT &x) -> DataT
 {
-
     if constexpr (std::is_arithmetic_v<DataT>)
     {
         return std::atan2(y, x);
@@ -130,9 +120,7 @@ inline constexpr auto atan2(const DataT &y, const DataT &x) -> DataT
     {
         return y.atan2(x);
     }
-
 }
-
 
 template <typename DataT>
 inline static auto to_isometry(const DataT *buf) -> Eigen::Transform<DataT, 3, Eigen::Isometry>

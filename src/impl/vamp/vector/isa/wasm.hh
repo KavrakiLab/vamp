@@ -1,23 +1,70 @@
 #pragma once
 
 #include <initializer_list>
-#if not defined(__ARM_NEON)
-#error "Tried to compile NEON intrinsics on non-ARM platform!"
+#if not defined(__EMSCRIPTEN__)
+#error "Tried to compile WASM SIMD intrinsics on non-Emscripten platform!"
 #endif
 
 #include <cstdint>
 
 #include <vamp/vector/interface.hh>
 
-#include <arm_neon.h>
+#include <wasm_simd128.h>
 #include <limits>
 
 namespace vamp
 {
-    template <>
-    struct SIMDVector<int32x4_t>
+    // WASM SIMD uses v128_t for all vector types
+    // We create separate type aliases to distinguish float vs int vectors
+    struct WasmIntVec
     {
-        using VectorT = int32x4_t;
+        v128_t v;
+
+        inline WasmIntVec operator+(WasmIntVec other) const noexcept
+        {
+            return {wasm_i32x4_add(v, other.v)};
+        }
+
+        inline WasmIntVec operator-(WasmIntVec other) const noexcept
+        {
+            return {wasm_i32x4_sub(v, other.v)};
+        }
+
+        inline WasmIntVec operator*(WasmIntVec other) const noexcept
+        {
+            return {wasm_i32x4_mul(v, other.v)};
+        }
+    };
+
+    struct WasmFloatVec
+    {
+        v128_t v;
+
+        inline WasmFloatVec operator+(WasmFloatVec other) const noexcept
+        {
+            return {wasm_f32x4_add(v, other.v)};
+        }
+
+        inline WasmFloatVec operator-(WasmFloatVec other) const noexcept
+        {
+            return {wasm_f32x4_sub(v, other.v)};
+        }
+
+        inline WasmFloatVec operator*(WasmFloatVec other) const noexcept
+        {
+            return {wasm_f32x4_mul(v, other.v)};
+        }
+
+        inline WasmFloatVec operator/(WasmFloatVec other) const noexcept
+        {
+            return {wasm_f32x4_div(v, other.v)};
+        }
+    };
+
+    template <>
+    struct SIMDVector<WasmIntVec>
+    {
+        using VectorT = WasmIntVec;
         using ScalarT = int32_t;
         static constexpr std::size_t VectorWidth = 4;
         static constexpr std::size_t Alignment = 16;
@@ -25,67 +72,69 @@ namespace vamp
         template <unsigned int = 0>
         inline static auto extract(VectorT v, int idx) noexcept -> ScalarT
         {
-            return ((int *)(&v))[idx];
+            alignas(16) int32_t arr[4];
+            wasm_v128_store(arr, v.v);
+            return arr[idx];
         }
 
         template <unsigned int = 0>
-        inline static constexpr auto constant(ScalarT v) noexcept -> VectorT
+        inline static constexpr auto constant(ScalarT val) noexcept -> VectorT
         {
-            return vdupq_n_s32(v);
+            return {wasm_i32x4_splat(val)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto sub(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vsubq_s32(l, r);
+            return {wasm_i32x4_sub(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto add(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vaddq_s32(l, r);
+            return {wasm_i32x4_add(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto mul(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vmulq_s32(l, r);
+            return {wasm_i32x4_mul(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto bitneg(VectorT l) noexcept -> VectorT
         {
-            return vreinterpretq_s32_u32(vmvnq_u32(vreinterpretq_u32_s32(l)));  // maybe a reverse is needed
+            return {wasm_v128_not(l.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_s32_u32(vceqq_s32(l, r));
+            return {wasm_i32x4_eq(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_not_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_s32_u32(vmvnq_u32(vceqq_s32(l, r)));
+            return {wasm_v128_not(wasm_i32x4_eq(l.v, r.v))};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_greater_than(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_s32_u32(vcgeq_s32(l, r));
+            return {wasm_i32x4_gt(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto and_(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_s32_u32(vandq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r)));
+            return {wasm_v128_and(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto or_(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_s32_u32(vorrq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r)));
+            return {wasm_v128_or(l.v, r.v)};
         }
 
         template <std::size_t... I>
@@ -101,7 +150,7 @@ namespace vamp
         template <ScalarT i>
         inline static constexpr auto lshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vshlq_n_s32(v, i);
+            return {wasm_i32x4_shl(v.v, i)};
         }
 
         template <unsigned int = 0>
@@ -125,7 +174,7 @@ namespace vamp
         template <ScalarT i>
         inline static constexpr auto rshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vshrq_n_s32(v, i);
+            return {wasm_i32x4_shr(v.v, i)};
         }
 
         template <unsigned int = 0>
@@ -137,79 +186,67 @@ namespace vamp
         template <unsigned int = 0>
         inline static auto zero_vector() noexcept -> VectorT
         {
-            return vmovq_n_s32(0);
+            return {wasm_i32x4_splat(0)};
         }
 
         template <unsigned int = 0>
         inline static auto test_zero(VectorT l, VectorT r) noexcept -> unsigned int
         {
-            auto andlr = vandq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r));
-            auto horizor = vorr_u32(vget_low_u32(andlr), vget_high_u32(andlr));
-            uint32x2_t mask = {0x80000000, 0x80000000};
-            auto test = vand_u32(horizor, mask);
-            return (vget_lane_u32(test, 0) || vget_lane_u32(test, 1)) == 0;
+            // Match NEON semantics: check only sign bits (0x80000000)
+            // Returns true if no sign bits are set (all values non-negative)
+            auto andlr = wasm_v128_and(l.v, r.v);
+            auto sign_mask = wasm_i32x4_splat(static_cast<int32_t>(0x80000000));
+            auto sign_bits = wasm_v128_and(andlr, sign_mask);
+            return !wasm_v128_any_true(sign_bits);
         }
 
         template <unsigned int = 0>
         inline static auto load(const ScalarT *const i) noexcept -> VectorT
         {
-            return vld1q_s32((const int32_t *const)i);
+            return {wasm_v128_load(i)};
         }
 
         template <unsigned int = 0>
         inline static auto load_unaligned(const ScalarT *const i) noexcept -> VectorT
         {
-            // NOTE: The same instruction seems to do double-duty for ARM?
-            return vld1q_s32((const int32_t *const)i);
+            return {wasm_v128_load(i)};
         }
 
         template <unsigned int = 0>
         inline static auto store(ScalarT *i, VectorT v) noexcept -> void
         {
-            return vst1q_s32(i, v);
+            wasm_v128_store(i, v.v);
         }
 
         template <unsigned int = 0>
         inline static auto store_unaligned(ScalarT *i, VectorT v) noexcept -> void
         {
-            return vst1q_s32(i, v);
+            wasm_v128_store(i, v.v);
         }
 
         template <unsigned int = 0>
         inline static constexpr auto blend(VectorT a, VectorT b, VectorT blend_mask) noexcept -> VectorT
         {
-            return vbslq_s32(vreinterpretq_u32_s32(blend_mask), b, a);
+            return {wasm_v128_bitselect(b.v, a.v, blend_mask.v)};
         }
 
         template <unsigned int = 0>
         inline static auto mask(VectorT v) noexcept -> unsigned int
         {
-            auto MSB = vsliq_n_u32(vdupq_n_u32(0), vreinterpretq_u32_s32(v), 16);
-            auto sumtwo = vreinterpret_u32_u16(
-                vpadd_u16(vreinterpret_u16_u32(vget_low_u32(MSB)), vreinterpret_u16_u32(vget_high_u32(MSB))));
-            auto attempt = vreinterpret_u16_u32(sumtwo);
-            auto attempt2 = vreinterpret_u8_u16(attempt);
-            auto reorg = vshrn_n_u16(vreinterpretq_u16_u8(vcombine_u8(attempt2, attempt2)), 8);
-            return vget_lane_u32(vreinterpret_u32_u8(reorg), 0);
-            // IT MAY NEED A REVERSE vrev32_u8
-            // vget_lane_u32(vreinterpret_u32_u8(vrev32_u8(reorg)), 0);
+            return wasm_i32x4_bitmask(v.v);
         }
 
         template <typename = void>
-        inline static constexpr auto gather(int32x4_t idxs, const ScalarT *base) noexcept -> VectorT
+        inline static constexpr auto gather(WasmIntVec idxs, const ScalarT *base) noexcept -> VectorT
         {
-            // Pretty sure there isn't a better way to do a 32-bit lookup table...
-            int32x4_t result = vdupq_n_s32(0);
-            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 0)], result, 0);
-            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 1)], result, 1);
-            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 2)], result, 2);
-            result = vsetq_lane_s32(base[vgetq_lane_s32(idxs, 3)], result, 3);
-            return result;
+            alignas(16) int32_t idx_arr[4];
+            wasm_v128_store(idx_arr, idxs.v);
+            return {wasm_i32x4_make(base[idx_arr[0]], base[idx_arr[1]], base[idx_arr[2]], base[idx_arr[3]])};
         }
 
         template <typename = void>
         inline static constexpr auto
-        gather_select(int32x4_t idxs, VectorT mask, VectorT alternative, const ScalarT *base) noexcept
+        gather_select(WasmIntVec idxs, VectorT mask, VectorT alternative, const ScalarT *base) noexcept
             -> VectorT
         {
             auto overlay = gather(idxs, base);
@@ -219,9 +256,9 @@ namespace vamp
         template <typename OtherVectorT>
         inline static constexpr auto to(VectorT v) noexcept -> OtherVectorT
         {
-            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
+            if constexpr (std::is_same_v<OtherVectorT, WasmFloatVec>)
             {
-                return vcvtq_f32_s32(v);
+                return {wasm_f32x4_convert_i32x4(v.v)};
             }
             else
             {
@@ -232,9 +269,9 @@ namespace vamp
         template <typename OtherVectorT>
         inline static constexpr auto from(OtherVectorT v) noexcept -> VectorT
         {
-            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
+            if constexpr (std::is_same_v<OtherVectorT, WasmFloatVec>)
             {
-                return vcvtq_s32_f32(v);
+                return {wasm_i32x4_trunc_sat_f32x4(v.v)};
             }
             else
             {
@@ -245,9 +282,9 @@ namespace vamp
         template <typename OtherVectorT>
         inline static constexpr auto as(VectorT v) noexcept -> OtherVectorT
         {
-            if constexpr (std::is_same_v<OtherVectorT, float32x4_t>)
+            if constexpr (std::is_same_v<OtherVectorT, WasmFloatVec>)
             {
-                return vreinterpretq_f32_s32(v);
+                return {v.v};  // Reinterpret cast - same bits
             }
             else
             {
@@ -257,63 +294,61 @@ namespace vamp
     };
 
     template <>
-    struct SIMDVector<float32x4_t>
+    struct SIMDVector<WasmFloatVec>
     {
-        using VectorT = float32x4_t;
-        using ScalarT = float32_t;
+        using VectorT = WasmFloatVec;
+        using ScalarT = float;
         static constexpr std::size_t VectorWidth = 4;
         static constexpr std::size_t Alignment = 16;
 
         template <unsigned int = 0>
         inline static auto constant(ScalarT v) noexcept -> VectorT
         {
-            return vdupq_n_f32(v);
+            return {wasm_f32x4_splat(v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto constant_int(unsigned int v) noexcept -> VectorT
         {
-            return vcvtq_f32_s32(vdupq_n_s32(v));
+            return {wasm_f32x4_convert_i32x4(wasm_i32x4_splat(v))};
         }
 
         template <unsigned int = 0>
         inline static auto load(const ScalarT *const f) noexcept -> VectorT
         {
-            return vld1q_f32(f);
+            return {wasm_v128_load(f)};
         }
 
         template <unsigned int = 0>
         inline static auto load_unaligned(const ScalarT *const f) noexcept -> VectorT
         {
-            // NOTE: The same instruction seems to do double-duty for ARM?
-            return vld1q_f32(f);
+            return {wasm_v128_load(f)};
         }
 
         template <unsigned int = 0>
         inline static auto store(ScalarT *f, VectorT v) noexcept -> void
         {
-            return vst1q_f32(f, v);
+            wasm_v128_store(f, v.v);
         }
 
         template <unsigned int = 0>
         inline static auto store_unaligned(ScalarT *f, VectorT v) noexcept -> void
         {
-            return vst1q_f32(f, v);
+            wasm_v128_store(f, v.v);
         }
 
         template <unsigned int = 0>
         inline static auto extract(VectorT v, int idx) noexcept -> ScalarT
         {
-            return v[idx];
+            alignas(16) float arr[4];
+            wasm_v128_store(arr, v.v);
+            return arr[idx];
         }
 
-        // C++ is so dumb. We have to do this (unless someone has a cleverer idea) because (1) vdupq_laneq_f32
-        // is a macro and the preprocessor hates commas and (2) you can't use the usual parenthesis trick f or
-        // commas with parameter packs, apparently
         template <std::size_t idx>
         inline static constexpr auto broadcast_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vdupq_laneq_f32(v, idx);
+            return {wasm_i32x4_shuffle(v.v, v.v, idx, idx, idx, idx)};
         }
 
         template <std::size_t... I>
@@ -332,142 +367,128 @@ namespace vamp
             return broadcast_lookup(v, lane, std::make_index_sequence<VectorWidth>());
         }
 
-        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
         template <unsigned int = 0>
         inline static constexpr auto bitneg(VectorT l) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vmvnq_u32(vreinterpretq_u32_f32(l)));  // maybe a reverse is needed
+            return {wasm_v128_not(l.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto neg(VectorT l) noexcept -> VectorT
         {
-            return vreinterpretq_f32_s32(veorq_s32(
-                vreinterpretq_s32_f32(l),
-                vreinterpretq_s32_f32(vdupq_n_f32(-0.0))));  // maybe a reverse is needed
+            return {wasm_f32x4_neg(l.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto add(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vaddq_f32(l, r);
+            return {wasm_f32x4_add(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto sub(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vsubq_f32(l, r);
+            return {wasm_f32x4_sub(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto mul(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vmulq_f32(l, r);
+            return {wasm_f32x4_mul(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_less_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vcleq_f32(l, r));
+            return {wasm_f32x4_le(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_less_than(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vcltq_f32(l, r));
+            return {wasm_f32x4_lt(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_greater_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vcgeq_f32(l, r));
+            return {wasm_f32x4_ge(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_greater_than(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vcgtq_f32(l, r));
+            return {wasm_f32x4_gt(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vceqq_f32(l, r));
+            return {wasm_f32x4_eq(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto cmp_not_equal(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vmvnq_u32(vceqq_f32(l, r)));
+            return {wasm_f32x4_ne(l.v, r.v)};
         }
 
-        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
         template <unsigned int = 0>
         inline static auto floor(VectorT v) noexcept -> VectorT
         {
-            return vrndmq_f32(v);
+            return {wasm_f32x4_floor(v.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto div(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vdivq_f32(l, r);
+            return {wasm_f32x4_div(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto rcp(VectorT l) noexcept -> VectorT
         {
-            auto s = vrecpeq_f32(l);
-            auto p = vrecpsq_f32(l, s);
-            return vmulq_f32(s, p);
+            return {wasm_f32x4_div(wasm_f32x4_splat(1.0f), l.v)};
         }
 
         template <unsigned int = 0>
         inline static auto mask(VectorT v) noexcept -> unsigned int
         {
-            auto MSB = vsliq_n_u32(vdupq_n_u32(0), vreinterpretq_u32_f32(v), 16);
-            auto sumtwo = vreinterpret_u32_u16(
-                vpadd_u16(vreinterpret_u16_u32(vget_low_u32(MSB)), vreinterpret_u16_u32(vget_high_u32(MSB))));
-            auto attempt = vreinterpret_u16_u32(sumtwo);
-            auto attempt2 = vreinterpret_u8_u16(attempt);
-            auto reorg = vshrn_n_u16(vreinterpretq_u16_u8(vcombine_u8(attempt2, attempt2)), 8);
-            return vget_lane_u32(vreinterpret_u32_u8(reorg), 0);
-            // IT MAY NEED A REVERSE vrev32_u8
-            // vget_lane_u32(vreinterpret_u32_u8(vrev32_u8(reorg)), 0);
+            return wasm_i32x4_bitmask(v.v);
         }
 
         template <unsigned int = 0>
         inline static auto zero_vector() noexcept -> VectorT
         {
-            return vmovq_n_f32(0.0f);
+            return {wasm_f32x4_splat(0.0f)};
         }
 
         template <unsigned int = 0>
         inline static auto test_zero(VectorT l, VectorT r) noexcept -> unsigned int
         {
-            auto andlr = vandq_u32(vreinterpretq_u32_f32(l), vreinterpretq_u32_f32(r));
-            auto horizor = vorr_u32(vget_low_u32(andlr), vget_high_u32(andlr));
-            uint32x2_t mask = {0x80000000, 0x80000000};
-            auto test = vand_u32(horizor, mask);
-            return (vget_lane_u32(test, 0) || vget_lane_u32(test, 1)) == 0;
+            // Returns true if no sign bits are set (all values non-negative)
+            auto andlr = wasm_v128_and(l.v, r.v);
+            auto sign_mask = wasm_i32x4_splat(static_cast<int32_t>(0x80000000));
+            auto sign_bits = wasm_v128_and(andlr, sign_mask);
+            return !wasm_v128_any_true(sign_bits);
         }
 
         template <unsigned int = 0>
         inline static constexpr auto abs(VectorT v) noexcept -> VectorT
         {
-            return vabsq_f32(v);
+            return {wasm_f32x4_abs(v.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto and_(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vandq_u32(vreinterpretq_u32_f32(l), vreinterpretq_u32_f32(r)));
+            return {wasm_v128_and(l.v, r.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto or_(VectorT l, VectorT r) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vorrq_u32(vreinterpretq_u32_f32(l), vreinterpretq_u32_f32(r)));
+            return {wasm_v128_or(l.v, r.v)};
         }
 
         template <std::size_t... I>
@@ -483,7 +504,7 @@ namespace vamp
         template <unsigned int i>
         inline static constexpr auto lshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vshlq_n_u32(vreinterpretq_u32_f32(v), i));
+            return {wasm_i32x4_shl(v.v, i)};
         }
 
         template <unsigned int = 0>
@@ -507,7 +528,7 @@ namespace vamp
         template <unsigned int i>
         inline static constexpr auto rshift_dispatch(VectorT v) noexcept -> VectorT
         {
-            return vreinterpretq_f32_u32(vshrq_n_u32(vreinterpretq_u32_f32(v), i));
+            return {wasm_u32x4_shr(v.v, i)};
         }
 
         template <unsigned int = 0>
@@ -519,32 +540,34 @@ namespace vamp
         template <unsigned int = 0>
         inline static constexpr auto sqrt(VectorT v) noexcept -> VectorT
         {
-            return vsqrtq_f32(v);
+            return {wasm_f32x4_sqrt(v.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto clamp(VectorT v, VectorT lower, VectorT upper) noexcept -> VectorT
         {
-            return vminq_f32(vmaxq_f32(v, lower), upper);
+            return {wasm_f32x4_min(wasm_f32x4_max(v.v, lower.v), upper.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto max(VectorT v, VectorT other) noexcept -> VectorT
         {
-            return vmaxq_f32(v, other);
+            return {wasm_f32x4_max(v.v, other.v)};
         }
 
         template <unsigned int = 0>
         inline static constexpr auto hsum(VectorT v) noexcept -> float
         {
-            return vaddvq_f32(v);
+            alignas(16) float arr[4];
+            wasm_v128_store(arr, v.v);
+            return arr[0] + arr[1] + arr[2] + arr[3];
         }
 
-        // converted from http://gruntthepeon.free.fr/ssemath/neon_mathfun.html
+        // Converted from http://gruntthepeon.free.fr/ssemath/neon_mathfun.html
         template <unsigned int = 0>
         inline static constexpr auto sin(VectorT x) noexcept -> VectorT
         {
-            using IntVector = SIMDVector<int32x4_t>;
+            using IntVector = SIMDVector<WasmIntVec>;
 
             // Constants
             const auto c_cephes_FOPI = constant(1.27323954473516f);  // 4 / M_PI
@@ -562,10 +585,10 @@ namespace vamp
 
             auto y = mul(x, c_cephes_FOPI);
 
-            auto emm2 = to<int32x4_t>(y);
+            auto emm2 = to<WasmIntVec>(y);
             emm2 = IntVector::add(emm2, IntVector::constant(1));
             emm2 = IntVector::and_(emm2, IntVector::constant(~1));
-            y = from<int32x4_t>(emm2);
+            y = from<WasmIntVec>(emm2);
 
             auto poly_mask = IntVector::and_(emm2, IntVector::constant(2));
             poly_mask = IntVector::cmp_not_equal(poly_mask, IntVector::zero_vector());
@@ -580,9 +603,7 @@ namespace vamp
             // Update sign mask
             auto temp_mask = IntVector::and_(emm2, IntVector::constant(4));
             temp_mask = IntVector::cmp_not_equal(temp_mask, IntVector::zero_vector());
-            sign_mask_sin = vreinterpretq_f32_u32(veorq_u32(
-                vreinterpretq_u32_f32(sign_mask_sin),
-                vreinterpretq_u32_f32(IntVector::template as<VectorT>(temp_mask))));
+            sign_mask_sin.v = wasm_v128_xor(sign_mask_sin.v, IntVector::template as<VectorT>(temp_mask).v);
 
             // Evaluate polynomials
             auto z = mul(x, x);
@@ -611,92 +632,103 @@ namespace vamp
             return blend(ys, neg(ys), sign_mask_sin);
         }
 
-        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
         template <unsigned int = 0>
         inline static constexpr auto log(VectorT x) noexcept -> VectorT
         {
-            using IntVector = SIMDVector<int32x4_t>;
+            using IntVector = SIMDVector<WasmIntVec>;
 
             const auto half = constant(0.5F);
             const auto one = constant(1.0F);
             auto invalid_mask = cmp_less_equal(x, zero_vector());
 
-            // cut off denormalized values
-            x = max(x, vreinterpretq_f32_u32(vdupq_n_u32(0x00800000u)));
+            // Cut off denormalized values
+            x.v = wasm_f32x4_max(x.v, wasm_f32x4_convert_i32x4(wasm_i32x4_splat(0x00800000)));
 
             auto emm0 = IntVector::shift_right(as<IntVector::VectorT>(x), 23);
 
-            x = and_(x, vreinterpretq_f32_u32(vdupq_n_u32(~0x7f800000u)));
+            x = and_(x, VectorT{wasm_f32x4_convert_i32x4(wasm_i32x4_splat(~0x7f800000))});
             x = or_(x, half);
 
-            // keep only the fractional part
+            // Keep only the fractional part
             emm0 = IntVector::sub(emm0, IntVector::constant(0x7f));
             auto e = from<IntVector::VectorT>(emm0);
 
             e = add(e, one);
 
-            // compute approx
-            auto mask = cmp_less_than(x, constant(0.707106781186547524f));
-            auto tmp = and_(x, mask);
+            // Compute approx
+            auto mask_cmp = cmp_less_than(x, constant(0.707106781186547524f));
+            auto tmp = and_(x, mask_cmp);
             x = sub(x, one);
-            e = sub(e, and_(one, mask));
+            e = sub(e, and_(one, mask_cmp));
             x = add(x, tmp);
 
             auto z = mul(x, x);
 
-            auto y = constant(7.0376836292E-2f);
-            y = mul(y, x);
-            y = add(y, constant(-1.1514610310E-1f));
-            y = mul(y, x);
-            y = add(y, constant(1.1676998740E-1f));
-            y = mul(y, x);
-            y = add(y, constant(-1.2420140846E-1f));
-            y = mul(y, x);
-            y = add(y, constant(+1.4249322787E-1f));
-            y = mul(y, x);
-            y = add(y, constant(-1.6668057665E-1f));
-            y = mul(y, x);
-            y = add(y, constant(+2.0000714765E-1f));
-            y = mul(y, x);
-            y = add(y, constant(-2.4999993993E-1f));
-            y = mul(y, x);
-            y = add(y, constant(+3.3333331174E-1f));
-            y = mul(y, mul(x, z));
+            auto y_val = constant(7.0376836292E-2f);
+            y_val = mul(y_val, x);
+            y_val = add(y_val, constant(-1.1514610310E-1f));
+            y_val = mul(y_val, x);
+            y_val = add(y_val, constant(1.1676998740E-1f));
+            y_val = mul(y_val, x);
+            y_val = add(y_val, constant(-1.2420140846E-1f));
+            y_val = mul(y_val, x);
+            y_val = add(y_val, constant(+1.4249322787E-1f));
+            y_val = mul(y_val, x);
+            y_val = add(y_val, constant(-1.6668057665E-1f));
+            y_val = mul(y_val, x);
+            y_val = add(y_val, constant(+2.0000714765E-1f));
+            y_val = mul(y_val, x);
+            y_val = add(y_val, constant(-2.4999993993E-1f));
+            y_val = mul(y_val, x);
+            y_val = add(y_val, constant(+3.3333331174E-1f));
+            y_val = mul(y_val, mul(x, z));
             tmp = mul(e, constant(-2.12194440e-4f));
-            y = add(y, tmp);
+            y_val = add(y_val, tmp);
             tmp = mul(z, half);
-            y = sub(y, tmp);
+            y_val = sub(y_val, tmp);
             tmp = mul(e, constant(0.693359375f));
-            x = add(x, add(y, tmp));
+            x = add(x, add(y_val, tmp));
 
-            x = or_(x, invalid_mask);  // negative arg will be NAN
+            x = or_(x, invalid_mask);  // Negative arg will be NAN
             return x;
         }
 
         template <unsigned int = 0>
         inline static constexpr auto blend(VectorT a, VectorT b, VectorT blend_mask) noexcept -> VectorT
         {
-            return vbslq_f32(vreinterpretq_u32_f32(blend_mask), b, a);
+            return {wasm_v128_bitselect(b.v, a.v, blend_mask.v)};
         }
 
-        // HACK: We only ever use this for trim() and pack_and_pad, and ARM makes it hard to go from
-        // a scalar mask to an appropriate vector mask for vbslq. So, we special-case for the values
-        // we could possibly get
+        // Special-case blend for trim() and pack_and_pad
         template <unsigned int blend_mask>
         inline static constexpr auto blend_constant(VectorT a, VectorT b) noexcept -> VectorT
         {
             if constexpr (blend_mask == 8)
             {
-                return vbslq_f32(vcombine_u32(vcreate_u32(0l), vcreate_u32(0xffffffff00000000)), b, a);
+                // Blend last element only
+                return {wasm_v128_bitselect(
+                    b.v, a.v, wasm_i32x4_make(0, 0, 0, static_cast<int32_t>(0xffffffff)))};
             }
             else if constexpr (blend_mask == 12)
             {
-                return vbslq_f32(vcombine_u32(vcreate_u32(0l), vcreate_u32(0xffffffffffffffff)), b, a);
+                // Blend last two elements
+                return {wasm_v128_bitselect(
+                    b.v,
+                    a.v,
+                    wasm_i32x4_make(
+                        0, 0, static_cast<int32_t>(0xffffffff), static_cast<int32_t>(0xffffffff)))};
             }
             else if constexpr (blend_mask == 14)
             {
-                return vbslq_f32(
-                    vcombine_u32(vcreate_u32(0xffffffff00000000), vcreate_u32(0xffffffffffffffff)), b, a);
+                // Blend last three elements
+                return {wasm_v128_bitselect(
+                    b.v,
+                    a.v,
+                    wasm_i32x4_make(
+                        0,
+                        static_cast<int32_t>(0xffffffff),
+                        static_cast<int32_t>(0xffffffff),
+                        static_cast<int32_t>(0xffffffff)))};
             }
             else
             {
@@ -707,46 +739,43 @@ namespace vamp
         template <typename OtherVectorT>
         inline static constexpr auto to(VectorT v) noexcept -> OtherVectorT
         {
-            return vcvtq_s32_f32(v);
+            return {wasm_i32x4_trunc_sat_f32x4(v.v)};
         }
 
         template <typename OtherVectorT>
         inline static constexpr auto from(OtherVectorT v) noexcept -> VectorT
         {
-            return vcvtq_f32_s32(v);
+            return {wasm_f32x4_convert_i32x4(v.v)};
         }
 
         template <typename OtherVectorT>
         inline static constexpr auto as(VectorT v) noexcept -> OtherVectorT
         {
-            return vreinterpretq_s32_f32(v);
+            return {v.v};  // Reinterpret cast - same bits
         }
 
         template <typename OtherVectorT>
         inline auto map_to_range(OtherVectorT v) -> VectorT
         {
-            const auto v_1 = vandq_s32(v, vdupq_n_s32(1));
-            const auto v1_f = vcvtq_f32_s32(v_1);
-            const auto v_scaled = vaddq_f32(vcvtq_f32_s32(v), v1_f);
-            return vmulq_f32(
-                v_scaled, vdupq_n_f32(1.f / static_cast<float>(std::numeric_limits<unsigned int>::max())));
+            const auto v_1 = WasmIntVec{wasm_v128_and(v.v, wasm_i32x4_splat(1))};
+            const auto v1_f = wasm_f32x4_convert_i32x4(v_1.v);
+            const auto v_scaled = wasm_f32x4_add(wasm_f32x4_convert_i32x4(v.v), v1_f);
+            return {wasm_f32x4_mul(
+                v_scaled,
+                wasm_f32x4_splat(1.f / static_cast<float>(std::numeric_limits<unsigned int>::max())))};
         }
 
         template <typename = void>
-        inline static auto gather(int32x4_t idxs, const ScalarT *base) noexcept -> VectorT
+        inline static auto gather(WasmIntVec idxs, const ScalarT *base) noexcept -> VectorT
         {
-            // Pretty sure there isn't a better way to do a 32-bit lookup table...
-            float32x4_t result = vdupq_n_f32(0);
-            result = vsetq_lane_f32(base[vgetq_lane_s32(idxs, 0)], result, 0);
-            result = vsetq_lane_f32(base[vgetq_lane_s32(idxs, 1)], result, 1);
-            result = vsetq_lane_f32(base[vgetq_lane_s32(idxs, 2)], result, 2);
-            result = vsetq_lane_f32(base[vgetq_lane_s32(idxs, 3)], result, 3);
-            return result;
+            alignas(16) int32_t idx_arr[4];
+            wasm_v128_store(idx_arr, idxs.v);
+            return {wasm_f32x4_make(base[idx_arr[0]], base[idx_arr[1]], base[idx_arr[2]], base[idx_arr[3]])};
         }
 
         template <typename = void>
         inline static constexpr auto
-        gather_select(int32x4_t idxs, VectorT mask, VectorT alternative, const ScalarT *base) noexcept
+        gather_select(WasmIntVec idxs, VectorT mask, VectorT alternative, const ScalarT *base) noexcept
             -> VectorT
         {
             auto overlay = gather(idxs, base);

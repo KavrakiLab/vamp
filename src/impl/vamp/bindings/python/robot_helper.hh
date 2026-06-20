@@ -22,6 +22,7 @@
 #include <vamp/planning/fcit.hh>
 #include <vamp/planning/rrtc.hh>
 #include <vamp/planning/aorrtc.hh>
+#include <vamp/planning/grrtstar.hh>
 #include <vamp/vector.hh>
 
 #include <nanobind/nanobind.h>
@@ -230,6 +231,10 @@ namespace vamp::binding
         using AORRTC = PlannerHelper<
             vamp::planning::AORRTC<Robot, rake, Robot::resolution>,
             vamp::planning::AORRTCSettings>;
+
+        using GRRTStar = PlannerHelper<
+            vamp::planning::GRRTStar<Robot, rake, Robot::resolution>,
+            vamp::planning::GRRTStarSettings>;
 
         inline static auto fk(const Type &c_in) -> std::vector<vamp::collision::Sphere<float>>
         {
@@ -628,6 +633,7 @@ namespace vamp::binding
         PLANNER("prm", PRM, "PRM");
         PLANNER("fcit", FCIT, "FCIT");
         PLANNER("aorrtc", AORRTC, "AORRTC");
+        PLANNER("grrtstar", GRRTStar, "GRRTStar");
 
         if constexpr (has_set_lows_v<Robot>)
         {

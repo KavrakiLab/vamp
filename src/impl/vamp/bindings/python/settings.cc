@@ -3,6 +3,7 @@
 #include <vamp/planning/roadmap.hh>
 #include <vamp/planning/rrtc_settings.hh>
 #include <vamp/planning/aorrtc_settings.hh>
+#include <vamp/planning/grrtstar_settings.hh>
 #include <vamp/planning/simplify_settings.hh>
 
 #include <nanobind/stl/vector.h>
@@ -38,6 +39,28 @@ void vamp::binding::init_settings(nanobind::module_ &pymodule)
         .def_rw("max_internal_iterations", &vp::AORRTCSettings::max_internal_iterations)
         .def_rw("max_cost_bound_resamples", &vp::AORRTCSettings::max_cost_bound_resamples)
         .def_rw("max_samples", &vp::AORRTCSettings::max_samples);
+
+    nb::class_<vp::GRRTStarSettings>(pymodule, "GRRTStarSettings")
+        .def(nb::init<>())
+        .def_rw("range", &vp::GRRTStarSettings::range)
+        .def_rw("rewire_factor", &vp::GRRTStarSettings::rewire_factor)
+        .def_rw("greedy_biasing_ratio", &vp::GRRTStarSettings::greedy_biasing_ratio)
+        .def_rw("use_k_nearest", &vp::GRRTStarSettings::use_k_nearest)
+        .def_rw("max_k_neighbors", &vp::GRRTStarSettings::max_k_neighbors)
+        .def_rw("delay_cc", &vp::GRRTStarSettings::delay_cc)
+        .def_rw("balanced", &vp::GRRTStarSettings::balanced)
+        .def_rw("tree_ratio", &vp::GRRTStarSettings::tree_ratio)
+        .def_rw("use_phs", &vp::GRRTStarSettings::use_phs)
+        .def_rw("delay_rewiring", &vp::GRRTStarSettings::delay_rewiring)
+        .def_rw("dynamic_domain", &vp::GRRTStarSettings::dynamic_domain)
+        .def_rw("dd_radius", &vp::GRRTStarSettings::dd_radius)
+        .def_rw("dd_alpha", &vp::GRRTStarSettings::dd_alpha)
+        .def_rw("dd_min_radius", &vp::GRRTStarSettings::dd_min_radius)
+        .def_rw("tree_pruning", &vp::GRRTStarSettings::tree_pruning)
+        .def_rw("prune_threshold", &vp::GRRTStarSettings::prune_threshold)
+        .def_rw("optimize", &vp::GRRTStarSettings::optimize)
+        .def_rw("max_iterations", &vp::GRRTStarSettings::max_iterations)
+        .def_rw("max_samples", &vp::GRRTStarSettings::max_samples);
 
     // TODO: Redesign a neater form of RoadmapSettings/NeighborParams
     // TODO: Expose the other NeighborParams types

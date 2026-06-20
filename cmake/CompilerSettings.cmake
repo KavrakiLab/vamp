@@ -1,6 +1,9 @@
 # Allow users to override VAMP_ARCH (e.g., for Docker builds targeting different hardware)
 if(NOT DEFINED VAMP_ARCH)
-	if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+	if(EMSCRIPTEN)
+		# WebAssembly with SIMD128 support
+		set(VAMP_ARCH "-msimd128")
+	elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
 		# Need explicit AVX2 for some MacOS clang versions
 		set(VAMP_ARCH "-march=native -mavx2")
 	elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")

@@ -15,6 +15,7 @@ __all__ = [
     "FCITSettings",
     "FCITNeighborParams",
     "AORRTCSettings",
+    "GRRTStarSettings",
     "SimplifySettings",
     "SimplifyRoutine",
     "filter_pointcloud",
@@ -40,6 +41,7 @@ from ._core import RRTCSettings as RRTCSettings
 from ._core import FCITNeighborParams as FCITNeighborParams
 from ._core import FCITSettings as FCITSettings
 from ._core import AORRTCSettings as AORRTCSettings
+from ._core import GRRTStarSettings as GRRTStarSettings
 from ._core import SimplifyRoutine as SimplifyRoutine
 from ._core import SimplifySettings as SimplifySettings
 from ._core import filter_pointcloud as filter_pointcloud
@@ -90,6 +92,11 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
         plan_settings = AORRTCSettings()
         if robot_name in ROBOT_RRT_RANGES:
             plan_settings.rrtc.range = ROBOT_RRT_RANGES[robot_name]
+
+    elif planner_name == "grrtstar":
+        plan_settings = GRRTStarSettings()
+        if robot_name in ROBOT_RRT_RANGES:
+            plan_settings.range = ROBOT_RRT_RANGES[robot_name]
 
     else:
         raise NotImplementedError(f"Automatic setup for planner {planner_name} is not implemented yet!")

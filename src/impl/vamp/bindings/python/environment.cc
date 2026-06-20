@@ -1,5 +1,6 @@
 #include <vamp_python_init.hh>
 
+#include <vamp/collision/environment.hh>
 #include <vamp/collision/filter.hh>
 #include <vamp/collision/capt.hh>
 #include <vamp/collision/factory.hh>
@@ -52,7 +53,8 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
             [](vc::Cylinder<float> *q,
                const std::array<float, 3> &endpoint1,
                const std::array<float, 3> &endpoint2,
-               float radius) noexcept { *q = vf::cylinder::endpoints::array(endpoint1, endpoint2, radius); },
+               float radius) noexcept
+            { new (q) vc::Cylinder<float>(vf::cylinder::endpoints::array(endpoint1, endpoint2, radius)); },
             "Constructor from endpoints and radius.")
         .def_ro("x1", &vc::Cylinder<float>::x1)
         .def_ro("y1", &vc::Cylinder<float>::y1)
@@ -162,7 +164,14 @@ void vamp::binding::init_environment(nanobind::module_ &pymodule)
         .def(
             "attach",
             [](vc::Environment<float> &e, const vc::Attachment<float> &a) { e.attachments.emplace(a); })
-        .def("detach", [](vc::Environment<float> &e) { e.attachments.reset(); });
+        .def("detach", [](vc::Environment<float> &e) { e.attachments.reset(); })
+        .def_ro("spheres", &vc::Environment<float>::spheres)
+        .def_ro("cuboids", &vc::Environment<float>::cuboids)
+        .def_ro("z_aligned_cuboids", &vc::Environment<float>::z_aligned_cuboids)
+        .def_ro("capsules", &vc::Environment<float>::capsules)
+        .def_ro("z_aligned_capsules", &vc::Environment<float>::z_aligned_capsules)
+        .def_ro("heightfields", &vc::Environment<float>::heightfields)
+        .def_ro("pointclouds", &vc::Environment<float>::pointclouds);
 
     pymodule.def(
         "filter_pointcloud",

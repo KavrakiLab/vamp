@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  python-build:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -74,3 +74,22 @@ jobs:
 
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+  wasm-build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Emscripten
+      uses: mymindstorm/setup-emsdk@v15
+
+    - name: Configure CMake (WASM)
+      run: >
+        emcmake cmake -B build-wasm
+        -DCMAKE_BUILD_TYPE=Release
+        -DVAMP_BUILD_WASM=ON
+        -DVAMP_BUILD_PYTHON_BINDINGS=OFF
+
+    - name: Build WASM
+      run: cmake --build build-wasm

@@ -60,9 +60,6 @@ namespace vamp::binding
         inline static auto from(const Configuration &c) -> Type
         {
             auto c_arr = c.to_array();
-            // make_ndarray returns nb::ndarray<numpy, float, cpu>; Type
-            // additionally specifies nb::shape<dim>, which is shape-compatible
-            // so the conversion is a no-op at runtime.
             return make_ndarray<Type, 1>(c_arr.data(), {Robot::dimension});
         };
 
@@ -83,9 +80,6 @@ namespace vamp::binding
         template <std::size_t rake>
         inline static auto block(const Type &a) -> ConfigurationBlock<rake>
         {
-            // block() broadcasts a scalar per-DoF into a rake-wide row via
-            // FloatVector's row-assign operator (`out[i] = scalar`). The
-            // stride-aware read of `a` is delegated to as_flat_1d.
             ConfigurationBlock<rake> out;
             std::vector<float> scratch;
             const auto *ptr = as_flat_1d(a, Robot::dimension, scratch, "configuration");
@@ -503,11 +497,7 @@ namespace vamp::binding
                 [](const Path &p) noexcept
                 {
                     using ND = nb::ndarray<nb::numpy, const FloatT, nb::device::cpu>;
-                    // Extra slop so the last to_array_unaligned write of the
-                    // tail Configuration can safely run past `dimension` —
-                    // FloatVector::num_scalars_rounded includes SIMD padding.
-                    const std::size_t slop =
-                        Robot::Configuration::num_scalars_rounded - Robot::dimension;
+                    const std::size_t slop = Robot::Configuration::num_scalars_rounded - Robot::dimension;
                     return make_ndarray_filled<ND, 2>(
                         {p.size(), Robot::dimension},
                         [&](FloatT *dst)
@@ -553,7 +543,6 @@ namespace vamp::binding
             .def_ro(
                 "iterations", &HPN::Roadmap::iterations, "Number of iterations taken to construct roadmap.");
 
-        // Doesn't have an Array/NDArray interface, so only once
         submodule.def(
             "simplify",
             HPN::simplify,

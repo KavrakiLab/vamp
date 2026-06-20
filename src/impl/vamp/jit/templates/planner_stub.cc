@@ -38,8 +38,7 @@ extern "C" vamp::jit::ffi::PlanResultHandle *VAMP_JIT_FN_SOLVE(
     const auto &settings = *static_cast<const SettingsT *>(settings_ptr);
     auto rng = vamp_jit_robot::deref_sampler(sampler);
 
-    auto *wrapped =
-        new vamp_jit_robot::WrappedResult{PlannerT::solve(start, goal, env_rake, settings, rng)};
+    auto *wrapped = new vamp_jit_robot::WrappedResult{PlannerT::solve(start, goal, env_rake, settings, rng)};
     return reinterpret_cast<vamp::jit::ffi::PlanResultHandle *>(wrapped);
 }
 
@@ -66,15 +65,6 @@ extern "C" vamp::jit::ffi::PlanResultHandle *VAMP_JIT_FN_SOLVE_MULTI(
     const auto &settings = *static_cast<const SettingsT *>(settings_ptr);
     auto rng = vamp_jit_robot::deref_sampler(sampler);
 
-    auto *wrapped =
-        new vamp_jit_robot::WrappedResult{PlannerT::solve(start, goals, env_rake, settings, rng)};
+    auto *wrapped = new vamp_jit_robot::WrappedResult{PlannerT::solve(start, goals, env_rake, settings, rng)};
     return reinterpret_cast<vamp::jit::ffi::PlanResultHandle *>(wrapped);
 }
-
-#undef VAMP_JIT_PLANNER_NS
-#undef VAMP_JIT_PLANNER_CLASS
-#undef VAMP_JIT_SETTINGS_CLASS
-#undef VAMP_JIT_RAKE
-#undef VAMP_JIT_RESOLUTION
-#undef VAMP_JIT_FN_SOLVE
-#undef VAMP_JIT_FN_SOLVE_MULTI

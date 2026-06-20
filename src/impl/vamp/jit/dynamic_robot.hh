@@ -33,11 +33,6 @@ namespace vamp::jit
 
     auto default_load_options() -> LoadOptions;
 
-    // Resolved FFI entry points for one JIT'd robot.  All function pointers
-    // here are looked up from a single cricket::jit::JitSession at load time;
-    // calls go straight through without a map lookup.  result_meta / copy /
-    // destroy are shared across planners and simplify (the underlying
-    // PlanningResult<R> type doesn't depend on which planner produced it).
     struct RobotOps
     {
         struct PlannerEntry

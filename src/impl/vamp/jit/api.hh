@@ -74,10 +74,7 @@ namespace vamp::jit
             for (std::size_t i = 0; i + 1 < waypoints.size(); ++i)
             {
                 if (not ops.validate_motion(
-                        waypoints[i].data(),
-                        waypoints[i + 1].data(),
-                        static_cast<const void *>(&env),
-                        0))
+                        waypoints[i].data(), waypoints[i + 1].data(), static_cast<const void *>(&env), 0))
                 {
                     return false;
                 }
@@ -199,9 +196,6 @@ namespace vamp::jit
         return std::make_shared<DynamicSampler>(std::move(robot), h);
     }
 
-    // Drain a result handle: copy meta + waypoints into a DynamicPlanResult,
-    // then destroy the handle. Works uniformly for planner and simplify
-    // results since they share result_meta / result_copy_waypoint / result_destroy.
     inline auto drain_handle(std::shared_ptr<DynamicRobot> robot, ffi::PlanResultHandle *handle)
         -> DynamicPlanResult
     {

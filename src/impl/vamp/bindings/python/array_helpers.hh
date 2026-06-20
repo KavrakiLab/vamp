@@ -12,27 +12,10 @@
 #include <utility>
 #include <vector>
 
-// Small nanobind-ndarray helpers shared between the static robot bindings
-// (vamp/bindings/python/robot_helper.hh) and the JIT/dynamic bindings
-// (vamp/bindings/python/dynamic.cc). The shapes / scalar types vary across
-// call sites (static: nb::shape<dim>, dynamic: nb::ndim<N>), so these are
-// templated on the ndarray flavor and use ordinary scalar access (`a(i)`,
-// `a.data()`) that works for both.
-
 namespace vamp::binding
 {
-    namespace nb_ = nanobind;
+    namespace nb = nanobind;
 
-    // Wrap a flat float buffer in a capsule-owned numpy ndarray. The buffer
-    // is freshly heap-allocated and copied from `data`; the capsule's
-    // deleter frees it when Python drops the array.
-    //
-    // Two overloads:
-    //  - make_ndarray<Ndim>(data, shape) — returns the generic
-    //    nb::ndarray<numpy, float, cpu>, used by the dynamic bindings.
-    //  - make_ndarray<NDArray, Ndim>(data, shape) — returns the explicit
-    //    NDArray flavour (e.g. with nb::shape<Robot::dimension>) used by
-    //    the static bindings, where Configuration shape is template-known.
     template <typename NDArray, std::size_t Ndim>
     inline auto make_ndarray(const float *data, std::array<std::size_t, Ndim> shape) -> NDArray
     {
@@ -43,31 +26,21 @@ namespace vamp::binding
         }
         auto *buf = new float[total];
         std::memcpy(buf, data, total * sizeof(float));
-        nb_::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
-        // nanobind's ndarray ctor takes (data, ndim, shape_ptr, owner).
+        nb::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
         return NDArray(buf, Ndim, shape.data(), owner);
     }
 
     template <std::size_t Ndim>
     inline auto make_ndarray(const float *data, std::array<std::size_t, Ndim> shape)
-        -> nb_::ndarray<nb_::numpy, float, nb_::device::cpu>
+        -> nb::ndarray<nb::numpy, float, nb::device::cpu>
     {
-        return make_ndarray<nb_::ndarray<nb_::numpy, float, nb_::device::cpu>, Ndim>(data, shape);
+        return make_ndarray<nb::ndarray<nb::numpy, float, nb::device::cpu>, Ndim>(data, shape);
     }
 
-    // Same as make_ndarray, but the caller fills the freshly-allocated buffer
-    // in-place via `fill(float* dst)` — avoids the extra copy you'd otherwise
-    // need (build a std::vector<float>, fill it, then memcpy into make_ndarray).
-    //
-    // `extra_slop` lets the static side over-allocate by a few floats so a
-    // SIMD-width write past the logical end (e.g. FloatVector's
-    // `to_array_unaligned` writing a full SIMD lane) stays in-bounds. The
-    // ndarray itself still reports the original `shape`.
     template <typename NDArray, std::size_t Ndim, typename FillFn>
-    inline auto make_ndarray_filled(
-        std::array<std::size_t, Ndim> shape,
-        FillFn &&fill,
-        std::size_t extra_slop = 0) -> NDArray
+    inline auto
+    make_ndarray_filled(std::array<std::size_t, Ndim> shape, FillFn &&fill, std::size_t extra_slop = 0)
+        -> NDArray
     {
         std::size_t total = 1;
         for (auto s : shape)
@@ -76,30 +49,22 @@ namespace vamp::binding
         }
         auto *buf = new float[total + extra_slop];
         fill(buf);
-        nb_::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
+        nb::capsule owner(buf, [](void *p) noexcept { delete[] reinterpret_cast<float *>(p); });
         return NDArray(buf, Ndim, shape.data(), owner);
     }
 
     template <std::size_t Ndim, typename FillFn>
-    inline auto make_ndarray_filled(
-        std::array<std::size_t, Ndim> shape,
-        FillFn &&fill,
-        std::size_t extra_slop = 0) -> nb_::ndarray<nb_::numpy, float, nb_::device::cpu>
+    inline auto
+    make_ndarray_filled(std::array<std::size_t, Ndim> shape, FillFn &&fill, std::size_t extra_slop = 0)
+        -> nb::ndarray<nb::numpy, float, nb::device::cpu>
     {
-        return make_ndarray_filled<nb_::ndarray<nb_::numpy, float, nb_::device::cpu>, Ndim>(
+        return make_ndarray_filled<nb::ndarray<nb::numpy, float, nb::device::cpu>, Ndim>(
             shape, std::forward<FillFn>(fill), extra_slop);
     }
 
-    // Read a 1-D nanobind ndarray as a const float*. If the array is
-    // unit-stride we return the underlying pointer (zero-copy view);
-    // otherwise we flatten into `scratch`. Caller keeps `scratch` alive
-    // for as long as it uses the returned pointer.
     template <typename NDArray>
-    inline auto as_flat_1d(
-        const NDArray &a,
-        std::size_t dim,
-        std::vector<float> &scratch,
-        const char *what) -> const float *
+    inline auto as_flat_1d(const NDArray &a, std::size_t dim, std::vector<float> &scratch, const char *what)
+        -> const float *
     {
         if (a.shape(0) != dim)
         {
@@ -117,15 +82,10 @@ namespace vamp::binding
         return a.data();
     }
 
-    // Read a 2-D nanobind ndarray as (const float*, n_rows). C-contiguous
-    // input returns a zero-copy view; otherwise the rows are packed into
-    // `scratch` row-major.
     template <typename NDArray>
-    inline auto as_flat_2d(
-        const NDArray &a,
-        std::size_t inner_dim,
-        std::vector<float> &scratch,
-        const char *what) -> std::pair<const float *, std::uint64_t>
+    inline auto
+    as_flat_2d(const NDArray &a, std::size_t inner_dim, std::vector<float> &scratch, const char *what)
+        -> std::pair<const float *, std::uint64_t>
     {
         if (a.shape(1) != inner_dim)
         {

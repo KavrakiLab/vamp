@@ -5,19 +5,49 @@
 #include <vamp/planning/validate.hh>
 
 // clang-format off
-namespace vamp_jit_robot { using R = vamp::robots::{{robot_name}}; }
-#define VAMP_JIT_RAKE       {{rake}}
-#define VAMP_JIT_RESOLUTION {{resolution}}
+#define VAMP_JIT_ROBOT_TYPE                 vamp::robots::{{robot_name}}
+#define VAMP_JIT_RAKE                       {{rake}}
+#define VAMP_JIT_RESOLUTION                 {{resolution}}
+
+#define VAMP_JIT_FN_RESULT_META             vamp_jit_{{robot_name}}_result_meta
+#define VAMP_JIT_FN_RESULT_COPY_WAYPOINT    vamp_jit_{{robot_name}}_result_copy_waypoint
+#define VAMP_JIT_FN_RESULT_DESTROY          vamp_jit_{{robot_name}}_result_destroy
+
+#define VAMP_JIT_FN_SAMPLER_HALTON          vamp_jit_{{robot_name}}_sampler_halton
+#define VAMP_JIT_FN_SAMPLER_XORSHIFT        vamp_jit_{{robot_name}}_sampler_xorshift
+#define VAMP_JIT_FN_SAMPLER_RESET           vamp_jit_{{robot_name}}_sampler_reset
+#define VAMP_JIT_FN_SAMPLER_SKIP            vamp_jit_{{robot_name}}_sampler_skip
+#define VAMP_JIT_FN_SAMPLER_NEXT            vamp_jit_{{robot_name}}_sampler_next
+#define VAMP_JIT_FN_SAMPLER_DESTROY         vamp_jit_{{robot_name}}_sampler_destroy
+
+#define VAMP_JIT_FN_SIMPLIFY                vamp_jit_{{robot_name}}_simplify
+
+#define VAMP_JIT_FN_DEBUG                   vamp_jit_{{robot_name}}_debug
+#define VAMP_JIT_FN_DEBUG_DESTROY           vamp_jit_{{robot_name}}_debug_destroy
+#define VAMP_JIT_FN_EEFK                    vamp_jit_{{robot_name}}_eefk
+#define VAMP_JIT_FN_FK                      vamp_jit_{{robot_name}}_fk
+#define VAMP_JIT_FN_VALIDATE                vamp_jit_{{robot_name}}_validate
+#define VAMP_JIT_FN_VALIDATE_MOTION         vamp_jit_{{robot_name}}_validate_motion
+#define VAMP_JIT_FN_FILTER_PC               vamp_jit_{{robot_name}}_filter_self_from_pointcloud
+#define VAMP_JIT_FN_SPACE_MEASURE           vamp_jit_{{robot_name}}_space_measure
+#define VAMP_JIT_FN_MIN_MAX_RADII           vamp_jit_{{robot_name}}_min_max_radii
+#define VAMP_JIT_FN_N_SPHERES               vamp_jit_{{robot_name}}_n_spheres
+#define VAMP_JIT_FN_JOINT_NAMES             vamp_jit_{{robot_name}}_joint_names
+#define VAMP_JIT_FN_UPPER_BOUNDS            vamp_jit_{{robot_name}}_upper_bounds
+#define VAMP_JIT_FN_LOWER_BOUNDS            vamp_jit_{{robot_name}}_lower_bounds
+
+#define VAMP_JIT_FN_PHS_NEW                 vamp_jit_{{robot_name}}_phs_new
+#define VAMP_JIT_FN_PHS_DESTROY             vamp_jit_{{robot_name}}_phs_destroy
+#define VAMP_JIT_FN_PHS_SET_DIAMETER        vamp_jit_{{robot_name}}_phs_set_transverse_diameter
+#define VAMP_JIT_FN_PHS_TRANSFORM           vamp_jit_{{robot_name}}_phs_transform
+#define VAMP_JIT_FN_SAMPLER_PHS             vamp_jit_{{robot_name}}_sampler_phs
 // clang-format on
 
 namespace vamp_jit_robot
 {
+    using R = VAMP_JIT_ROBOT_TYPE;
     using SamplerPtr = typename vamp::rng::RNG<R>::Ptr;
 
-    // Shared result wrapper. The same struct is returned by every planner's
-    // solve / solve_multi and by simplify — PlanningResult<R> doesn't depend
-    // on the planner, so all of them can share a single (robot-scoped) set of
-    // meta / copy / destroy functions instead of minting one per planner.
     struct WrappedResult
     {
         vamp::planning::PlanningResult<R> inner;
@@ -36,10 +66,7 @@ namespace vamp_jit_robot
     }
 }  // namespace vamp_jit_robot
 
-// ===== Shared result helpers ==============================================
-
-extern "C" vamp::jit::ffi::PlanResultMeta
-vamp_jit_{{robot_name}}_result_meta(const vamp::jit::ffi::PlanResultHandle *h)
+extern "C" vamp::jit::ffi::PlanResultMeta VAMP_JIT_FN_RESULT_META(const vamp::jit::ffi::PlanResultHandle *h)
 {
     const auto *w = reinterpret_cast<const vamp_jit_robot::WrappedResult *>(h);
     vamp::jit::ffi::PlanResultMeta m{};
@@ -52,30 +79,27 @@ vamp_jit_{{robot_name}}_result_meta(const vamp::jit::ffi::PlanResultHandle *h)
     return m;
 }
 
-extern "C" void vamp_jit_{{robot_name}}_result_copy_waypoint(
-    const vamp::jit::ffi::PlanResultHandle *h, std::uint64_t idx, float *out)
+extern "C" void
+VAMP_JIT_FN_RESULT_COPY_WAYPOINT(const vamp::jit::ffi::PlanResultHandle *h, std::uint64_t idx, float *out)
 {
     const auto *w = reinterpret_cast<const vamp_jit_robot::WrappedResult *>(h);
     auto arr = w->inner.path[idx].to_array();
     std::memcpy(out, arr.data(), vamp_jit_robot::R::dimension * sizeof(float));
 }
 
-extern "C" void vamp_jit_{{robot_name}}_result_destroy(vamp::jit::ffi::PlanResultHandle *h)
+extern "C" void VAMP_JIT_FN_RESULT_DESTROY(vamp::jit::ffi::PlanResultHandle *h)
 {
     delete reinterpret_cast<vamp_jit_robot::WrappedResult *>(h);
 }
 
-// ===== Sampler ============================================================
-
-extern "C" vamp::jit::ffi::SamplerHandle *vamp_jit_{{robot_name}}_sampler_halton()
+extern "C" vamp::jit::ffi::SamplerHandle *VAMP_JIT_FN_SAMPLER_HALTON()
 {
     auto *p = new vamp_jit_robot::SamplerPtr(std::make_shared<vamp::rng::Halton<vamp_jit_robot::R>>());
     return reinterpret_cast<vamp::jit::ffi::SamplerHandle *>(p);
 }
 
-extern "C" vamp::jit::ffi::SamplerHandle *vamp_jit_{{robot_name}}_sampler_xorshift(std::uint64_t seed)
+extern "C" vamp::jit::ffi::SamplerHandle *VAMP_JIT_FN_SAMPLER_XORSHIFT(std::uint64_t seed)
 {
-    // XORShift's two-key ctor needs both non-zero. Seed 0 → use class default.
     auto *p = (seed == 0) ?
                   new vamp_jit_robot::SamplerPtr(std::make_shared<vamp::rng::XORShift<vamp_jit_robot::R>>()) :
                   new vamp_jit_robot::SamplerPtr(
@@ -83,12 +107,12 @@ extern "C" vamp::jit::ffi::SamplerHandle *vamp_jit_{{robot_name}}_sampler_xorshi
     return reinterpret_cast<vamp::jit::ffi::SamplerHandle *>(p);
 }
 
-extern "C" void vamp_jit_{{robot_name}}_sampler_reset(vamp::jit::ffi::SamplerHandle *h)
+extern "C" void VAMP_JIT_FN_SAMPLER_RESET(vamp::jit::ffi::SamplerHandle *h)
 {
     vamp_jit_robot::deref_sampler(h)->reset();
 }
 
-extern "C" void vamp_jit_{{robot_name}}_sampler_skip(vamp::jit::ffi::SamplerHandle *h, std::uint64_t n)
+extern "C" void VAMP_JIT_FN_SAMPLER_SKIP(vamp::jit::ffi::SamplerHandle *h, std::uint64_t n)
 {
     auto &rng = vamp_jit_robot::deref_sampler(h);
     for (std::uint64_t i = 0; i < n; ++i)
@@ -97,20 +121,18 @@ extern "C" void vamp_jit_{{robot_name}}_sampler_skip(vamp::jit::ffi::SamplerHand
     }
 }
 
-extern "C" void vamp_jit_{{robot_name}}_sampler_next(vamp::jit::ffi::SamplerHandle *h, float *out)
+extern "C" void VAMP_JIT_FN_SAMPLER_NEXT(vamp::jit::ffi::SamplerHandle *h, float *out)
 {
     auto arr = vamp_jit_robot::deref_sampler(h)->next().to_array();
     std::memcpy(out, arr.data(), vamp_jit_robot::R::dimension * sizeof(float));
 }
 
-extern "C" void vamp_jit_{{robot_name}}_sampler_destroy(vamp::jit::ffi::SamplerHandle *h)
+extern "C" void VAMP_JIT_FN_SAMPLER_DESTROY(vamp::jit::ffi::SamplerHandle *h)
 {
     delete reinterpret_cast<vamp_jit_robot::SamplerPtr *>(h);
 }
 
-// ===== Simplify ===========================================================
-
-extern "C" vamp::jit::ffi::PlanResultHandle *vamp_jit_{{robot_name}}_simplify(
+extern "C" vamp::jit::ffi::PlanResultHandle *VAMP_JIT_FN_SIMPLIFY(
     const float *path_ptr,
     std::uint64_t n_waypoints,
     const void *env_ptr,
@@ -135,10 +157,7 @@ extern "C" vamp::jit::ffi::PlanResultHandle *vamp_jit_{{robot_name}}_simplify(
     return reinterpret_cast<vamp::jit::ffi::PlanResultHandle *>(wrapped);
 }
 
-// ===== Debug / introspection ==============================================
-
-extern "C" vamp::jit::ffi::DebugHandle *
-vamp_jit_{{robot_name}}_debug(const float *config, const void *env_ptr)
+extern "C" vamp::jit::ffi::DebugHandle *VAMP_JIT_FN_DEBUG(const float *config, const void *env_ptr)
 {
     using R = vamp_jit_robot::R;
 
@@ -155,14 +174,14 @@ vamp_jit_{{robot_name}}_debug(const float *config, const void *env_ptr)
     return reinterpret_cast<vamp::jit::ffi::DebugHandle *>(result);
 }
 
-extern "C" void vamp_jit_{{robot_name}}_debug_destroy(vamp::jit::ffi::DebugHandle *h)
+extern "C" void VAMP_JIT_FN_DEBUG_DESTROY(vamp::jit::ffi::DebugHandle *h)
 {
     using DebugType =
         std::pair<std::vector<std::vector<std::string>>, std::vector<std::pair<std::size_t, std::size_t>>>;
     delete reinterpret_cast<DebugType *>(h);
 }
 
-extern "C" void vamp_jit_{{robot_name}}_eefk(const float *config, float *out_matrix)
+extern "C" void VAMP_JIT_FN_EEFK(const float *config, float *out_matrix)
 {
     using R = vamp_jit_robot::R;
     typename R::ConfigurationArray cfg;
@@ -175,7 +194,7 @@ extern "C" void vamp_jit_{{robot_name}}_eefk(const float *config, float *out_mat
     std::memcpy(out_matrix, mat.data(), 16 * sizeof(float));
 }
 
-extern "C" void vamp_jit_{{robot_name}}_fk(const float *config, float *out_spheres)
+extern "C" void VAMP_JIT_FN_FK(const float *config, float *out_spheres)
 {
     using R = vamp_jit_robot::R;
     typename R::template ConfigurationBlock<1> block;
@@ -197,7 +216,7 @@ extern "C" void vamp_jit_{{robot_name}}_fk(const float *config, float *out_spher
 }
 
 extern "C" std::int32_t
-vamp_jit_{{robot_name}}_validate(const float *config_ptr, const void *env_ptr, std::int32_t check_bounds)
+VAMP_JIT_FN_VALIDATE(const float *config_ptr, const void *env_ptr, std::int32_t check_bounds)
 {
     using R = vamp_jit_robot::R;
 
@@ -213,8 +232,11 @@ vamp_jit_{{robot_name}}_validate(const float *config_ptr, const void *env_ptr, s
            vamp::planning::validate_motion<R, VAMP_JIT_RAKE, 1>(configuration, configuration, env_rake);
 }
 
-extern "C" std::int32_t vamp_jit_{{robot_name}}_validate_motion(
-    const float *c_in_ptr, const float *c_out_ptr, const void *env_ptr, std::int32_t check_bounds)
+extern "C" std::int32_t VAMP_JIT_FN_VALIDATE_MOTION(
+    const float *c_in_ptr,
+    const float *c_out_ptr,
+    const void *env_ptr,
+    std::int32_t check_bounds)
 {
     using R = vamp_jit_robot::R;
 
@@ -235,7 +257,7 @@ extern "C" std::int32_t vamp_jit_{{robot_name}}_validate_motion(
            vamp::planning::validate_motion<R, VAMP_JIT_RAKE, 1>(c_in, c_out, env_rake);
 }
 
-extern "C" void vamp_jit_{{robot_name}}_filter_self_from_pointcloud(
+extern "C" void VAMP_JIT_FN_FILTER_PC(
     const float *points_in,
     std::uint64_t n_points,
     float point_radius,
@@ -286,23 +308,23 @@ extern "C" void vamp_jit_{{robot_name}}_filter_self_from_pointcloud(
     }
 }
 
-extern "C" float vamp_jit_{{robot_name}}_space_measure()
+extern "C" float VAMP_JIT_FN_SPACE_MEASURE()
 {
     return vamp_jit_robot::R::space_measure();
 }
 
-extern "C" void vamp_jit_{{robot_name}}_min_max_radii(float *out_min, float *out_max)
+extern "C" void VAMP_JIT_FN_MIN_MAX_RADII(float *out_min, float *out_max)
 {
     *out_min = vamp_jit_robot::R::min_radius;
     *out_max = vamp_jit_robot::R::max_radius;
 }
 
-extern "C" std::uint64_t vamp_jit_{{robot_name}}_n_spheres()
+extern "C" std::uint64_t VAMP_JIT_FN_N_SPHERES()
 {
     return vamp_jit_robot::R::n_spheres;
 }
 
-extern "C" void vamp_jit_{{robot_name}}_joint_names(void *out_strings)
+extern "C" void VAMP_JIT_FN_JOINT_NAMES(void *out_strings)
 {
     auto *v = static_cast<std::vector<std::string> *>(out_strings);
     v->clear();
@@ -312,7 +334,7 @@ extern "C" void vamp_jit_{{robot_name}}_joint_names(void *out_strings)
     }
 }
 
-extern "C" void vamp_jit_{{robot_name}}_upper_bounds(float *out)
+extern "C" void VAMP_JIT_FN_UPPER_BOUNDS(float *out)
 {
     using R = vamp_jit_robot::R;
     std::array<float, R::dimension> ones;
@@ -323,7 +345,7 @@ extern "C" void vamp_jit_{{robot_name}}_upper_bounds(float *out)
     std::memcpy(out, arr.data(), R::dimension * sizeof(float));
 }
 
-extern "C" void vamp_jit_{{robot_name}}_lower_bounds(float *out)
+extern "C" void VAMP_JIT_FN_LOWER_BOUNDS(float *out)
 {
     using R = vamp_jit_robot::R;
     std::array<float, R::dimension> zeros;
@@ -334,10 +356,7 @@ extern "C" void vamp_jit_{{robot_name}}_lower_bounds(float *out)
     std::memcpy(out, arr.data(), R::dimension * sizeof(float));
 }
 
-// ===== PHS ================================================================
-
-extern "C" vamp::jit::ffi::PhsHandle *
-vamp_jit_{{robot_name}}_phs_new(const float *focus_a, const float *focus_b)
+extern "C" vamp::jit::ffi::PhsHandle *VAMP_JIT_FN_PHS_NEW(const float *focus_a, const float *focus_b)
 {
     using R = vamp_jit_robot::R;
     auto fa = vamp_jit_robot::load_config(focus_a);
@@ -346,20 +365,18 @@ vamp_jit_{{robot_name}}_phs_new(const float *focus_a, const float *focus_b)
     return reinterpret_cast<vamp::jit::ffi::PhsHandle *>(phs);
 }
 
-extern "C" void vamp_jit_{{robot_name}}_phs_destroy(vamp::jit::ffi::PhsHandle *h)
+extern "C" void VAMP_JIT_FN_PHS_DESTROY(vamp::jit::ffi::PhsHandle *h)
 {
     delete reinterpret_cast<vamp::planning::ProlateHyperspheroid<vamp_jit_robot::R> *>(h);
 }
 
-extern "C" void
-vamp_jit_{{robot_name}}_phs_set_transverse_diameter(vamp::jit::ffi::PhsHandle *h, float diameter)
+extern "C" void VAMP_JIT_FN_PHS_SET_DIAMETER(vamp::jit::ffi::PhsHandle *h, float diameter)
 {
     reinterpret_cast<vamp::planning::ProlateHyperspheroid<vamp_jit_robot::R> *>(h)->set_transverse_diameter(
         diameter);
 }
 
-extern "C" void
-vamp_jit_{{robot_name}}_phs_transform(const vamp::jit::ffi::PhsHandle *h, const float *in, float *out)
+extern "C" void VAMP_JIT_FN_PHS_TRANSFORM(const vamp::jit::ffi::PhsHandle *h, const float *in, float *out)
 {
     using R = vamp_jit_robot::R;
     auto in_v = vamp_jit_robot::load_config(in);
@@ -368,8 +385,8 @@ vamp_jit_{{robot_name}}_phs_transform(const vamp::jit::ffi::PhsHandle *h, const 
     std::memcpy(out, arr.data(), R::dimension * sizeof(float));
 }
 
-extern "C" vamp::jit::ffi::SamplerHandle *vamp_jit_{{robot_name}}_sampler_phs(
-    const vamp::jit::ffi::PhsHandle *phs_h, vamp::jit::ffi::SamplerHandle *inner_h)
+extern "C" vamp::jit::ffi::SamplerHandle *
+VAMP_JIT_FN_SAMPLER_PHS(const vamp::jit::ffi::PhsHandle *phs_h, vamp::jit::ffi::SamplerHandle *inner_h)
 {
     using R = vamp_jit_robot::R;
     auto phs = *reinterpret_cast<const vamp::planning::ProlateHyperspheroid<R> *>(phs_h);
@@ -378,6 +395,3 @@ extern "C" vamp::jit::ffi::SamplerHandle *vamp_jit_{{robot_name}}_sampler_phs(
         std::make_shared<vamp::planning::ProlateHyperspheroidRNG<R>>(phs, inner_rng));
     return reinterpret_cast<vamp::jit::ffi::SamplerHandle *>(holder);
 }
-
-#undef VAMP_JIT_RAKE
-#undef VAMP_JIT_RESOLUTION

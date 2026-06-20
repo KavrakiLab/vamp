@@ -1,7 +1,6 @@
 #include <vamp_python_init.hh>
 
 #include <vamp/bindings/python/array_helpers.hh>
-#include <vamp/bindings/python/dynamic_helper.hh>
 #include <vamp/jit/api.hh>
 #include <vamp/jit/build_paths.hh>
 #include <vamp/jit/dynamic_robot.hh>
@@ -43,6 +42,7 @@
 #include <optional>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace nb = nanobind;
@@ -54,10 +54,297 @@ namespace
     namespace vp = vamp::planning;
 
     using ConfigNd = nb::ndarray<const float, nb::ndim<1>, nb::device::cpu>;
+    using PathNd = nb::ndarray<const float, nb::ndim<2>, nb::device::cpu>;
 }  // namespace
 
 namespace vamp::binding
 {
+    struct VectorConfig
+    {
+        using Type = std::vector<float>;
+
+        static auto as_ptr(const Type &v, std::size_t dim, std::vector<float> & /*scratch*/, const char *what)
+            -> const float *
+        {
+            if (v.size() != dim)
+            {
+                throw std::runtime_error(std::string(what) + " has wrong dimension");
+            }
+            return v.data();
+        }
+    };
+
+    struct NDArrayConfig
+    {
+        using Type = ConfigNd;
+
+        static auto as_ptr(const Type &a, std::size_t dim, std::vector<float> &scratch, const char *what)
+            -> const float *
+        {
+            return as_flat_1d(a, dim, scratch, what);
+        }
+    };
+
+    struct VectorPath
+    {
+        using Type = std::vector<std::vector<float>>;
+
+        static auto as_ptr(const Type &v, std::size_t dim, std::vector<float> &scratch, const char *what)
+            -> std::pair<const float *, std::uint64_t>
+        {
+            scratch.clear();
+            scratch.reserve(dim * v.size());
+            for (const auto &wp : v)
+            {
+                if (wp.size() != dim)
+                {
+                    throw std::runtime_error(std::string(what) + " has wrong waypoint dimension");
+                }
+                scratch.insert(scratch.end(), wp.begin(), wp.end());
+            }
+            return {scratch.data(), v.size()};
+        }
+    };
+
+    struct NDArrayPath
+    {
+        using Type = PathNd;
+
+        static auto as_ptr(const Type &a, std::size_t dim, std::vector<float> &scratch, const char *what)
+            -> std::pair<const float *, std::uint64_t>
+        {
+            return as_flat_2d(a, dim, scratch, what);
+        }
+    };
+
+    struct VectorPointcloud
+    {
+        using Type = std::vector<vamp::collision::Point>;
+
+        static auto as_ptr(const Type &v, std::vector<float> &scratch, const char * /*what*/)
+            -> std::pair<const float *, std::uint64_t>
+        {
+            scratch.clear();
+            scratch.reserve(3 * v.size());
+            for (const auto &p : v)
+            {
+                scratch.insert(scratch.end(), p.begin(), p.end());
+            }
+            return {scratch.data(), v.size()};
+        }
+    };
+
+    struct NDArrayPointcloud
+    {
+        using Type = PathNd;
+
+        static auto as_ptr(const Type &a, std::vector<float> &scratch, const char *what)
+            -> std::pair<const float *, std::uint64_t>
+        {
+            return as_flat_2d(a, 3, scratch, what);
+        }
+    };
+
+    template <typename ConfigInput, typename PathInput, typename PcInput>
+    struct DynamicHelper
+    {
+        using Cfg = typename ConfigInput::Type;
+        using Pth = typename PathInput::Type;
+        using Pc = typename PcInput::Type;
+        using Env = vamp::collision::Environment<float>;
+
+        template <vp::Planner P, typename Settings>
+        static auto solve_single(
+            std::shared_ptr<vj::DynamicRobot> self,
+            const Cfg &start,
+            const Cfg &goal,
+            const Env &env,
+            const Settings &settings,
+            vj::DynamicSampler &sampler) -> vj::DynamicPlanResult
+        {
+            const auto d = self->dimension();
+            std::vector<float> ss, gs;
+            return vj::solve(
+                self,
+                P,
+                ConfigInput::as_ptr(start, d, ss, "start"),
+                ConfigInput::as_ptr(goal, d, gs, "goal"),
+                env,
+                settings,
+                sampler);
+        }
+
+        template <vp::Planner P, typename Settings>
+        static auto solve_multi(
+            std::shared_ptr<vj::DynamicRobot> self,
+            const Cfg &start,
+            const Pth &goals,
+            const Env &env,
+            const Settings &settings,
+            vj::DynamicSampler &sampler) -> vj::DynamicPlanResult
+        {
+            const auto d = self->dimension();
+            std::vector<float> ss, gs;
+            auto [gptr, n] = PathInput::as_ptr(goals, d, gs, "goals");
+            return vj::solve_multi(
+                self, P, ConfigInput::as_ptr(start, d, ss, "start"), gptr, n, env, settings, sampler);
+        }
+
+        static auto simplify(
+            std::shared_ptr<vj::DynamicRobot> self,
+            const Pth &path,
+            const Env &env,
+            const vp::SimplifySettings &settings,
+            vj::DynamicSampler &sampler) -> vj::DynamicPlanResult
+        {
+            std::vector<float> scratch;
+            auto [pptr, n] = PathInput::as_ptr(path, self->dimension(), scratch, "path");
+            return vj::simplify(self, pptr, n, env, settings, sampler);
+        }
+
+        static auto fk(vj::DynamicRobot &self, const Cfg &config)
+            -> std::vector<vamp::collision::Sphere<float>>
+        {
+            std::vector<float> scratch;
+            return vj::fk(self, ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"));
+        }
+
+        static auto eefk(vj::DynamicRobot &self, const Cfg &config) -> Eigen::Matrix4f
+        {
+            std::vector<float> scratch;
+            return vj::eefk(self, ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"));
+        }
+
+        static auto debug(vj::DynamicRobot &self, const Cfg &config, const Env &env) -> vj::DebugType
+        {
+            std::vector<float> scratch;
+            return vj::debug(
+                self, ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"), env);
+        }
+
+        static auto validate(vj::DynamicRobot &self, const Cfg &config, const Env &env, bool check_bounds)
+            -> bool
+        {
+            std::vector<float> scratch;
+            return vj::validate(
+                self,
+                ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"),
+                env,
+                check_bounds);
+        }
+
+        static auto validate_motion(
+            vj::DynamicRobot &self,
+            const Cfg &c_in,
+            const Cfg &c_out,
+            const Env &env,
+            bool check_bounds) -> bool
+        {
+            std::vector<float> s_in, s_out;
+            return vj::validate_motion(
+                self,
+                ConfigInput::as_ptr(c_in, self.dimension(), s_in, "configuration_in"),
+                ConfigInput::as_ptr(c_out, self.dimension(), s_out, "configuration_out"),
+                env,
+                check_bounds);
+        }
+
+        static auto filter_self_from_pointcloud(
+            vj::DynamicRobot &self,
+            const Pc &pc,
+            float point_radius,
+            const Cfg &config,
+            const Env &env) -> std::vector<vamp::collision::Point>
+        {
+            std::vector<float> cfg_scratch, pc_scratch;
+            auto [pptr, n] = PcInput::as_ptr(pc, pc_scratch, "pc");
+            return vj::filter_self_from_pointcloud(
+                self,
+                pptr,
+                n,
+                point_radius,
+                ConfigInput::as_ptr(config, self.dimension(), cfg_scratch, "config"),
+                env);
+        }
+
+        static auto make_phs(std::shared_ptr<vj::DynamicRobot> self, const Cfg &focus_a, const Cfg &focus_b)
+            -> std::shared_ptr<vj::DynamicPhs>
+        {
+            const auto d = self->dimension();
+            std::vector<float> sa, sb;
+            return vj::make_phs(
+                self,
+                ConfigInput::as_ptr(focus_a, d, sa, "focus_a"),
+                ConfigInput::as_ptr(focus_b, d, sb, "focus_b"));
+        }
+
+        static auto phs_transform(vj::DynamicPhs &phs, const Cfg &x)
+            -> nb::ndarray<nb::numpy, float, nb::device::cpu>
+        {
+            const auto dim = phs.robot->dimension();
+            std::vector<float> scratch;
+            const auto *xptr = ConfigInput::as_ptr(x, dim, scratch, "x");
+            std::vector<float> out(dim);
+            phs.transform(xptr, out.data());
+            return make_ndarray<1>(out.data(), {dim});
+        }
+    };
+
+    using DHV = DynamicHelper<VectorConfig, VectorPath, VectorPointcloud>;
+    using DHN = DynamicHelper<NDArrayConfig, NDArrayPath, NDArrayPointcloud>;
+
+    inline auto to_waypoint(vj::DynamicPath &p, std::size_t sz, const float *src, bool allow_init)
+        -> std::vector<float>
+    {
+        if (p.dim == 0 and allow_init)
+        {
+            p.dim = sz;
+        }
+        else if (sz != p.dim)
+        {
+            throw std::runtime_error("waypoint has wrong dimension");
+        }
+        return std::vector<float>(src, src + p.dim);
+    }
+
+    inline auto vec_waypoint(vj::DynamicPath &p, const std::vector<float> &c, bool allow_init)
+        -> std::vector<float>
+    {
+        return to_waypoint(p, c.size(), c.data(), allow_init);
+    }
+
+    inline auto nd_waypoint(vj::DynamicPath &p, const ConfigNd &c, bool allow_init) -> std::vector<float>
+    {
+        std::vector<float> scratch;
+        const auto sz = c.shape(0);
+        const auto *ptr = as_flat_1d(c, p.dim == 0 ? sz : p.dim, scratch, "waypoint");
+        return to_waypoint(p, sz, ptr, allow_init);
+    }
+
+    inline void check_idx(const vj::DynamicPath &p, std::size_t i)
+    {
+        if (i >= p.waypoints.size())
+        {
+            throw nb::index_error();
+        }
+    }
+
+#define VJF_MF(KLASS, NAME, FUNC, ...)                                                                       \
+    KLASS.def(NAME, &DHV::FUNC, ##__VA_ARGS__);                                                              \
+    KLASS.def(NAME, &DHN::FUNC, ##__VA_ARGS__)
+
+    template <vp::Planner P, typename Settings, typename Klass>
+    inline void register_planner(Klass &k, const char *name)
+    {
+        const auto doc = std::string("JIT'd ") + name;
+        auto def1 = [&](auto fn)
+        { k.def(name, fn, "start"_a, "goal"_a, "environment"_a, "settings"_a, "sampler"_a, doc.c_str()); };
+        def1(&DHV::template solve_single<P, Settings>);
+        def1(&DHN::template solve_single<P, Settings>);
+        def1(&DHV::template solve_multi<P, Settings>);
+        def1(&DHN::template solve_multi<P, Settings>);
+    }
+
     void init_dynamic(nb::module_ &pymodule)
     {
         // Re-dlopen _core_ext.so with RTLD_GLOBAL so template instantiations
@@ -83,10 +370,7 @@ namespace vamp::binding
                 "__getitem__",
                 [](const vj::DynamicPath &p, std::size_t i)
                 {
-                    if (i >= p.waypoints.size())
-                    {
-                        throw nb::index_error();
-                    }
+                    check_idx(p, i);
                     return make_ndarray<1>(p.waypoints[i].data(), {p.dim});
                 },
                 "Get the i-th configuration in the path.")
@@ -94,85 +378,37 @@ namespace vamp::binding
                 "__setitem__",
                 [](vj::DynamicPath &p, std::size_t i, const std::vector<float> &c)
                 {
-                    if (i >= p.waypoints.size())
-                    {
-                        throw nb::index_error();
-                    }
-                    if (p.dim != 0 and c.size() != p.dim)
-                    {
-                        throw std::runtime_error("waypoint has wrong dimension");
-                    }
-                    p.waypoints[i] = c;
+                    check_idx(p, i);
+                    p.waypoints[i] = vec_waypoint(p, c, false);
                 },
                 "Set the i-th configuration of the path.")
             .def(
                 "__setitem__",
                 [](vj::DynamicPath &p, std::size_t i, const ConfigNd &c)
                 {
-                    if (i >= p.waypoints.size())
-                    {
-                        throw nb::index_error();
-                    }
-                    std::vector<float> scratch;
-                    const auto *ptr = as_flat_1d(c, p.dim == 0 ? c.shape(0) : p.dim, scratch, "waypoint");
-                    p.waypoints[i].assign(ptr, ptr + c.shape(0));
+                    check_idx(p, i);
+                    p.waypoints[i] = nd_waypoint(p, c, false);
                 },
                 "Set the i-th configuration of the path.")
             .def(
                 "append",
                 [](vj::DynamicPath &p, const std::vector<float> &c)
-                {
-                    if (p.dim == 0)
-                    {
-                        p.dim = c.size();
-                    }
-                    else if (c.size() != p.dim)
-                    {
-                        throw std::runtime_error("waypoint has wrong dimension");
-                    }
-                    p.waypoints.emplace_back(c);
-                },
+                { p.waypoints.emplace_back(vec_waypoint(p, c, true)); },
                 "Append a configuration to the end of this path.")
             .def(
                 "append",
                 [](vj::DynamicPath &p, const ConfigNd &c)
-                {
-                    if (p.dim == 0)
-                    {
-                        p.dim = c.shape(0);
-                    }
-                    std::vector<float> scratch;
-                    const auto *ptr = as_flat_1d(c, p.dim, scratch, "waypoint");
-                    p.waypoints.emplace_back(ptr, ptr + p.dim);
-                },
+                { p.waypoints.emplace_back(nd_waypoint(p, c, true)); },
                 "Append a configuration to the end of this path.")
             .def(
                 "insert",
                 [](vj::DynamicPath &p, std::size_t i, const std::vector<float> &c)
-                {
-                    if (p.dim == 0)
-                    {
-                        p.dim = c.size();
-                    }
-                    else if (c.size() != p.dim)
-                    {
-                        throw std::runtime_error("waypoint has wrong dimension");
-                    }
-                    p.waypoints.insert(p.waypoints.cbegin() + i, c);
-                },
+                { p.waypoints.insert(p.waypoints.cbegin() + i, vec_waypoint(p, c, true)); },
                 "Insert a configuration at index i.")
             .def(
                 "insert",
                 [](vj::DynamicPath &p, std::size_t i, const ConfigNd &c)
-                {
-                    if (p.dim == 0)
-                    {
-                        p.dim = c.shape(0);
-                    }
-                    std::vector<float> scratch;
-                    const auto *ptr = as_flat_1d(c, p.dim, scratch, "waypoint");
-                    p.waypoints.insert(p.waypoints.cbegin() + i, std::vector<float>(ptr, ptr + p.dim));
-                },
+                { p.waypoints.insert(p.waypoints.cbegin() + i, nd_waypoint(p, c, true)); },
                 "Insert a configuration at index i.")
             .def(
                 "cost", &vj::DynamicPath::cost, "Compute the total path length (by the l2-norm) of the path.")
@@ -276,11 +512,11 @@ namespace vamp::binding
                         return make_ndarray<1>(b.data(), {b.size()});
                     });
 
-        VJF_PLANNER(klass, "rrtc", vp::Planner::RRTC, vp::RRTCSettings);
-        VJF_PLANNER(klass, "prm", vp::Planner::PRM, PRMSettings);
-        VJF_PLANNER(klass, "fcit", vp::Planner::FCIT, FCITSettings);
-        VJF_PLANNER(klass, "aorrtc", vp::Planner::AORRTC, vp::AORRTCSettings);
-        VJF_PLANNER(klass, "grrtstar", vp::Planner::GRRTSTAR, vp::GRRTStarSettings);
+        register_planner<vp::Planner::RRTC, vp::RRTCSettings>(klass, "rrtc");
+        register_planner<vp::Planner::PRM, PRMSettings>(klass, "prm");
+        register_planner<vp::Planner::FCIT, FCITSettings>(klass, "fcit");
+        register_planner<vp::Planner::AORRTC, vp::AORRTCSettings>(klass, "aorrtc");
+        register_planner<vp::Planner::GRRTSTAR, vp::GRRTStarSettings>(klass, "grrtstar");
 
         VJF_MF(
             klass,

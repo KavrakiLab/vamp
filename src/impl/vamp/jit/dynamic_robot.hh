@@ -4,6 +4,7 @@
 #include <vamp/jit/stub_gen.hh>
 #include <vamp/planning/planner.hh>
 
+#include <cricket/jit/compiler.hh>
 #include <cricket/jit/session.hh>
 
 #include <array>
@@ -25,10 +26,7 @@ namespace vamp::jit
 
         std::vector<vamp::planning::Planner> planners;
 
-        std::vector<std::string> include_dirs;
-        std::vector<std::string> system_include_dirs;
-        std::vector<std::string> extra_flags;
-        std::vector<std::string> defines;
+        cricket::jit::CompileOptions compile_options;
     };
 
     auto default_load_options() -> LoadOptions;

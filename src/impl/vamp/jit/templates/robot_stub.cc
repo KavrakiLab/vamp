@@ -61,6 +61,22 @@ namespace vamp_jit_robot
         return typename R::Configuration(arr);
     }
 
+    inline auto load_block_1(const float *data) -> typename R::template ConfigurationBlock<1>
+    {
+        typename R::template ConfigurationBlock<1> out;
+        for (std::size_t i = 0; i < R::dimension; ++i)
+        {
+            out[i] = data[i];
+        }
+        return out;
+    }
+
+    inline auto raked_env(const void *env_ptr)
+    {
+        return vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>>(
+            *static_cast<const vamp::collision::Environment<float> *>(env_ptr));
+    }
+
     inline auto deref_sampler(vamp::jit::ffi::SamplerHandle *h) -> SamplerPtr &
     {
         return *reinterpret_cast<SamplerPtr *>(h);
@@ -108,11 +124,15 @@ extern "C" vamp::jit::ffi::SamplerHandle *VAMP_JIT_FN_SAMPLER_HALTON()
 
 extern "C" vamp::jit::ffi::SamplerHandle *VAMP_JIT_FN_SAMPLER_XORSHIFT(std::uint64_t seed)
 {
+#if defined(__x86_64__)
     auto *p = (seed == 0) ?
                   new vamp_jit_robot::SamplerPtr(std::make_shared<vamp::rng::XORShift<vamp_jit_robot::R>>()) :
                   new vamp_jit_robot::SamplerPtr(
                       std::make_shared<vamp::rng::XORShift<vamp_jit_robot::R>>(seed, seed + 1));
     return reinterpret_cast<vamp::jit::ffi::SamplerHandle *>(p);
+#else
+    throw std::runtime_error("XORShift is not supported on non-x86 systems!");
+#endif
 }
 
 extern "C" void VAMP_JIT_FN_SAMPLER_RESET(vamp::jit::ffi::SamplerHandle *h)
@@ -155,8 +175,7 @@ extern "C" vamp::jit::ffi::PlanResultHandle *VAMP_JIT_FN_SIMPLIFY(
         path.emplace_back(vamp_jit_robot::load_config(path_ptr + i * R::dimension));
     }
 
-    const auto *env_in = static_cast<const vamp::collision::Environment<float> *>(env_ptr);
-    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(*env_in);
+    auto env_rake = vamp_jit_robot::raked_env(env_ptr);
     const auto &settings = *static_cast<const vamp::planning::SimplifySettings *>(settings_ptr);
     auto rng = vamp_jit_robot::deref_sampler(sampler);
 
@@ -168,16 +187,12 @@ extern "C" vamp::jit::ffi::PlanResultHandle *VAMP_JIT_FN_SIMPLIFY(
 extern "C" vamp::jit::ffi::DebugHandle *VAMP_JIT_FN_DEBUG(const float *config, const void *env_ptr)
 {
     using R = vamp_jit_robot::R;
-
     typename R::template ConfigurationBlock<VAMP_JIT_RAKE> block;
     for (std::size_t i = 0; i < R::dimension; ++i)
     {
         block[i] = config[i];
     }
-
-    const auto *env_in = static_cast<const vamp::collision::Environment<float> *>(env_ptr);
-    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(*env_in);
-
+    auto env_rake = vamp_jit_robot::raked_env(env_ptr);
     auto *result = new typename R::Debug(R::template fkcc_debug<VAMP_JIT_RAKE>(env_rake, block));
     return reinterpret_cast<vamp::jit::ffi::DebugHandle *>(result);
 }
@@ -205,11 +220,7 @@ extern "C" void VAMP_JIT_FN_EEFK(const float *config, float *out_matrix)
 extern "C" void VAMP_JIT_FN_FK(const float *config, float *out_spheres)
 {
     using R = vamp_jit_robot::R;
-    typename R::template ConfigurationBlock<1> block;
-    for (std::size_t i = 0; i < R::dimension; ++i)
-    {
-        block[i] = config[i];
-    }
+    auto block = vamp_jit_robot::load_block_1(config);
 
     typename R::template Spheres<1> out;
     R::template sphere_fk<1>(block, out);
@@ -233,11 +244,9 @@ VAMP_JIT_FN_VALIDATE(const float *config_ptr, const void *env_ptr, std::int32_t 
     R::descale_configuration(copy);
     const bool in_bounds = (copy <= 1.F).all() and (copy >= 0.F).all();
 
-    const auto *env_in = static_cast<const vamp::collision::Environment<float> *>(env_ptr);
-    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(*env_in);
-
     return (not check_bounds or in_bounds) and
-           vamp::planning::validate_motion<R, VAMP_JIT_RAKE, 1>(configuration, configuration, env_rake);
+           vamp::planning::validate_motion<R, VAMP_JIT_RAKE, 1>(
+               configuration, configuration, vamp_jit_robot::raked_env(env_ptr));
 }
 
 extern "C" std::int32_t VAMP_JIT_FN_VALIDATE_MOTION(
@@ -258,11 +267,9 @@ extern "C" std::int32_t VAMP_JIT_FN_VALIDATE_MOTION(
     R::descale_configuration(copy_out);
     const bool in_bounds_out = (copy_out <= 1.F).all() and (copy_out >= 0.F).all();
 
-    const auto *env_in = static_cast<const vamp::collision::Environment<float> *>(env_ptr);
-    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(*env_in);
-
     return (not check_bounds or (in_bounds_in and in_bounds_out)) and
-           vamp::planning::validate_motion<R, VAMP_JIT_RAKE, 1>(c_in, c_out, env_rake);
+           vamp::planning::validate_motion<R, VAMP_JIT_RAKE, 1>(
+               c_in, c_out, vamp_jit_robot::raked_env(env_ptr));
 }
 
 extern "C" void VAMP_JIT_FN_FILTER_PC(
@@ -273,23 +280,12 @@ extern "C" void VAMP_JIT_FN_FILTER_PC(
     const void *env_ptr,
     void *out_filtered_vec)
 {
-    using R = vamp_jit_robot::R;
-
-    typename R::template ConfigurationBlock<1> block;
-    for (std::size_t i = 0; i < R::dimension; ++i)
-    {
-        block[i] = config[i];
-    }
-
-    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(
-        *static_cast<const vamp::collision::Environment<float> *>(env_ptr));
-
-    vamp::collision::filter_self_from_pointcloud<R, VAMP_JIT_RAKE>(
+    vamp::collision::filter_self_from_pointcloud<vamp_jit_robot::R, VAMP_JIT_RAKE>(
         points_in,
         n_points,
         point_radius,
-        block,
-        env_rake,
+        vamp_jit_robot::load_block_1(config),
+        vamp_jit_robot::raked_env(env_ptr),
         *static_cast<std::vector<vamp::collision::Point> *>(out_filtered_vec));
 }
 

@@ -39,33 +39,22 @@ namespace vamp::jit
     auto default_load_options() -> LoadOptions
     {
         LoadOptions opts;
-        opts.include_dirs.assign(paths::include_dirs.begin(), paths::include_dirs.end());
-        opts.system_include_dirs.assign(paths::system_include_dirs.begin(), paths::system_include_dirs.end());
-        opts.defines.assign(paths::defines.begin(), paths::defines.end());
-        opts.extra_flags.assign(paths::extra_flags.begin(), paths::extra_flags.end());
+        opts.compile_options.include_dirs.assign(paths::include_dirs.begin(), paths::include_dirs.end());
+        opts.compile_options.system_include_dirs.assign(
+            paths::system_include_dirs.begin(), paths::system_include_dirs.end());
+        opts.compile_options.defines.assign(paths::defines.begin(), paths::defines.end());
+        opts.compile_options.extra_flags.assign(paths::extra_flags.begin(), paths::extra_flags.end());
         return opts;
     }
 
     DynamicRobot::DynamicRobot(const LoadOptions &opts, std::shared_ptr<cricket::jit::DiskObjectCache> cache)
       : dimension_(opts.dimension), rake_(opts.rake)
     {
-        StubOptions stub_opts;
-        stub_opts.robot_source = opts.robot_source;
-        stub_opts.robot_name = opts.robot_name;
-        stub_opts.rake = opts.rake;
-        stub_opts.resolution = opts.resolution;
-        stub_opts.planners = opts.planners;
-
-        auto source = generate_stub_source(stub_opts);
-
-        cricket::jit::CompileOptions copts;
-        copts.include_dirs = opts.include_dirs;
-        copts.system_include_dirs = opts.system_include_dirs;
-        copts.defines = opts.defines;
-        copts.extra_flags = opts.extra_flags;
+        auto source = generate_stub_source(
+            opts.robot_source, opts.robot_name, opts.rake, opts.resolution, opts.planners);
 
         cricket::jit::ClangCompiler compiler;
-        auto module = compiler.compile(source, copts);
+        auto module = compiler.compile(source, opts.compile_options);
 
         session_ = std::make_unique<cricket::jit::JitSession>(std::move(cache));
 

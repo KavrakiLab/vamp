@@ -32,9 +32,7 @@ extern "C" vamp::jit::ffi::PlanResultHandle *VAMP_JIT_FN_SOLVE(
 
     auto start = vamp_jit_robot::load_config(start_ptr);
     auto goal = vamp_jit_robot::load_config(goal_ptr);
-
-    const auto *env_in = static_cast<const vamp::collision::Environment<float> *>(env_ptr);
-    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(*env_in);
+    auto env_rake = vamp_jit_robot::raked_env(env_ptr);
     const auto &settings = *static_cast<const SettingsT *>(settings_ptr);
     auto rng = vamp_jit_robot::deref_sampler(sampler);
 
@@ -60,8 +58,7 @@ extern "C" vamp::jit::ffi::PlanResultHandle *VAMP_JIT_FN_SOLVE_MULTI(
         goals.emplace_back(vamp_jit_robot::load_config(goals_ptr + i * R::dimension));
     }
 
-    const auto *env_in = static_cast<const vamp::collision::Environment<float> *>(env_ptr);
-    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(*env_in);
+    auto env_rake = vamp_jit_robot::raked_env(env_ptr);
     const auto &settings = *static_cast<const SettingsT *>(settings_ptr);
     auto rng = vamp_jit_robot::deref_sampler(sampler);
 

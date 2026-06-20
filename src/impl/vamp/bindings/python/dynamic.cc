@@ -140,7 +140,7 @@ namespace vamp::binding
         }
     };
 
-    inline auto to_waypoint(vj::DynamicPath &p, std::size_t sz, const float *src, bool allow_init)
+    inline auto to_waypoint_raw(vj::DynamicPath &p, std::size_t sz, const float *src, bool allow_init)
         -> std::vector<float>
     {
         if (p.dim == 0 and allow_init)
@@ -154,18 +154,18 @@ namespace vamp::binding
         return std::vector<float>(src, src + p.dim);
     }
 
-    inline auto vec_waypoint(vj::DynamicPath &p, const std::vector<float> &c, bool allow_init)
+    inline auto take_waypoint(vj::DynamicPath &p, const std::vector<float> &c, bool allow_init)
         -> std::vector<float>
     {
-        return to_waypoint(p, c.size(), c.data(), allow_init);
+        return to_waypoint_raw(p, c.size(), c.data(), allow_init);
     }
 
-    inline auto nd_waypoint(vj::DynamicPath &p, const ConfigNd &c, bool allow_init) -> std::vector<float>
+    inline auto take_waypoint(vj::DynamicPath &p, const ConfigNd &c, bool allow_init) -> std::vector<float>
     {
         std::vector<float> scratch;
         const auto sz = c.shape(0);
         const auto *ptr = as_flat_1d(c, p.dim == 0 ? sz : p.dim, scratch, "waypoint");
-        return to_waypoint(p, sz, ptr, allow_init);
+        return to_waypoint_raw(p, sz, ptr, allow_init);
     }
 
     inline void check_idx(const vj::DynamicPath &p, std::size_t i)
@@ -328,35 +328,10 @@ namespace vamp::binding
             return vj::make_phs_sampler(std::move(self), phs, *inner);
         }
 
-        static auto path_len(const Path &p) -> std::size_t
-        {
-            return p.waypoints.size();
-        }
-
         static auto path_get(const Path &p, std::size_t i)
         {
             check_idx(p, i);
             return make_ndarray<1>(p.waypoints[i].data(), {p.dim});
-        }
-
-        static auto path_cost(const Path &p) -> float
-        {
-            return p.cost();
-        }
-
-        static void path_subdivide(Path &p)
-        {
-            p.subdivide();
-        }
-
-        static void path_interpolate_to_n_states(Path &p, std::size_t n)
-        {
-            p.interpolate_to_n_states(n);
-        }
-
-        static void path_interpolate_to_resolution(Path &p, std::size_t r)
-        {
-            p.interpolate_to_resolution(r);
         }
 
         static auto path_validate(Path &p, const Env &e) -> bool
@@ -381,68 +356,22 @@ namespace vamp::binding
         static void path_set(Path &p, std::size_t i, const Cfg &c)
         {
             check_idx(p, i);
-            if constexpr (std::is_same_v<ConfigInput, VectorConfig>)
-            {
-                p.waypoints[i] = vec_waypoint(p, c, false);
-            }
-            else
-            {
-                p.waypoints[i] = nd_waypoint(p, c, false);
-            }
+            p.waypoints[i] = take_waypoint(p, c, false);
         }
 
         static void path_append(Path &p, const Cfg &c)
         {
-            if constexpr (std::is_same_v<ConfigInput, VectorConfig>)
-            {
-                p.waypoints.emplace_back(vec_waypoint(p, c, true));
-            }
-            else
-            {
-                p.waypoints.emplace_back(nd_waypoint(p, c, true));
-            }
+            p.waypoints.emplace_back(take_waypoint(p, c, true));
         }
 
         static void path_insert(Path &p, std::size_t i, const Cfg &c)
         {
-            if constexpr (std::is_same_v<ConfigInput, VectorConfig>)
-            {
-                p.waypoints.insert(p.waypoints.cbegin() + i, vec_waypoint(p, c, true));
-            }
-            else
-            {
-                p.waypoints.insert(p.waypoints.cbegin() + i, nd_waypoint(p, c, true));
-            }
+            p.waypoints.insert(p.waypoints.cbegin() + i, take_waypoint(p, c, true));
         }
 
         static auto result_solved(const PlanningResult &r) -> bool
         {
             return r.solved();
-        }
-
-        static auto result_path(const PlanningResult &r) -> std::shared_ptr<Path>
-        {
-            return r.path;
-        }
-
-        static auto result_nanoseconds(const PlanningResult &r) -> std::uint64_t
-        {
-            return r.nanoseconds;
-        }
-
-        static auto result_iterations(const PlanningResult &r) -> std::size_t
-        {
-            return r.iterations;
-        }
-
-        static auto result_size(const PlanningResult &r) -> std::vector<std::size_t>
-        {
-            return r.size;
-        }
-
-        static void sampler_reset(Sampler &s)
-        {
-            s.reset();
         }
 
         static void sampler_skip(Sampler &s, std::size_t n)

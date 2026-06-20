@@ -22,37 +22,42 @@ namespace vamp::jit
         return std::string("vamp_jit_") + robot_name + "_" + std::string(suffix);
     }
 
-    auto generate_stub_source(const StubOptions &opts) -> std::string
+    auto generate_stub_source(
+        const std::string &robot_source,
+        const std::string &robot_name,
+        std::size_t rake,
+        std::size_t resolution,
+        const std::vector<vamp::planning::Planner> &planners) -> std::string
     {
-        if (opts.robot_source.empty())
+        if (robot_source.empty())
         {
             throw std::runtime_error("vamp::jit::generate_stub_source: empty robot_source");
         }
 
-        if (opts.robot_name.empty())
+        if (robot_name.empty())
         {
             throw std::runtime_error("vamp::jit::generate_stub_source: empty robot_name");
         }
 
-        if (opts.planners.empty())
+        if (planners.empty())
         {
             throw std::runtime_error("vamp::jit::generate_stub_source: no planners requested");
         }
 
         std::ostringstream out;
-        out << embedded::preamble << "\n" << opts.robot_source << "\n";
+        out << embedded::preamble << "\n" << robot_source << "\n";
 
         inja::Environment env;
 
         nlohmann::json base = {
-            {"robot_name", opts.robot_name},
-            {"rake", opts.rake},
-            {"resolution", opts.resolution},
+            {"robot_name", robot_name},
+            {"rake", rake},
+            {"resolution", resolution},
         };
 
         out << env.render(std::string(embedded::robot_stub), base);
 
-        for (auto p : opts.planners)
+        for (auto p : planners)
         {
             const auto &d = vamp::planning::planner_descriptor(p);
             nlohmann::json data = base;

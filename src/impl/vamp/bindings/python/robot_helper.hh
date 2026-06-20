@@ -273,10 +273,11 @@ namespace vamp::binding
             return std::make_shared<vamp::rng::Halton<Robot>>();
         }
 
-        static auto make_xorshift(std::uint64_t /*seed*/) -> std::shared_ptr<Sampler>
+        static auto make_xorshift(std::uint64_t seed) -> std::shared_ptr<Sampler>
         {
 #if defined(__x86_64__)
-            return std::make_shared<vamp::rng::XORShift<Robot>>();
+            return (seed == 0) ? std::make_shared<vamp::rng::XORShift<Robot>>() :
+                                 std::make_shared<vamp::rng::XORShift<Robot>>(seed, seed + 1);
 #else
             throw std::runtime_error("XORShift is not supported on non-x86 systems!");
 #endif
@@ -293,34 +294,9 @@ namespace vamp::binding
             return std::make_shared<vamp::planning::ProlateHyperspheroidRNG<Robot>>(phs, inner);
         }
 
-        static auto path_len(const Path &p) -> std::size_t
-        {
-            return p.size();
-        }
-
         static auto path_get(const Path &p, std::size_t i)
         {
             return Input::from(p[i]);
-        }
-
-        static auto path_cost(const Path &p) -> float
-        {
-            return p.cost();
-        }
-
-        static void path_subdivide(Path &p)
-        {
-            p.subdivide();
-        }
-
-        static void path_interpolate_to_n_states(Path &p, std::size_t n)
-        {
-            p.interpolate_to_n_states(n);
-        }
-
-        static void path_interpolate_to_resolution(Path &p, std::size_t r)
-        {
-            p.interpolate_to_resolution(r);
         }
 
         static auto path_validate(Path &p, const Env &e) -> bool
@@ -364,31 +340,6 @@ namespace vamp::binding
             return r.path.size() >= 2;
         }
 
-        static auto result_path(const PlanningResult &r) -> Path
-        {
-            return r.path;
-        }
-
-        static auto result_nanoseconds(const PlanningResult &r) -> std::size_t
-        {
-            return r.nanoseconds;
-        }
-
-        static auto result_iterations(const PlanningResult &r) -> std::size_t
-        {
-            return r.iterations;
-        }
-
-        static auto result_size(const PlanningResult &r) -> std::vector<std::size_t>
-        {
-            return r.size;
-        }
-
-        static void sampler_reset(Sampler &s)
-        {
-            s.reset();
-        }
-
         static void sampler_skip(Sampler &s, std::size_t n)
         {
             for (auto i = 0U; i < n; ++i)
@@ -413,16 +364,14 @@ namespace vamp::binding
         }
     };
 
+    // Submodule-level introspection: nine free functions exposing static
+    // robot metadata. Pulled out of init_robot so the latter is mostly
+    // bind_*<Traits>(...) calls.
     template <typename Robot>
-    inline auto init_robot(nanobind::module_ &pymodule) -> nanobind::module_
+    inline void bind_static_introspection(nanobind::module_ &submodule)
     {
         using NA = NDArrayInput<Robot>;
-        using CA = ArrayInput<Robot>;
-        using TA = StaticRobotTraits<Robot, NA>;
-        using TC = StaticRobotTraits<Robot, CA>;
         using NDArray = typename NA::Type;
-
-        auto submodule = pymodule.def_submodule(Robot::name, "Robot-specific submodule");
 
         submodule.def("dimension", []() { return Robot::dimension; });
         submodule.def("resolution", []() { return Robot::resolution; });
@@ -434,26 +383,29 @@ namespace vamp::binding
         submodule.def("joint_names", []() { return Robot::joint_names; });
         submodule.def("end_effector", []() { return Robot::end_effector; });
 
-        submodule.def(
-            "upper_bounds",
-            []() -> NDArray
-            {
-                std::array<float, Robot::dimension> ones;
-                ones.fill(1.0f);
-                auto one_v = typename Robot::Configuration(ones);
-                Robot::scale_configuration(one_v);
-                return NA::from(one_v);
-            });
-        submodule.def(
-            "lower_bounds",
-            []() -> NDArray
-            {
-                std::array<float, Robot::dimension> zeros;
-                zeros.fill(0.0f);
-                auto zero_v = typename Robot::Configuration(zeros);
-                Robot::scale_configuration(zero_v);
-                return NA::from(zero_v);
-            });
+        const auto bounds = [](float fill) -> NDArray
+        {
+            std::array<float, Robot::dimension> v;
+            v.fill(fill);
+            auto cfg = typename Robot::Configuration(v);
+            Robot::scale_configuration(cfg);
+            return NA::from(cfg);
+        };
+        submodule.def("upper_bounds", [bounds]() { return bounds(1.0F); });
+        submodule.def("lower_bounds", [bounds]() { return bounds(0.0F); });
+    }
+
+    template <typename Robot>
+    inline auto init_robot(nanobind::module_ &pymodule) -> nanobind::module_
+    {
+        using NA = NDArrayInput<Robot>;
+        using CA = ArrayInput<Robot>;
+        using TA = StaticRobotTraits<Robot, NA>;
+        using TC = StaticRobotTraits<Robot, CA>;
+
+        auto submodule = pymodule.def_submodule(Robot::name, "Robot-specific submodule");
+
+        bind_static_introspection<Robot>(submodule);
 
         bind_sampler<TA>(submodule, "RNG");
 

@@ -147,30 +147,24 @@ namespace vamp::binding
         using P = typename Traits::Path;
         return nb_::class_<P>(m, name, "Path in configuration space represented as discrete waypoints.")
             .def(nb_::init<>(), "Default constructor, creates empty path.")
-            .def(
-                "__len__",
-                [](const P &p) { return Traits::path_len(p); },
-                "Return the number of waypoints in the path.")
+            .def("__len__", &P::size, "Return the number of waypoints in the path.")
             .def(
                 "__getitem__",
                 [](const P &p, std::size_t i) { return Traits::path_get(p, i); },
                 "Get the i-th configuration in the path.")
-            .def(
-                "cost",
-                [](const P &p) { return Traits::path_cost(p); },
-                "Compute the total path length (by the l2-norm) of the path.")
+            .def("cost", &P::cost, "Compute the total path length (by the l2-norm) of the path.")
             .def(
                 "subdivide",
-                [](P &p) { Traits::path_subdivide(p); },
+                &P::subdivide,
                 "Subdivide the path by inserting a configuration at the midpoint of every segment.")
             .def(
                 "interpolate_to_n_states",
-                [](P &p, std::size_t n) { Traits::path_interpolate_to_n_states(p, n); },
+                &P::interpolate_to_n_states,
                 "n"_a,
                 "Refine the path by interpolating to n states as evenly as possible.")
             .def(
                 "interpolate_to_resolution",
-                [](P &p, std::size_t r) { Traits::path_interpolate_to_resolution(p, r); },
+                &P::interpolate_to_resolution,
                 "resolution"_a,
                 "Refine the path by interpolating segments up to the given resolution.")
             .def(
@@ -214,20 +208,11 @@ namespace vamp::binding
                 "solved",
                 [](const R &r) { return Traits::result_solved(r); },
                 "Returns true if a solution was found.")
-            .def_prop_ro(
-                "path", [](const R &r) { return Traits::result_path(r); }, "The solution path, if found.")
-            .def_prop_ro(
-                "nanoseconds",
-                [](const R &r) { return Traits::result_nanoseconds(r); },
-                "Nanoseconds taken to find the path.")
-            .def_prop_ro(
-                "iterations",
-                [](const R &r) { return Traits::result_iterations(r); },
-                "Number of planner iterations used to find the path.")
-            .def_prop_ro(
-                "size",
-                [](const R &r) { return Traits::result_size(r); },
-                "Sizes of the planner's internal datastructures (e.g. tree node counts).");
+            .def_ro("path", &R::path, "The solution path, if found.")
+            .def_ro("nanoseconds", &R::nanoseconds, "Nanoseconds taken to find the path.")
+            .def_ro("iterations", &R::iterations, "Number of planner iterations used to find the path.")
+            .def_ro(
+                "size", &R::size, "Sizes of the planner's internal datastructures (e.g. tree node counts).");
     }
 
     template <typename Traits>
@@ -235,8 +220,7 @@ namespace vamp::binding
     {
         using S = typename Traits::Sampler;
         return nb_::class_<S>(m, name, "Sampler for robot configurations.")
-            .def(
-                "reset", [](S &s) { Traits::sampler_reset(s); }, "Reset the sampler to its initial state.")
+            .def("reset", &S::reset, "Reset the sampler to its initial state.")
             .def(
                 "skip",
                 [](S &s, std::size_t n) { Traits::sampler_skip(s, n); },

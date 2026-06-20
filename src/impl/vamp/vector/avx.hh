@@ -622,7 +622,7 @@ namespace vamp
 
             auto z = mul(ps_05, x);
             z = sub(ps_05, z);
-            z = sqrt(z);
+            z = _mm256_sqrt_ps(z);
             z = asin(z);
             z = mul(ps_2, z);
 
@@ -643,8 +643,6 @@ namespace vamp
         template <unsigned int = 0>
         inline static auto atan(VectorT x) noexcept -> VectorT
         {
-
-            const auto ps_sign_mask = constant_int(0x80000000);
 
             const auto ps_cephes_P0 = constant(-8.750608600031904122785E-1f);
             const auto ps_cephes_P1 = constant(-1.615753718733365076637E1f);

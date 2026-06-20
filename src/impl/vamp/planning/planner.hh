@@ -1,10 +1,17 @@
 #pragma once
 
+#include <vamp/planning/aorrtc.hh>
+#include <vamp/planning/fcit.hh>
+#include <vamp/planning/grrtstar.hh>
+#include <vamp/planning/prm.hh>
+#include <vamp/planning/rrtc.hh>
+
 #include <array>
 #include <cstddef>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <type_traits>
 
 namespace vamp::planning
 {
@@ -57,4 +64,35 @@ namespace vamp::planning
         }
         throw std::runtime_error("vamp::planning: unknown planner '" + std::string(name) + "'");
     }
+
+    namespace detail
+    {
+        template <typename Robot, std::size_t rake, std::size_t resolution, Planner P>
+        constexpr auto pick_planner()
+        {
+            if constexpr (P == Planner::RRTC)
+            {
+                return static_cast<RRTC<Robot, rake, resolution> *>(nullptr);
+            }
+            else if constexpr (P == Planner::PRM)
+            {
+                return static_cast<PRM<Robot, rake, resolution> *>(nullptr);
+            }
+            else if constexpr (P == Planner::FCIT)
+            {
+                return static_cast<FCIT<Robot, rake, resolution> *>(nullptr);
+            }
+            else if constexpr (P == Planner::AORRTC)
+            {
+                return static_cast<AORRTC<Robot, rake, resolution> *>(nullptr);
+            }
+            else if constexpr (P == Planner::GRRTSTAR)
+            {
+                return static_cast<GRRTStar<Robot, rake, resolution> *>(nullptr);
+            }
+        }
+    }  // namespace detail
+
+    template <typename Robot, std::size_t rake, std::size_t resolution, Planner P>
+    using PlannerClass = std::remove_pointer_t<decltype(detail::pick_planner<Robot, rake, resolution, P>())>;
 }  // namespace vamp::planning

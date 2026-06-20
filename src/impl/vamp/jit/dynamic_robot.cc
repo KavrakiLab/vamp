@@ -83,10 +83,10 @@ namespace vamp::jit
 
         const auto &r = opts.robot_name;
 
-        // Result helpers are shared across planners + simplify.
         ops_.result_meta = resolve<ffi::ResultMetaFn>(*session_, r, "result_meta");
         ops_.result_copy_waypoint = resolve<ffi::ResultCopyWaypointFn>(*session_, r, "result_copy_waypoint");
         ops_.result_destroy = resolve<ffi::ResultDestroyFn>(*session_, r, "result_destroy");
+        ops_.result_sizes = resolve<ffi::ResultSizesFn>(*session_, r, "result_sizes");
 
         ops_.simplify = resolve<ffi::SimplifyFn>(*session_, r, "simplify");
 

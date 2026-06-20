@@ -1,5 +1,6 @@
 #include <vamp_python_init.hh>
 
+#include <vamp/bindings/python/api_binder.hh>
 #include <vamp/bindings/python/array_helpers.hh>
 #include <vamp/jit/api.hh>
 #include <vamp/jit/build_paths.hh>
@@ -121,16 +122,10 @@ namespace vamp::binding
     {
         using Type = std::vector<vamp::collision::Point>;
 
-        static auto as_ptr(const Type &v, std::vector<float> &scratch, const char * /*what*/)
+        static auto as_ptr(const Type &v, std::vector<float> & /*scratch*/, const char * /*what*/)
             -> std::pair<const float *, std::uint64_t>
         {
-            scratch.clear();
-            scratch.reserve(3 * v.size());
-            for (const auto &p : v)
-            {
-                scratch.insert(scratch.end(), p.begin(), p.end());
-            }
-            return {scratch.data(), v.size()};
+            return {v.empty() ? nullptr : v.front().data(), v.size()};
         }
     };
 
@@ -144,154 +139,6 @@ namespace vamp::binding
             return as_flat_2d(a, 3, scratch, what);
         }
     };
-
-    template <typename ConfigInput, typename PathInput, typename PcInput>
-    struct DynamicHelper
-    {
-        using Cfg = typename ConfigInput::Type;
-        using Pth = typename PathInput::Type;
-        using Pc = typename PcInput::Type;
-        using Env = vamp::collision::Environment<float>;
-
-        template <vp::Planner P, typename Settings>
-        static auto solve_single(
-            std::shared_ptr<vj::DynamicRobot> self,
-            const Cfg &start,
-            const Cfg &goal,
-            const Env &env,
-            const Settings &settings,
-            vj::DynamicSampler &sampler) -> vj::DynamicPlanResult
-        {
-            const auto d = self->dimension();
-            std::vector<float> ss, gs;
-            return vj::solve(
-                self,
-                P,
-                ConfigInput::as_ptr(start, d, ss, "start"),
-                ConfigInput::as_ptr(goal, d, gs, "goal"),
-                env,
-                settings,
-                sampler);
-        }
-
-        template <vp::Planner P, typename Settings>
-        static auto solve_multi(
-            std::shared_ptr<vj::DynamicRobot> self,
-            const Cfg &start,
-            const Pth &goals,
-            const Env &env,
-            const Settings &settings,
-            vj::DynamicSampler &sampler) -> vj::DynamicPlanResult
-        {
-            const auto d = self->dimension();
-            std::vector<float> ss, gs;
-            auto [gptr, n] = PathInput::as_ptr(goals, d, gs, "goals");
-            return vj::solve_multi(
-                self, P, ConfigInput::as_ptr(start, d, ss, "start"), gptr, n, env, settings, sampler);
-        }
-
-        static auto simplify(
-            std::shared_ptr<vj::DynamicRobot> self,
-            const Pth &path,
-            const Env &env,
-            const vp::SimplifySettings &settings,
-            vj::DynamicSampler &sampler) -> vj::DynamicPlanResult
-        {
-            std::vector<float> scratch;
-            auto [pptr, n] = PathInput::as_ptr(path, self->dimension(), scratch, "path");
-            return vj::simplify(self, pptr, n, env, settings, sampler);
-        }
-
-        static auto fk(vj::DynamicRobot &self, const Cfg &config)
-            -> std::vector<vamp::collision::Sphere<float>>
-        {
-            std::vector<float> scratch;
-            return vj::fk(self, ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"));
-        }
-
-        static auto eefk(vj::DynamicRobot &self, const Cfg &config) -> Eigen::Matrix4f
-        {
-            std::vector<float> scratch;
-            return vj::eefk(self, ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"));
-        }
-
-        static auto debug(vj::DynamicRobot &self, const Cfg &config, const Env &env) -> vj::DebugType
-        {
-            std::vector<float> scratch;
-            return vj::debug(
-                self, ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"), env);
-        }
-
-        static auto validate(vj::DynamicRobot &self, const Cfg &config, const Env &env, bool check_bounds)
-            -> bool
-        {
-            std::vector<float> scratch;
-            return vj::validate(
-                self,
-                ConfigInput::as_ptr(config, self.dimension(), scratch, "configuration"),
-                env,
-                check_bounds);
-        }
-
-        static auto validate_motion(
-            vj::DynamicRobot &self,
-            const Cfg &c_in,
-            const Cfg &c_out,
-            const Env &env,
-            bool check_bounds) -> bool
-        {
-            std::vector<float> s_in, s_out;
-            return vj::validate_motion(
-                self,
-                ConfigInput::as_ptr(c_in, self.dimension(), s_in, "configuration_in"),
-                ConfigInput::as_ptr(c_out, self.dimension(), s_out, "configuration_out"),
-                env,
-                check_bounds);
-        }
-
-        static auto filter_self_from_pointcloud(
-            vj::DynamicRobot &self,
-            const Pc &pc,
-            float point_radius,
-            const Cfg &config,
-            const Env &env) -> std::vector<vamp::collision::Point>
-        {
-            std::vector<float> cfg_scratch, pc_scratch;
-            auto [pptr, n] = PcInput::as_ptr(pc, pc_scratch, "pc");
-            return vj::filter_self_from_pointcloud(
-                self,
-                pptr,
-                n,
-                point_radius,
-                ConfigInput::as_ptr(config, self.dimension(), cfg_scratch, "config"),
-                env);
-        }
-
-        static auto make_phs(std::shared_ptr<vj::DynamicRobot> self, const Cfg &focus_a, const Cfg &focus_b)
-            -> std::shared_ptr<vj::DynamicPhs>
-        {
-            const auto d = self->dimension();
-            std::vector<float> sa, sb;
-            return vj::make_phs(
-                self,
-                ConfigInput::as_ptr(focus_a, d, sa, "focus_a"),
-                ConfigInput::as_ptr(focus_b, d, sb, "focus_b"));
-        }
-
-        static auto phs_transform(vj::DynamicPhs &phs, const Cfg &x)
-            -> nb::ndarray<nb::numpy, float, nb::device::cpu>
-        {
-            const auto dim = phs.robot->dimension();
-            std::vector<float> scratch;
-            const auto *xptr = ConfigInput::as_ptr(x, dim, scratch, "x");
-            std::vector<float> out(dim);
-            phs.transform(xptr, out.data());
-            return make_ndarray<1>(out.data(), {dim});
-        }
-    };
-
-    using DHV = DynamicHelper<VectorConfig, VectorPath, VectorPointcloud>;
-    using DHN = DynamicHelper<NDArrayConfig, NDArrayPath, NDArrayPointcloud>;
 
     inline auto to_waypoint(vj::DynamicPath &p, std::size_t sz, const float *src, bool allow_init)
         -> std::vector<float>
@@ -329,21 +176,306 @@ namespace vamp::binding
         }
     }
 
-#define VJF_MF(KLASS, NAME, FUNC, ...)                                                                       \
-    KLASS.def(NAME, &DHV::FUNC, ##__VA_ARGS__);                                                              \
-    KLASS.def(NAME, &DHN::FUNC, ##__VA_ARGS__)
-
-    template <vp::Planner P, typename Settings, typename Klass>
-    inline void register_planner(Klass &k, const char *name)
+    template <typename ConfigInput, typename PathInput, typename PcInput>
+    struct DynamicRobotTraits
     {
-        const auto doc = std::string("JIT'd ") + name;
-        auto def1 = [&](auto fn)
-        { k.def(name, fn, "start"_a, "goal"_a, "environment"_a, "settings"_a, "sampler"_a, doc.c_str()); };
-        def1(&DHV::template solve_single<P, Settings>);
-        def1(&DHN::template solve_single<P, Settings>);
-        def1(&DHV::template solve_multi<P, Settings>);
-        def1(&DHN::template solve_multi<P, Settings>);
-    }
+        using Cfg = typename ConfigInput::Type;
+        using Pth = typename PathInput::Type;
+        using Pc = typename PcInput::Type;
+        using Path = vj::DynamicPath;
+        using PlanningResult = vj::DynamicPlanResult;
+        using Sampler = vj::DynamicSampler;
+        using Phs = vj::DynamicPhs;
+        using Env = vamp::collision::Environment<float>;
+        using PRMSettings = vp::RoadmapSettings<vp::PRMStarNeighborParams>;
+        using FCITSettings = vp::RoadmapSettings<vp::FCITStarNeighborParams>;
+
+        template <vp::Planner P, typename Settings>
+        static auto solve_single(
+            std::shared_ptr<vj::DynamicRobot> self,
+            const Cfg &start,
+            const Cfg &goal,
+            const Env &env,
+            const Settings &settings,
+            std::shared_ptr<Sampler> sampler) -> PlanningResult
+        {
+            const auto d = self->dimension();
+            std::vector<float> ss, gs;
+            return vj::solve(
+                self,
+                P,
+                ConfigInput::as_ptr(start, d, ss, "start"),
+                ConfigInput::as_ptr(goal, d, gs, "goal"),
+                env,
+                settings,
+                *sampler);
+        }
+
+        template <vp::Planner P, typename Settings>
+        static auto solve_multi(
+            std::shared_ptr<vj::DynamicRobot> self,
+            const Cfg &start,
+            const Pth &goals,
+            const Env &env,
+            const Settings &settings,
+            std::shared_ptr<Sampler> sampler) -> PlanningResult
+        {
+            const auto d = self->dimension();
+            std::vector<float> ss, gs;
+            auto [gptr, n] = PathInput::as_ptr(goals, d, gs, "goals");
+            return vj::solve_multi(
+                self, P, ConfigInput::as_ptr(start, d, ss, "start"), gptr, n, env, settings, *sampler);
+        }
+
+        static auto simplify(
+            std::shared_ptr<vj::DynamicRobot> self,
+            const Pth &path,
+            const Env &env,
+            const vp::SimplifySettings &settings,
+            std::shared_ptr<Sampler> sampler) -> PlanningResult
+        {
+            std::vector<float> scratch;
+            auto [pptr, n] = PathInput::as_ptr(path, self->dimension(), scratch, "path");
+            return vj::simplify(self, pptr, n, env, settings, *sampler);
+        }
+
+        static auto fk(vj::DynamicRobot &self, const Cfg &c) -> std::vector<vamp::collision::Sphere<float>>
+        {
+            std::vector<float> scratch;
+            return vj::fk(self, ConfigInput::as_ptr(c, self.dimension(), scratch, "configuration"));
+        }
+
+        static auto eefk(vj::DynamicRobot &self, const Cfg &c) -> Eigen::Matrix4f
+        {
+            std::vector<float> scratch;
+            return vj::eefk(self, ConfigInput::as_ptr(c, self.dimension(), scratch, "configuration"));
+        }
+
+        static auto debug(vj::DynamicRobot &self, const Cfg &c, const Env &env) -> vj::DebugType
+        {
+            std::vector<float> scratch;
+            return vj::debug(self, ConfigInput::as_ptr(c, self.dimension(), scratch, "configuration"), env);
+        }
+
+        static auto validate(vj::DynamicRobot &self, const Cfg &c, const Env &env, bool check_bounds) -> bool
+        {
+            std::vector<float> scratch;
+            return vj::validate(
+                self, ConfigInput::as_ptr(c, self.dimension(), scratch, "configuration"), env, check_bounds);
+        }
+
+        static auto validate_motion(
+            vj::DynamicRobot &self,
+            const Cfg &c_in,
+            const Cfg &c_out,
+            const Env &env,
+            bool check_bounds) -> bool
+        {
+            std::vector<float> s_in, s_out;
+            return vj::validate_motion(
+                self,
+                ConfigInput::as_ptr(c_in, self.dimension(), s_in, "configuration_in"),
+                ConfigInput::as_ptr(c_out, self.dimension(), s_out, "configuration_out"),
+                env,
+                check_bounds);
+        }
+
+        static auto filter_self_from_pointcloud(
+            vj::DynamicRobot &self,
+            const Pc &pc,
+            float point_radius,
+            const Cfg &c,
+            const Env &env) -> std::vector<vamp::collision::Point>
+        {
+            std::vector<float> cfg_scratch, pc_scratch;
+            auto [pptr, n] = PcInput::as_ptr(pc, pc_scratch, "pc");
+            return vj::filter_self_from_pointcloud(
+                self,
+                pptr,
+                n,
+                point_radius,
+                ConfigInput::as_ptr(c, self.dimension(), cfg_scratch, "config"),
+                env);
+        }
+
+        static auto make_halton(std::shared_ptr<vj::DynamicRobot> self) -> std::shared_ptr<Sampler>
+        {
+            return vj::make_halton_sampler(std::move(self));
+        }
+
+        static auto make_xorshift(std::shared_ptr<vj::DynamicRobot> self, std::uint64_t seed)
+            -> std::shared_ptr<Sampler>
+        {
+            return vj::make_xorshift_sampler(std::move(self), seed);
+        }
+
+        static auto make_phs(std::shared_ptr<vj::DynamicRobot> self, const Cfg &focus_a, const Cfg &focus_b)
+            -> std::shared_ptr<Phs>
+        {
+            const auto d = self->dimension();
+            std::vector<float> sa, sb;
+            return vj::make_phs(
+                self,
+                ConfigInput::as_ptr(focus_a, d, sa, "focus_a"),
+                ConfigInput::as_ptr(focus_b, d, sb, "focus_b"));
+        }
+
+        static auto make_phs_sampler(
+            std::shared_ptr<vj::DynamicRobot> self,
+            const Phs &phs,
+            std::shared_ptr<Sampler> inner) -> std::shared_ptr<Sampler>
+        {
+            return vj::make_phs_sampler(std::move(self), phs, *inner);
+        }
+
+        static auto path_len(const Path &p) -> std::size_t
+        {
+            return p.waypoints.size();
+        }
+
+        static auto path_get(const Path &p, std::size_t i)
+        {
+            check_idx(p, i);
+            return make_ndarray<1>(p.waypoints[i].data(), {p.dim});
+        }
+
+        static auto path_cost(const Path &p) -> float
+        {
+            return p.cost();
+        }
+
+        static void path_subdivide(Path &p)
+        {
+            p.subdivide();
+        }
+
+        static void path_interpolate_to_n_states(Path &p, std::size_t n)
+        {
+            p.interpolate_to_n_states(n);
+        }
+
+        static void path_interpolate_to_resolution(Path &p, std::size_t r)
+        {
+            p.interpolate_to_resolution(r);
+        }
+
+        static auto path_validate(Path &p, const Env &e) -> bool
+        {
+            return p.validate(e);
+        }
+
+        static auto path_numpy(const Path &p)
+        {
+            const auto n = p.waypoints.size();
+            return make_ndarray_filled<2>(
+                {n, p.dim},
+                [&](float *dst)
+                {
+                    for (std::size_t i = 0; i < n; ++i)
+                    {
+                        std::memcpy(dst + i * p.dim, p.waypoints[i].data(), p.dim * sizeof(float));
+                    }
+                });
+        }
+
+        static void path_set(Path &p, std::size_t i, const Cfg &c)
+        {
+            check_idx(p, i);
+            if constexpr (std::is_same_v<ConfigInput, VectorConfig>)
+            {
+                p.waypoints[i] = vec_waypoint(p, c, false);
+            }
+            else
+            {
+                p.waypoints[i] = nd_waypoint(p, c, false);
+            }
+        }
+
+        static void path_append(Path &p, const Cfg &c)
+        {
+            if constexpr (std::is_same_v<ConfigInput, VectorConfig>)
+            {
+                p.waypoints.emplace_back(vec_waypoint(p, c, true));
+            }
+            else
+            {
+                p.waypoints.emplace_back(nd_waypoint(p, c, true));
+            }
+        }
+
+        static void path_insert(Path &p, std::size_t i, const Cfg &c)
+        {
+            if constexpr (std::is_same_v<ConfigInput, VectorConfig>)
+            {
+                p.waypoints.insert(p.waypoints.cbegin() + i, vec_waypoint(p, c, true));
+            }
+            else
+            {
+                p.waypoints.insert(p.waypoints.cbegin() + i, nd_waypoint(p, c, true));
+            }
+        }
+
+        static auto result_solved(const PlanningResult &r) -> bool
+        {
+            return r.solved();
+        }
+
+        static auto result_path(const PlanningResult &r) -> std::shared_ptr<Path>
+        {
+            return r.path;
+        }
+
+        static auto result_nanoseconds(const PlanningResult &r) -> std::uint64_t
+        {
+            return r.nanoseconds;
+        }
+
+        static auto result_iterations(const PlanningResult &r) -> std::size_t
+        {
+            return r.iterations;
+        }
+
+        static auto result_size(const PlanningResult &r) -> std::vector<std::size_t>
+        {
+            return r.size;
+        }
+
+        static void sampler_reset(Sampler &s)
+        {
+            s.reset();
+        }
+
+        static void sampler_skip(Sampler &s, std::size_t n)
+        {
+            s.skip(n);
+        }
+
+        static auto sampler_next(Sampler &s)
+        {
+            const auto dim = s.robot->dimension();
+            std::vector<float> out(dim);
+            s.next(out.data());
+            return make_ndarray<1>(out.data(), {dim});
+        }
+
+        static void phs_set_transverse_diameter(Phs &p, float d)
+        {
+            p.set_transverse_diameter(d);
+        }
+
+        static auto phs_transform(Phs &phs, const Cfg &x) -> nb::ndarray<nb::numpy, float, nb::device::cpu>
+        {
+            const auto dim = phs.robot->dimension();
+            std::vector<float> scratch;
+            const auto *xptr = ConfigInput::as_ptr(x, dim, scratch, "x");
+            std::vector<float> out(dim);
+            phs.transform(xptr, out.data());
+            return make_ndarray<1>(out.data(), {dim});
+        }
+    };
+
+    using DTV = DynamicRobotTraits<VectorConfig, VectorPath, VectorPointcloud>;
+    using DTN = DynamicRobotTraits<NDArrayConfig, NDArrayPath, NDArrayPointcloud>;
 
     void init_dynamic(nb::module_ &pymodule)
     {
@@ -357,130 +489,16 @@ namespace vamp::binding
         }
         dlopen(info.dli_fname, RTLD_NOW | RTLD_GLOBAL | RTLD_NOLOAD);
 
-        const auto default_env = vamp::collision::Environment<float>();
+        auto path_k = bind_path_class<DTV>(pymodule, "DynamicPath");
+        bind_path_io<DTV>(path_k);
+        bind_path_io<DTN>(path_k);
 
-        // ---- DynamicPath ---------------------------------------------------
-        nb::class_<vj::DynamicPath>(pymodule, "DynamicPath")
-            .def(nb::init<>(), "Default constructor, creates empty path.")
-            .def(
-                "__len__",
-                [](const vj::DynamicPath &p) { return p.waypoints.size(); },
-                "Return the number of waypoints in the path.")
-            .def(
-                "__getitem__",
-                [](const vj::DynamicPath &p, std::size_t i)
-                {
-                    check_idx(p, i);
-                    return make_ndarray<1>(p.waypoints[i].data(), {p.dim});
-                },
-                "Get the i-th configuration in the path.")
-            .def(
-                "__setitem__",
-                [](vj::DynamicPath &p, std::size_t i, const std::vector<float> &c)
-                {
-                    check_idx(p, i);
-                    p.waypoints[i] = vec_waypoint(p, c, false);
-                },
-                "Set the i-th configuration of the path.")
-            .def(
-                "__setitem__",
-                [](vj::DynamicPath &p, std::size_t i, const ConfigNd &c)
-                {
-                    check_idx(p, i);
-                    p.waypoints[i] = nd_waypoint(p, c, false);
-                },
-                "Set the i-th configuration of the path.")
-            .def(
-                "append",
-                [](vj::DynamicPath &p, const std::vector<float> &c)
-                { p.waypoints.emplace_back(vec_waypoint(p, c, true)); },
-                "Append a configuration to the end of this path.")
-            .def(
-                "append",
-                [](vj::DynamicPath &p, const ConfigNd &c)
-                { p.waypoints.emplace_back(nd_waypoint(p, c, true)); },
-                "Append a configuration to the end of this path.")
-            .def(
-                "insert",
-                [](vj::DynamicPath &p, std::size_t i, const std::vector<float> &c)
-                { p.waypoints.insert(p.waypoints.cbegin() + i, vec_waypoint(p, c, true)); },
-                "Insert a configuration at index i.")
-            .def(
-                "insert",
-                [](vj::DynamicPath &p, std::size_t i, const ConfigNd &c)
-                { p.waypoints.insert(p.waypoints.cbegin() + i, nd_waypoint(p, c, true)); },
-                "Insert a configuration at index i.")
-            .def(
-                "cost", &vj::DynamicPath::cost, "Compute the total path length (by the l2-norm) of the path.")
-            .def(
-                "subdivide",
-                &vj::DynamicPath::subdivide,
-                "Subdivide the path by inserting a configuration at the midpoint of every segment.")
-            .def(
-                "interpolate_to_n_states",
-                &vj::DynamicPath::interpolate_to_n_states,
-                "n"_a,
-                "Refine the path by interpolating to n states as evenly as possible.")
-            .def(
-                "interpolate_to_resolution",
-                &vj::DynamicPath::interpolate_to_resolution,
-                "resolution"_a,
-                "Refine the path by interpolating segments up to the given resolution.")
-            .def(
-                "validate",
-                &vj::DynamicPath::validate,
-                "environment"_a,
-                "Validate the path in an environment.")
-            .def(
-                "numpy",
-                [](const vj::DynamicPath &p)
-                {
-                    const auto n = p.waypoints.size();
-                    return make_ndarray_filled<2>(
-                        {n, p.dim},
-                        [&](float *dst)
-                        {
-                            for (std::size_t i = 0; i < n; ++i)
-                            {
-                                std::memcpy(dst + i * p.dim, p.waypoints[i].data(), p.dim * sizeof(float));
-                            }
-                        });
-                },
-                "Convert this path to an (n_waypoints, dimension) numpy array.");
+        bind_planning_result<DTV>(pymodule, "DynamicPlanResult");
+        bind_sampler<DTV>(pymodule, "DynamicSampler");
 
-        // ---- DynamicPlanResult ---------------------------------------------
-        nb::class_<vj::DynamicPlanResult>(pymodule, "DynamicPlanResult")
-            .def(nb::init<>(), "Empty constructor.")
-            .def_prop_ro("solved", &vj::DynamicPlanResult::solved, "Returns true if solution found.")
-            .def_ro("path", &vj::DynamicPlanResult::path, "The solution path, if found.")
-            .def_ro("nanoseconds", &vj::DynamicPlanResult::nanoseconds, "Nanoseconds taken to find the path.")
-            .def_ro(
-                "iterations",
-                &vj::DynamicPlanResult::iterations,
-                "Number of planner iterations used to find the path.");
-
-        // ---- DynamicSampler -----------------------------------------------
-        nb::class_<vj::DynamicSampler>(pymodule, "DynamicSampler")
-            .def("reset", &vj::DynamicSampler::reset, "Reset the sampler to its initial state.")
-            .def("skip", &vj::DynamicSampler::skip, "n"_a, "Skip the next n samples.")
-            .def(
-                "next",
-                [](vj::DynamicSampler &s)
-                {
-                    const auto dim = s.robot->dimension();
-                    std::vector<float> out(dim);
-                    s.next(out.data());
-                    return make_ndarray<1>(out.data(), {dim});
-                },
-                "Sample the next configuration.");
-
-        auto phs_klass =
-            nb::class_<vj::DynamicPhs>(pymodule, "DynamicPhs")
-                .def("set_transverse_diameter", &vj::DynamicPhs::set_transverse_diameter, "diameter"_a);
-        VJF_MF(phs_klass, "transform", phs_transform, "x"_a);
-
-        using PRMSettings = vp::RoadmapSettings<vp::PRMStarNeighborParams>;
-        using FCITSettings = vp::RoadmapSettings<vp::FCITStarNeighborParams>;
+        auto phs_k = bind_phs_class<DTV>(pymodule, "DynamicPhs");
+        bind_phs_io<DTV>(phs_k);
+        bind_phs_io<DTN>(phs_k);
 
         auto klass =
             nb::class_<vj::DynamicRobot>(pymodule, "DynamicRobot")
@@ -512,73 +530,8 @@ namespace vamp::binding
                         return make_ndarray<1>(b.data(), {b.size()});
                     });
 
-        register_planner<vp::Planner::RRTC, vp::RRTCSettings>(klass, "rrtc");
-        register_planner<vp::Planner::PRM, PRMSettings>(klass, "prm");
-        register_planner<vp::Planner::FCIT, FCITSettings>(klass, "fcit");
-        register_planner<vp::Planner::AORRTC, vp::AORRTCSettings>(klass, "aorrtc");
-        register_planner<vp::Planner::GRRTSTAR, vp::GRRTStarSettings>(klass, "grrtstar");
-
-        VJF_MF(
-            klass,
-            "fk",
-            fk,
-            "configuration"_a,
-            "Computes the forward kinematics of the robot (JIT). Returns spheres.");
-        VJF_MF(
-            klass,
-            "eefk",
-            eefk,
-            "configuration"_a,
-            "End-effector forward kinematics. Returns a 4x4 transform (JIT).");
-        VJF_MF(
-            klass,
-            "debug",
-            debug,
-            "configuration"_a,
-            "environment"_a = default_env,
-            "Check which spheres of a robot configuration are in collision (JIT).");
-        VJF_MF(
-            klass,
-            "validate",
-            validate,
-            "configuration"_a,
-            "environment"_a = default_env,
-            "check_bounds"_a = false,
-            "Check if a configuration is valid (JIT).");
-        VJF_MF(
-            klass,
-            "validate_motion",
-            validate_motion,
-            "configuration_in"_a,
-            "configuration_out"_a,
-            "environment"_a = default_env,
-            "check_bounds"_a = true,
-            "Check if a configuration-to-configuration motion is valid (JIT).");
-        VJF_MF(
-            klass,
-            "filter_self_from_pointcloud",
-            filter_self_from_pointcloud,
-            "pc"_a,
-            "point_radius"_a,
-            "configuration"_a,
-            "environment"_a = default_env,
-            "Filters points colliding with the robot or environment (JIT).");
-        VJF_MF(
-            klass,
-            "phs",
-            make_phs,
-            "focus_a"_a,
-            "focus_b"_a,
-            "Construct a prolate hyperspheroid from two foci.");
-        VJF_MF(
-            klass,
-            "simplify",
-            simplify,
-            "path"_a,
-            "environment"_a,
-            "settings"_a,
-            "sampler"_a,
-            "JIT'd path simplification.");
+        bind_robot_methods<DTV>(klass);
+        bind_robot_methods<DTN>(klass);
 
         klass.def(
             "simplify",
@@ -586,31 +539,13 @@ namespace vamp::binding
                const vj::DynamicPath &path,
                const vamp::collision::Environment<float> &env,
                const vp::SimplifySettings &settings,
-               vj::DynamicSampler &sampler)
-            { return DHV::simplify(self, path.waypoints, env, settings, sampler); },
+               std::shared_ptr<vj::DynamicSampler> sampler)
+            { return DTV::simplify(self, path.waypoints, env, settings, sampler); },
             "path"_a,
             "environment"_a,
             "settings"_a,
             "sampler"_a,
             "JIT'd path simplification (DynamicPath input).");
-
-        klass.def(
-            "halton",
-            [](std::shared_ptr<vj::DynamicRobot> self) { return vj::make_halton_sampler(std::move(self)); },
-            "Create a Halton sampler for this robot.");
-        klass.def(
-            "xorshift",
-            [](std::shared_ptr<vj::DynamicRobot> self, std::uint64_t seed)
-            { return vj::make_xorshift_sampler(std::move(self), seed); },
-            "seed"_a = 0,
-            "Create an XORShift sampler for this robot.");
-        klass.def(
-            "phs_sampler",
-            [](std::shared_ptr<vj::DynamicRobot> self, const vj::DynamicPhs &phs, vj::DynamicSampler &inner)
-            { return vj::make_phs_sampler(std::move(self), phs, inner); },
-            "phs"_a,
-            "rng"_a,
-            "Create a new PHS-rejection sampler wrapping an inner RNG.");
 
         pymodule.def(
             "load_robot",

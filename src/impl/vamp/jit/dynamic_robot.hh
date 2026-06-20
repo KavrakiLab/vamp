@@ -46,6 +46,7 @@ namespace vamp::jit
         ffi::ResultMetaFn result_meta{nullptr};
         ffi::ResultCopyWaypointFn result_copy_waypoint{nullptr};
         ffi::ResultDestroyFn result_destroy{nullptr};
+        ffi::ResultSizesFn result_sizes{nullptr};
 
         ffi::SimplifyFn simplify{nullptr};
 

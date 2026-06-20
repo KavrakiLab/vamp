@@ -42,6 +42,7 @@ namespace vamp::jit::ffi
     using ResultMetaFn = PlanResultMeta (*)(const PlanResultHandle *);
     using ResultCopyWaypointFn = void (*)(const PlanResultHandle *, std::uint64_t idx, float *out);
     using ResultDestroyFn = void (*)(PlanResultHandle *);
+    using ResultSizesFn = void (*)(const PlanResultHandle *, void *out_sizes_vec);
 
     using SamplerHaltonFn = SamplerHandle *(*)();
     using SamplerXorshiftFn = SamplerHandle *(*)(std::uint64_t seed);

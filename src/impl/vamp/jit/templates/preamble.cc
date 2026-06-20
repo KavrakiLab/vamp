@@ -1,6 +1,7 @@
 #include <Eigen/Geometry>
 
 #include <vamp/collision/environment.hh>
+#include <vamp/collision/filter.hh>
 #include <vamp/collision/validity.hh>
 #include <vamp/jit/ffi.hh>
 #include <vamp/random/halton.hh>

@@ -12,6 +12,7 @@
 #define VAMP_JIT_FN_RESULT_META             vamp_jit_{{robot_name}}_result_meta
 #define VAMP_JIT_FN_RESULT_COPY_WAYPOINT    vamp_jit_{{robot_name}}_result_copy_waypoint
 #define VAMP_JIT_FN_RESULT_DESTROY          vamp_jit_{{robot_name}}_result_destroy
+#define VAMP_JIT_FN_RESULT_SIZES            vamp_jit_{{robot_name}}_result_sizes
 
 #define VAMP_JIT_FN_SAMPLER_HALTON          vamp_jit_{{robot_name}}_sampler_halton
 #define VAMP_JIT_FN_SAMPLER_XORSHIFT        vamp_jit_{{robot_name}}_sampler_xorshift
@@ -90,6 +91,13 @@ VAMP_JIT_FN_RESULT_COPY_WAYPOINT(const vamp::jit::ffi::PlanResultHandle *h, std:
 extern "C" void VAMP_JIT_FN_RESULT_DESTROY(vamp::jit::ffi::PlanResultHandle *h)
 {
     delete reinterpret_cast<vamp_jit_robot::WrappedResult *>(h);
+}
+
+extern "C" void VAMP_JIT_FN_RESULT_SIZES(const vamp::jit::ffi::PlanResultHandle *h, void *out_sizes_vec)
+{
+    const auto *w = reinterpret_cast<const vamp_jit_robot::WrappedResult *>(h);
+    auto *out = static_cast<std::vector<std::size_t> *>(out_sizes_vec);
+    *out = w->inner.size;
 }
 
 extern "C" vamp::jit::ffi::SamplerHandle *VAMP_JIT_FN_SAMPLER_HALTON()
@@ -267,45 +275,22 @@ extern "C" void VAMP_JIT_FN_FILTER_PC(
 {
     using R = vamp_jit_robot::R;
 
-    const auto *env_in = static_cast<const vamp::collision::Environment<float> *>(env_ptr);
-    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(*env_in);
-
     typename R::template ConfigurationBlock<1> block;
     for (std::size_t i = 0; i < R::dimension; ++i)
     {
         block[i] = config[i];
     }
 
-    typename R::template Spheres<1> out;
-    R::template sphere_fk<1>(block, out);
+    vamp::collision::Environment<vamp::FloatVector<VAMP_JIT_RAKE>> env_rake(
+        *static_cast<const vamp::collision::Environment<float> *>(env_ptr));
 
-    auto *filtered = static_cast<std::vector<vamp::collision::Point> *>(out_filtered_vec);
-    filtered->clear();
-    filtered->reserve(n_points);
-
-    for (std::uint64_t p = 0; p < n_points; ++p)
-    {
-        const float x = points_in[p * 3 + 0];
-        const float y = points_in[p * 3 + 1];
-        const float z = points_in[p * 3 + 2];
-
-        bool valid = true;
-        for (std::size_t i = 0; i < R::n_spheres; ++i)
-        {
-            if (vamp::collision::sphere_sphere_sql2(
-                    out.x[{i, 0}], out.y[{i, 0}], out.z[{i, 0}], out.r[{i, 0}], x, y, z, point_radius) < 0 or
-                vamp::sphere_environment_in_collision<>(env_rake, x, y, z, point_radius))
-            {
-                valid = false;
-                break;
-            }
-        }
-
-        if (valid)
-        {
-            filtered->emplace_back(vamp::collision::Point{x, y, z});
-        }
-    }
+    vamp::collision::filter_self_from_pointcloud<R, VAMP_JIT_RAKE>(
+        points_in,
+        n_points,
+        point_radius,
+        block,
+        env_rake,
+        *static_cast<std::vector<vamp::collision::Point> *>(out_filtered_vec));
 }
 
 extern "C" float VAMP_JIT_FN_SPACE_MEASURE()

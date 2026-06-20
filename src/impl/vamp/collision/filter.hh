@@ -11,7 +11,11 @@
 #include <immintrin.h>
 #endif
 
+#include <vamp/collision/environment.hh>
 #include <vamp/collision/math.hh>
+#include <vamp/collision/sphere_sphere.hh>
+#include <vamp/collision/validity.hh>
+#include <vamp/vector.hh>
 
 namespace vamp::collision
 {
@@ -317,5 +321,51 @@ namespace vamp::collision
             std::move(workspace_min),
             std::move(workspace_max),
             cull);
+    }
+
+    template <typename Robot, std::size_t rake>
+    inline void filter_self_from_pointcloud(
+        const float *points,
+        std::uint64_t n,
+        float point_radius,
+        const typename Robot::template ConfigurationBlock<1> &block,
+        const vamp::collision::Environment<vamp::FloatVector<rake>> &env,
+        std::vector<vamp::collision::Point> &out)
+    {
+        typename Robot::template Spheres<1> spheres;
+        Robot::template sphere_fk<1>(block, spheres);
+
+        out.clear();
+        out.reserve(n);
+
+        for (std::uint64_t p = 0; p < n; ++p)
+        {
+            const float x = points[p * 3 + 0];
+            const float y = points[p * 3 + 1];
+            const float z = points[p * 3 + 2];
+
+            bool valid = true;
+            for (std::size_t i = 0; i < Robot::n_spheres; ++i)
+            {
+                if (sphere_sphere_sql2(
+                        spheres.x[{i, 0}],
+                        spheres.y[{i, 0}],
+                        spheres.z[{i, 0}],
+                        spheres.r[{i, 0}],
+                        x,
+                        y,
+                        z,
+                        point_radius) < 0 or
+                    vamp::sphere_environment_in_collision<>(env, x, y, z, point_radius))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid)
+            {
+                out.emplace_back(vamp::collision::Point{x, y, z});
+            }
+        }
     }
 }  // namespace vamp::collision

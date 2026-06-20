@@ -116,7 +116,6 @@ namespace vamp::jit
             robot->ops().sampler_skip(handle, n);
         }
 
-        // Writes `dim` floats into `out`.
         auto next(float *out) -> void
         {
             robot->ops().sampler_next(handle, out);
@@ -161,6 +160,7 @@ namespace vamp::jit
         std::shared_ptr<DynamicPath> path;
         std::size_t iterations{0};
         std::uint64_t nanoseconds{0};
+        std::vector<std::size_t> size;
 
         auto solved() const -> bool
         {
@@ -215,6 +215,7 @@ namespace vamp::jit
             result.path->waypoints.emplace_back(wp);
         }
 
+        ops.result_sizes(handle, &result.size);
         ops.result_destroy(handle);
         return result;
     }

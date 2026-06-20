@@ -394,6 +394,24 @@ namespace vamp
             return D(apply<S::template max<0>>(d()->data, broadcast_scalar(other)));
         }
 
+        template <typename T, typename allow_types<D>::template check<T> = true>
+        inline constexpr auto min(T o) const noexcept -> D
+        {
+            return min(o.data);
+        }
+
+        template <typename T, typename allow_types<DataT, typename S::VectorT>::template check<T> = true>
+        inline constexpr auto min(T other) const noexcept -> D
+        {
+            return D(apply<S::template min<0>>(d()->data, other));
+        }
+
+        inline constexpr auto min(typename S::ScalarT other) const noexcept -> D
+        {
+            return D(apply<S::template min<0>>(d()->data, broadcast_scalar(other)));
+        }
+
+
         inline constexpr auto hsum() const noexcept -> typename S::ScalarT
         {
             return S::hsum(unpack::sum_(d()->data));
@@ -455,6 +473,36 @@ namespace vamp
             const auto vsq_sq = v_sq - ((v_sq >= static_cast<typename S::ScalarT>(PI)) &
                                         static_cast<typename S::ScalarT>(2 * PI));
             return vsq_sq.sin();
+        }
+        inline constexpr auto asin() const noexcept -> D
+        {
+            return D(apply<S::template asin<0>>(d()->data));
+        }
+
+        template <
+            typename ScalarT = typename S::ScalarT,
+            typename =
+                std::enable_if_t<std::is_same_v<ScalarT, float> or std::is_same_v<ScalarT, double>, bool>>
+        inline constexpr auto acos() const noexcept -> D
+        {
+            return D(apply<S::template acos<0>>(d()->data));
+        }
+        template <
+            typename ScalarT = typename S::ScalarT,
+            typename =
+                std::enable_if_t<std::is_same_v<ScalarT, float> or std::is_same_v<ScalarT, double>, bool>>
+        inline constexpr auto atan() const noexcept -> D
+        {
+            return D(apply<S::template atan<0>>(d()->data));
+        }
+        // write atan2 interface here
+        template <
+            typename ScalarT = typename S::ScalarT,
+            typename =
+                std::enable_if_t<std::is_same_v<ScalarT, float> or std::is_same_v<ScalarT, double>, bool>>
+        inline constexpr auto atan2(D other) const noexcept -> D
+        {
+            return D(apply<S::template atan2<0>>(d()->data, other.data));
         }
 
         template <typename OtherT, typename BoundsT>

@@ -1,22 +1,5 @@
 #pragma once
 
-// Shared Python binding stamper. Both the static, per-robot binding
-// (`robot_helper.hh`) and the dynamic JIT binding (`dynamic.cc`) expose
-// the same Python API surface — different C++ types, same method names,
-// docstrings, and keyword arguments. This header consolidates the .def
-// calls into one place templated on a `Traits` type.
-//
-// The Traits is the only backend-specific piece. It must surface:
-//   - nested types: Cfg, Path, PlanningResult, Sampler, Phs, Env
-//   - settings type aliases: PRMSettings, FCITSettings (the
-//     vp::RoadmapSettings<...> instantiations both backends use)
-//   - static methods with the signatures the binders below call.
-//
-// Methods take `Robot&` as first arg on the dynamic side (so nanobind binds
-// them as instance methods on a `nb::class_<DynamicRobot>`) and have no
-// such arg on the static side (so nanobind binds them as free functions on
-// a `nb::module_` submodule). Either way, the .def call site is the same.
-
 #include <vamp/collision/environment.hh>
 #include <vamp/collision/shapes.hh>
 #include <vamp/planning/aorrtc_settings.hh>
@@ -127,12 +110,7 @@ namespace vamp::binding
             "focus_a"_a,
             "focus_b"_a,
             "Construct a prolate hyperspheroid from two foci.");
-        t.def(
-            "phs_sampler",
-            &Traits::make_phs_sampler,
-            "phs"_a,
-            "rng"_a,
-            "Wrap an inner RNG with a PHS-rejection sampler.");
+        t.def("phs_sampler", &Traits::make_phs_sampler, "phs"_a, "rng"_a, "Create a PHS sampler.");
 
         register_planner<Traits, vp_::Planner::RRTC, vp_::RRTCSettings>(t, "rrtc");
         register_planner<Traits, vp_::Planner::PRM, typename Traits::PRMSettings>(t, "prm");
@@ -226,10 +204,7 @@ namespace vamp::binding
                 [](S &s, std::size_t n) { Traits::sampler_skip(s, n); },
                 "n"_a,
                 "Skip the next n samples.")
-            .def(
-                "next",
-                [](S &s) { return Traits::sampler_next(s); },
-                "Sample the next configuration. Mutates internal RNG state.");
+            .def("next", [](S &s) { return Traits::sampler_next(s); }, "Sample the next configuration.");
     }
 
     template <typename Traits>
@@ -241,7 +216,7 @@ namespace vamp::binding
                 "set_transverse_diameter",
                 [](P &p, float d) { Traits::phs_set_transverse_diameter(p, d); },
                 "diameter"_a,
-                "Set the PHS' transverse (minor) diameter.");
+                "Set the PHS' transverse diameter.");
     }
 
     template <typename Traits, typename Klass>

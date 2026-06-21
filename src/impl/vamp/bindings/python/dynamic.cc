@@ -20,6 +20,7 @@
 #include <vamp/planning/simplify_settings.hh>
 
 #include <cricket/codegen.hh>
+#include <cricket/jit/object_cache.hh>
 
 #include <Eigen/Dense>
 
@@ -474,7 +475,7 @@ namespace vamp::binding
             "environment"_a,
             "settings"_a,
             "sampler"_a,
-            "JIT'd path simplification (DynamicPath input).");
+            "Path simplification.");
 
         pymodule.def(
             "load_robot",
@@ -512,7 +513,9 @@ namespace vamp::binding
                     opts.planners.push_back(vp::planner_from_name(p));
                 }
 
-                return std::make_shared<vj::DynamicRobot>(opts);
+                static const auto cache =
+                    std::make_shared<cricket::jit::DiskObjectCache>(cricket::jit::default_cache_dir());
+                return std::make_shared<vj::DynamicRobot>(opts, cache);
             },
             "urdf"_a,
             "srdf"_a = nb::none(),

@@ -53,14 +53,30 @@ namespace vamp::jit
         auto source = generate_stub_source(
             opts.robot_source, opts.robot_name, opts.rake, opts.resolution, opts.planners);
 
-        cricket::jit::ClangCompiler compiler;
-        auto module = compiler.compile(source, opts.compile_options);
+        session_ = std::make_unique<cricket::jit::JitSession>(cache);
 
-        session_ = std::make_unique<cricket::jit::JitSession>(std::move(cache));
-
-        if (auto err = session_->add_module(std::move(module)))
+        std::unique_ptr<llvm::MemoryBuffer> cached_obj;
+        if (cache)
         {
-            throw std::runtime_error("vamp::jit: add_module failed: " + llvm::toString(std::move(err)));
+            cached_obj = cache->load_object(cricket::jit::hash_source(source, opts.compile_options));
+        }
+
+        if (cached_obj)
+        {
+            if (auto err = session_->add_object_file(std::move(cached_obj)))
+            {
+                throw std::runtime_error(
+                    "vamp::jit: add_object_file failed: " + llvm::toString(std::move(err)));
+            }
+        }
+        else
+        {
+            cricket::jit::ClangCompiler compiler;
+            auto module = compiler.compile(source, opts.compile_options);
+            if (auto err = session_->add_module(std::move(module)))
+            {
+                throw std::runtime_error("vamp::jit: add_module failed: " + llvm::toString(std::move(err)));
+            }
         }
 
         for (auto p : opts.planners)

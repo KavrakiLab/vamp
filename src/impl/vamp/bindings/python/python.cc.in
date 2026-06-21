@@ -1,6 +1,4 @@
 // clang-format off
-// CMake `configure_file` substitutes the AT-VAR-AT tokens below — clang-format
-// would otherwise insert a space inside them and break @ONLY substitution.
 #include <vamp_python_init.hh>
 
 #include <vector>
@@ -29,5 +27,4 @@ NB_MODULE(_core_ext, pymodule)
             };
         });
 }
-
 // clang-format on

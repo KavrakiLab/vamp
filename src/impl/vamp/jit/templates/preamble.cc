@@ -1,3 +1,7 @@
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wpragma-once-outside-header"
+#endif
+
 #include <Eigen/Geometry>
 
 #include <vamp/collision/environment.hh>

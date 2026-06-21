@@ -24,5 +24,4 @@ namespace vamp::jit::paths
     inline constexpr std::array<std::string_view, @VAMP_JIT_FLAGS_COUNT@> extra_flags = {
 @VAMP_JIT_FLAGS_INIT@    };
 }  // namespace vamp::jit::paths
-
 // clang-format on

@@ -364,14 +364,15 @@ namespace vamp::binding
         }
     };
 
-    // Submodule-level introspection: nine free functions exposing static
-    // robot metadata. Pulled out of init_robot so the latter is mostly
-    // bind_*<Traits>(...) calls.
     template <typename Robot>
-    inline void bind_static_introspection(nanobind::module_ &submodule)
+    inline auto init_robot(nanobind::module_ &pymodule) -> nanobind::module_
     {
         using NA = NDArrayInput<Robot>;
-        using NDArray = typename NA::Type;
+        using CA = ArrayInput<Robot>;
+        using TA = StaticRobotTraits<Robot, NA>;
+        using TC = StaticRobotTraits<Robot, CA>;
+
+        auto submodule = pymodule.def_submodule(Robot::name, "Robot-specific submodule");
 
         submodule.def("dimension", []() { return Robot::dimension; });
         submodule.def("resolution", []() { return Robot::resolution; });
@@ -383,7 +384,7 @@ namespace vamp::binding
         submodule.def("joint_names", []() { return Robot::joint_names; });
         submodule.def("end_effector", []() { return Robot::end_effector; });
 
-        const auto bounds = [](float fill) -> NDArray
+        const auto bounds = [](float fill) -> typename NA::Type
         {
             std::array<float, Robot::dimension> v;
             v.fill(fill);
@@ -393,30 +394,12 @@ namespace vamp::binding
         };
         submodule.def("upper_bounds", [bounds]() { return bounds(1.0F); });
         submodule.def("lower_bounds", [bounds]() { return bounds(0.0F); });
-    }
-
-    template <typename Robot>
-    inline auto init_robot(nanobind::module_ &pymodule) -> nanobind::module_
-    {
-        using NA = NDArrayInput<Robot>;
-        using CA = ArrayInput<Robot>;
-        using TA = StaticRobotTraits<Robot, NA>;
-        using TC = StaticRobotTraits<Robot, CA>;
-
-        auto submodule = pymodule.def_submodule(Robot::name, "Robot-specific submodule");
-
-        bind_static_introspection<Robot>(submodule);
 
         bind_sampler<TA>(submodule, "RNG");
 
         auto phs_k = bind_phs_class<TA>(submodule, "ProlateHyperspheroid");
         bind_phs_io<TA>(phs_k);
         bind_phs_io<TC>(phs_k);
-        phs_k.def(
-            "__init__",
-            [](typename TA::Phs *t, const typename NA::Type &a, const typename NA::Type &b)
-            { new (t) typename TA::Phs(NA::to(a), NA::to(b)); },
-            "Construct from two foci.");
 
         auto path_k = bind_path_class<TA>(submodule, "Path");
         bind_path_io<TA>(path_k);

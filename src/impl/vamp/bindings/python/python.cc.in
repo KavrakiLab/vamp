@@ -12,7 +12,9 @@ NB_MODULE(_core_ext, pymodule)
     vb::init_settings(pymodule);
     vb::init_environment(pymodule);
 #ifdef VAMP_HAVE_JIT
-    vb::init_dynamic(pymodule);
+    auto jit_module = pymodule.def_submodule(
+        "jit", "JIT-compiled robot interface.");
+    vb::init_dynamic(jit_module);
 #endif
 
     @VAMP_ROBOT_INITS@

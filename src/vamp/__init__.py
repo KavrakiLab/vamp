@@ -46,6 +46,10 @@ from ._core import SimplifyRoutine as SimplifyRoutine
 from ._core import SimplifySettings as SimplifySettings
 from ._core import filter_pointcloud as filter_pointcloud
 
+if hasattr(_core._core_ext, "jit"):
+    from ._core._core_ext import jit as jit
+    __all__.append("jit")
+
 robots = _core.robots()
 
 for robot in robots:

@@ -144,7 +144,6 @@ Please see `CMakeLists.txt` for further build configuration options.
 
 ### JIT (Just-in-Time Robot Compilation and Loading)
 VAMP optionally ships a runtime that JIT-compiles a planner specialization for an arbitrary robot loaded from a URDF, no rebuild of the entire VAMP codebase required.
-The pipeline is wrapped by `vamp.load_robot(...)` and runs at the same speed as a statically-compiled robot.
 
 JIT support is **off by default**, enable it by setting `VAMP_BUILD_JIT=ON` at install time and pulling in the `[jit]` extra:
 ```bash
@@ -157,36 +156,38 @@ VAMP_BUILD_JIT=ON pip install --no-build-isolation -e .[jit]
 ```
 
 Note, on top of VAMP's regular build deps, the JIT path also needs:
+- **cricket** installed through `pip`, and transitively:
 - **Pinocchio**, **CGAL**, **fmt**, **nlohmann-json**, **CppAD**
 - **LLVM + Clang development libraries**
 - A `clang` executable on `PATH` at runtime.
 
-#### JIT Usage
+#### JIT Usage (Python)
+
+JIT-compiled robots live in the `vamp.jit` submodule. 
+The returned `DynamicRobot` exposes the same API as the statically-compiled robot submodules:
+
 ```python
 import vamp
 
-robot = vamp.load_robot(
+robot = vamp.jit.load_robot(
     urdf="/path/to/my_robot_spherized.urdf",
-    srdf="/path/to/my_robot.srdf",       # optional
+    srdf="/path/to/my_robot.srdf", 
     end_effector="tool0",
     planners=["rrtc"],
-)
+    rake=8,
+    resolution=32,
+    name="MyRobot",
+  ) 
 
 env = vamp.Environment()
 settings = vamp.RRTCSettings()
-result = robot.rrtc(start, goal, env, settings, seed=42)
-print(result.path, result.cost, result.nanoseconds)
-```
-First `load_robot()` call on a given URDF takes a few seconds to compile.
-Subsequent calls use a cached version of the JIT'd code.
+sampler = robot.halton()
 
-```c++
-auto robot   = std::make_shared<vamp::jit::DynamicRobot>(opts);
-auto sampler = vamp::jit::make_halton_sampler(robot);
-auto result  = vamp::jit::solve(robot, vamp::planning::Planner::RRTC,
-                                start_ptr, goal_ptr, env, settings, *sampler);
-if (result.solved()) { /* ... */ }
+result = robot.rrtc(start, goal, env, settings, sampler)
 ```
+
+The first `load_robot()` for a given URDF takes a few seconds to compile.
+Subsequent calls hit a cache (default `~/.cache/cricket`) and load fast.
 
 #### Architecture-Specific Build Options
 By default, VAMP builds with `-march=native` for optimal performance on the build machine. For builds targeting different hardware (e.g., Docker containers), you can override the architecture flags:

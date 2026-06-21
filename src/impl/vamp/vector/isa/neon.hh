@@ -88,6 +88,12 @@ namespace vamp
             return vreinterpretq_s32_u32(vorrq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r)));
         }
 
+        template <unsigned int = 0>
+        inline static constexpr auto xor_(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return vreinterpretq_s32_u32(veorq_u32(vreinterpretq_u32_s32(l), vreinterpretq_u32_s32(r)));
+        }
+
         template <std::size_t... I>
         inline static constexpr auto
         lshift_lookup(VectorT v, ScalarT shift, std::index_sequence<I...>) noexcept -> VectorT

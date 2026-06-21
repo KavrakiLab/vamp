@@ -785,7 +785,7 @@ namespace vamp
             z = add(z, a);
             z = add(z, y);
 
-            z = xor(z, sign_bit);
+            z = blend(z, neg(z), sign_mask);
             return z;
         }
 

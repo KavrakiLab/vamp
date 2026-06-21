@@ -605,6 +605,199 @@ namespace vamp
             return blend(ys, neg(ys), sign_mask_sin);
         }
 
+        // asin implementation
+        template <unsigned int = 0>
+        inline static constexpr auto asin(VectorT x) noexcept -> VectorT
+        {
+            const auto ps_sign_mask = constant(-0.0f);
+            const auto ps_half = constant(0.5f);
+            const auto ps_one = constant(1.0f);
+            const auto ps_pi2 = constant(1.5707963267948966f);  // pi/2
+
+            const auto ps_A0 = constant(4.2163199048E-2f);
+            const auto ps_A1 = constant(2.4181311049E-2f);
+            const auto ps_A2 = constant(4.5470025998E-2f);
+            const auto ps_A3 = constant(7.4953002686E-2f);
+            const auto ps_A4 = constant(1.6666752422E-1f);
+
+            auto sign_bit = and_(x, ps_sign_mask);
+            auto a = abs(x);
+
+            // mask for |x| > 0.5
+            auto gt_half_mask = cmp_greater_than(a, ps_half);
+
+            // Branch 1: |x| > 0.5 -> zz = 0.5 * (1 - a), x_branch = sqrt(zz)
+            auto zz_high = mul(ps_half, sub(ps_one, a));
+            auto x_high = sqrt(zz_high);
+
+            // Branch 2: |x| <= 0.5 -> zz = a * a, x_branch = a
+            auto zz_low = mul(a, a);
+            auto x_low = a;
+
+            auto zz = blend(zz_low, zz_high, gt_half_mask);
+            auto x_branch = blend(x_low, x_high, gt_half_mask);
+
+            // Polynomial approximation
+            auto z = ps_A0;
+            z = mul(z, zz);
+            z = add(z, ps_A1);
+            z = mul(z, zz);
+            z = add(z, ps_A2);
+            z = mul(z, zz);
+            z = add(z, ps_A3);
+            z = mul(z, zz);
+            z = add(z, ps_A4);
+            z = mul(z, zz);
+            z = mul(z, x_branch);
+            z = add(z, x_branch);
+
+            // For |x| > 0.5: result = pi/2 - 2*z
+            auto z_large = sub(ps_pi2, add(z, z));
+            auto res = blend(z, z_large, gt_half_mask);
+
+            // Restore original sign
+            return xor_(res, sign_bit);
+        }
+
+        // acos implementation
+        template <unsigned int = 0>
+        inline static constexpr auto acos(VectorT x) noexcept -> VectorT
+        {
+            const auto ps_morebits = constant(6.123233995736765886130E-17f);
+            const auto ps_half = constant(0.5f);
+            const auto ps_pi4 = constant(7.85398163397448309616E-1f);
+            const auto ps_two = constant(2.0f);
+            const auto ps_pi2 = constant(1.5707963267948966f);  // pi/2
+
+            // First branch: asin(sqrt(0.5 - 0.5*x)) * 2
+            auto zz = mul(ps_half, x);
+            zz = sub(ps_half, zz);
+            auto z = sqrt(zz);
+            z = asin(z);
+            z = mul(ps_two, z);
+
+            // Second branch: pi/4 - asin(x) + morebits + pi/4
+            auto z2 = asin(x);
+            z2 = sub(ps_pi4, z2);
+            z2 = add(z2, ps_morebits);
+            z2 = add(z2, ps_pi4);
+
+            // Choose based on |x| > 0.5
+            auto gt_half_mask = cmp_greater_than(abs(x), ps_half);
+            auto res = blend(z, z2, gt_half_mask);
+            return res;
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto atan(VectorT x) noexcept -> VectorT
+        {
+            // Constants
+            const auto ps_cephes_P0 = constant(-8.750608600031904122785E-1f);
+            const auto ps_cephes_P1 = constant(-1.615753718733365076637E1f);
+            const auto ps_cephes_P2 = constant(-7.500855792314704667340E1f);
+            const auto ps_cephes_P3 = constant(-1.228866684490136173410E2f);
+            const auto ps_cephes_P4 = constant(-6.485021904942025371773E1f);
+
+            const auto ps_cephes_Q0 = constant(2.485846490142306297962E1f);
+            const auto ps_cephes_Q1 = constant(1.650270098316988542046E2f);
+            const auto ps_cephes_Q2 = constant(4.328810604912902668951E2f);
+            const auto ps_cephes_Q3 = constant(4.853903996359136964868E2f);
+            const auto ps_cephes_Q4 = constant(1.945506571482613964425E2f);
+
+            const auto ps_0 = constant(0.0f);
+            const auto ps_1 = constant(1.0f);
+
+            // tan(pi/8) and tan(3*pi/8)
+            const auto ps_tan_pi8 = constant(0.41421356237309504880f);
+            const auto ps_tan_3pi8 = constant(2.41421356237309504880f);
+
+            const auto ps_pi4 = constant(0.785398163397448309616f);
+            const auto ps_pi2 = constant(1.57079632679489661923f);
+
+            // Sign extraction
+            const auto sign_mask = constant(-0.0f);
+            auto sign_bit = and_(x, sign_mask);
+            auto a = abs(x);
+
+            // Range reduction
+            auto gt_3pi8 = cmp_greater_than(a, ps_tan_3pi8);
+            auto gt_pi8 = cmp_greater_than(a, ps_tan_pi8);
+
+            auto mid_mask = andnot(gt_3pi8, gt_pi8);  // !gt_3pi8 && gt_pi8
+
+            auto reduced_big = div(neg(ps_1), a);
+            auto reduced_mid = div(sub(a, ps_1), add(a, ps_1));
+
+            a = blend(a, reduced_big, gt_3pi8);
+            a = blend(a, reduced_mid, mid_mask);
+
+            auto y = ps_0;
+            y = blend(y, ps_pi2, gt_3pi8);
+            y = blend(y, ps_pi4, mid_mask);
+
+            // Rational approximation
+            auto zz = mul(a, a);
+
+            auto p = ps_cephes_P0;
+            p = add(mul(p, zz), ps_cephes_P1);
+            p = add(mul(p, zz), ps_cephes_P2);
+            p = add(mul(p, zz), ps_cephes_P3);
+            p = add(mul(p, zz), ps_cephes_P4);
+            p = mul(mul(p, zz), a);
+
+            auto q = add(zz, ps_cephes_Q0);
+            q = add(mul(q, zz), ps_cephes_Q1);
+            q = add(mul(q, zz), ps_cephes_Q2);
+            q = add(mul(q, zz), ps_cephes_Q3);
+            q = add(mul(q, zz), ps_cephes_Q4);
+
+            auto z = div(p, q);
+            z = add(z, a);
+            z = add(z, y);
+
+            // Restore sign
+            z = xor_(z, sign_bit);
+            return z;
+        }
+
+        // Duplicate acos implementation removed
+
+        // atan2 implementation mirroring AVX version
+        template <unsigned int = 0>
+        inline static constexpr auto atan2(VectorT y, VectorT x) noexcept -> VectorT
+        {
+            const auto ps_zero = constant(0.0f);
+            const auto ps_pi = constant(3.14159265358979323846f);
+            const auto ps_pi_2 = constant(1.57079632679489661923f);
+
+            auto z = atan(div(y, x));
+
+            auto x_lt_0 = cmp_less_than(x, ps_zero);
+            auto y_lt_0 = cmp_less_than(y, ps_zero);
+            auto y_ge_0 = cmp_greater_equal(y, ps_zero);
+
+            // x < 0, y >= 0 => +pi
+            auto add_pi_mask = and_(x_lt_0, y_ge_0);
+            z = blend(z, add(z, ps_pi), add_pi_mask);
+
+            // x < 0, y < 0 => -pi
+            auto sub_pi_mask = and_(x_lt_0, y_lt_0);
+            z = blend(z, sub(z, ps_pi), sub_pi_mask);
+
+            // x == 0 cases
+            auto x_eq_0 = cmp_equal(x, ps_zero);
+            auto pos_y = cmp_greater_than(y, ps_zero);
+            auto neg_y = cmp_less_than(y, ps_zero);
+            z = blend(z, ps_pi_2, and_(x_eq_0, pos_y));
+            z = blend(z, sub(ps_zero, ps_pi_2), and_(x_eq_0, neg_y));
+
+            // x == 0 && y == 0 => 0
+            auto y_eq_0 = cmp_equal(y, ps_zero);
+            auto both_zero = and_(x_eq_0, y_eq_0);
+            z = blend(z, ps_zero, both_zero);
+            return z;
+        }
+
         // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
         template <unsigned int = 0>
         inline static constexpr auto log(VectorT x) noexcept -> VectorT

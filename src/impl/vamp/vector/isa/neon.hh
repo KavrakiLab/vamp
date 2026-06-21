@@ -727,15 +727,16 @@ namespace vamp
             const auto ps_pi2 = constant(1.57079632679489661923f);
 
             // Sign extraction
-            const auto sign_mask = constant(-0.0f);
-            auto sign_bit = and_(x, sign_mask);
+            // Extract sign as a boolean mask for blending
+            auto sign_mask = cmp_less_than(x, zero_vector());
             auto a = abs(x);
 
             // Range reduction
             auto gt_3pi8 = cmp_greater_than(a, ps_tan_3pi8);
             auto gt_pi8 = cmp_greater_than(a, ps_tan_pi8);
 
-            auto mid_mask = andnot(gt_3pi8, gt_pi8);  // !gt_3pi8 && gt_pi8
+            // mid_mask should be true when not gt_3pi8 and gt_pi8 (i.e., between the thresholds)
+            auto mid_mask = and_(bitneg(gt_3pi8), gt_pi8);
 
             auto reduced_big = div(neg(ps_1), a);
             auto reduced_mid = div(sub(a, ps_1), add(a, ps_1));
@@ -768,7 +769,8 @@ namespace vamp
             z = add(z, y);
 
             // Restore sign
-            z = xor_(z, sign_bit);
+            // Restore original sign using blend
+            z = blend(z, neg(z), sign_mask);
             return z;
         }
 

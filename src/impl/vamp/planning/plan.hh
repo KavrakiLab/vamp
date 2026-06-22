@@ -7,15 +7,12 @@
 
 namespace vamp::planning
 {
+    // Separate static helpers to dedup code for DynamicPath variant in JIT.
+    // TODO: Needs to be replaced when interpolate gets moved into Robot information.
     namespace path_helpers
     {
-        // Element-wise scalar overload — for the dynamic side (DynamicPath
-        // stores std::vector<float> rows). The vamp::FloatVector overload
-        // below picks up the static side and delegates to the SIMD method.
-        // Name-prefixed to avoid colliding with std::distance via ADL.
-        [[nodiscard]] inline auto path_distance(
-            const std::vector<float> &a,
-            const std::vector<float> &b) noexcept -> float
+        [[nodiscard]] inline auto
+        path_distance(const std::vector<float> &a, const std::vector<float> &b) noexcept -> float
         {
             float sq = 0;
             for (auto i = 0U; i < a.size(); ++i)
@@ -26,10 +23,9 @@ namespace vamp::planning
             return std::sqrt(sq);
         }
 
-        inline auto path_interpolate(
-            const std::vector<float> &a,
-            const std::vector<float> &b,
-            float t) noexcept -> std::vector<float>
+        inline auto
+        path_interpolate(const std::vector<float> &a, const std::vector<float> &b, float t) noexcept
+            -> std::vector<float>
         {
             std::vector<float> out(a.size());
             for (auto i = 0U; i < a.size(); ++i)
@@ -40,26 +36,19 @@ namespace vamp::planning
         }
 
         template <std::size_t Dim>
-        [[nodiscard]] inline auto path_distance(
-            const vamp::FloatVector<Dim> &a,
-            const vamp::FloatVector<Dim> &b) noexcept -> float
+        [[nodiscard]] inline auto
+        path_distance(const vamp::FloatVector<Dim> &a, const vamp::FloatVector<Dim> &b) noexcept -> float
         {
             return a.distance(b);
         }
 
         template <std::size_t Dim>
-        inline auto path_interpolate(
-            const vamp::FloatVector<Dim> &a,
-            const vamp::FloatVector<Dim> &b,
-            float t) noexcept -> vamp::FloatVector<Dim>
+        inline auto
+        path_interpolate(const vamp::FloatVector<Dim> &a, const vamp::FloatVector<Dim> &b, float t) noexcept
+            -> vamp::FloatVector<Dim>
         {
             return a.interpolate(b, t);
         }
-
-        // Algorithms operate on any std::vector<ConfigT>-like container.
-        // Both vamp::planning::Path<Robot> (a vector<FloatVector<dim>>) and
-        // DynamicPath's std::vector<std::vector<float>> work — the right
-        // path_distance / path_interpolate overload is picked.
 
         template <typename Container>
         [[nodiscard]] inline auto cost(const Container &wps) noexcept -> float
@@ -137,18 +126,16 @@ namespace vamp::planning
                 const auto max_n_states = n + i - n_p;
                 if (max_n_states > 0)
                 {
-                    auto ns =
-                        (i + 1 == n1) ?
-                            (max_n_states + 2) :
-                            (static_cast<std::size_t>(
-                                 std::floor(0.5 + n * seg_lengths[i] / remaining_length)) +
-                             1);
+                    auto ns = (i + 1 == n1) ? (max_n_states + 2) :
+                                              (static_cast<std::size_t>(
+                                                   std::floor(0.5 + n * seg_lengths[i] / remaining_length)) +
+                                               1);
 
                     ns = (ns > 2) ? std::min(ns - 2, max_n_states) : 0;
                     for (auto k = 1U; k <= ns; ++k)
                     {
-                        next.emplace_back(path_interpolate(
-                            a, b, static_cast<float>(k) / static_cast<float>(ns)));
+                        next.emplace_back(
+                            path_interpolate(a, b, static_cast<float>(k) / static_cast<float>(ns)));
                     }
 
                     n -= ns + 1;
@@ -191,8 +178,8 @@ namespace vamp::planning
 
                 for (auto k = 1U; k < segment_states; ++k)
                 {
-                    next.emplace_back(path_interpolate(
-                        a, b, static_cast<float>(k) / static_cast<float>(segment_states)));
+                    next.emplace_back(
+                        path_interpolate(a, b, static_cast<float>(k) / static_cast<float>(segment_states)));
                 }
             }
             next.emplace_back(wps.back());
@@ -203,12 +190,6 @@ namespace vamp::planning
     template <typename Robot>
     struct Path : public std::vector<FloatVector<Robot::dimension>>
     {
-        // cost / subdivide / interpolate_to_n_states / interpolate_to_resolution
-        // are robot-independent geometric ops and live in path_helpers above —
-        // shared with the JIT binding's DynamicPath. validate() stays inline
-        // here because it dispatches to Robot::resolution-templated motion
-        // checking and isn't shared.
-
         [[nodiscard]] inline auto cost() const noexcept -> float
         {
             return path_helpers::cost(*this);

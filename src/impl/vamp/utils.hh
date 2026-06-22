@@ -5,7 +5,7 @@
 #include <utility>
 #include <cstdint>
 
-#define VAMP_DEFINE_HAS_METHOD(method_name)                                                                       \
+#define VAMP_DEFINE_HAS_METHOD(method_name)                                                                  \
     template <typename T, typename = void>                                                                   \
     struct has_##method_name : std::false_type                                                               \
     {                                                                                                        \

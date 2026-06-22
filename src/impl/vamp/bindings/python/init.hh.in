@@ -1,6 +1,3 @@
-// clang-format off
-// CMake `configure_file` substitutes the AT-VAR-AT tokens below — clang-format
-// would otherwise insert a space inside them and break @ONLY substitution.
 #include <nanobind/nanobind.h>
 
 namespace vamp::binding
@@ -10,7 +7,7 @@ namespace vamp::binding
 #ifdef VAMP_HAVE_JIT
     void init_dynamic(nanobind::module_ &pymodule);
 #endif
+// clang-format off
     @VAMP_ROBOT_DECLS@
-}  // namespace vamp::binding
-
 // clang-format on
+}  // namespace vamp::binding

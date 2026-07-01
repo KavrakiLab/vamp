@@ -11,6 +11,7 @@ option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" OFF)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
 option(VAMP_OMPL_PATH "Search Path for OMPL Installation - Only Needed for Demo Script" "")
 option(VAMP_BUILD_WASM "Build VAMP WebAssembly module" OFF)
+option(VAMP_BUILD_TESTS "Build VAMP C++ unit tests (Catch2)" OFF)
 
 if(VAMP_FORCE_CLANG)
   find_program(CLANG "clang")
@@ -166,6 +167,12 @@ if(VAMP_BUILD_OMPL_DEMO)
   endif()
 endif()
 
+# C++ unit tests
+if(VAMP_BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
+
 # WebAssembly build
 if(VAMP_BUILD_WASM)
   include(EmscriptenBuild)
@@ -200,3 +207,4 @@ message(STATUS "  - Python bindings: ${VAMP_BUILD_PYTHON_BINDINGS}")
 message(STATUS "  - C++ demos: ${VAMP_BUILD_CPP_DEMO}")
 message(STATUS "  - OMPL demos: ${VAMP_BUILD_OMPL_DEMO}")
 message(STATUS "  - WASM module: ${VAMP_BUILD_WASM}")
+message(STATUS "  - C++ unit tests: ${VAMP_BUILD_TESTS}")

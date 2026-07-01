@@ -12,11 +12,11 @@ import cricket
 import vamp
 
 CRICKET_ROBOTS = {
-    "panda": dict(end_effector="panda_grasptarget", name="Panda"),
-    "ur5": dict(end_effector="robotiq_85_base_link", name="UR5"),
-    "fetch": dict(end_effector="gripper_link", name="Fetch"),
-    "baxter": dict(end_effector="right_gripper", name="Baxter"),
-}
+    "panda": dict(end_effector = "panda_grasptarget", name = "Panda"),
+    "ur5": dict(end_effector = "robotiq_85_base_link", name = "UR5"),
+    "fetch": dict(end_effector = "gripper_link", name = "Fetch"),
+    "baxter": dict(end_effector = "right_gripper", name = "Baxter"),
+    }
 
 
 def main(
@@ -27,9 +27,9 @@ def main(
     print_failures: bool = False,
     rake: int = 8,
     resolution: int = 32,
-):
+    ):
     if robot not in CRICKET_ROBOTS:
-        raise RuntimeError( f"No cricket recipe for robot '{robot}'.")
+        raise RuntimeError(f"No cricket recipe for robot '{robot}'.")
 
     cfg = CRICKET_ROBOTS[robot]
     base = cricket.resources_dir() / robot
@@ -40,21 +40,18 @@ def main(
     print(f"[jit] loading {cfg['name']} from {urdf} ...")
     t0 = time.perf_counter()
     jit_robot = vamp.jit.load_robot(
-        urdf=str(urdf),
-        srdf=str(srdf),
-        end_effector=cfg["end_effector"],
-        planners=["rrtc"],
-        rake=rake,
-        resolution=resolution,
-        name=cfg["name"],
-    )
+        urdf = str(urdf),
+        srdf = str(srdf),
+        end_effector = cfg["end_effector"],
+        planners = ["rrtc"],
+        rake = rake,
+        resolution = resolution,
+        name = cfg["name"],
+        )
     t1 = time.perf_counter()
-    print(
-        f"[jit] load_robot took {(t1 - t0):.2f}s"
-    )
+    print(f"[jit] load_robot took {(t1 - t0):.2f}s")
 
-    problems_dir = Path(
-        __file__).parent.parent / 'resources' / robot / 'problems'
+    problems_dir = Path(__file__).parent.parent / 'resources' / robot / 'problems'
     with open(problems_dir.parent / dataset, 'rb') as f:
         problems = pickle.load(f)
 
@@ -69,7 +66,7 @@ def main(
             if problem_name not in problem_names:
                 raise RuntimeError(
                     f"Problem `{problem_name}` not available! Available problems: {problem_names}"
-                )
+                    )
 
     settings = vamp.RRTCSettings()
     if robot in vamp.ROBOT_RRT_RANGES:
@@ -105,15 +102,17 @@ def main(
                     failures.append(i)
                     break
 
-                rows.append({
-                    "problem_set": name,
-                    "problem_idx": i,
-                    "trial": trial,
-                    "waypoints": len(result.path),
-                    "planning_time_us": result.nanoseconds / 1000.0,
-                    "iterations": result.iterations,
-                    "cost": result.path.cost(),
-                })
+                rows.append(
+                    {
+                        "problem_set": name,
+                        "problem_idx": i,
+                        "trial": trial,
+                        "waypoints": len(result.path),
+                        "planning_time_us": result.nanoseconds / 1000.0,
+                        "iterations": result.iterations,
+                        "cost": result.path.cost(),
+                        }
+                    )
 
         failed += len(failures)
         if print_failures and failures:
@@ -126,21 +125,21 @@ def main(
 
     df = pd.DataFrame(rows)
     time_stats = df[["planning_time_us", "iterations",
-                     "cost"]].describe(percentiles=[0.25, 0.5, 0.75, 0.95])
-    time_stats.drop(index=["count"], inplace=True)
+                     "cost"]].describe(percentiles = [0.25, 0.5, 0.75, 0.95])
+    time_stats.drop(index = ["count"], inplace = True)
 
     print()
     print(
         tabulate(
             time_stats,
-            headers=["Planning Time (μs)", "Iterations", "Cost (L2)"],
-            tablefmt="github",
-        ))
+            headers = ["Planning Time (μs)", "Iterations", "Cost (L2)"],
+            tablefmt = "github",
+            )
+        )
     print()
     print(f"Solved / Valid / Total: {valid - failed} / {valid} / {total}")
     print(f"Total planning time: {df['planning_time_us'].sum() / 1000:.3f} ms")
-    print(
-        f"Wall time including Python overhead: {(tock - tick) * 1000:.3f} ms")
+    print(f"Wall time including Python overhead: {(tock - tick) * 1000:.3f} ms")
 
 
 if __name__ == "__main__":

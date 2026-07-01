@@ -6,12 +6,13 @@ from typing import Mapping, Optional
 from scikit_build_core import build as _sbc
 
 
-def _is_truthy(value) -> bool:  
+def _is_truthy(value) -> bool:
     # config_settings values are sometimes lists
     if isinstance(value, list):
         value = value[-1] if value else ""
 
     return str(value).strip().upper() in {"ON", "1", "TRUE", "YES"}
+
 
 def _jit_requested(config_settings: Optional[Mapping] = None) -> bool:
     if _is_truthy(os.environ.get("VAMP_BUILD_JIT", "")):
@@ -27,6 +28,7 @@ def _jit_requested(config_settings: Optional[Mapping] = None) -> bool:
 
     return False
 
+
 def _with_cricket(base, config_settings):
     base = list(base or [])
     if _jit_requested(config_settings):
@@ -35,13 +37,15 @@ def _with_cricket(base, config_settings):
 
 
 # PEP-517 Hooks
-def get_requires_for_build_wheel(config_settings=None):
+def get_requires_for_build_wheel(config_settings = None):
     return _with_cricket(_sbc.get_requires_for_build_wheel(config_settings), config_settings)
 
-def get_requires_for_build_editable(config_settings=None):
+
+def get_requires_for_build_editable(config_settings = None):
     return _with_cricket(_sbc.get_requires_for_build_editable(config_settings), config_settings)
 
-def get_requires_for_build_sdist(config_settings=None):
+
+def get_requires_for_build_sdist(config_settings = None):
     return _sbc.get_requires_for_build_sdist(config_settings) or []
 
 

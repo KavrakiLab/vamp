@@ -1,3 +1,4 @@
+// clang-format off
 #include <vamp_python_init.hh>
 
 #include <vector>
@@ -10,6 +11,11 @@ NB_MODULE(_core_ext, pymodule)
 {
     vb::init_settings(pymodule);
     vb::init_environment(pymodule);
+#ifdef VAMP_HAVE_JIT
+    auto jit_module = pymodule.def_submodule(
+        "jit", "JIT-compiled robot interface.");
+    vb::init_dynamic(jit_module);
+#endif
 
     @VAMP_ROBOT_INITS@
 
@@ -23,3 +29,4 @@ NB_MODULE(_core_ext, pymodule)
             };
         });
 }
+// clang-format on

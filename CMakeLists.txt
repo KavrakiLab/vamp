@@ -11,6 +11,7 @@ option(VAMP_BUILD_CPP_DEMO "Build VAMP C++ Demo Scripts" OFF)
 option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
 option(VAMP_OMPL_PATH "Search Path for OMPL Installation - Only Needed for Demo Script" "")
 option(VAMP_BUILD_WASM "Build VAMP WebAssembly module" OFF)
+option(VAMP_BUILD_JIT "Build the vamp::jit runtime" OFF)
 option(VAMP_BUILD_TESTS "Build VAMP C++ unit tests (Catch2)" OFF)
 
 if(VAMP_FORCE_CLANG)
@@ -31,7 +32,7 @@ endif()
 
 project(
     vamp
-    VERSION 0.2
+    VERSION 0.7
     LANGUAGES C CXX
 )
 
@@ -87,8 +88,14 @@ set_target_properties(vamp_cpp PROPERTIES
 # Create alias target for modern CMake usage
 add_library(vamp::vamp ALIAS vamp_cpp)
 
+# Build JIT
+include(JIT)
+
 # Build Python bindings
 include(Python)
+
+# Build WASM bindings
+include(WASM)
 
 # Install C++ library components (conditional for Python wheel builds)
 if(VAMP_INSTALL_CPP_LIBRARY)
@@ -173,37 +180,12 @@ if(VAMP_BUILD_TESTS)
   add_subdirectory(tests)
 endif()
 
-# WebAssembly build
-if(VAMP_BUILD_WASM)
-  include(EmscriptenBuild)
-
-  if(NOT VAMP_WASM_ROBOT_MODULES)
-    set(VAMP_WASM_ROBOT_MODULES panda fetch ur5)
-    set(VAMP_WASM_ROBOT_STRUCTS Panda Fetch UR5)
-  endif()
-
-  foreach(robot_name ROBOT_STRUCT IN ZIP_LISTS VAMP_WASM_ROBOT_MODULES VAMP_WASM_ROBOT_STRUCTS)
-    configure_file(
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/impl/vamp/bindings/wasm/bindings.cc.in
-      ${CMAKE_CURRENT_BINARY_DIR}/wasm/${robot_name}_wasm_bindings.cc
-      @ONLY
-    )
-
-    vamp_create_wasm_module(${robot_name}_wasm
-      ${CMAKE_CURRENT_BINARY_DIR}/wasm/${robot_name}_wasm_bindings.cc
-    )
-
-    target_include_directories(${robot_name}_wasm PRIVATE
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/impl
-    )
-  endforeach()
-endif()
-
 # Print build configuration
 message(STATUS "VAMP build configuration:")
 message(STATUS "  - C++ library: ON")
 message(STATUS "  - Install C++ library: ${VAMP_INSTALL_CPP_LIBRARY}")
 message(STATUS "  - Python bindings: ${VAMP_BUILD_PYTHON_BINDINGS}")
+message(STATUS "  - JIT: ${VAMP_BUILD_JIT}")
 message(STATUS "  - C++ demos: ${VAMP_BUILD_CPP_DEMO}")
 message(STATUS "  - OMPL demos: ${VAMP_BUILD_OMPL_DEMO}")
 message(STATUS "  - WASM module: ${VAMP_BUILD_WASM}")

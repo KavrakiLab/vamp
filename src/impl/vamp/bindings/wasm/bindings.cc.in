@@ -1,3 +1,6 @@
+// clang-format off
+// CMake `configure_file` substitutes the AT-VAR-AT tokens below — clang-format
+// would otherwise insert a space inside them and break @ONLY substitution.
 #include <vamp/bindings/wasm/robot_helper.hh>
 #include <vamp/robots/@robot_name@.hh>
 
@@ -8,3 +11,5 @@ EMSCRIPTEN_BINDINGS(@robot_name@_wasm)
     vamp::wasm::register_common_types();
     vamp::wasm::register_robot_types<Robot>();
 }
+
+// clang-format on

@@ -4,5 +4,10 @@ namespace vamp::binding
 {
     void init_environment(nanobind::module_ &pymodule);
     void init_settings(nanobind::module_ &pymodule);
+#ifdef VAMP_HAVE_JIT
+    void init_dynamic(nanobind::module_ &pymodule);
+#endif
+// clang-format off
     @VAMP_ROBOT_DECLS@
+// clang-format on
 }  // namespace vamp::binding

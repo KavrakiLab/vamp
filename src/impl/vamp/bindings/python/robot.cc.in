@@ -1,3 +1,4 @@
+// clang-format off
 #include <vamp_python_init.hh>
 
 #include <vamp/bindings/python/robot_helper.hh>
@@ -7,3 +8,4 @@ void vamp::binding::init_@robot_name@(nanobind::module_ &pymodule)
 {
     vamp::binding::init_robot<vamp::robots::@robot_struct@>(pymodule);
 }
+// clang-format on

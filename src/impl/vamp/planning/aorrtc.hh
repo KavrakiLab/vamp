@@ -224,11 +224,12 @@ namespace vamp::planning
                                 break;
                             }
                             // Validate edge to newly found parent
-                            else if (validate_vector<Robot, rake, resolution>(
-                                         new_nearest_node.array,
-                                         new_configuration - new_nearest_node.array,
-                                         new_nearest_distance,
-                                         environment))
+                            else if (
+                                validate_vector<Robot, rake, resolution>(
+                                    new_nearest_node.array,
+                                    new_configuration - new_nearest_node.array,
+                                    new_nearest_distance,
+                                    environment))
                             {
                                 // Congratulations to the new parent
                                 nearest_node = new_nearest_node;

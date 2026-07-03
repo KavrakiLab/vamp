@@ -142,6 +142,53 @@ cmake --build build
 ```
 Please see `CMakeLists.txt` for further build configuration options.
 
+### JIT (Just-in-Time Robot Compilation and Loading)
+VAMP optionally ships a runtime that JIT-compiles a planner specialization for an arbitrary robot loaded from a URDF, no rebuild of the entire VAMP codebase required.
+
+JIT support is **off by default**, enable it by setting `VAMP_BUILD_JIT=ON` at install time and pulling in the `[jit]` extra:
+```bash
+VAMP_BUILD_JIT=ON pip install vamp-planner[jit]
+```
+
+For dev installs, the same toggle works:
+```bash
+VAMP_BUILD_JIT=ON pip install --no-build-isolation -e .[jit]
+```
+
+Note, on top of VAMP's regular build deps, the JIT path also needs:
+- **cricket** installed through `pip`, and transitively:
+- **Pinocchio**, **CGAL**, **fmt**, **nlohmann-json**, **CppAD**
+- **LLVM + Clang development libraries**
+- A `clang` executable on `PATH` at runtime.
+
+#### JIT Usage (Python)
+
+JIT-compiled robots live in the `vamp.jit` submodule. 
+The returned `DynamicRobot` exposes the same API as the statically-compiled robot submodules:
+
+```python
+import vamp
+
+robot = vamp.jit.load_robot(
+    urdf="/path/to/my_robot_spherized.urdf",
+    srdf="/path/to/my_robot.srdf", 
+    end_effector="tool0",
+    planners=["rrtc"],
+    rake=8,
+    resolution=32,
+    name="MyRobot",
+  ) 
+
+env = vamp.Environment()
+settings = vamp.RRTCSettings()
+sampler = robot.halton()
+
+result = robot.rrtc(start, goal, env, settings, sampler)
+```
+
+The first `load_robot()` for a given URDF takes a few seconds to compile.
+Subsequent calls hit a cache (default `~/.cache/cricket`) and load fast.
+
 #### Architecture-Specific Build Options
 By default, VAMP builds with `-march=native` for optimal performance on the build machine. For builds targeting different hardware (e.g., Docker containers), you can override the architecture flags:
 ```bash

@@ -7,11 +7,13 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
     REQUIRED COMPONENTS Interpreter Development.Module
     OPTIONAL_COMPONENTS Development.SABIModule)
 
-  CPMAddPackage("gh:wjakob/nanobind#9a25aed8a7edfe60ef9ad1c911e57667bc4916c4")
-
-  # Check if Python is available
   if(NOT Python_FOUND)
     message(FATAL_ERROR "VAMP_BUILD_PYTHON_BINDINGS is ON but Python was not found")
+  endif()
+
+  find_package(nanobind CONFIG QUIET)
+  if(NOT nanobind_FOUND)
+    CPMAddPackage("gh:wjakob/nanobind#9a25aed8a7edfe60ef9ad1c911e57667bc4916c4")
   endif()
 
   if(NOT VAMP_ROBOT_MODULES)
@@ -57,6 +59,13 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
     src/impl/vamp/bindings/python/settings.cc
     ${CMAKE_CURRENT_BINARY_DIR}/python.cc
   )
+
+  if(VAMP_BUILD_JIT)
+    list(APPEND VAMP_EXT_SOURCES
+      src/impl/vamp/bindings/python/dynamic.cc
+    )
+  endif()
+
   foreach(robot_name robot_struct IN ZIP_LISTS VAMP_ROBOT_MODULES VAMP_ROBOT_STRUCTS)
   configure_file(
     src/impl/vamp/bindings/python/robot.cc.in
@@ -86,6 +95,23 @@ if(VAMP_BUILD_PYTHON_BINDINGS)
     vamp_cpp
     Eigen3::Eigen
   )
+
+  if(VAMP_BUILD_JIT)
+    target_link_libraries(_core_ext PRIVATE
+        vamp::jit
+        cricket::cricket
+    )
+    target_compile_definitions(_core_ext PRIVATE VAMP_HAVE_JIT=1)
+
+    # simdxorshift symbols need exported so dynamic symbol search finds them
+    if(TARGET simdxorshift)
+      target_link_options(_core_ext PRIVATE
+          "LINKER:--whole-archive,$<TARGET_FILE:simdxorshift>,--no-whole-archive"
+          "LINKER:--export-dynamic"
+      )
+      add_dependencies(_core_ext simdxorshift)
+    endif()
+  endif()
 
   if($ENV{GITHUB_ACTIONS})
     set(STUB_PREFIX "")

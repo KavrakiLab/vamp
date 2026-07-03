@@ -1,0 +1,27 @@
+#pragma once
+
+#include <array>
+#include <string_view>
+
+// clang-format off
+namespace vamp::jit::paths
+{
+    inline constexpr std::array<std::string_view, 3> include_dirs = {
+        "@VAMP_SRC_IMPL_DIR@",
+        "@VAMP_SIMDXORSHIFT_INCLUDE@",
+        "@VAMP_CRICKET_INCLUDE_DIR@",
+    };
+
+    inline constexpr std::array<std::string_view, 3> system_include_dirs = {
+        "@VAMP_EIGEN3_INCLUDE_DIR@",
+        "@VAMP_NIGH_INCLUDE_DIR@",
+        "@VAMP_PDQSORT_INCLUDE_DIR@",
+    };
+
+    inline constexpr std::array<std::string_view, @VAMP_JIT_DEFINES_COUNT@> defines = {
+@VAMP_JIT_DEFINES_INIT@    };
+
+    inline constexpr std::array<std::string_view, @VAMP_JIT_FLAGS_COUNT@> extra_flags = {
+@VAMP_JIT_FLAGS_INIT@    };
+}  // namespace vamp::jit::paths
+// clang-format on

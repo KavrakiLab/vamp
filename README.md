@@ -238,6 +238,19 @@ VAMP_FORCE_CLANG = "ON"
 This may have performance implications for some systems (positive or negative).
 We recommend trying both compilers to see which works best for your particular setup.
 
+### Testing
+
+VAMP has automated tests that run with Catch2. To run the tests, do the following:
+
+```sh
+# set up cmake dir
+cmake -Bbuild -DVAMP_BUILD_TESTS=ON -DVAMP_BUILD_PYTHON_BINDINGS=OFF -DCMAKE_BUILD_TYPE=Debug
+# build test binary
+cmake --build build -j
+# test with catch2
+ctest --test-dir build --output-on-failure
+```
+
 ## Supported Robots
 We ship code to do planning for a sphere in $\mathbb{R}^3$ and the UR5, Panda, Fetch, and Baxter models as found in [`robowflex_resources`](https://github.com/KavrakiLab/robowflex_resources) [[5]](#5), as used in the MotionBenchMaker (MBM) [[3]](#3) dataset.
 Resources for each robot (URDF, SRDF, meshes, etc.) are all provided in the `resources/` directory under each robot's name.

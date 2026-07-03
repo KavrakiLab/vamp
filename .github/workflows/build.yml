@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - src/impl/**
+      - tests/**
       - CMakeLists.txt
       - cmake/Dependencies.cmake
       - pyproject.toml
@@ -13,6 +14,7 @@ on:
   pull_request:
     paths:
       - src/impl/**
+      - tests/**
       - CMakeLists.txt
       - cmake/Dependencies.cmake
       - pyproject.toml
@@ -74,6 +76,56 @@ jobs:
 
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+  cpp-tests:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, macos-latest]
+        build_type: [Release]
+        compiler: [{cpp: g++, c: gcc}, {cpp: clang++, c: clang}]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Install packages (Linux)
+      if: runner.os == 'Linux'
+      run: >
+        sudo apt-get install -y libeigen3-dev llvm
+
+    - name: Install packages (MacOS)
+      if: runner.os == 'macOS'
+      run: >
+        brew install eigen
+
+    - name: Install GCC (MacOS)
+      if: runner.os == 'macOS' && matrix.compiler.c == 'gcc'
+      run: >
+        brew install gcc
+
+    - name: Configure CMake
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cpp }}
+        -DCMAKE_C_COMPILER=${{ matrix.compiler.c }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DVAMP_BUILD_PYTHON_BINDINGS=OFF
+        -DVAMP_BUILD_TESTS=ON
+        -S ${{ github.workspace }}
+
+    - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target vamp_tests
+
+    - name: Run tests
+      run: ctest --test-dir ${{ steps.strings.outputs.build-output-dir }} --output-on-failure
 
   wasm-build:
     runs-on: ubuntu-22.04

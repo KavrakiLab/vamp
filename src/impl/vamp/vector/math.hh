@@ -33,7 +33,93 @@ inline constexpr auto cos(const DataT &v) -> DataT
 template <typename DataT>
 inline constexpr auto sqrt(const DataT &v) -> DataT
 {
-    return v.sqrt();
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
+        return std::sqrt(v);
+    }
+    else
+    {
+        return v.sqrt();
+    }
+}
+
+template <typename DataT, typename DataTB>
+inline constexpr auto max(const DataT &x, const DataTB &y) -> DataT
+{
+    return x.max(y);
+}
+
+template <typename DataT, typename DataTB>
+inline constexpr auto min(const DataT &x, const DataTB &y) -> DataT
+{
+    return x.min(y);
+}
+
+template <typename DataA, typename DataB, typename DataC>
+inline constexpr auto blend(const DataA &a, const DataB &b, const DataC &mask) -> DataA
+{
+    if constexpr (std::is_arithmetic_v<DataC>)
+    {
+        return (mask >= 0) ? a : b;
+    }
+    else
+    {
+        DataA b_vec(b);
+        DataC mask_vec(mask);
+        return a.blend(b_vec, mask_vec);
+    }
+}
+
+template <typename DataT>
+inline constexpr auto asin(const DataT &v) -> DataT
+{
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
+        return std::asin(v);
+    }
+    else
+    {
+        return v.asin();
+    }
+}
+
+template <typename DataT>
+inline constexpr auto acos(const DataT &v) -> DataT
+{
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
+        return std::acos(v);
+    }
+    else
+    {
+        return v.acos();
+    }
+}
+
+template <typename DataT>
+inline constexpr auto atan(const DataT &v) -> DataT
+{
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
+        return std::atan(v);
+    }
+    else
+    {
+        return v.atan();
+    }
+}
+
+template <typename DataT>
+inline constexpr auto atan2(const DataT &y, const DataT &x) -> DataT
+{
+    if constexpr (std::is_arithmetic_v<DataT>)
+    {
+        return std::atan2(y, x);
+    }
+    else
+    {
+        return y.atan2(x);
+    }
 }
 
 template <typename DataT>

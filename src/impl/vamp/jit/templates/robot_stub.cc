@@ -260,19 +260,16 @@ extern "C" std::int32_t VAMP_JIT_FN_VALIDATE_MOTION(
                c_in, c_out, vamp_jit_robot::raked_env(env_ptr));
 }
 
-extern "C" float
-VAMP_JIT_FN_CFG_DISTANCE(const float *a_ptr, const float *b_ptr)
+extern "C" float VAMP_JIT_FN_CFG_DISTANCE(const float *a_ptr, const float *b_ptr)
 {
     using R = vamp_jit_robot::R;
     return R::distance(vamp_jit_robot::load_config(a_ptr), vamp_jit_robot::load_config(b_ptr));
 }
 
-extern "C" void
-VAMP_JIT_FN_CFG_INTERPOLATE(const float *a_ptr, const float *b_ptr, float t, float *out_ptr)
+extern "C" void VAMP_JIT_FN_CFG_INTERPOLATE(const float *a_ptr, const float *b_ptr, float t, float *out_ptr)
 {
     using R = vamp_jit_robot::R;
-    auto c = R::interpolate(
-        vamp_jit_robot::load_config(a_ptr), vamp_jit_robot::load_config(b_ptr), t);
+    auto c = R::interpolate(vamp_jit_robot::load_config(a_ptr), vamp_jit_robot::load_config(b_ptr), t);
     auto arr = c.to_array();
     std::memcpy(out_ptr, arr.data(), R::dimension * sizeof(float));
 }

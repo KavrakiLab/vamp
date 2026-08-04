@@ -24,7 +24,8 @@ namespace vamp::planning
 {
     // Incremental batched kd-tree over robot configurations.
     //
-    // Metric: L2, except quaternion blocks (Robot::so3_offsets) which use the sign-minimized chordal distance min(|a - b|, |a + b|).
+    // Metric: L2, except quaternion blocks (Robot::so3_offsets) which use the sign-minimized chordal distance
+    // min(|a - b|, |a + b|).
     template <typename Robot, std::size_t leaf_capacity = 128>
     struct KDTree
     {
@@ -336,7 +337,7 @@ namespace vamp::planning
                 b += d * d;
             }
 
-            // Quaternions above were checked at +q; swap each block's for the sign-minimized one. 
+            // Quaternions above were checked at +q; swap each block's for the sign-minimized one.
             // May round slightly negative, but never over-prunes.
             for (const auto offset : Robot::so3_offsets)
             {
@@ -410,12 +411,9 @@ namespace vamp::planning
             }
         }
 
-        void search_one(
-            std::uint32_t ni,
-            const float *q,
-            const Rows &qp,
-            float &best_d2,
-            std::size_t &best_index) const noexcept
+        void
+        search_one(std::uint32_t ni, const float *q, const Rows &qp, float &best_d2, std::size_t &best_index)
+            const noexcept
         {
             const auto &n = nodes_[ni];
             if (n.leaf != nil)
@@ -454,8 +452,8 @@ namespace vamp::planning
             }
         }
 
-        void search_k(std::uint32_t ni, const float *q, const Rows &qp, std::size_t k, float r2)
-            const noexcept
+        void
+        search_k(std::uint32_t ni, const float *q, const Rows &qp, std::size_t k, float r2) const noexcept
         {
             const auto &n = nodes_[ni];
             if (n.leaf != nil)
@@ -463,8 +461,7 @@ namespace vamp::planning
                 scan_leaf(
                     leaves_[n.leaf],
                     qp,
-                    [this, k, r2]
-                    { return (scratch_.size() < k) ? r2 : scratch_.front().first; },
+                    [this, k, r2] { return (scratch_.size() < k) ? r2 : scratch_.front().first; },
                     [this, k, r2](float d2, std::uint32_t index)
                     {
                         if (d2 > r2)
@@ -496,8 +493,7 @@ namespace vamp::planning
             const std::array<float, 2> bounds = {bound2(c0, q), bound2(c1, q)};
             const auto near = (bounds[0] <= bounds[1]) ? 0U : 1U;
 
-            const auto limit = [&]()
-            { return (scratch_.size() < k) ? r2 : scratch_.front().first; };
+            const auto limit = [&]() { return (scratch_.size() < k) ? r2 : scratch_.front().first; };
             if (bounds[near] <= limit())
             {
                 search_k(n.children[near], q, qp, k, r2);

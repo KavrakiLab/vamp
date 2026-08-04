@@ -128,7 +128,8 @@ namespace vamp::robots
             return a.distance(b);
         }
 
-        inline static auto interpolate(const Configuration &a, const Configuration &b, float t) noexcept -> Configuration
+        inline static auto interpolate(const Configuration &a, const Configuration &b, float t) noexcept
+            -> Configuration
         {
             return a.interpolate(b, t);
         }

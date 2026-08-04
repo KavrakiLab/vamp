@@ -197,7 +197,8 @@ namespace vamp::planning
                     const auto new_configuration = nearest_node.array + extension_vector;
 
                     // Calculate and store actual node cost
-                    auto new_cost = nearest_node.cost + Robot::distance(new_configuration, nearest_node.array);
+                    auto new_cost =
+                        nearest_node.cost + Robot::distance(new_configuration, nearest_node.array);
 
                     // If resampling costs to try and find a better parent...
                     if (settings.cost_bound_resample)
@@ -304,8 +305,7 @@ namespace vamp::planning
                             auto parent = parents[current];
                             result.path.emplace_back(buffer_index(parent));
                             result.cost += Robot::distance(
-                                result.path[result.path.size() - 1],
-                                result.path[result.path.size() - 2]);
+                                result.path[result.path.size() - 1], result.path[result.path.size() - 2]);
                             current = parent;
                         }
 
@@ -317,8 +317,7 @@ namespace vamp::planning
                             auto parent = parents[current];
                             result.path.emplace_back(buffer_index(parent));
                             result.cost += Robot::distance(
-                                result.path[result.path.size() - 1],
-                                result.path[result.path.size() - 2]);
+                                result.path[result.path.size() - 1], result.path[result.path.size() - 2]);
                             current = parent;
                         }
 

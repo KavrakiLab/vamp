@@ -155,8 +155,7 @@ namespace vamp::planning
                     }
 
                     // Extend to goal tree
-                    const auto other_nearest =
-                        tree_b->nearest(new_configuration_index);
+                    const auto other_nearest = tree_b->nearest(new_configuration_index);
                     if (not other_nearest)
                     {
                         continue;
@@ -199,8 +198,7 @@ namespace vamp::planning
                             auto parent = parents[current];
                             result.path.emplace_back(buffer_index(parent));
                             result.cost += Robot::distance(
-                                result.path[result.path.size() - 1],
-                                result.path[result.path.size() - 2]);
+                                result.path[result.path.size() - 1], result.path[result.path.size() - 2]);
                             current = parent;
                         }
 
@@ -212,8 +210,7 @@ namespace vamp::planning
                             auto parent = parents[current];
                             result.path.emplace_back(buffer_index(parent));
                             result.cost += Robot::distance(
-                                result.path[result.path.size() - 1],
-                                result.path[result.path.size() - 2]);
+                                result.path[result.path.size() - 1], result.path[result.path.size() - 2]);
                             current = parent;
                         }
 

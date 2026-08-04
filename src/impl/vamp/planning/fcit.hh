@@ -244,8 +244,8 @@ namespace vamp::planning
                                         {
                                             // Update the node's parent and g value
                                             parents[current_index] = current_p;
-                                            current_g =
-                                                parent_node.g + Robot::distance(temp_config, temp_config_self);
+                                            current_g = parent_node.g +
+                                                        Robot::distance(temp_config, temp_config_self);
                                             current_node.g = current_g;
                                         }
                                         else

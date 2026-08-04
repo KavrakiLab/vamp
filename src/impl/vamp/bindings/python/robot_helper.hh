@@ -252,8 +252,8 @@ namespace vamp::binding
         {
             auto cfg_in = Input::to(c_in);
             auto cfg_out = Input::to(c_out);
-            return (not check_bounds
-                    or (Robot::in_bounds(cfg_in.trim()) and Robot::in_bounds(cfg_out.trim()))) and
+            return (not check_bounds or
+                    (Robot::in_bounds(cfg_in.trim()) and Robot::in_bounds(cfg_out.trim()))) and
                    vamp::planning::validate_motion<Robot, rake, 1>(cfg_in, cfg_out, EnvVec(env));
         }
 

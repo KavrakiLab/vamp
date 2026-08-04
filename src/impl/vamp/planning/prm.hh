@@ -135,11 +135,11 @@ namespace vamp::planning
                 roadmap.nearest(neighbors, state, k, r);
                 for (const auto &[neighbor, distance] : neighbors)
                 {
-                    if (validate_motion<Robot, rake, resolution>(Configuration(state_index(neighbor)), temp, environment))
+                    if (validate_motion<Robot, rake, resolution>(
+                            Configuration(state_index(neighbor)), temp, environment))
                     {
                         node.neighbors.emplace_back(
-                            typename RoadmapNode::Neighbor{
-                                static_cast<unsigned int>(neighbor), distance});
+                            typename RoadmapNode::Neighbor{static_cast<unsigned int>(neighbor), distance});
                         nodes[neighbor].neighbors.emplace_back(
                             typename RoadmapNode::Neighbor{node.index, distance});
                     }
@@ -263,11 +263,11 @@ namespace vamp::planning
                 roadmap.nearest(neighbors, state, k, r);
                 for (const auto &[neighbor, distance] : neighbors)
                 {
-                    if (validate_motion<Robot, rake, resolution>(Configuration(state_index(neighbor)), temp, environment))
+                    if (validate_motion<Robot, rake, resolution>(
+                            Configuration(state_index(neighbor)), temp, environment))
                     {
                         node.neighbors.emplace_back(
-                            typename RoadmapNode::Neighbor{
-                                static_cast<unsigned int>(neighbor), distance});
+                            typename RoadmapNode::Neighbor{static_cast<unsigned int>(neighbor), distance});
                         nodes[neighbor].neighbors.emplace_back(
                             typename RoadmapNode::Neighbor{node.index, distance});
                     }

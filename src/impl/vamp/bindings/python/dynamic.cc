@@ -488,8 +488,7 @@ namespace vamp::binding
                const std::string &name,
                const std::optional<std::array<double, 3>> &bounds_lower,
                const std::optional<std::array<double, 3>> &bounds_upper,
-               bool compact_collisions)
-                -> std::shared_ptr<vj::DynamicRobot>
+               bool compact_collisions) -> std::shared_ptr<vj::DynamicRobot>
             {
                 cricket::GenOptions g;
                 g.urdf = urdf;
@@ -506,10 +505,8 @@ namespace vamp::binding
                 if (bounds_lower and bounds_upper)
                 {
                     cricket::Bounds b;
-                    b.lower = Eigen::Vector3d(
-                        (*bounds_lower)[0], (*bounds_lower)[1], (*bounds_lower)[2]);
-                    b.upper = Eigen::Vector3d(
-                        (*bounds_upper)[0], (*bounds_upper)[1], (*bounds_upper)[2]);
+                    b.lower = Eigen::Vector3d((*bounds_lower)[0], (*bounds_lower)[1], (*bounds_lower)[2]);
+                    b.upper = Eigen::Vector3d((*bounds_upper)[0], (*bounds_upper)[1], (*bounds_upper)[2]);
                     g.bounds = b;
                 }
 

@@ -131,8 +131,7 @@ namespace vamp::jit
                     ns = (ns > 2) ? std::min(ns - 2, max_n_states) : 0;
                     for (std::size_t k = 1; k <= ns; ++k)
                     {
-                        next.emplace_back(
-                            _interpolate(a, b, static_cast<float>(k) / static_cast<float>(ns)));
+                        next.emplace_back(_interpolate(a, b, static_cast<float>(k) / static_cast<float>(ns)));
                     }
                     n -= ns + 1;
                     remaining_length -= seg_lengths[i];
@@ -169,8 +168,7 @@ namespace vamp::jit
                 for (std::size_t k = 1; k < segment_states; ++k)
                 {
                     next.emplace_back(
-                        _interpolate(
-                            a, b, static_cast<float>(k) / static_cast<float>(segment_states)));
+                        _interpolate(a, b, static_cast<float>(k) / static_cast<float>(segment_states)));
                 }
             }
             next.emplace_back(waypoints.back());

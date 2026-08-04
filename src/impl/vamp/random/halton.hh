@@ -15,10 +15,9 @@ namespace vamp::rng
         using Sample = FloatVector<Robot::sample_dimension>;
 
         static constexpr const std::array<float, 32> primes{
-            3.F,   5.F,   7.F,   11.F,  13.F,  17.F,  19.F,  23.F,
-            29.F,  31.F,  37.F,  41.F,  43.F,  47.F,  53.F,  59.F,
-            61.F,  67.F,  71.F,  73.F,  79.F,  83.F,  89.F,  97.F,
-            101.F, 103.F, 107.F, 109.F, 113.F, 127.F, 131.F, 137.F};
+            3.F,  5.F,  7.F,   11.F,  13.F,  17.F,  19.F,  23.F,  29.F,  31.F, 37.F,
+            41.F, 43.F, 47.F,  53.F,  59.F,  61.F,  67.F,  71.F,  73.F,  79.F, 83.F,
+            89.F, 97.F, 101.F, 103.F, 107.F, 109.F, 113.F, 127.F, 131.F, 137.F};
 
         explicit Halton(Sample b_in) noexcept : b_init(b_in), b(b_in)
         {

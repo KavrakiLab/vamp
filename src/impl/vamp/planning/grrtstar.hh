@@ -408,8 +408,7 @@ namespace vamp::planning
                         else
                         {
                             radii[nearest_index] = std::max(
-                                radii[nearest_index] * (1.F - settings.dd_alpha),
-                                settings.dd_min_radius);
+                                radii[nearest_index] * (1.F - settings.dd_alpha), settings.dd_min_radius);
                         }
                     }
                     continue;
@@ -442,7 +441,8 @@ namespace vamp::planning
                         float r = static_cast<float>(std::min(
                             static_cast<double>(settings.range),
                             r_rrt_star * std::pow(std::log(card) / card, inverse_dim)));
-                        tree_a->nearest(neighbors, new_config_ptr, std::numeric_limits<std::size_t>::max(), r);
+                        tree_a->nearest(
+                            neighbors, new_config_ptr, std::numeric_limits<std::size_t>::max(), r);
                     }
 
                     if (settings.delay_cc)
@@ -506,8 +506,7 @@ namespace vamp::planning
                 free_index++;
 
                 // Dynamic domain grow
-                if (settings.dynamic_domain and
-                    radii[nearest_index] != std::numeric_limits<float>::max())
+                if (settings.dynamic_domain and radii[nearest_index] != std::numeric_limits<float>::max())
                 {
                     radii[nearest_index] *= (1 + settings.dd_alpha);
                 }

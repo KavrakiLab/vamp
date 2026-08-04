@@ -80,8 +80,7 @@ namespace vamp::planning
         else
         {
             const float distance = Robot::distance(start, goal);
-            const std::size_t n =
-                std::max(std::ceil(distance / static_cast<float>(rake) * resolution), 1.F);
+            const std::size_t n = std::max(std::ceil(distance / static_cast<float>(rake) * resolution), 1.F);
             const auto percents = FloatVector<rake>(Percents<rake>::percents);
             const auto t_step = FloatVector<rake>::fill(1.F / static_cast<float>(rake * n));
 
@@ -89,9 +88,8 @@ namespace vamp::planning
             auto t_block = percents;
             Robot::template interpolate_block<rake>(start, goal, t_block, block);
 
-            bool valid = (environment.attachments) ?
-                Robot::template fkcc_attach<rake>(environment, block) :
-                Robot::template fkcc<rake>(environment, block);
+            bool valid = (environment.attachments) ? Robot::template fkcc_attach<rake>(environment, block) :
+                                                     Robot::template fkcc<rake>(environment, block);
             if (not valid or n == 1)
             {
                 return valid;
@@ -102,9 +100,8 @@ namespace vamp::planning
                 t_block = t_block - t_step;
                 Robot::template interpolate_block<rake>(start, goal, t_block, block);
 
-                valid = (environment.attachments) ?
-                    Robot::template fkcc_attach<rake>(environment, block) :
-                    Robot::template fkcc<rake>(environment, block);
+                valid = (environment.attachments) ? Robot::template fkcc_attach<rake>(environment, block) :
+                                                    Robot::template fkcc<rake>(environment, block);
                 if (not valid)
                 {
                     return false;

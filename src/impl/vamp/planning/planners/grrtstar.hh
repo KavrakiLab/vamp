@@ -36,9 +36,9 @@
 #include <vamp/planning/nn.hh>
 #include <vamp/planning/phs.hh>
 #include <vamp/planning/plan.hh>
-#include <vamp/planning/roadmap.hh>
+#include <vamp/planning/planners/roadmap.hh>
 #include <vamp/planning/validate.hh>
-#include <vamp/planning/grrtstar_settings.hh>
+#include <vamp/planning/planners/grrtstar_settings.hh>
 #include <vamp/random/rng.hh>
 #include <vamp/utils.hh>
 #include <vamp/vector.hh>

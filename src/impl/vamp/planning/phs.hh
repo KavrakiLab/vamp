@@ -8,7 +8,7 @@
 
 #include <vamp/random/distribution.hh>
 #include <vamp/random/rng.hh>
-#include <vamp/planning/roadmap.hh>
+#include <vamp/planning/planners/roadmap.hh>
 #include <vamp/vector/eigen.hh>
 #include <vamp/vector.hh>
 

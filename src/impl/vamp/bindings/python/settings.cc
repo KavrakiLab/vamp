@@ -1,9 +1,9 @@
 #include <vamp_python_init.hh>
 
-#include <vamp/planning/roadmap.hh>
-#include <vamp/planning/rrtc_settings.hh>
-#include <vamp/planning/aorrtc_settings.hh>
-#include <vamp/planning/grrtstar_settings.hh>
+#include <vamp/planning/planners/roadmap.hh>
+#include <vamp/planning/planners/rrtc_settings.hh>
+#include <vamp/planning/planners/aorrtc_settings.hh>
+#include <vamp/planning/planners/grrtstar_settings.hh>
 #include <vamp/planning/simplify_settings.hh>
 
 #include <nanobind/stl/vector.h>

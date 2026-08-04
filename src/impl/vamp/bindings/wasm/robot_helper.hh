@@ -3,10 +3,10 @@
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
 
-#include <vamp/planning/rrtc.hh>
-#include <vamp/planning/rrtc_settings.hh>
-#include <vamp/planning/aorrtc.hh>
-#include <vamp/planning/aorrtc_settings.hh>
+#include <vamp/planning/planners/rrtc.hh>
+#include <vamp/planning/planners/rrtc_settings.hh>
+#include <vamp/planning/planners/aorrtc.hh>
+#include <vamp/planning/planners/aorrtc_settings.hh>
 #include <vamp/planning/simplify.hh>
 #include <vamp/planning/simplify_settings.hh>
 #include <vamp/planning/validate.hh>

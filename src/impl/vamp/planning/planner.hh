@@ -1,10 +1,10 @@
 #pragma once
 
-#include <vamp/planning/aorrtc.hh>
-#include <vamp/planning/fcit.hh>
-#include <vamp/planning/grrtstar.hh>
-#include <vamp/planning/prm.hh>
-#include <vamp/planning/rrtc.hh>
+#include <vamp/planning/planners/aorrtc.hh>
+#include <vamp/planning/planners/fcit.hh>
+#include <vamp/planning/planners/grrtstar.hh>
+#include <vamp/planning/planners/prm.hh>
+#include <vamp/planning/planners/rrtc.hh>
 
 #include <array>
 #include <cstddef>

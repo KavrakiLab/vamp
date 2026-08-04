@@ -2,10 +2,10 @@
 
 #include <vamp/collision/environment.hh>
 #include <vamp/collision/shapes.hh>
-#include <vamp/planning/aorrtc_settings.hh>
-#include <vamp/planning/grrtstar_settings.hh>
+#include <vamp/planning/planners/aorrtc_settings.hh>
+#include <vamp/planning/planners/grrtstar_settings.hh>
 #include <vamp/planning/planner.hh>
-#include <vamp/planning/rrtc_settings.hh>
+#include <vamp/planning/planners/rrtc_settings.hh>
 #include <vamp/planning/simplify_settings.hh>
 
 #include <nanobind/eigen/dense.h>

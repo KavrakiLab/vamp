@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vamp/planning/rrtc_settings.hh>
+#include <vamp/planning/planners/rrtc_settings.hh>
 #include <vamp/planning/simplify_settings.hh>
 
 namespace vamp::planning

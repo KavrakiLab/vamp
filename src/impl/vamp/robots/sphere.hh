@@ -4,8 +4,6 @@
 #include <vamp/planning/nn.hh>
 
 #include <Eigen/Geometry>
-#include <nigh/so3_space.hpp>
-#include <nigh/cartesian_space.hpp>
 
 #include <tuple>
 
@@ -37,14 +35,7 @@ namespace vamp::robots
 
         static constexpr std::size_t nn_dimension = dimension;
 
-        using NNKey = std::tuple<vamp::planning::NNFloatArray<dimension>>;
-        using NNSpace = unc::robotics::nigh::metric::CartesianSpace<
-            unc::robotics::nigh::metric::Space<vamp::planning::NNFloatArray<dimension>, unc::robotics::nigh::metric::LP<2>>>;
-
-        static inline auto nn_key(float *cfg_ptr) noexcept -> NNKey
-        {
-            return NNKey{vamp::planning::NNFloatArray<dimension>{cfg_ptr}};
-        }
+        static constexpr std::array<std::size_t, 0> so3_offsets = {};
 
         template <std::size_t rake>
         using ConfigurationBlock = FloatVector<rake, 3>;

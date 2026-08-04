@@ -20,21 +20,6 @@ if(NOT Eigen3_FOUND)
   endif()
 endif()
 
-CPMAddPackage("gh:kavrakilab/nigh#548e6412b7c67e1ac9358dfd4c8f051f2e76f61d")
-add_library(nigh INTERFACE)
-target_include_directories(nigh INTERFACE $<BUILD_INTERFACE:${nigh_SOURCE_DIR}/src>)
-if(VAMP_INSTALL_CPP_LIBRARY)
-  install(TARGETS nigh
-        EXPORT nigh_TARGETS
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  )
-  install(EXPORT nigh_TARGETS FILE nighTargets.cmake NAMESPACE nigh:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/nigh)
-  export(EXPORT nigh_TARGETS FILE ${CMAKE_CURRENT_BINARY_DIR}/cmake/nighTargets.cmake NAMESPACE nigh::)
-endif()
-
 CPMAddPackage("gh:orlp/pdqsort#b1ef26a55cdb60d236a5cb199c4234c704f46726")
 add_library(pdqsort INTERFACE)
 target_include_directories(pdqsort INTERFACE $<BUILD_INTERFACE:${pdqsort_SOURCE_DIR}>)

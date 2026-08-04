@@ -70,7 +70,7 @@ namespace vamp::planning
             }
 
             std::size_t iter = 0;
-            std::vector<std::pair<NNNode<Robot>, float>> neighbors;
+            std::vector<std::pair<std::size_t, float>> neighbors;
             typename Robot::template ConfigurationBlock<rake> temp_block;
             auto states = std::unique_ptr<float>(
                 vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
@@ -91,7 +91,7 @@ namespace vamp::planning
             auto *start_state = state_index(start_index);
             start.to_array(start_state);
             nodes.emplace_back(start_index, start_index, 0.0);
-            roadmap.insert(NNNode<Robot>{start_index, Robot::nn_key(start_state)});
+            roadmap.insert(start_index, start_state);
             components.emplace_back(utils::ConnectedComponent{start_index, 1});
 
             for (const auto &goal : goals)
@@ -100,7 +100,7 @@ namespace vamp::planning
                 auto *goal_state = state_index(index);
                 goal.to_array(goal_state);
                 nodes.emplace_back(index, index);
-                roadmap.insert(NNNode<Robot>{index, Robot::nn_key(goal_state)});
+                roadmap.insert(index, goal_state);
                 components.emplace_back(utils::ConnectedComponent{index, 1});
             }
 
@@ -132,22 +132,22 @@ namespace vamp::planning
                 // Add valid edges
                 const auto k = settings.neighbor_params.max_neighbors(roadmap.size());
                 const auto r = settings.neighbor_params.neighbor_radius(roadmap.size());
-                roadmap.nearest(neighbors, Robot::nn_key(state), k, r);
+                roadmap.nearest(neighbors, state, k, r);
                 for (const auto &[neighbor, distance] : neighbors)
                 {
-                    if (validate_motion<Robot, rake, resolution>(Configuration(state_index(neighbor.index)), temp, environment))
+                    if (validate_motion<Robot, rake, resolution>(Configuration(state_index(neighbor)), temp, environment))
                     {
                         node.neighbors.emplace_back(
                             typename RoadmapNode::Neighbor{
-                                static_cast<unsigned int>(neighbor.index), distance});
-                        nodes[neighbor.index].neighbors.emplace_back(
+                                static_cast<unsigned int>(neighbor), distance});
+                        nodes[neighbor].neighbors.emplace_back(
                             typename RoadmapNode::Neighbor{node.index, distance});
                     }
                 }
 
                 // Insert valid state into roadmap - after query to prevent returning self as
                 // neighbor
-                roadmap.insert(NNNode<Robot>{node.index, Robot::nn_key(state)});
+                roadmap.insert(node.index, state);
 
                 // Unify connected components
                 if (node.neighbors.empty())
@@ -210,7 +210,7 @@ namespace vamp::planning
             auto start_time = std::chrono::steady_clock::now();
 
             std::size_t iter = 0;
-            std::vector<std::pair<NNNode<Robot>, float>> neighbors;
+            std::vector<std::pair<std::size_t, float>> neighbors;
             typename Robot::template ConfigurationBlock<rake> temp_block;
             auto states = std::unique_ptr<float, decltype(&free)>(
                 vamp::utils::vector_alloc<float, FloatVectorAlignment, FloatVectorWidth>(
@@ -230,8 +230,8 @@ namespace vamp::planning
             goal.to_array(goal_state);
             nodes.emplace_back(start_index, start_index, 0.0);
             nodes.emplace_back(goal_index, goal_index);
-            roadmap.insert(NNNode<Robot>{start_index, Robot::nn_key(state_index(start_index))});
-            roadmap.insert(NNNode<Robot>{goal_index, Robot::nn_key(goal_state)});
+            roadmap.insert(start_index, state_index(start_index));
+            roadmap.insert(goal_index, goal_state);
 
             while (iter++ < settings.max_iterations and nodes.size() < settings.max_samples)
             {
@@ -260,22 +260,22 @@ namespace vamp::planning
                 // Add valid edges
                 const auto k = settings.neighbor_params.max_neighbors(roadmap.size());
                 const auto r = settings.neighbor_params.neighbor_radius(roadmap.size());
-                roadmap.nearest(neighbors, Robot::nn_key(state), k, r);
+                roadmap.nearest(neighbors, state, k, r);
                 for (const auto &[neighbor, distance] : neighbors)
                 {
-                    if (validate_motion<Robot, rake, resolution>(Configuration(state_index(neighbor.index)), temp, environment))
+                    if (validate_motion<Robot, rake, resolution>(Configuration(state_index(neighbor)), temp, environment))
                     {
                         node.neighbors.emplace_back(
                             typename RoadmapNode::Neighbor{
-                                static_cast<unsigned int>(neighbor.index), distance});
-                        nodes[neighbor.index].neighbors.emplace_back(
+                                static_cast<unsigned int>(neighbor), distance});
+                        nodes[neighbor].neighbors.emplace_back(
                             typename RoadmapNode::Neighbor{node.index, distance});
                     }
                 }
 
                 // Insert valid state into roadmap - after query to prevent returning self as
                 // neighbor
-                roadmap.insert(NNNode<Robot>{node.index, Robot::nn_key(state)});
+                roadmap.insert(node.index, state);
             }
 
             Roadmap<Robot> result;

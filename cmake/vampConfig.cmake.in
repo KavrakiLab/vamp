@@ -4,7 +4,7 @@
 find_dependency(Eigen3 REQUIRED)
 
 # VAMP requires these dependencies but they're bundled
-# No need to find_dependency for nigh, pdqsort, or SIMDxorshift
+# No need to find_dependency for pdqsort or SIMDxorshift
 # as they're built as part of VAMP
 
 # Include the exported targets

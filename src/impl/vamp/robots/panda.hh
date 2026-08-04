@@ -7,8 +7,6 @@
 #include <vamp/planning/nn.hh>
 
 #include <Eigen/Geometry>
-#include <nigh/so3_space.hpp>
-#include <nigh/cartesian_space.hpp>
 
 // clang-format off
 // NOLINTBEGIN(*-magic-numbers)
@@ -35,20 +33,7 @@ struct Panda
     };
     using Sample = FloatVector<sample_dimension>;
 
-    using NNKey = std::tuple<
-        vamp::planning::NNFloatArray<7>
-        >;
-
-    using NNSpace = unc::robotics::nigh::metric::CartesianSpace<
-        unc::robotics::nigh::metric::Space<vamp::planning::NNFloatArray<7>, unc::robotics::nigh::metric::LP<2>>
-        >;
-
-    static inline auto nn_key(float *cfg_ptr) noexcept -> NNKey
-    {
-        return NNKey{
-            vamp::planning::NNFloatArray<7>{cfg_ptr + 0}
-            };
-    }
+    static constexpr std::array<std::size_t, 0> so3_offsets = {};
 
     struct alignas(FloatVectorAlignment) ConfigurationBuffer
         : std::array<float, Configuration::num_scalars_rounded>

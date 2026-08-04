@@ -8,7 +8,6 @@ if(VAMP_BUILD_JIT)
   list(GET VAMP_CRICKET_INCLUDE_DIR 0 VAMP_CRICKET_INCLUDE_DIR)
   get_target_property(VAMP_EIGEN3_INCLUDE_DIR Eigen3::Eigen INTERFACE_INCLUDE_DIRECTORIES)
   list(GET VAMP_EIGEN3_INCLUDE_DIR 0 VAMP_EIGEN3_INCLUDE_DIR)
-  set(VAMP_NIGH_INCLUDE_DIR "${nigh_SOURCE_DIR}/src")
   set(VAMP_PDQSORT_INCLUDE_DIR "${pdqsort_SOURCE_DIR}")
 
   # Extract defines+flags added to the compilation process

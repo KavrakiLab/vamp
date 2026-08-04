@@ -41,8 +41,7 @@ namespace vamp::rng
                 buffer.data[i] = avx_xorshift128plus(&key);
             }
 
-            return Robot::sample(
-                FloatVector<Robot::sample_dimension>::map_to_range(buffer, 0.F, 1.F));
+            return Robot::sample(FloatVector<Robot::sample_dimension>::map_to_range(buffer, 0.F, 1.F));
         }
     };
 }  // namespace vamp::rng

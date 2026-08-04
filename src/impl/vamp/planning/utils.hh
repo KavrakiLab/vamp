@@ -72,7 +72,7 @@ namespace vamp::planning::utils
         }
     };
 
-    template <typename Configuration, typename StateLookupFn>
+    template <typename Robot, typename Configuration, typename StateLookupFn>
     inline auto astar(
         std::vector<RoadmapNode> &graph,
         const Configuration &start,
@@ -93,7 +93,7 @@ namespace vamp::planning::utils
         constexpr const unsigned int goal_index = 1;
         parents[start_index] = start_index;
         std::vector<utils::QueueNode> open_set;
-        open_set.emplace_back(utils::QueueNode{start_index, goal.distance(start)});
+        open_set.emplace_back(utils::QueueNode{start_index, Robot::distance(goal, start)});
         Configuration temp;
         while (not open_set.empty())
         {
@@ -124,7 +124,7 @@ namespace vamp::planning::utils
                 parents[neighbor_index] = current_node.index;
                 temp = state_index(neighbor_index);
                 open_set.emplace_back(
-                    utils::QueueNode{neighbor_index, neighbor_node.g + goal.distance(temp)});
+                    utils::QueueNode{neighbor_index, neighbor_node.g + Robot::distance(goal, temp)});
             }
 
             pdqsort(

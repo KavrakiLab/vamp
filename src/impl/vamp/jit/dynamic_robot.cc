@@ -108,6 +108,8 @@ namespace vamp::jit
         ops_.fk = resolve<ffi::FkFn>(*session_, r, "fk");
         ops_.validate = resolve<ffi::ValidateFn>(*session_, r, "validate");
         ops_.validate_motion = resolve<ffi::ValidateMotionFn>(*session_, r, "validate_motion");
+        ops_.cfg_distance = resolve<ffi::CfgDistanceFn>(*session_, r, "cfg_distance");
+        ops_.cfg_interpolate = resolve<ffi::CfgInterpolateFn>(*session_, r, "cfg_interpolate");
         ops_.filter_pointcloud =
             resolve<ffi::FilterPointcloudFn>(*session_, r, "filter_self_from_pointcloud");
 

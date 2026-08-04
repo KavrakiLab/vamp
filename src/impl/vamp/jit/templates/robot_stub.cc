@@ -29,6 +29,8 @@
 #define VAMP_JIT_FN_FK                      vamp_jit_{{robot_name}}_fk
 #define VAMP_JIT_FN_VALIDATE                vamp_jit_{{robot_name}}_validate
 #define VAMP_JIT_FN_VALIDATE_MOTION         vamp_jit_{{robot_name}}_validate_motion
+#define VAMP_JIT_FN_CFG_DISTANCE            vamp_jit_{{robot_name}}_cfg_distance
+#define VAMP_JIT_FN_CFG_INTERPOLATE         vamp_jit_{{robot_name}}_cfg_interpolate
 #define VAMP_JIT_FN_FILTER_PC               vamp_jit_{{robot_name}}_filter_self_from_pointcloud
 #define VAMP_JIT_FN_SPACE_MEASURE           vamp_jit_{{robot_name}}_space_measure
 #define VAMP_JIT_FN_MIN_MAX_RADII           vamp_jit_{{robot_name}}_min_max_radii
@@ -56,7 +58,7 @@ namespace vamp_jit_robot
 
     inline auto load_config(const float *data) -> typename R::Configuration
     {
-        std::array<float, R::dimension> arr;
+        typename R::ConfigurationArray arr;
         std::memcpy(arr.data(), data, R::dimension * sizeof(float));
         return typename R::Configuration(arr);
     }
@@ -238,13 +240,8 @@ extern "C" std::int32_t
 VAMP_JIT_FN_VALIDATE(const float *config_ptr, const void *env_ptr, std::int32_t check_bounds)
 {
     using R = vamp_jit_robot::R;
-
     auto configuration = vamp_jit_robot::load_config(config_ptr);
-    auto copy = configuration.trim();
-    R::descale_configuration(copy);
-    const bool in_bounds = (copy <= 1.F).all() and (copy >= 0.F).all();
-
-    return (not check_bounds or in_bounds) and
+    return (not check_bounds or R::in_bounds(configuration.trim())) and
            vamp::planning::validate_motion<R, VAMP_JIT_RAKE, 1>(
                configuration, configuration, vamp_jit_robot::raked_env(env_ptr));
 }
@@ -256,20 +253,25 @@ extern "C" std::int32_t VAMP_JIT_FN_VALIDATE_MOTION(
     std::int32_t check_bounds)
 {
     using R = vamp_jit_robot::R;
-
     auto c_in = vamp_jit_robot::load_config(c_in_ptr);
-    auto copy_in = c_in.trim();
-    R::descale_configuration(copy_in);
-    const bool in_bounds_in = (copy_in <= 1.F).all() and (copy_in >= 0.F).all();
-
     auto c_out = vamp_jit_robot::load_config(c_out_ptr);
-    auto copy_out = c_out.trim();
-    R::descale_configuration(copy_out);
-    const bool in_bounds_out = (copy_out <= 1.F).all() and (copy_out >= 0.F).all();
-
-    return (not check_bounds or (in_bounds_in and in_bounds_out)) and
+    return (not check_bounds or (R::in_bounds(c_in.trim()) and R::in_bounds(c_out.trim()))) and
            vamp::planning::validate_motion<R, VAMP_JIT_RAKE, 1>(
                c_in, c_out, vamp_jit_robot::raked_env(env_ptr));
+}
+
+extern "C" float VAMP_JIT_FN_CFG_DISTANCE(const float *a_ptr, const float *b_ptr)
+{
+    using R = vamp_jit_robot::R;
+    return R::distance(vamp_jit_robot::load_config(a_ptr), vamp_jit_robot::load_config(b_ptr));
+}
+
+extern "C" void VAMP_JIT_FN_CFG_INTERPOLATE(const float *a_ptr, const float *b_ptr, float t, float *out_ptr)
+{
+    using R = vamp_jit_robot::R;
+    auto c = R::interpolate(vamp_jit_robot::load_config(a_ptr), vamp_jit_robot::load_config(b_ptr), t);
+    auto arr = c.to_array();
+    std::memcpy(out_ptr, arr.data(), R::dimension * sizeof(float));
 }
 
 extern "C" void VAMP_JIT_FN_FILTER_PC(

@@ -70,7 +70,6 @@ target_include_directories(vamp_cpp
 target_link_libraries_system(vamp_cpp
     INTERFACE
     Eigen3::Eigen
-    nigh
     pdqsort
 )
 

@@ -39,8 +39,8 @@ namespace vamp::planning
         {
             PlanningResult<Robot> result;
 
-            NN<dimension> start_tree;
-            NN<dimension> goal_tree;
+            NN<Robot> start_tree;
+            NN<Robot> goal_tree;
 
             constexpr const std::size_t start_index = 0;
 
@@ -82,14 +82,14 @@ namespace vamp::planning
 
             // add start to tree
             start.to_array(buffer_index(start_index));
-            start_tree.insert(NNNode<dimension>{start_index, {buffer_index(start_index)}});
+            start_tree.insert(start_index, buffer_index(start_index));
             parents[start_index] = start_index;
             radii[start_index] = std::numeric_limits<float>::max();
 
             for (const auto &goal : goals)
             {
                 goal.to_array(buffer_index(free_index));
-                goal_tree.insert(NNNode<dimension>{free_index, {buffer_index(free_index)}});
+                goal_tree.insert(free_index, buffer_index(free_index));
                 parents[free_index] = free_index;
                 radii[free_index] = std::numeric_limits<float>::max();
                 free_index++;
@@ -111,21 +111,21 @@ namespace vamp::planning
                 typename Robot::ConfigurationBuffer temp_array;
                 temp.to_array(temp_array.data());
 
-                const auto nearest = tree_a->nearest(NNFloatArray<dimension>{temp_array.data()});
+                const auto nearest = tree_a->nearest(temp_array.data());
                 if (not nearest)
                 {
                     continue;
                 }
 
-                const auto &[nearest_node, nearest_distance] = *nearest;
-                const auto nearest_radius = radii[nearest_node.index];
+                const auto [nearest_index, nearest_distance] = *nearest;
+                const auto nearest_radius = radii[nearest_index];
 
                 if (settings.dynamic_domain and nearest_radius < nearest_distance)
                 {
                     continue;
                 }
 
-                const auto nearest_configuration = nearest_node.as_vector();
+                const auto nearest_configuration = Configuration(buffer_index(nearest_index));
 
                 auto nearest_vector = temp - nearest_configuration;
 
@@ -142,28 +142,27 @@ namespace vamp::planning
                     float *new_configuration_index = buffer_index(free_index);
                     auto new_configuration = nearest_configuration + extension_vector;
                     new_configuration.to_array(new_configuration_index);
-                    tree_a->insert(NNNode<dimension>{free_index, {new_configuration_index}});
+                    tree_a->insert(free_index, new_configuration_index);
 
-                    parents[free_index] = nearest_node.index;
+                    parents[free_index] = nearest_index;
                     radii[free_index] = std::numeric_limits<float>::max();
 
                     free_index++;
 
                     if (settings.dynamic_domain and nearest_radius != std::numeric_limits<float>::max())
                     {
-                        radii[nearest_node.index] *= (1 + settings.alpha);
+                        radii[nearest_index] *= (1 + settings.alpha);
                     }
 
                     // Extend to goal tree
-                    const auto other_nearest =
-                        tree_b->nearest(NNFloatArray<dimension>{new_configuration_index});
+                    const auto other_nearest = tree_b->nearest(new_configuration_index);
                     if (not other_nearest)
                     {
                         continue;
                     }
 
-                    const auto &[other_nearest_node, other_nearest_distance] = *other_nearest;
-                    const auto other_nearest_configuration = other_nearest_node.as_vector();
+                    const auto [other_nearest_index, other_nearest_distance] = *other_nearest;
+                    const auto other_nearest_configuration = Configuration(buffer_index(other_nearest_index));
                     auto other_nearest_vector = other_nearest_configuration - new_configuration;
 
                     const std::size_t n_extensions = std::ceil(other_nearest_distance / settings.range);
@@ -181,7 +180,7 @@ namespace vamp::planning
                         auto next = prior + increment;
                         float *next_index = buffer_index(free_index);
                         next.to_array(next_index);
-                        tree_a->insert(NNNode<dimension>{free_index, {next_index}});
+                        tree_a->insert(free_index, next_index);
                         parents[free_index] = free_index - 1;
                         radii[free_index] = std::numeric_limits<float>::max();
 
@@ -198,20 +197,20 @@ namespace vamp::planning
                         {
                             auto parent = parents[current];
                             result.path.emplace_back(buffer_index(parent));
-                            result.cost += result.path[result.path.size() - 1].distance(
-                                result.path[result.path.size() - 2]);
+                            result.cost += Robot::distance(
+                                result.path[result.path.size() - 1], result.path[result.path.size() - 2]);
                             current = parent;
                         }
 
                         std::reverse(result.path.begin(), result.path.end());
-                        current = other_nearest_node.index;
+                        current = other_nearest_index;
 
                         while (parents[current] != current)
                         {
                             auto parent = parents[current];
                             result.path.emplace_back(buffer_index(parent));
-                            result.cost += result.path[result.path.size() - 1].distance(
-                                result.path[result.path.size() - 2]);
+                            result.cost += Robot::distance(
+                                result.path[result.path.size() - 1], result.path[result.path.size() - 2]);
                             current = parent;
                         }
 
@@ -227,12 +226,12 @@ namespace vamp::planning
                 {
                     if (nearest_radius == std::numeric_limits<float>::max())
                     {
-                        radii[nearest_node.index] = settings.radius;
+                        radii[nearest_index] = settings.radius;
                     }
                     else
                     {
-                        radii[nearest_node.index] =
-                            std::max(radii[nearest_node.index] * (1.F - settings.alpha), settings.min_radius);
+                        radii[nearest_index] =
+                            std::max(radii[nearest_index] * (1.F - settings.alpha), settings.min_radius);
                     }
                 }
             }

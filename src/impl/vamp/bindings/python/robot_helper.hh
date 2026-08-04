@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 #include <vamp/bindings/python/api_binder.hh>
 #include <vamp/bindings/python/array_helpers.hh>
 
@@ -100,10 +102,12 @@ namespace vamp::binding
         }
     };
 
+    // Accepts a plain Python list (or any sequence nanobind maps to std::vector<float>).
+    // Registered last so numpy arrays still bind to NDArrayInput in nanobind's no-conversion pass.
     template <typename Robot>
-    struct ArrayInput
+    struct VectorInput
     {
-        using Type = typename Robot::ConfigurationArray;
+        using Type = std::vector<float>;
 
         using Configuration = typename Robot::Configuration;
         using ConfigurationArray = typename Robot::ConfigurationArray;
@@ -112,34 +116,44 @@ namespace vamp::binding
 
         inline static auto from(const Configuration &c) -> Type
         {
-            Type a;
             auto c_arr = c.to_array();
-            for (auto i = 0U; i < Robot::dimension; ++i)
-            {
-                a[i] = c_arr[i];
-            }
-            return a;
+            return Type(c_arr.begin(), c_arr.begin() + Robot::dimension);
         }
 
-        inline static auto to(const Type &a) -> Configuration
+        inline static auto to(const Type &v) -> Configuration
         {
-            return Configuration(a);
+            return Configuration(array(v));
         }
 
-        inline static auto array(const Type &a) -> ConfigurationArray
+        inline static auto array(const Type &v) -> ConfigurationArray
         {
-            return a;
+            check_size(v);
+            ConfigurationArray c;
+            std::memcpy(c.data(), v.data(), Robot::dimension * sizeof(float));
+            return c;
         }
 
         template <std::size_t r>
-        inline static auto block(const Type &a) -> ConfigurationBlock<r>
+        inline static auto block(const Type &v) -> ConfigurationBlock<r>
         {
+            check_size(v);
             ConfigurationBlock<r> out;
             for (auto i = 0U; i < Robot::dimension; ++i)
             {
-                out[i] = a[i];
+                out[i] = v[i];
             }
             return out;
+        }
+
+    private:
+        inline static void check_size(const Type &v)
+        {
+            if (v.size() != Robot::dimension)
+            {
+                throw std::runtime_error(
+                    std::string(Robot::name) + " configuration must have " +
+                    std::to_string(Robot::dimension) + " elements, got " + std::to_string(v.size()));
+            }
         }
     };
 
@@ -229,10 +243,7 @@ namespace vamp::binding
         static auto validate(const Cfg &c, const Env &env, bool check_bounds) -> bool
         {
             auto configuration = Input::to(c);
-            auto copy = configuration.trim();
-            Robot::descale_configuration(copy);
-            const bool in_bounds = (copy <= 1.F).all() and (copy >= 0.F).all();
-            return (not check_bounds or in_bounds) and
+            return (not check_bounds or Robot::in_bounds(configuration.trim())) and
                    vamp::planning::validate_motion<Robot, rake, 1>(configuration, configuration, EnvVec(env));
         }
 
@@ -240,16 +251,9 @@ namespace vamp::binding
             -> bool
         {
             auto cfg_in = Input::to(c_in);
-            auto copy_in = cfg_in.trim();
-            Robot::descale_configuration(copy_in);
-            const bool in_bounds_in = (copy_in <= 1.F).all() and (copy_in >= 0.F).all();
-
             auto cfg_out = Input::to(c_out);
-            auto copy_out = cfg_out.trim();
-            Robot::descale_configuration(copy_out);
-            const bool in_bounds_out = (copy_out <= 1.F).all() and (copy_out >= 0.F).all();
-
-            return (not check_bounds or (in_bounds_in and in_bounds_out)) and
+            return (not check_bounds or
+                    (Robot::in_bounds(cfg_in.trim()) and Robot::in_bounds(cfg_out.trim()))) and
                    vamp::planning::validate_motion<Robot, rake, 1>(cfg_in, cfg_out, EnvVec(env));
         }
 
@@ -368,9 +372,9 @@ namespace vamp::binding
     inline auto init_robot(nanobind::module_ &pymodule) -> nanobind::module_
     {
         using NA = NDArrayInput<Robot>;
-        using CA = ArrayInput<Robot>;
+        using VA = VectorInput<Robot>;
         using TA = StaticRobotTraits<Robot, NA>;
-        using TC = StaticRobotTraits<Robot, CA>;
+        using TV = StaticRobotTraits<Robot, VA>;
 
         auto submodule = pymodule.def_submodule(Robot::name, "Robot-specific submodule");
 
@@ -399,16 +403,16 @@ namespace vamp::binding
 
         auto phs_k = bind_phs_class<TA>(submodule, "ProlateHyperspheroid");
         bind_phs_io<TA>(phs_k);
-        bind_phs_io<TC>(phs_k);
+        bind_phs_io<TV>(phs_k);
 
         auto path_k = bind_path_class<TA>(submodule, "Path");
         bind_path_io<TA>(path_k);
-        bind_path_io<TC>(path_k);
+        bind_path_io<TV>(path_k);
 
         bind_planning_result<TA>(submodule, "PlanningResult");
 
         bind_robot_methods<TA>(submodule);
-        bind_robot_methods<TC>(submodule);
+        bind_robot_methods<TV>(submodule);
 
         if constexpr (has_set_lows_v<Robot>)
         {

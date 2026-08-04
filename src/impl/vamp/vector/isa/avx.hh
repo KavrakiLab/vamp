@@ -232,6 +232,7 @@ namespace vamp
     {
         using VectorT = __m256;
         using ScalarT = float;
+        using IntT = SIMDVector<__m256i>;
         static constexpr std::size_t VectorWidth = 8;
         static constexpr std::size_t Alignment = 32;
 
@@ -288,6 +289,12 @@ namespace vamp
         {
             return _mm256_xor_ps(
                 l, _mm256_castsi256_ps(_mm256_cmpeq_epi32(_mm256_castps_si256(l), _mm256_castps_si256(l))));
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto xor_(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return _mm256_xor_ps(l, r);
         }
 
         // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
@@ -411,7 +418,7 @@ namespace vamp
         template <unsigned int = 0>
         inline static constexpr auto sqrt(VectorT v) noexcept -> VectorT
         {
-            return _mm256_mul_ps(v, _mm256_rsqrt_ps(v));
+            return _mm256_sqrt_ps(v);
         }
 
         template <unsigned int = 0>
@@ -439,6 +446,12 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static constexpr auto min(VectorT v, VectorT other) noexcept -> VectorT
+        {
+            return _mm256_min_ps(v, other);
+        }
+
+        template <unsigned int = 0>
         inline static constexpr auto hsum(VectorT v) noexcept -> ScalarT
         {
             auto vhigh = _mm256_extractf128_ps(v, 1);
@@ -449,164 +462,6 @@ namespace vamp
             auto shuf_2 = _mm_movehdup_ps(sum_2);
             auto sum_3 = _mm_add_ps(sum_2, shuf_2);
             return _mm_cvtss_f32(sum_3);
-        }
-
-        // converted from http://gruntthepeon.free.fr/ssemath/
-        template <unsigned int = 0>
-        inline static constexpr auto sin(VectorT x) noexcept -> VectorT
-        {
-            using IntVector = SIMDVector<__m256i>;
-
-            const auto ps_sign_mask = constant_int(0x80000000);
-            const auto ps_cephes_FOPI = constant(1.27323954473516f);  // 4/Pi
-            const auto pi32_1 = IntVector::constant(1);
-            const auto pi32_inv1 = IntVector::constant(~1);
-            const auto pi32_4 = IntVector::constant(4);
-            const auto pi32_2 = IntVector::constant(2);
-            const auto ps_minus_cephes_DP1 = constant(-0.78515625f);
-            const auto ps_minus_cephes_DP2 = constant(-2.4187564849853515625e-4f);
-            const auto ps_minus_cephes_DP3 = constant(-3.77489497744594108e-8f);
-            const auto ps_coscof_p0 = constant(2.443315711809948E-005f);
-            const auto ps_coscof_p1 = constant(-1.388731625493765E-003f);
-            const auto ps_coscof_p2 = constant(4.166664568298827E-002f);
-            const auto ps_0p5 = constant(0.5f);
-            const auto ps_1 = constant(1.0f);
-            const auto ps_sincof_p0 = constant(-1.9515295891E-4f);
-            const auto ps_sincof_p1 = constant(8.3321608736E-3f);
-            const auto ps_sincof_p2 = constant(-1.6666654611E-1f);
-
-            auto sign_bit = x;
-
-            x = abs(x);
-            sign_bit = and_(sign_bit, ps_sign_mask);
-            auto y = mul(x, ps_cephes_FOPI);
-
-            auto emm2 = IntVector::from(y);
-
-            // j=(j+1) & (~1) (see the cephes sources)
-            emm2 = IntVector::add(emm2, pi32_1);
-            emm2 = IntVector::and_(emm2, pi32_inv1);
-            y = from<IntVector::VectorT>(emm2);
-
-            // Get the swap sign flag
-            auto emm0 = IntVector::and_(emm2, pi32_4);
-            emm0 = IntVector::shift_left(emm0, 29);
-
-            // Get the polynom selection mask
-            // There is one polynom for 0 <= x <= Pi/4
-            // and another one for Pi/4 < x <= Pi/2
-            // Both branches will be computed.
-            emm2 = IntVector::and_(emm2, pi32_2);
-            emm2 = IntVector::cmp_equal(emm2, IntVector::zero_vector());
-
-            auto swap_sign_bit = IntVector::template as<VectorT>(emm0);
-            auto poly_mask = IntVector::template as<VectorT>(emm2);
-            sign_bit = _mm256_xor_ps(sign_bit, swap_sign_bit);
-
-            // The magic pass: "Extended precision modular arithmetic"
-            // x = ((x - y * DP1) - y * DP2) - y * DP3;
-            auto xmm1 = mul(y, ps_minus_cephes_DP1);
-            auto xmm2 = mul(y, ps_minus_cephes_DP2);
-            auto xmm3 = mul(y, ps_minus_cephes_DP3);
-            x = add(x, xmm1);
-            x = add(x, xmm2);
-            x = add(x, xmm3);
-
-            // Evaluate the first polynom (0 <= x <= Pi/4)
-            y = ps_coscof_p0;
-            auto z = mul(x, x);
-            y = mul(y, z);
-            y = add(y, ps_coscof_p1);
-            y = mul(y, z);
-            y = add(y, ps_coscof_p2);
-            y = mul(y, z);
-            y = mul(y, z);
-            auto tmp = mul(z, ps_0p5);
-            y = sub(y, tmp);
-            y = add(y, ps_1);
-
-            // Evaluate the second polynom (Pi/4 <= x <= 0)
-            auto y2 = ps_sincof_p0;
-            y2 = mul(y2, z);
-            y2 = add(y2, ps_sincof_p1);
-            y2 = mul(y2, z);
-            y2 = add(y2, ps_sincof_p2);
-            y2 = mul(y2, z);
-            y2 = mul(y2, x);
-            y2 = add(y2, x);
-
-            // Select the correct result from the two polynoms
-            xmm3 = poly_mask;
-            y2 = and_(xmm3, y2);
-            y = _mm256_andnot_ps(xmm3, y);
-            y = add(y, y2);
-
-            // Update the sign
-            y = _mm256_xor_ps(y, sign_bit);
-
-            return y;
-        }
-
-        // NOTE: Dummy parameter because otherwise we get constexpr errors with set1_ps...
-        template <unsigned int = 0>
-        inline static constexpr auto log(VectorT x) noexcept -> VectorT
-        {
-            using IntVector = SIMDVector<__m256i>;
-
-            const auto half = constant(0.5F);
-            const auto one = constant(1.0F);
-            auto invalid_mask = cmp_less_equal(x, zero_vector());
-
-            // cut off denormalized values
-            x = max(x, constant_int(0x00800000));
-
-            auto emm0 = IntVector::shift_right(as<IntVector::VectorT>(x), 23);
-
-            x = and_(x, constant_int(~0x7f800000));
-            x = or_(x, half);
-
-            // keep only the fractional part
-            emm0 = IntVector::sub(emm0, IntVector::constant(0x7f));
-            auto e = from<IntVector::VectorT>(emm0);
-
-            e = add(e, one);
-
-            // compute approx
-            auto mask = cmp_less_than(x, constant(0.707106781186547524f));
-            auto tmp = and_(x, mask);
-            x = sub(x, one);
-            e = sub(e, and_(one, mask));
-            x = add(x, tmp);
-
-            auto z = mul(x, x);
-
-            auto y = constant(7.0376836292E-2f);
-            y = mul(y, x);
-            y = add(y, constant(-1.1514610310E-1f));
-            y = mul(y, x);
-            y = add(y, constant(1.1676998740E-1f));
-            y = mul(y, x);
-            y = add(y, constant(-1.2420140846E-1f));
-            y = mul(y, x);
-            y = add(y, constant(+1.4249322787E-1f));
-            y = mul(y, x);
-            y = add(y, constant(-1.6668057665E-1f));
-            y = mul(y, x);
-            y = add(y, constant(+2.0000714765E-1f));
-            y = mul(y, x);
-            y = add(y, constant(-2.4999993993E-1f));
-            y = mul(y, x);
-            y = add(y, constant(+3.3333331174E-1f));
-            y = mul(y, mul(x, z));
-            tmp = mul(e, constant(-2.12194440e-4f));
-            y = add(y, tmp);
-            tmp = mul(z, half);
-            y = sub(y, tmp);
-            tmp = mul(e, constant(0.693359375f));
-            x = add(x, add(y, tmp));
-
-            x = or_(x, invalid_mask);  // negative arg will be NAN
-            return x;
         }
 
         template <unsigned int = 0>

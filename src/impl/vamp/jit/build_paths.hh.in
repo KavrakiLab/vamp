@@ -12,9 +12,8 @@ namespace vamp::jit::paths
         "@VAMP_CRICKET_INCLUDE_DIR@",
     };
 
-    inline constexpr std::array<std::string_view, 3> system_include_dirs = {
+    inline constexpr std::array<std::string_view, 2> system_include_dirs = {
         "@VAMP_EIGEN3_INCLUDE_DIR@",
-        "@VAMP_NIGH_INCLUDE_DIR@",
         "@VAMP_PDQSORT_INCLUDE_DIR@",
     };
 

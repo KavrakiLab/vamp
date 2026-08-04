@@ -542,6 +542,12 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static constexpr auto min(VectorT v, VectorT other) noexcept -> VectorT
+        {
+            return vminq_f32(v, other);
+        }
+
+        template <unsigned int = 0>
         inline static constexpr auto hsum(VectorT v) noexcept -> float
         {
             return vaddvq_f32(v);

@@ -563,6 +563,12 @@ namespace vamp
         }
 
         template <unsigned int = 0>
+        inline static constexpr auto min(VectorT v, VectorT other) noexcept -> VectorT
+        {
+            return {wasm_f32x4_min(v.v, other.v)};
+        }
+
+        template <unsigned int = 0>
         inline static constexpr auto hsum(VectorT v) noexcept -> float
         {
             alignas(16) float arr[4];

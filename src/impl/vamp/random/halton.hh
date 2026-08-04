@@ -14,10 +14,6 @@ namespace vamp::rng
         using Configuration = typename Robot::Configuration;
         using Sample = FloatVector<Robot::sample_dimension>;
 
-        // First 32 primes (excluding 2 — Halton avoids it because the base-2
-        // sequence has poor stratification at coarse subdivisions). 32 entries
-        // is enough for the largest non-Euclidean robots we ship (PR2 has
-        // sample_dimension=18 with its planar base); extend if you need more.
         static constexpr const std::array<float, 32> primes{
             3.F,   5.F,   7.F,   11.F,  13.F,  17.F,  19.F,  23.F,
             29.F,  31.F,  37.F,  41.F,  43.F,  47.F,  53.F,  59.F,

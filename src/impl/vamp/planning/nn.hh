@@ -15,11 +15,9 @@ namespace vamp::planning
         inline static constexpr auto dim = dim_;
         float *v;
 
-        // NOTE: This lint (google-explicit-constructor) is incorrect in this case; we want implicit
-        // conversion
         inline operator Eigen::Matrix<float, dim_, 1>() const
         {
-            return EigenFloatVectorMap<dim_>(v);
+            return Eigen::Map<const Eigen::Matrix<float, dim_, 1>, Eigen::Unaligned>(v);
         }
     };
 }  // namespace vamp::planning
@@ -51,7 +49,8 @@ namespace unc::robotics::nigh::metric
 
         static auto distance(const Type &a, const Type &b) -> float
         {
-            const auto diff = vamp::FloatVector<kDimensions>(a.v) - vamp::FloatVector<kDimensions>(b.v);
+            const auto diff = vamp::FloatVector<kDimensions>(a.v, false)
+                            - vamp::FloatVector<kDimensions>(b.v, false);
             return diff.l2_norm();
         }
     };
@@ -61,36 +60,28 @@ namespace vamp::planning
 {
     namespace nigh = unc::robotics::nigh;
 
-    template <std::size_t dim>
-    using Space = nigh::metric::Space<NNFloatArray<dim>, nigh::metric::LP<2>>;
-
-    template <std::size_t dimension>
+    template <typename Robot>
     struct NNNode
     {
         std::size_t index;
-        NNFloatArray<dimension> array;
-
-        [[nodiscard]] inline auto as_vector() const noexcept -> FloatVector<dimension>
-        {
-            return FloatVector<dimension>(array.v);
-        }
+        typename Robot::NNKey key;
     };
 
-    template <std::size_t dimension>
+    template <typename Robot>
     struct NNNodeKey
     {
-        inline auto operator()(const NNNode<dimension> &node) const noexcept
-            -> const NNFloatArray<dimension> &
+        inline auto operator()(const NNNode<Robot> &node) const noexcept
+            -> const typename Robot::NNKey &
         {
-            return node.array;
+            return node.key;
         }
     };
 
-    template <std::size_t dimension, std::size_t batch = 128>
+    template <typename Robot, std::size_t batch = 128>
     using NN = nigh::Nigh<
-        NNNode<dimension>,     //
-        Space<dimension>,      //
-        NNNodeKey<dimension>,  //
-        nigh::NoThreadSafety,  //
+        NNNode<Robot>,           //
+        typename Robot::NNSpace, //
+        NNNodeKey<Robot>,        //
+        nigh::NoThreadSafety,    //
         nigh::KDTreeBatch<batch>>;
 }  // namespace vamp::planning

@@ -12,9 +12,12 @@
 
 #include <Eigen/Dense>
 
+#include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <limits>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -44,24 +47,140 @@ namespace vamp::jit
             return waypoints.size();
         }
 
+    private:
+        // The path_helpers in plan.hh use ADL on std::vector<float>, which
+        // gives Euclidean L2 / linear blend. That's wrong for non-Euclidean
+        // JIT robots (e.g. PR2's planar base — L2 of cos/sin is not the SO(2)
+        // geodesic). Route through the JIT FFI so the metric and interpolation
+        // are the same ones the planner uses internally.
+
+        auto _distance(const std::vector<float> &a, const std::vector<float> &b) const -> float
+        {
+            return robot->ops().cfg_distance(a.data(), b.data());
+        }
+
+        auto _interpolate(const std::vector<float> &a, const std::vector<float> &b, float t) const
+            -> std::vector<float>
+        {
+            std::vector<float> out(dim);
+            robot->ops().cfg_interpolate(a.data(), b.data(), t, out.data());
+            return out;
+        }
+
+    public:
         auto cost() const -> float
         {
-            return vamp::planning::path_helpers::cost(waypoints);
+            const auto n = waypoints.size();
+            if (n < 2)
+            {
+                return std::numeric_limits<float>::infinity();
+            }
+            float total = 0;
+            for (std::size_t i = 0; i + 1 < n; ++i)
+            {
+                total += _distance(waypoints[i], waypoints[i + 1]);
+            }
+            return total;
         }
 
         auto subdivide() -> void
         {
-            vamp::planning::path_helpers::subdivide(waypoints);
+            const auto n = waypoints.size();
+            if (n < 2)
+            {
+                return;
+            }
+            std::vector<std::vector<float>> next;
+            next.reserve(n * 2);
+            for (std::size_t i = 0; i + 1 < n; ++i)
+            {
+                next.emplace_back(waypoints[i]);
+                next.emplace_back(_interpolate(waypoints[i], waypoints[i + 1], 0.5F));
+            }
+            next.emplace_back(waypoints.back());
+            waypoints = std::move(next);
         }
 
         auto interpolate_to_n_states(std::size_t n) -> void
         {
-            vamp::planning::path_helpers::interpolate_to_n_states(waypoints, n);
+            const auto n_p = waypoints.size();
+            if (n_p < 2 or n < n_p)
+            {
+                return;
+            }
+            std::vector<float> seg_lengths(n_p - 1);
+            float remaining_length = 0.;
+            for (std::size_t i = 0; i + 1 < n_p; ++i)
+            {
+                seg_lengths[i] = _distance(waypoints[i], waypoints[i + 1]);
+                remaining_length += seg_lengths[i];
+            }
+            if (remaining_length < std::numeric_limits<float>::epsilon())
+            {
+                return;
+            }
+            std::vector<std::vector<float>> next;
+            next.reserve(n);
+            const auto n1 = n_p - 1;
+            for (std::size_t i = 0; i < n1; ++i)
+            {
+                const auto &a = waypoints[i];
+                const auto &b = waypoints[i + 1];
+                next.emplace_back(a);
+                const auto max_n_states = n + i - n_p;
+                if (max_n_states > 0)
+                {
+                    auto ns = (i + 1 == n1) ? (max_n_states + 2) :
+                                              (static_cast<std::size_t>(
+                                                   std::floor(0.5 + n * seg_lengths[i] / remaining_length)) +
+                                               1);
+                    ns = (ns > 2) ? std::min(ns - 2, max_n_states) : 0;
+                    for (std::size_t k = 1; k <= ns; ++k)
+                    {
+                        next.emplace_back(
+                            _interpolate(a, b, static_cast<float>(k) / static_cast<float>(ns)));
+                    }
+                    n -= ns + 1;
+                    remaining_length -= seg_lengths[i];
+                }
+                else
+                {
+                    n -= 1;
+                }
+            }
+            next.emplace_back(waypoints.back());
+            waypoints = std::move(next);
         }
 
         auto interpolate_to_resolution(std::size_t resolution) -> void
         {
-            vamp::planning::path_helpers::interpolate_to_resolution(waypoints, resolution);
+            const auto n_p = waypoints.size();
+            if (n_p < 2)
+            {
+                return;
+            }
+            std::vector<std::vector<float>> next;
+            for (std::size_t i = 0; i + 1 < n_p; ++i)
+            {
+                const auto &a = waypoints[i];
+                const auto &b = waypoints[i + 1];
+                const float segment_cost = _distance(a, b);
+                const auto segment_states =
+                    static_cast<std::size_t>(segment_cost * static_cast<float>(resolution));
+                next.emplace_back(a);
+                if (segment_cost < 1.F / static_cast<float>(resolution))
+                {
+                    continue;
+                }
+                for (std::size_t k = 1; k < segment_states; ++k)
+                {
+                    next.emplace_back(
+                        _interpolate(
+                            a, b, static_cast<float>(k) / static_cast<float>(segment_states)));
+                }
+            }
+            next.emplace_back(waypoints.back());
+            waypoints = std::move(next);
         }
 
         auto validate(const vamp::collision::Environment<float> &env) -> bool

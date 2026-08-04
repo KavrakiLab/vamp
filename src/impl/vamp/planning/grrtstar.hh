@@ -51,8 +51,8 @@ namespace vamp::planning
         using Configuration = typename Robot::Configuration;
         static constexpr auto dimension = Robot::dimension;
         using RNG = typename vamp::rng::RNG<Robot>;
-        using NNNodeType = NNNode<dimension>;
-        using NNTree = NN<dimension>;
+        using NNNodeType = NNNode<Robot>;
+        using NNTree = NN<Robot>;
 
         inline static auto solve(
             const Configuration &start,
@@ -104,11 +104,11 @@ namespace vamp::planning
             const auto solution_heuristic = [&](std::size_t idx) -> float
             {
                 Configuration cfg(buffer_index(idx));
-                float g_hat = cfg.distance(start);
+                float g_hat = Robot::distance(cfg, start);
                 float h_hat = std::numeric_limits<float>::max();
                 for (const auto &goal : goals)
                 {
-                    h_hat = std::min(h_hat, cfg.distance(goal));
+                    h_hat = std::min(h_hat, Robot::distance(cfg, goal));
                 }
                 return g_hat + h_hat;
             };
@@ -142,7 +142,7 @@ namespace vamp::planning
 
             // Initialize start node
             start.to_array(buffer_index(start_index));
-            start_tree.insert(NNNodeType{start_index, {buffer_index(start_index)}});
+            start_tree.insert(NNNodeType{start_index, Robot::nn_key(buffer_index(start_index))});
             parents[start_index] = start_index;
             costs[start_index] = 0.F;
             radii[start_index] = std::numeric_limits<float>::max();
@@ -156,7 +156,7 @@ namespace vamp::planning
             for (const auto &goal : goals)
             {
                 goal.to_array(buffer_index(free_index));
-                goal_tree.insert(NNNodeType{free_index, {buffer_index(free_index)}});
+                goal_tree.insert(NNNodeType{free_index, Robot::nn_key(buffer_index(free_index))});
                 parents[free_index] = free_index;
                 costs[free_index] = 0.F;
                 radii[free_index] = std::numeric_limits<float>::max();
@@ -173,7 +173,7 @@ namespace vamp::planning
                 {
                     if (not pruned[i] and static_cast<bool>(in_start_tree[i]) == is_start)
                     {
-                        tree.insert(NNNodeType{i, {buffer_index(i)}});
+                        tree.insert(NNNodeType{i, Robot::nn_key(buffer_index(i))});
                     }
                 }
             };
@@ -324,11 +324,11 @@ namespace vamp::planning
                 // Cost gating
                 if (has_solution)
                 {
-                    float g_hat = temp.distance(start);
+                    float g_hat = Robot::distance(temp, start);
                     float h_hat = std::numeric_limits<float>::max();
                     for (const auto &goal : goals)
                     {
-                        h_hat = std::min(h_hat, temp.distance(goal));
+                        h_hat = std::min(h_hat, Robot::distance(temp, goal));
                     }
                     float f_hat = g_hat + h_hat;
                     if (f_hat >= best_cost)
@@ -346,7 +346,7 @@ namespace vamp::planning
                 typename Robot::ConfigurationBuffer temp_array;
                 temp.to_array(temp_array.data());
 
-                auto nearest_result = tree_a->nearest(NNFloatArray<dimension>{temp_array.data()});
+                auto nearest_result = tree_a->nearest(Robot::nn_key(temp_array.data()));
                 if (not nearest_result)
                 {
                     continue;
@@ -360,7 +360,7 @@ namespace vamp::planning
                     continue;
                 }
 
-                const auto nearest_configuration = nearest_node.as_vector();
+                const auto nearest_configuration = Configuration(buffer_index(nearest_node.index));
                 auto nearest_vector = temp - nearest_configuration;
 
                 bool reach = nearest_distance < settings.range;
@@ -383,12 +383,12 @@ namespace vamp::planning
                         h_hat = std::numeric_limits<float>::max();
                         for (const auto &g : goals)
                         {
-                            h_hat = std::min(h_hat, new_configuration.distance(g));
+                            h_hat = std::min(h_hat, Robot::distance(new_configuration, g));
                         }
                     }
                     else
                     {
-                        h_hat = new_configuration.distance(start);
+                        h_hat = Robot::distance(new_configuration, start);
                     }
                     if (new_cost + h_hat >= best_cost)
                     {
@@ -429,7 +429,7 @@ namespace vamp::planning
                     // cardDbl = tStart_->size() + tGoal_->size() + 1
                     const auto card = static_cast<double>(start_tree.size() + goal_tree.size() + 1);
 
-                    NNFloatArray<dimension> new_key{new_config_ptr};
+                    auto new_key = Robot::nn_key(new_config_ptr);
 
                     // Query neighbors using nigh KD-tree (returns sorted by distance)
                     neighbors.clear();
@@ -466,7 +466,7 @@ namespace vamp::planning
 
                             if (settings.use_k_nearest or nbr_dist < settings.range)
                             {
-                                const auto nbr_config = nbr_node.as_vector();
+                                const auto nbr_config = Configuration(buffer_index(nbr_node.index));
                                 if (validate_motion<Robot, rake, resolution>(
                                         nbr_config, new_configuration, environment))
                                 {
@@ -484,7 +484,7 @@ namespace vamp::planning
                             float candidate_cost = costs[nbr_node.index] + nbr_dist;
                             if (candidate_cost < new_cost)
                             {
-                                const auto nbr_config = nbr_node.as_vector();
+                                const auto nbr_config = Configuration(buffer_index(nbr_node.index));
                                 if (validate_motion<Robot, rake, resolution>(
                                         nbr_config, new_configuration, environment))
                                 {
@@ -497,7 +497,7 @@ namespace vamp::planning
                 }
 
                 // Add new node (config already written to buffer)
-                tree_a->insert(NNNodeType{free_index, {new_config_ptr}});
+                tree_a->insert(NNNodeType{free_index, Robot::nn_key(new_config_ptr)});
 
                 parents[free_index] = best_parent;
                 costs[free_index] = new_cost;
@@ -532,7 +532,7 @@ namespace vamp::planning
                             if (settings.use_k_nearest or nbr_dist < settings.range)
                             {
                                 motion_valid = validate_motion<Robot, rake, resolution>(
-                                    new_configuration, nbr_node.as_vector(), environment);
+                                    new_configuration, Configuration(buffer_index(nbr_node.index)), environment);
                             }
                             else
                             {
@@ -568,7 +568,7 @@ namespace vamp::planning
                     continue;
                 }
 
-                auto other_result = tree_b->nearest(NNFloatArray<dimension>{new_config_ptr});
+                auto other_result = tree_b->nearest(Robot::nn_key(new_config_ptr));
                 if (not other_result)
                 {
                     continue;
@@ -583,7 +583,7 @@ namespace vamp::planning
                     continue;
                 }
 
-                const auto other_nearest_configuration = other_nearest_node.as_vector();
+                const auto other_nearest_configuration = Configuration(buffer_index(other_nearest_node.index));
                 auto other_nearest_vector = other_nearest_configuration - new_configuration;
 
                 // Extend incrementally toward other tree
@@ -604,7 +604,7 @@ namespace vamp::planning
                     auto next = prior + increment;
                     float *next_ptr = buffer_index(free_index);
                     next.to_array(next_ptr);
-                    tree_a->insert(NNNodeType{free_index, {next_ptr}});
+                    tree_a->insert(NNNodeType{free_index, Robot::nn_key(next_ptr)});
                     parents[free_index] = free_index - 1;
                     costs[free_index] = costs[free_index - 1] + increment_length;
                     radii[free_index] = std::numeric_limits<float>::max();
@@ -669,8 +669,8 @@ namespace vamp::planning
                                     greedy_best_cost = 0.F;
                                     for (std::size_t i = 0; i < best_path.size(); ++i)
                                     {
-                                        float g_hat = best_path[i].distance(start);
-                                        float h_hat = best_path[i].distance(goals[0]);
+                                        float g_hat = Robot::distance(best_path[i], start);
+                                        float h_hat = Robot::distance(best_path[i], goals[0]);
                                         float f_hat = g_hat + h_hat;
                                         greedy_best_cost = std::max(greedy_best_cost, f_hat);
                                     }

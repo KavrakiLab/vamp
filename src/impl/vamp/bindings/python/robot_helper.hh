@@ -229,10 +229,7 @@ namespace vamp::binding
         static auto validate(const Cfg &c, const Env &env, bool check_bounds) -> bool
         {
             auto configuration = Input::to(c);
-            auto copy = configuration.trim();
-            Robot::descale_configuration(copy);
-            const bool in_bounds = (copy <= 1.F).all() and (copy >= 0.F).all();
-            return (not check_bounds or in_bounds) and
+            return (not check_bounds or Robot::in_bounds(configuration.trim())) and
                    vamp::planning::validate_motion<Robot, rake, 1>(configuration, configuration, EnvVec(env));
         }
 
@@ -240,16 +237,9 @@ namespace vamp::binding
             -> bool
         {
             auto cfg_in = Input::to(c_in);
-            auto copy_in = cfg_in.trim();
-            Robot::descale_configuration(copy_in);
-            const bool in_bounds_in = (copy_in <= 1.F).all() and (copy_in >= 0.F).all();
-
             auto cfg_out = Input::to(c_out);
-            auto copy_out = cfg_out.trim();
-            Robot::descale_configuration(copy_out);
-            const bool in_bounds_out = (copy_out <= 1.F).all() and (copy_out >= 0.F).all();
-
-            return (not check_bounds or (in_bounds_in and in_bounds_out)) and
+            return (not check_bounds
+                    or (Robot::in_bounds(cfg_in.trim()) and Robot::in_bounds(cfg_out.trim()))) and
                    vamp::planning::validate_motion<Robot, rake, 1>(cfg_in, cfg_out, EnvVec(env));
         }
 

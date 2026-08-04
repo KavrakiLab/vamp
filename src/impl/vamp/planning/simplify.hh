@@ -30,11 +30,11 @@ namespace vamp::planning
             bool updated = false;
             for (auto index = 2U; index < path.size() - 1; index += 2)
             {
-                const auto temp_1 = path[index].interpolate(path[index - 1], settings.midpoint_interpolation);
-                const auto temp_2 = path[index].interpolate(path[index + 1], settings.midpoint_interpolation);
-                const auto midpoint = temp_1.interpolate(temp_2, 0.5);
+                const auto temp_1 = Robot::interpolate(path[index], path[index - 1], settings.midpoint_interpolation);
+                const auto temp_2 = Robot::interpolate(path[index], path[index + 1], settings.midpoint_interpolation);
+                const auto midpoint = Robot::interpolate(temp_1, temp_2, 0.5);
 
-                if (path[index].distance(midpoint) > settings.min_change and
+                if (Robot::distance(path[index], midpoint) > settings.min_change and
                     validate_motion<Robot, rake, resolution>(path[index - 1], midpoint, environment) and
                     validate_motion<Robot, rake, resolution>(midpoint, path[index + 1], environment))
                 {
@@ -164,15 +164,15 @@ namespace vamp::planning
             auto before_state = path[to_perturb_idx - 1];
             auto after_state = path[to_perturb_idx + 1];
 
-            float old_cost = perturb_state.distance(before_state) + perturb_state.distance(after_state);
+            float old_cost = Robot::distance(perturb_state, before_state) + Robot::distance(perturb_state, after_state);
 
             for (auto attempt = 0U; attempt < settings.perturbation_attempts; ++attempt)
             {
                 auto perturbation = rng->next();
                 Robot::scale_configuration(perturbation);
 
-                const auto new_state = perturb_state.interpolate(perturbation, settings.range);
-                float new_cost = new_state.distance(before_state) + new_state.distance(after_state);
+                const auto new_state = Robot::interpolate(perturb_state, perturbation, settings.range);
+                float new_cost = Robot::distance(new_state, before_state) + Robot::distance(new_state, after_state);
 
                 if (new_cost < old_cost and
                     validate_motion<Robot, rake, resolution>(before_state, new_state, environment) and

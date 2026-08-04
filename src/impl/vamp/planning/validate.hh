@@ -72,7 +72,47 @@ namespace vamp::planning
         const typename Robot::Configuration &goal,
         const collision::Environment<FloatVector<rake>> &environment) -> bool
     {
-        auto vector = goal - start;
-        return validate_vector<Robot, rake, resolution>(start, vector, vector.l2_norm(), environment);
+        if constexpr (Robot::euclidean)
+        {
+            auto vector = goal - start;
+            return validate_vector<Robot, rake, resolution>(start, vector, vector.l2_norm(), environment);
+        }
+        else
+        {
+            // Joint-aware motion validation: interpolate via Robot::interpolate_block.
+            // Total sub-states needed: ceil(distance * resolution); processed in batches of `rake`.
+            const float distance = Robot::distance(start, goal);
+            const std::size_t n =
+                std::max(std::ceil(distance / static_cast<float>(rake) * resolution), 1.F);
+            const auto percents = FloatVector<rake>(Percents<rake>::percents);
+            const auto t_step = FloatVector<rake>::fill(1.F / static_cast<float>(rake * n));
+
+            typename Robot::template ConfigurationBlock<rake> block;
+            auto t_block = percents;
+            Robot::template interpolate_block<rake>(start, goal, t_block, block);
+
+            bool valid = (environment.attachments) ?
+                Robot::template fkcc_attach<rake>(environment, block) :
+                Robot::template fkcc<rake>(environment, block);
+            if (not valid or n == 1)
+            {
+                return valid;
+            }
+
+            for (auto i = 1U; i < n; ++i)
+            {
+                t_block = t_block - t_step;
+                Robot::template interpolate_block<rake>(start, goal, t_block, block);
+
+                valid = (environment.attachments) ?
+                    Robot::template fkcc_attach<rake>(environment, block) :
+                    Robot::template fkcc<rake>(environment, block);
+                if (not valid)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }  // namespace vamp::planning

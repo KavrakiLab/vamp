@@ -298,6 +298,7 @@ namespace vamp
     {
         using VectorT = WasmFloatVec;
         using ScalarT = float;
+        using IntT = SIMDVector<WasmIntVec>;
         static constexpr std::size_t VectorWidth = 4;
         static constexpr std::size_t Alignment = 16;
 
@@ -371,6 +372,12 @@ namespace vamp
         inline static constexpr auto bitneg(VectorT l) noexcept -> VectorT
         {
             return {wasm_v128_not(l.v)};
+        }
+
+        template <unsigned int = 0>
+        inline static constexpr auto xor_(VectorT l, VectorT r) noexcept -> VectorT
+        {
+            return {wasm_v128_xor(l.v, r.v)};
         }
 
         template <unsigned int = 0>
@@ -561,136 +568,6 @@ namespace vamp
             alignas(16) float arr[4];
             wasm_v128_store(arr, v.v);
             return arr[0] + arr[1] + arr[2] + arr[3];
-        }
-
-        // Converted from http://gruntthepeon.free.fr/ssemath/neon_mathfun.html
-        template <unsigned int = 0>
-        inline static constexpr auto sin(VectorT x) noexcept -> VectorT
-        {
-            using IntVector = SIMDVector<WasmIntVec>;
-
-            // Constants
-            const auto c_cephes_FOPI = constant(1.27323954473516f);  // 4 / M_PI
-            const auto c_minus_cephes_DP1 = constant(-0.78515625f);
-            const auto c_minus_cephes_DP2 = constant(-2.4187564849853515625e-4f);
-            const auto c_minus_cephes_DP3 = constant(-3.77489497744594108e-8f);
-            const auto c_sincof_p0 = constant(-1.9515295891E-4f);
-            const auto c_sincof_p1 = constant(8.3321608736E-3f);
-            const auto c_sincof_p2 = constant(-1.6666654611E-1f);
-            const auto one = constant(1.0f);
-            const auto half = constant(0.5f);
-
-            auto sign_mask_sin = cmp_less_than(x, zero_vector());
-            x = abs(x);
-
-            auto y = mul(x, c_cephes_FOPI);
-
-            auto emm2 = to<WasmIntVec>(y);
-            emm2 = IntVector::add(emm2, IntVector::constant(1));
-            emm2 = IntVector::and_(emm2, IntVector::constant(~1));
-            y = from<WasmIntVec>(emm2);
-
-            auto poly_mask = IntVector::and_(emm2, IntVector::constant(2));
-            poly_mask = IntVector::cmp_not_equal(poly_mask, IntVector::zero_vector());
-
-            auto xmm1 = mul(y, c_minus_cephes_DP1);
-            auto xmm2 = mul(y, c_minus_cephes_DP2);
-            auto xmm3 = mul(y, c_minus_cephes_DP3);
-            x = add(x, xmm1);
-            x = add(x, xmm2);
-            x = add(x, xmm3);
-
-            // Update sign mask
-            auto temp_mask = IntVector::and_(emm2, IntVector::constant(4));
-            temp_mask = IntVector::cmp_not_equal(temp_mask, IntVector::zero_vector());
-            sign_mask_sin.v = wasm_v128_xor(sign_mask_sin.v, IntVector::template as<VectorT>(temp_mask).v);
-
-            // Evaluate polynomials
-            auto z = mul(x, x);
-
-            // First polynomial (cosine)
-            auto y1 = mul(z, constant(2.443315711809948E-005f));
-            y1 = add(y1, constant(-1.388731625493765E-003f));
-            y1 = mul(y1, z);
-            y1 = add(y1, constant(4.166664568298827E-002f));
-            y1 = mul(y1, z);
-            y1 = mul(y1, z);
-            y1 = sub(y1, mul(z, half));
-            y1 = add(y1, one);
-
-            // Second polynomial (sine)
-            auto y2 = mul(z, c_sincof_p0);
-            y2 = add(y2, c_sincof_p1);
-            y2 = mul(y2, z);
-            y2 = add(y2, c_sincof_p2);
-            y2 = mul(y2, z);
-            y2 = mul(y2, x);
-            y2 = add(y2, x);
-
-            auto poly_mask_f = IntVector::template as<VectorT>(poly_mask);
-            auto ys = blend(y2, y1, poly_mask_f);
-            return blend(ys, neg(ys), sign_mask_sin);
-        }
-
-        template <unsigned int = 0>
-        inline static constexpr auto log(VectorT x) noexcept -> VectorT
-        {
-            using IntVector = SIMDVector<WasmIntVec>;
-
-            const auto half = constant(0.5F);
-            const auto one = constant(1.0F);
-            auto invalid_mask = cmp_less_equal(x, zero_vector());
-
-            // Cut off denormalized values
-            x.v = wasm_f32x4_max(x.v, wasm_f32x4_convert_i32x4(wasm_i32x4_splat(0x00800000)));
-
-            auto emm0 = IntVector::shift_right(as<IntVector::VectorT>(x), 23);
-
-            x = and_(x, VectorT{wasm_f32x4_convert_i32x4(wasm_i32x4_splat(~0x7f800000))});
-            x = or_(x, half);
-
-            // Keep only the fractional part
-            emm0 = IntVector::sub(emm0, IntVector::constant(0x7f));
-            auto e = from<IntVector::VectorT>(emm0);
-
-            e = add(e, one);
-
-            // Compute approx
-            auto mask_cmp = cmp_less_than(x, constant(0.707106781186547524f));
-            auto tmp = and_(x, mask_cmp);
-            x = sub(x, one);
-            e = sub(e, and_(one, mask_cmp));
-            x = add(x, tmp);
-
-            auto z = mul(x, x);
-
-            auto y_val = constant(7.0376836292E-2f);
-            y_val = mul(y_val, x);
-            y_val = add(y_val, constant(-1.1514610310E-1f));
-            y_val = mul(y_val, x);
-            y_val = add(y_val, constant(1.1676998740E-1f));
-            y_val = mul(y_val, x);
-            y_val = add(y_val, constant(-1.2420140846E-1f));
-            y_val = mul(y_val, x);
-            y_val = add(y_val, constant(+1.4249322787E-1f));
-            y_val = mul(y_val, x);
-            y_val = add(y_val, constant(-1.6668057665E-1f));
-            y_val = mul(y_val, x);
-            y_val = add(y_val, constant(+2.0000714765E-1f));
-            y_val = mul(y_val, x);
-            y_val = add(y_val, constant(-2.4999993993E-1f));
-            y_val = mul(y_val, x);
-            y_val = add(y_val, constant(+3.3333331174E-1f));
-            y_val = mul(y_val, mul(x, z));
-            tmp = mul(e, constant(-2.12194440e-4f));
-            y_val = add(y_val, tmp);
-            tmp = mul(z, half);
-            y_val = sub(y_val, tmp);
-            tmp = mul(e, constant(0.693359375f));
-            x = add(x, add(y_val, tmp));
-
-            x = or_(x, invalid_mask);  // Negative arg will be NAN
-            return x;
         }
 
         template <unsigned int = 0>

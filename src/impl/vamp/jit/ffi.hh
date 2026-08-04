@@ -59,6 +59,11 @@ namespace vamp::jit::ffi
     using ValidateFn = std::int32_t (*)(const float *config, const void *env_ptr, std::int32_t check_bounds);
     using ValidateMotionFn = std::int32_t (
             *)(const float *c_in, const float *c_out, const void *env_ptr, std::int32_t check_bounds);
+    // Joint-aware configuration metric / interpolation on the robot's manifold.
+    // For Euclidean robots the trace lowers to L2 / linear blend; for SE(2)/
+    // SO(3)/SE(3) it uses pinocchio's geodesic distance / exponential.
+    using CfgDistanceFn = float (*)(const float *a, const float *b);
+    using CfgInterpolateFn = void (*)(const float *a, const float *b, float t, float *out);
 
     using FilterPointcloudFn = void (*)(
         const float *points_in,

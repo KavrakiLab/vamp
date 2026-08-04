@@ -89,7 +89,7 @@ namespace vamp::planning
             auto start_time = std::chrono::steady_clock::now();
 
             PlanningResult<Robot> result;
-            NN<dimension> roadmap;
+            NN<Robot> roadmap;
 
             std::size_t iter = 0;
             typename Robot::template ConfigurationBlock<rake> temp_block;
@@ -115,7 +115,7 @@ namespace vamp::planning
             start.to_array(start_state);
             parents.emplace_back(std::numeric_limits<unsigned int>::max());
             nodes.emplace_back(start_index, 0.0);
-            roadmap.insert(NNNode<dimension>{start_index, {start_state}});
+            roadmap.insert(NNNode<Robot>{start_index, Robot::nn_key(start_state)});
             auto &start_node = nodes[start_index];
             start_node.neighbor_iterator = start_node.neighbors.begin();
 
@@ -126,7 +126,7 @@ namespace vamp::planning
                 goal.to_array(goal_state);
                 parents.emplace_back(std::numeric_limits<unsigned int>::max());
                 nodes.emplace_back(index);
-                roadmap.insert(NNNode<dimension>{index, {goal_state}});
+                roadmap.insert(NNNode<Robot>{index, Robot::nn_key(goal_state)});
             }
 
             Configuration temp_config;
@@ -152,14 +152,14 @@ namespace vamp::planning
 
                         const auto neighbor_index = it->index;
                         temp_config = state_index(neighbor_index);
-                        const auto neighbor_distance = start.distance(temp_config);
+                        const auto neighbor_distance = Robot::distance(start, temp_config);
                         start_node.sampleIdx = std::max(neighbor_index, start_node.sampleIdx);
 
                         // g(p) + c^(p,c) < g(c)
                         if (neighbor_distance < it->g)
                         {
                             // f^(c) = g(p) + c^(p,c) + h^(c)
-                            const auto cost = neighbor_distance + goal.distance(temp_config);
+                            const auto cost = neighbor_distance + Robot::distance(goal, temp_config);
                             start_node.neighbors.emplace_back(
                                 typename FCITRoadmapNode::Neighbor{neighbor_index, cost});
                         }
@@ -202,7 +202,7 @@ namespace vamp::planning
                             const auto &node = nodes[(*parent_node.neighbor_iterator).index];
 
                             if ((*parent_node.neighbor_iterator).distance <
-                                node.g + goal.distance(state_index(node.index)))
+                                node.g + Robot::distance(goal, state_index(node.index)))
                             {
                                 open_set.emplace_back(
                                     QueueEdge{
@@ -220,7 +220,7 @@ namespace vamp::planning
                         if (parents[current_index] != current_p)
                         {
                             temp_config_self = state_index(current_index);
-                            const auto dist_to_goal = goal.distance(temp_config_self);
+                            const auto dist_to_goal = Robot::distance(goal, temp_config_self);
 
                             if (current.cost <= goal_node.g)
                             {
@@ -245,7 +245,7 @@ namespace vamp::planning
                                             // Update the node's parent and g value
                                             parents[current_index] = current_p;
                                             current_g =
-                                                parent_node.g + temp_config.distance(temp_config_self);
+                                                parent_node.g + Robot::distance(temp_config, temp_config_self);
                                             current_node.g = current_g;
                                         }
                                         else
@@ -281,11 +281,11 @@ namespace vamp::planning
 
                             const auto neighbor_index = it->index;
                             temp_config = state_index(neighbor_index);
-                            const auto neighbor_distance = temp_config_self.distance(temp_config);
+                            const auto neighbor_distance = Robot::distance(temp_config_self, temp_config);
                             current_node.sampleIdx = std::max(neighbor_index, current_node.sampleIdx);
 
                             // f^(c) = g(p) + c^(p,c) + h^(c)
-                            auto cost = current_g + neighbor_distance + goal.distance(temp_config);
+                            auto cost = current_g + neighbor_distance + Robot::distance(goal, temp_config);
 
                             current_node.neighbors.emplace_back(
                                 typename FCITRoadmapNode::Neighbor{neighbor_index, cost});
@@ -342,7 +342,7 @@ namespace vamp::planning
                     parents.emplace_back(std::numeric_limits<unsigned int>::max());
                     auto &node = nodes.emplace_back(nodes.size());
 
-                    auto road_node = NNNode<dimension>{node.index, {state}};
+                    auto road_node = NNNode<Robot>{node.index, Robot::nn_key(state)};
                     roadmap.insert(road_node);
                     new_samples++;
                 }

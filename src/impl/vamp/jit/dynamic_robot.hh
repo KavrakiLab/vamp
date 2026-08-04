@@ -61,6 +61,8 @@ namespace vamp::jit
         ffi::FkFn fk{nullptr};
         ffi::ValidateFn validate{nullptr};
         ffi::ValidateMotionFn validate_motion{nullptr};
+        ffi::CfgDistanceFn cfg_distance{nullptr};
+        ffi::CfgInterpolateFn cfg_interpolate{nullptr};
         ffi::FilterPointcloudFn filter_pointcloud{nullptr};
 
         ffi::PhsNewFn phs_new{nullptr};

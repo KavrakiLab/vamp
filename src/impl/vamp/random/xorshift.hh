@@ -26,7 +26,7 @@ namespace vamp::rng
         uint64_t key2_init;
 
         avx_xorshift128plus_key_t key{};
-        using IntVector = Vector<SIMDVector<__m256i>, 1, Robot::dimension>;
+        using IntVector = Vector<SIMDVector<__m256i>, 1, Robot::sample_dimension>;
         IntVector buffer;
 
         inline void reset() noexcept override final
@@ -41,9 +41,8 @@ namespace vamp::rng
                 buffer.data[i] = avx_xorshift128plus(&key);
             }
 
-            auto result = FloatVector<Robot::dimension>::map_to_range(buffer, 0.F, 1.F);
-            Robot::scale_configuration(result);
-            return result;
+            return Robot::sample(
+                FloatVector<Robot::sample_dimension>::map_to_range(buffer, 0.F, 1.F));
         }
     };
 }  // namespace vamp::rng

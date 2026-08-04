@@ -485,7 +485,11 @@ namespace vamp::binding
                const std::vector<std::string> &planners,
                std::size_t rake,
                std::size_t resolution,
-               const std::string &name) -> std::shared_ptr<vj::DynamicRobot>
+               const std::string &name,
+               const std::optional<std::array<double, 3>> &bounds_lower,
+               const std::optional<std::array<double, 3>> &bounds_upper,
+               bool compact_collisions)
+                -> std::shared_ptr<vj::DynamicRobot>
             {
                 cricket::GenOptions g;
                 g.urdf = urdf;
@@ -499,7 +503,21 @@ namespace vamp::binding
                     g.end_effector = end_effector;
                 }
 
-                g.data = {{"name", name}, {"resolution", resolution}};
+                if (bounds_lower and bounds_upper)
+                {
+                    cricket::Bounds b;
+                    b.lower = Eigen::Vector3d(
+                        (*bounds_lower)[0], (*bounds_lower)[1], (*bounds_lower)[2]);
+                    b.upper = Eigen::Vector3d(
+                        (*bounds_upper)[0], (*bounds_upper)[1], (*bounds_upper)[2]);
+                    g.bounds = b;
+                }
+
+                g.data = {
+                    {"name", name},
+                    {"resolution", resolution},
+                    {"compact_collisions", compact_collisions},
+                };
                 auto gen = cricket::generate_robot_source(g);
 
                 vj::LoadOptions opts = vj::default_load_options();
@@ -524,6 +542,9 @@ namespace vamp::binding
             "rake"_a = 8,
             "resolution"_a = 32,
             "name"_a = std::string("DynamicRobot"),
+            "bounds_lower"_a = nb::none(),
+            "bounds_upper"_a = nb::none(),
+            "compact_collisions"_a = false,
             "JIT-compile a robot from a URDF.");
     }
 }  // namespace vamp::binding

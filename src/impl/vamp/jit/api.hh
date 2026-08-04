@@ -48,12 +48,6 @@ namespace vamp::jit
         }
 
     private:
-        // The path_helpers in plan.hh use ADL on std::vector<float>, which
-        // gives Euclidean L2 / linear blend. That's wrong for non-Euclidean
-        // JIT robots (e.g. PR2's planar base — L2 of cos/sin is not the SO(2)
-        // geodesic). Route through the JIT FFI so the metric and interpolation
-        // are the same ones the planner uses internally.
-
         auto _distance(const std::vector<float> &a, const std::vector<float> &b) const -> float
         {
             return robot->ops().cfg_distance(a.data(), b.data());

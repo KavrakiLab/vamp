@@ -79,8 +79,6 @@ namespace vamp::planning
         }
         else
         {
-            // Joint-aware motion validation: interpolate via Robot::interpolate_block.
-            // Total sub-states needed: ceil(distance * resolution); processed in batches of `rake`.
             const float distance = Robot::distance(start, goal);
             const std::size_t n =
                 std::max(std::ceil(distance / static_cast<float>(rake) * resolution), 1.F);

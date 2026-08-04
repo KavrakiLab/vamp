@@ -11,6 +11,8 @@
 #include <utility>
 #include <vector>
 
+#include <pdqsort.h>
+
 #include <vamp/vector.hh>
 
 #ifdef __linux__
@@ -22,22 +24,7 @@ namespace vamp::planning
 {
     // Incremental batched kd-tree over robot configurations.
     //
-    // Leaves hold up to leaf_capacity configurations in SoA blocks (dimension-major,
-    // FloatVectorWidth lanes) scanned with SIMD row operations. Every node maintains an
-    // axis-aligned bounding box, grown along the insertion path and used for traversal
-    // pruning, so correctness never depends on the split heuristic. Splits happen when a
-    // leaf overflows: median of the widest box axis, ties broken by insertion index.
-    //
-    // Metric: L2 over the configuration, except quaternion blocks (Robot::so3_offsets)
-    // which use the sign-minimized chordal distance min(|a - b|, |a + b|). Because each
-    // block contributes an independent term to the squared sum, the minimum over sign
-    // choices factorizes per block: box lower bounds and leaf distances take the min of
-    // the +/- contributions per block, so one traversal computes the exact metric.
-    // Stored quaternions are canonicalized to a fixed hemisphere to keep boxes tight;
-    // queries are used as-is since both signs are always evaluated.
-    //
-    // Deterministic and single-threaded: no RNG, candidate ties broken by lowest index,
-    // and pruning is strict (bound > best) so the lowest-index minimum is always found.
+    // Metric: L2, except quaternion blocks (Robot::so3_offsets) which use the sign-minimized chordal distance min(|a - b|, |a + b|).
     template <typename Robot, std::size_t leaf_capacity = 128>
     struct KDTree
     {
@@ -82,14 +69,10 @@ namespace vamp::planning
             return idx;
         }();
 
-        // Leaf-scan early exit: re-test the partial sums against the live bound every
-        // checkpoint base dimensions. No checkpoint fires unless n_base > checkpoint,
-        // so low-dim robots pay nothing; high-dim scans skip the bulk of far blocks.
-        static constexpr std::size_t checkpoint = 8;
+        static constexpr std::size_t checkpoint = width;
 
         struct Leaf
         {
-            // Zero-initialized so partially filled blocks never read uninitialized lanes.
             alignas(FloatVectorAlignment) std::array<float, n_blocks * dim * width> data = {};
             std::array<std::uint32_t, leaf_capacity> indices = {};
             std::uint32_t count = 0;
@@ -133,17 +116,6 @@ namespace vamp::planning
         [[nodiscard]] auto size() const noexcept -> std::size_t
         {
             return size_;
-        }
-
-        // (1 + epsilon)-approximate queries: prune subtrees and leaf blocks that cannot
-        // improve the current best by more than the epsilon factor, so any reported
-        // neighbor is within (1 + epsilon) of the true nearest distance. Also shrinks
-        // the effective radius of bounded queries by the same factor. epsilon = 0 is
-        // exact and bit-identical to a tree without this feature.
-        void set_epsilon(float epsilon) noexcept
-        {
-            const auto s = 1.F + std::max(epsilon, 0.F);
-            prune_scale_ = 1.F / (s * s);
         }
 
         void reserve(std::size_t n)
@@ -227,7 +199,7 @@ namespace vamp::planning
             scratch_.clear();
             search_k(0, q, qp, k, r2);
 
-            std::sort(scratch_.begin(), scratch_.end());
+            pdqsort(scratch_.begin(), scratch_.end());
             out.reserve(scratch_.size());
             for (const auto &[d2, index] : scratch_)
             {
@@ -293,9 +265,6 @@ namespace vamp::planning
             return qp;
         }
 
-        // Next representable float above x (x is a nonnegative squared distance or +inf).
-        // Converts the strict skip test "partial > bound" into "partial >= next_up(bound)",
-        // which vectorizes with only min/max/hsum.
         static auto next_up(float x) noexcept -> float
         {
             if (not std::isfinite(x))
@@ -310,10 +279,7 @@ namespace vamp::planning
             return x;
         }
 
-        // Cover the hardware prefetcher's ramp-up at the start of a leaf scan. The near
-        // child's lines arrive under the bound computations; the far child's under the
-        // whole near-subtree scan. Pruned-leaf prefetches waste a little bandwidth, but
-        // the traversal is latency-bound, not bandwidth-bound.
+        // Hardware prefetch for performance
         void prefetch_leaf(const Node &child) const noexcept
         {
 #if defined(__GNUC__) or defined(__clang__)
@@ -328,8 +294,7 @@ namespace vamp::planning
 #endif
         }
 
-        // Queries stream most of the tree per call, so back the storage with huge pages
-        // where the kernel supports it (no-op unless THP is in madvise/always mode).
+        // Use huge pages for performance if supported
         static void advise_huge([[maybe_unused]] void *p, [[maybe_unused]] std::size_t bytes) noexcept
         {
 #ifdef __linux__
@@ -371,9 +336,8 @@ namespace vamp::planning
                 b += d * d;
             }
 
-            // The passes above charged quaternion lanes at +q; swap each block's
-            // contribution for the sign-minimized one. May round slightly negative,
-            // which only over-visits, never over-prunes.
+            // Quaternions above were checked at +q; swap each block's for the sign-minimized one. 
+            // May round slightly negative, but never over-prunes.
             for (const auto offset : Robot::so3_offsets)
             {
                 auto bp = 0.F, bm = 0.F;
@@ -397,10 +361,7 @@ namespace vamp::planning
             const auto active = (leaf.count + width - 1) / width;
             for (auto block = 0U; block < active; ++block)
             {
-                // Skip the block once every lane's partial sum strictly exceeds the live
-                // bound: contributions only grow, so no candidate (including index
-                // tie-breaks at equal distance) can be lost. A lane is still viable iff
-                // partial <= bound, i.e. cutoff - partial > 0 with cutoff = next_up(bound).
+                // Skip the block once every lane's partial sum strictly exceeds the bound
                 const auto cutoff = Row::fill(next_up(bound()));
 
                 auto base = Row::fill(0.F);
@@ -462,7 +423,7 @@ namespace vamp::planning
                 scan_leaf(
                     leaves_[n.leaf],
                     qp,
-                    [&best_d2, this] { return best_d2 * prune_scale_; },
+                    [&best_d2] { return best_d2; },
                     [&best_d2, &best_index](float d2, std::uint32_t index)
                     {
                         if (d2 < best_d2 or (d2 == best_d2 and index < best_index))
@@ -482,12 +443,12 @@ namespace vamp::planning
             const std::array<float, 2> bounds = {bound2(c0, q), bound2(c1, q)};
             const auto near = (bounds[0] <= bounds[1]) ? 0U : 1U;
 
-            if (bounds[near] <= best_d2 * prune_scale_)
+            if (bounds[near] <= best_d2)
             {
                 search_one(n.children[near], q, qp, best_d2, best_index);
             }
 
-            if (bounds[1 - near] <= best_d2 * prune_scale_)
+            if (bounds[1 - near] <= best_d2)
             {
                 search_one(n.children[1 - near], q, qp, best_d2, best_index);
             }
@@ -503,7 +464,7 @@ namespace vamp::planning
                     leaves_[n.leaf],
                     qp,
                     [this, k, r2]
-                    { return ((scratch_.size() < k) ? r2 : scratch_.front().first) * prune_scale_; },
+                    { return (scratch_.size() < k) ? r2 : scratch_.front().first; },
                     [this, k, r2](float d2, std::uint32_t index)
                     {
                         if (d2 > r2)
@@ -536,7 +497,7 @@ namespace vamp::planning
             const auto near = (bounds[0] <= bounds[1]) ? 0U : 1U;
 
             const auto limit = [&]()
-            { return ((scratch_.size() < k) ? r2 : scratch_.front().first) * prune_scale_; };
+            { return (scratch_.size() < k) ? r2 : scratch_.front().first; };
             if (bounds[near] <= limit())
             {
                 search_k(n.children[near], q, qp, k, r2);
@@ -587,8 +548,8 @@ namespace vamp::planning
             const auto split = snapshot.coord(order[half], axis);
 
             // Preserve insertion order within each side for determinism.
-            std::sort(order.begin(), order.begin() + half);
-            std::sort(order.begin() + half, order.end());
+            pdqsort(order.begin(), order.begin() + half);
+            pdqsort(order.begin() + half, order.end());
 
             const auto ri = static_cast<std::uint32_t>(leaves_.size());
             leaves_.emplace_back();
@@ -627,7 +588,6 @@ namespace vamp::planning
             parent.children = {ci, ci + 1};
         }
 
-        float prune_scale_ = 1.F;
         std::vector<Node> nodes_;
         std::vector<Leaf> leaves_;
         std::size_t size_ = 0;

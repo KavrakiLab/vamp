@@ -3,21 +3,39 @@
 # Find required dependencies
 find_dependency(Eigen3 REQUIRED)
 
-# VAMP requires these dependencies but they're bundled
-# No need to find_dependency for nigh, pdqsort, or SIMDxorshift
-# as they're built as part of VAMP
+# nigh, pdqsort, and SIMDxorshift are bundled with VAMP; their imported
+# targets are installed as separate export files under <prefix>/lib/cmake
+# and must be loaded before vamp_cppTargets.cmake references them.
+# Compute the install prefix from this file's location rather than relying on
+# PACKAGE_PREFIX_DIR, which nested find_dependency() calls can overwrite.
+get_filename_component(_vamp_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+if(NOT TARGET nigh::nigh)
+    include("${_vamp_install_prefix}/@CMAKE_INSTALL_LIBDIR@/cmake/nigh/nighTargets.cmake")
+endif()
+if(NOT TARGET pdqsort::pdqsort)
+    include("${_vamp_install_prefix}/@CMAKE_INSTALL_LIBDIR@/cmake/pdqsort/pdqsortTargets.cmake")
+endif()
+unset(_vamp_install_prefix)
 
 # Include the exported targets
 include("${CMAKE_CURRENT_LIST_DIR}/vamp_cppTargets.cmake")
+
+# The export set installs the library as vamp::vamp_cpp (the real target name
+# under the vamp:: namespace); vamp::vamp is the canonical consumer-facing
+# name, so provide it as an alias of the exported target.
+if(NOT TARGET vamp::vamp AND TARGET vamp::vamp_cpp)
+    add_library(vamp::vamp ALIAS vamp::vamp_cpp)
+endif()
 
 # Check that the main target exists
 if(NOT TARGET vamp::vamp)
     message(FATAL_ERROR "Expected target vamp::vamp not found!")
 endif()
 
-# Provide legacy target name for compatibility
-if(NOT TARGET vamp_cpp)
-    add_library(vamp_cpp ALIAS vamp::vamp)
+# Provide legacy target name for compatibility (alias the real imported
+# target, not the vamp::vamp alias - CMake forbids an ALIAS of an ALIAS)
+if(NOT TARGET vamp_cpp AND TARGET vamp::vamp_cpp)
+    add_library(vamp_cpp ALIAS vamp::vamp_cpp)
 endif()
 
 # Set success

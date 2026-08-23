@@ -33,6 +33,11 @@ if(VAMP_INSTALL_CPP_LIBRARY)
   )
   install(EXPORT nigh_TARGETS FILE nighTargets.cmake NAMESPACE nigh:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/nigh)
   export(EXPORT nigh_TARGETS FILE ${CMAKE_CURRENT_BINARY_DIR}/cmake/nighTargets.cmake NAMESPACE nigh::)
+  # The exported target advertises INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR},
+  # so the headers must actually be installed there for consumers to compile.
+  install(DIRECTORY ${nigh_SOURCE_DIR}/src/nigh
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "*.hpp")
 endif()
 
 CPMAddPackage("gh:orlp/pdqsort#b1ef26a55cdb60d236a5cb199c4234c704f46726")
@@ -48,6 +53,9 @@ if(VAMP_INSTALL_CPP_LIBRARY)
   )
   install(EXPORT pdqsort_TARGETS FILE pdqsortTargets.cmake NAMESPACE pdqsort:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/pdqsort)
   export(EXPORT pdqsort_TARGETS FILE ${CMAKE_CURRENT_BINARY_DIR}/cmake/pdqsortTargets.cmake NAMESPACE pdqsort::)
+  # The exported target advertises INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR},
+  # so the header must actually be installed there for consumers to compile.
+  install(FILES ${pdqsort_SOURCE_DIR}/pdqsort.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 # SIMDxorshift for x86_64 systems (includes macOS Intel and Linux x86_64)

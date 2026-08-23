@@ -12,6 +12,7 @@ option(VAMP_BUILD_OMPL_DEMO "Build VAMP C++ OMPL Integration Demo Scripts" OFF)
 option(VAMP_OMPL_PATH "Search Path for OMPL Installation - Only Needed for Demo Script" "")
 option(VAMP_BUILD_WASM "Build VAMP WebAssembly module" OFF)
 option(VAMP_BUILD_TESTS "Build VAMP C++ unit tests (Catch2)" OFF)
+option(VAMP_BUILD_TOOLS "Build VAMP C++ diagnostic tools" OFF)
 
 if(VAMP_FORCE_CLANG)
   find_program(CLANG "clang")
@@ -165,6 +166,16 @@ if(VAMP_BUILD_OMPL_DEMO)
   else()
     message(WARNING "OMPL not found! Cannot build OMPL demo.")
   endif()
+endif()
+
+# Diagnostic tools
+if(VAMP_BUILD_TOOLS)
+  # Reports the largest radius each robot's fkcc passes to environment
+  # collision queries, which is what a CAPT's r_max must bound. Needs the
+  # query-radius instrumentation in vamp/collision/validity.hh.
+  add_executable(vamp_measure_query_radius tools/measure_query_radius.cc)
+  target_link_libraries(vamp_measure_query_radius PRIVATE vamp_cpp)
+  target_compile_definitions(vamp_measure_query_radius PRIVATE VAMP_INSTRUMENT_QUERY_RADIUS)
 endif()
 
 # C++ unit tests

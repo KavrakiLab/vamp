@@ -8,6 +8,47 @@
 #include <vamp/collision/sphere_heightfield.hh>
 #include <vamp/collision/math.hh>
 
+// Opt-in instrumentation for measuring the radii a generated fkcc actually
+// passes to environment queries. A CAPT must be built with an r_max that
+// bounds every query radius, and the culling spheres in the generated FK are
+// larger than Robot::max_radius, so callers need a way to discover the real
+// ceiling. Define VAMP_INSTRUMENT_QUERY_RADIUS to enable; the default build
+// compiles to nothing.
+#ifdef VAMP_INSTRUMENT_QUERY_RADIUS
+#include <algorithm>
+#include <type_traits>
+namespace vamp::collision::instrumentation
+{
+    inline float max_query_radius = 0.F;
+
+    // Radii arrive either as plain floats or as SIMD vectors, depending on how
+    // the generated code was instantiated; take the largest lane in either case.
+    template <typename T>
+    inline auto record_query_radius(const T &r) noexcept -> void
+    {
+        if constexpr (std::is_arithmetic_v<T>)
+        {
+            max_query_radius = std::max(max_query_radius, static_cast<float>(r));
+        }
+        else
+        {
+            for (const auto lane : r.to_array())
+            {
+                max_query_radius = std::max(max_query_radius, static_cast<float>(lane));
+            }
+        }
+    }
+
+    inline auto reset() noexcept -> void
+    {
+        max_query_radius = 0.F;
+    }
+}  // namespace vamp::collision::instrumentation
+#define VAMP_RECORD_QUERY_RADIUS(r) ::vamp::collision::instrumentation::record_query_radius(r)
+#else
+#define VAMP_RECORD_QUERY_RADIUS(r) ((void)0)
+#endif
+
 namespace vamp
 {
     template <
@@ -51,6 +92,7 @@ namespace vamp
         ArgT3 sz_,
         ArgT4 sr_) noexcept -> bool
     {
+        VAMP_RECORD_QUERY_RADIUS(sr_);
         // TODO: Figure out a way to avoid needing to upcast floats to vectors
         auto sx = static_cast<DataT>(sx_);
         auto sy = static_cast<DataT>(sy_);
@@ -157,6 +199,7 @@ namespace vamp
         ArgT3 sz_,
         ArgT4 sr_) noexcept -> std::vector<std::string>
     {
+        VAMP_RECORD_QUERY_RADIUS(sr_);
         std::vector<std::string> objects;
 
         // TODO: Figure out a way to avoid needing to upcast floats to vectors

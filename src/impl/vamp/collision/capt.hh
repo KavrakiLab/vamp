@@ -208,49 +208,64 @@ namespace vamp::collision
                 std::vector<uint32_t> hi_afford = std::move(frame.afford);
                 std::vector<uint32_t> lo_afford(hi_afford.size(), 0);
 
+                // A point can be reached by a query centered on the other side
+                // of the split plane if it lies within one query ball plus one
+                // point radius of that plane, i.e. within max_affordance_l1 =
+                // r_max + r_point. Using bare r_max here under-collects by
+                // exactly r_point and drops points that `affords`
+                // (max_affordance_l2 = max_affordance_l1^2) would accept.
+                const float band = max_affordance_l1;
+
                 uint32_t hi_len = 0;
                 uint32_t lo_len = 0;
                 for (const auto idx : hi_afford)
                 {
-                    if (points[idx][frame.d] <= test + r_max)
+                    if (points[idx][frame.d] <= test + band)
                     {
                         lo_afford[lo_len++] = idx;
                     }
 
-                    if (points[idx][frame.d] >= test - r_max)
+                    if (points[idx][frame.d] >= test - band)
                     {
                         hi_afford[hi_len++] = idx;
                     }
                 }
 
-                uint32_t new_hi_afford = frame.points_begin;
-                uint32_t new_lo_afford = frame.points_begin + next_width;
-                while (new_hi_afford < frame.points_begin + next_width and
-                       points[argsort[new_hi_afford]][frame.d] >= test - r_max and
-                       std::isfinite(points[argsort[new_hi_afford]][frame.d]))
+                // Both halves of [points_begin, points_begin + how_many_points)
+                // are sorted ascending on dimension d, so the points adjacent to
+                // the split plane are the lo half's SUFFIX and the hi half's
+                // PREFIX. Each child inherits the other half's near-plane band.
+
+                // Hi child <- lo half's suffix: walk backwards from the split.
+                uint32_t new_hi_begin = frame.points_begin + next_width;
+                while (new_hi_begin > frame.points_begin and
+                       points[argsort[new_hi_begin - 1]][frame.d] >= test - band and
+                       std::isfinite(points[argsort[new_hi_begin - 1]][frame.d]))
                 {
-                    ++new_hi_afford;
+                    --new_hi_begin;
                 }
 
-                while (new_lo_afford < frame.points_begin + frame.how_many_points and
-                       points[argsort[new_lo_afford]][frame.d] <= test + r_max and
-                       std::isfinite(points[argsort[new_lo_afford]][frame.d]))
+                // Lo child <- hi half's prefix: walk forwards from the split.
+                uint32_t new_lo_end = frame.points_begin + next_width;
+                while (new_lo_end < frame.points_begin + frame.how_many_points and
+                       points[argsort[new_lo_end]][frame.d] <= test + band and
+                       std::isfinite(points[argsort[new_lo_end]][frame.d]))
                 {
-                    ++new_lo_afford;
+                    ++new_lo_end;
                 }
 
-                uint32_t num_new_hi = new_hi_afford - frame.points_begin;
-                uint32_t num_new_lo = new_lo_afford - (frame.points_begin + next_width);
+                uint32_t num_new_hi = (frame.points_begin + next_width) - new_hi_begin;
+                uint32_t num_new_lo = new_lo_end - (frame.points_begin + next_width);
 
                 hi_afford.resize(hi_len + num_new_hi);
                 std::copy(
-                    argsort.begin() + frame.points_begin,
-                    argsort.begin() + new_hi_afford,
+                    argsort.begin() + new_hi_begin,
+                    argsort.begin() + frame.points_begin + next_width,
                     hi_afford.begin() + hi_len);
                 lo_afford.resize(lo_len + num_new_lo);
                 std::copy(
                     argsort.begin() + frame.points_begin + next_width,
-                    argsort.begin() + new_lo_afford,
+                    argsort.begin() + new_lo_end,
                     lo_afford.begin() + lo_len);
 
                 const uint8_t next_d = (frame.d + 1) % 3;

@@ -168,16 +168,6 @@ if(VAMP_BUILD_OMPL_DEMO)
   endif()
 endif()
 
-# Diagnostic tools
-if(VAMP_BUILD_TOOLS)
-  # Reports the largest radius each robot's fkcc passes to environment
-  # collision queries, which is what a CAPT's r_max must bound. Needs the
-  # query-radius instrumentation in vamp/collision/validity.hh.
-  add_executable(vamp_measure_query_radius tools/measure_query_radius.cc)
-  target_link_libraries(vamp_measure_query_radius PRIVATE vamp_cpp)
-  target_compile_definitions(vamp_measure_query_radius PRIVATE VAMP_INSTRUMENT_QUERY_RADIUS)
-endif()
-
 # C++ unit tests
 if(VAMP_BUILD_TESTS)
   enable_testing()

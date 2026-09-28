@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cmath>
+#include <limits>
 #include <random>
 #include <vector>
 
@@ -113,11 +114,11 @@ TEST_CASE("GJK distance to tetrahedron", "[collision][polytope]")
     REQUIRE(sql2_to(tetrahedron(), 10.F, 10.F, 10.F) == Approx(841.F / 3.F));
 }
 
-TEST_CASE("GJK distance to no vertices is infinite", "[collision][polytope]")
+TEST_CASE("GJK distance to no vertices is unbounded", "[collision][polytope]")
 {
     REQUIRE(
-        std::isinf(
-            vc::gjk::sql2(nullptr, nullptr, nullptr, 0, Eigen::Vector3f::Zero(), Eigen::Vector3f::Zero())));
+        vc::gjk::sql2(nullptr, nullptr, nullptr, 0, Eigen::Vector3f::Zero(), Eigen::Vector3f::Zero()) ==
+        std::numeric_limits<float>::max());
 }
 
 TEST_CASE("Sphere-polytope collision boundaries", "[collision][polytope]")

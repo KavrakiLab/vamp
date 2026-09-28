@@ -199,7 +199,7 @@ namespace vamp::collision::gjk
         const Point c = simplex.points[2];
         const Point d = simplex.points[3];
 
-        float best_sq = std::numeric_limits<float>::infinity();
+        float best_sq = std::numeric_limits<float>::max();
         Point best_point = a;
         Simplex best_simplex = Simplex::triangle(a, b, c);
         bool outside_any = false;
@@ -265,8 +265,9 @@ namespace vamp::collision::gjk
     // exact distance. If `radius_sq` is unset, the loop always converges and returns the exact squared
     // distance.
     //
-    // Returns positive infinity if there are no vertices, since the distance to an empty set is
-    // unbounded.
+    // Returns the largest finite float if there are no vertices, since the distance to an empty set is
+    // unbounded. This is not infinity because VAMP's Release builds under clang on x86 assume no value is
+    // ever infinite (`-fno-honor-infinities`).
     inline auto sql2(
         const float *xs,
         const float *ys,
@@ -278,7 +279,7 @@ namespace vamp::collision::gjk
     {
         if (n == 0)
         {
-            return std::numeric_limits<float>::infinity();
+            return std::numeric_limits<float>::max();
         }
 
         Point direction = seed - point;

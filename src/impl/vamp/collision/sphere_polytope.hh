@@ -2,12 +2,18 @@
 
 #include <vamp/collision/shapes.hh>
 #include <vamp/collision/math.hh>
+#include <vamp/collision/gjk.hh>
 #include <vamp/collision/sphere_cuboid.hh>
-
-#include <limits>
 
 namespace vamp::collision
 {
+    // Test a block of spheres against a convex polytope. The polytope's oriented bounding box acts as a
+    // SIMD broadphase, and each sphere that survives it is checked exactly with a scalar GJK distance
+    // query against the polytope's vertices, seeded from the sphere's closest point on the bounding box.
+    //
+    // The result has a negative lane if and only if some sphere collides with the polytope.
+    // As soon as one colliding sphere is found, the remaining spheres are skipped and keep their broadphase
+    // value, so the result tells whether any sphere collides, but not necessarily which ones.
     template <typename DataT>
     inline auto sphere_polytope(
         const ConvexPolytope<DataT> &p,
@@ -17,44 +23,62 @@ namespace vamp::collision
         const DataT &r) noexcept -> DataT
     {
         const auto rsq = r * r;
-        auto obb_dist = sphere_cuboid(p.obb, cx, cy, cz, rsq);
+        const auto obb_dist = sphere_cuboid(p.obb, cx, cy, cz, rsq);
 
         if (obb_dist.test_zero())
         {
             return obb_dist;
         }
 
-        // iteratively project (cx, cy, cz) onto the polytope and test distance between original centers and
-        // projected centers
+        // Closest point on the bounding box to each sphere center, used to seed the GJK search direction
+        const auto &b = p.obb;
+        const auto xs = cx - b.x;
+        const auto ys = cy - b.y;
+        const auto zs = cz - b.z;
+        const auto t1 = clamp(dot_3(b.axis_1_x, b.axis_1_y, b.axis_1_z, xs, ys, zs), -b.axis_1_r, b.axis_1_r);
+        const auto t2 = clamp(dot_3(b.axis_2_x, b.axis_2_y, b.axis_2_z, xs, ys, zs), -b.axis_2_r, b.axis_2_r);
+        const auto t3 = clamp(dot_3(b.axis_3_x, b.axis_3_y, b.axis_3_z, xs, ys, zs), -b.axis_3_r, b.axis_3_r);
+        const auto seed_x = b.x + b.axis_1_x * t1 + b.axis_2_x * t2 + b.axis_3_x * t3;
+        const auto seed_y = b.y + b.axis_1_y * t1 + b.axis_2_y * t2 + b.axis_3_y * t3;
+        const auto seed_z = b.z + b.axis_1_z * t1 + b.axis_2_z * t2 + b.axis_3_z * t3;
 
-        DataT lower_bound_dist = DataT::fill(-std::numeric_limits<float>::max());
-        DataT cx_proj = cx;
-        DataT cy_proj = cy;
-        DataT cz_proj = cz;
+        auto result = obb_dist.to_array();
+        const auto x_arr = cx.to_array();
+        const auto y_arr = cy.to_array();
+        const auto z_arr = cz.to_array();
+        const auto rsq_arr = rsq.to_array();
+        const auto sx_arr = seed_x.to_array();
+        const auto sy_arr = seed_y.to_array();
+        const auto sz_arr = seed_z.to_array();
 
-        for (auto i = 0U; i < p.num_planes; ++i)
+        // do each lane sequentially.
+        // I tried many times to figure out a good block-parallel way to do this, but it was always faster to
+        // do simple sequential GJK.
+        for (auto lane = 0U; lane < result.size(); ++lane)
         {
-            const DataT dot_product = dot_3(p.nx[i], p.ny[i], p.nz[i], cx_proj, cy_proj, cz_proj);
-            const DataT n_scale = (dot_product - p.d[i]).max(0.0);
+            if (not(result[lane] < 0.F))
+            {
+                continue;
+            }
 
-            // project c onto the halfspace by subtracting out the part parallel to n that lies beyond the
-            // plane
+            const float r_sq = rsq_arr[lane];
+            const float dist_sq = gjk::sql2(
+                p.vx.data(),
+                p.vy.data(),
+                p.vz.data(),
+                p.num_vertices,
+                Eigen::Vector3f(x_arr[lane], y_arr[lane], z_arr[lane]),
+                Eigen::Vector3f(sx_arr[lane], sy_arr[lane], sz_arr[lane]),
+                r_sq);
 
-            cx_proj = cx_proj - n_scale * p.nx[i];
-            cy_proj = cy_proj - n_scale * p.ny[i];
-            cz_proj = cz_proj - n_scale * p.nz[i];
-
-            lower_bound_dist = sql2_3(cx, cy, cz, cx_proj, cy_proj, cz_proj) - rsq;
-
-            // if projected centers are all sufficiently far away from the original centers, we have proven
-            // the sphere is not in collision
-            if (lower_bound_dist.test_all_greater_equal(0.0))
+            result[lane] = dist_sq - r_sq;
+            if (result[lane] < 0.F)
             {
                 break;
             }
         }
 
-        return lower_bound_dist;
+        return DataT(result.data(), false);
     }
 
     template <typename DataT>

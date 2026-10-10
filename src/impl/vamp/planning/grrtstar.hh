@@ -10,10 +10,10 @@
  *
  * @par Associated publications:
  *
- * Kyaw, P. T., Le, A. V., Elara, M. R., & Kelly, J. (2025).
+ * Kyaw, P. T., Le, A. V., Elara, M. R., & Kelly, J. (2026).
  * Greedy heuristics for sampling-based motion planning in high-dimensional state spaces.
- * arXiv preprint arXiv:2405.03411.
- * DOI: https://doi.org/10.48550/arXiv.2405.03411
+ * Autonomous Robots, 50(4), 44.
+ * DOI: https://doi.org/10.1007/s10514-026-10269-0
  * arXiv: https://arxiv.org/abs/2405.03411 [cs.RO]
  *
  * Kyaw, P. T., et al. (2022).
@@ -75,6 +75,26 @@ namespace vamp::planning
 
             auto start_time = std::chrono::steady_clock::now();
 
+            // A valid straight line to the nearest goal is optimal under Euclidean metric
+            if (not goals.empty())
+            {
+                const auto nearest_goal = std::min_element(
+                    goals.cbegin(),
+                    goals.cend(),
+                    [&start](const auto &a, const auto &b) { return start.distance(a) < start.distance(b); });
+                if (validate_motion<Robot, rake, resolution>(start, *nearest_goal, environment))
+                {
+                    result.path.emplace_back(start);
+                    result.path.emplace_back(*nearest_goal);
+                    result.cost = start.distance(*nearest_goal);
+                    result.nanoseconds = vamp::utils::get_elapsed_nanoseconds(start_time);
+                    result.iterations = 0;
+                    result.size.emplace_back(1);
+                    result.size.emplace_back(1);
+                    return result;
+                }
+            }
+
             NNTree start_tree;
             NNTree goal_tree;
 
@@ -88,22 +108,33 @@ namespace vamp::planning
             const auto buffer_index = [&buffer](std::size_t index) -> float *
             { return buffer.get() + index * Configuration::num_scalars_rounded; };
 
-            std::vector<std::size_t> parents(settings.max_samples);
-            std::vector<float> costs(settings.max_samples, std::numeric_limits<float>::max());
-            std::vector<float> radii(settings.max_samples);
-            std::vector<std::vector<std::size_t>> children(settings.max_samples);
-            std::vector<char> in_start_tree(settings.max_samples, 0);
-            std::vector<char> pruned(settings.max_samples, 0);
+            // Per-node data, grown as nodes are added
+            std::vector<std::size_t> parents;
+            std::vector<float> costs;
+            std::vector<float> radii;
+            std::vector<std::vector<std::size_t>> children;
+            std::vector<char> in_start_tree;
+            std::vector<char> pruned;
+
+            // Nodes are added in index order
+            const auto add_node = [&](std::size_t parent, float cost, bool is_start)
+            {
+                parents.push_back(parent);
+                costs.push_back(cost);
+                radii.push_back(std::numeric_limits<float>::max());
+                children.emplace_back();
+                in_start_tree.push_back(is_start ? 1 : 0);
+                pruned.push_back(0);
+            };
 
             // Best solution tracking
             float best_cost = std::numeric_limits<float>::max();
             float greedy_best_cost = std::numeric_limits<float>::max();
             Path<Robot> best_path;
 
-            // Heuristic cost lower bound for a node
-            const auto solution_heuristic = [&](std::size_t idx) -> float
+            // Heuristic cost lower bound for a configuration
+            const auto heuristic = [&](const Configuration &cfg) -> float
             {
-                Configuration cfg(buffer_index(idx));
                 float g_hat = cfg.distance(start);
                 float h_hat = std::numeric_limits<float>::max();
                 for (const auto &goal : goals)
@@ -112,6 +143,9 @@ namespace vamp::planning
                 }
                 return g_hat + h_hat;
             };
+
+            const auto solution_heuristic = [&](std::size_t idx) -> float
+            { return heuristic(Configuration(buffer_index(idx))); };
 
             // Check if a node and ALL its descendants can be pruned
             const auto can_prune_branch = [&](const auto &self, std::size_t idx, float threshold) -> bool
@@ -143,10 +177,7 @@ namespace vamp::planning
             // Initialize start node
             start.to_array(buffer_index(start_index));
             start_tree.insert(NNNodeType{start_index, {buffer_index(start_index)}});
-            parents[start_index] = start_index;
-            costs[start_index] = 0.F;
-            radii[start_index] = std::numeric_limits<float>::max();
-            in_start_tree[start_index] = 1;
+            add_node(start_index, 0.F, true);
 
             std::size_t free_index = start_index + 1;
 
@@ -157,13 +188,13 @@ namespace vamp::planning
             {
                 goal.to_array(buffer_index(free_index));
                 goal_tree.insert(NNNodeType{free_index, {buffer_index(free_index)}});
-                parents[free_index] = free_index;
-                costs[free_index] = 0.F;
-                radii[free_index] = std::numeric_limits<float>::max();
-                in_start_tree[free_index] = 0;
+                add_node(free_index, 0.F, false);
                 goal_indices.push_back(free_index);
                 free_index++;
             }
+
+            // Tree connections (start side, goal side), rechecked after rewiring
+            std::vector<std::pair<std::size_t, std::size_t>> connections;
 
             // Rebuild a tree from scratch, keeping only unpruned nodes.
             const auto rebuild_tree = [&](NNTree &tree, bool is_start)
@@ -206,6 +237,13 @@ namespace vamp::planning
                 // Rebuild both trees without pruned nodes
                 rebuild_tree(start_tree, true);
                 rebuild_tree(goal_tree, false);
+
+                connections.erase(
+                    std::remove_if(
+                        connections.begin(),
+                        connections.end(),
+                        [&](const auto &c) { return pruned[c.first] or pruned[c.second]; }),
+                    connections.end());
             };
 
             // PHS for informed sampling (single goal only)
@@ -275,6 +313,64 @@ namespace vamp::planning
                 return path;
             };
 
+            // Update the best solution if the path through a connection is cheaper
+            const auto accept_solution = [&](std::size_t start_side_node, std::size_t goal_side_node) -> bool
+            {
+                auto candidate_path = extract_path(start_side_node, goal_side_node);
+                if (candidate_path.empty())
+                {
+                    return false;
+                }
+
+                const float path_cost = candidate_path.cost();
+                if (path_cost >= best_cost)
+                {
+                    return false;
+                }
+
+                const bool should_prune = settings.tree_pruning and has_solution and
+                                          (best_cost - path_cost) / best_cost > settings.prune_threshold;
+
+                best_cost = path_cost;
+                best_path = std::move(candidate_path);
+                has_solution = true;
+
+                // Compute greedy best cost (max f^ along solution path)
+                greedy_best_cost = 0.F;
+                for (const auto &q : best_path)
+                {
+                    greedy_best_cost = std::max(greedy_best_cost, heuristic(q));
+                }
+
+                if (should_prune and settings.optimize)
+                {
+                    prune_trees((settings.greedy_biasing_ratio > 0.5F) ? greedy_best_cost : best_cost);
+                }
+
+                return true;
+            };
+
+            // Check if rewiring made any connection cheaper
+            const auto refresh_connections = [&]()
+            {
+                std::size_t best = connections.size();
+                float best_connection_cost = best_cost;
+                for (std::size_t i = 0; i < connections.size(); ++i)
+                {
+                    const float c = costs[connections[i].first] + costs[connections[i].second];
+                    if (c < best_connection_cost)
+                    {
+                        best_connection_cost = c;
+                        best = i;
+                    }
+                }
+
+                if (best < connections.size())
+                {
+                    accept_solution(connections[best].first, connections[best].second);
+                }
+            };
+
             // Sample a configuration (uniform or PHS-informed)
             const auto sample = [&]() -> Configuration
             {
@@ -303,7 +399,9 @@ namespace vamp::planning
 
             std::size_t iter = 0;
             std::vector<std::pair<NNNodeType, float>> neighbors;
-            neighbors.reserve(settings.max_samples);
+            neighbors.reserve(settings.max_k_neighbors);
+            std::vector<std::pair<NNNodeType, float>> candidates;
+            candidates.reserve(settings.max_k_neighbors);
 
             while (iter++ < settings.max_iterations and free_index < settings.max_samples)
             {
@@ -450,13 +548,23 @@ namespace vamp::planning
 
                     if (settings.delay_cc)
                     {
+                        // Sort only neighbors that can improve on the current parent
+                        candidates.clear();
+                        for (const auto &neighbor : neighbors)
+                        {
+                            if (costs[neighbor.first.index] + neighbor.second < new_cost)
+                            {
+                                candidates.push_back(neighbor);
+                            }
+                        }
+
                         pdqsort(
-                            neighbors.begin(),
-                            neighbors.end(),
+                            candidates.begin(),
+                            candidates.end(),
                             [&](const auto &a, const auto &b)
                             { return costs[a.first.index] + a.second < costs[b.first.index] + b.second; });
 
-                        for (const auto &[nbr_node, nbr_dist] : neighbors)
+                        for (const auto &[nbr_node, nbr_dist] : candidates)
                         {
                             float candidate_cost = costs[nbr_node.index] + nbr_dist;
                             if (candidate_cost >= new_cost)
@@ -499,10 +607,7 @@ namespace vamp::planning
                 // Add new node (config already written to buffer)
                 tree_a->insert(NNNodeType{free_index, {new_config_ptr}});
 
-                parents[free_index] = best_parent;
-                costs[free_index] = new_cost;
-                radii[free_index] = std::numeric_limits<float>::max();
-                in_start_tree[free_index] = tree_a_is_start ? 1 : 0;
+                add_node(best_parent, new_cost, tree_a_is_start);
                 children[best_parent].push_back(free_index);
 
                 const std::size_t new_node_index = free_index;
@@ -516,6 +621,7 @@ namespace vamp::planning
                 }
 
                 // Rewiring
+                bool rewired = false;
                 if (do_rewire)
                 {
                     for (const auto &[nbr_node, nbr_dist] : neighbors)
@@ -557,8 +663,20 @@ namespace vamp::planning
                                 children[new_node_index].push_back(nbr_node.index);
 
                                 update_child_costs(update_child_costs, nbr_node.index, cost_delta);
+                                rewired = true;
                             }
                         }
+                    }
+                }
+
+                if (rewired and not connections.empty())
+                {
+                    refresh_connections();
+
+                    // Do not extend from a node that the new solution pruned
+                    if (pruned[new_node_index])
+                    {
+                        continue;
                     }
                 }
 
@@ -605,10 +723,7 @@ namespace vamp::planning
                     float *next_ptr = buffer_index(free_index);
                     next.to_array(next_ptr);
                     tree_a->insert(NNNodeType{free_index, {next_ptr}});
-                    parents[free_index] = free_index - 1;
-                    costs[free_index] = costs[free_index - 1] + increment_length;
-                    radii[free_index] = std::numeric_limits<float>::max();
-                    in_start_tree[free_index] = tree_a_is_start ? 1 : 0;
+                    add_node(free_index - 1, costs[free_index - 1] + increment_length, tree_a_is_start);
                     children[free_index - 1].push_back(free_index);
 
                     free_index++;
@@ -620,70 +735,14 @@ namespace vamp::planning
                     std::size_t connect_a_node = free_index - 1;
                     std::size_t connect_b_node = other_nearest_node.index;
 
-                    float total_cost = costs[connect_a_node] + costs[connect_b_node];
+                    const std::size_t start_side_node = tree_a_is_start ? connect_a_node : connect_b_node;
+                    const std::size_t goal_side_node = tree_a_is_start ? connect_b_node : connect_a_node;
+                    connections.emplace_back(start_side_node, goal_side_node);
 
-                    if (total_cost < best_cost)
+                    if (costs[connect_a_node] + costs[connect_b_node] < best_cost and
+                        accept_solution(start_side_node, goal_side_node) and not settings.optimize)
                     {
-                        std::size_t start_side_node, goal_side_node;
-                        if (tree_a_is_start)
-                        {
-                            start_side_node = connect_a_node;
-                            goal_side_node = connect_b_node;
-                        }
-                        else
-                        {
-                            start_side_node = connect_b_node;
-                            goal_side_node = connect_a_node;
-                        }
-
-                        auto candidate_path = extract_path(start_side_node, goal_side_node);
-
-                        if (not candidate_path.empty())
-                        {
-                            float path_cost = candidate_path.cost();
-                            if (path_cost < best_cost)
-                            {
-                                bool should_prune = false;
-
-                                if (settings.tree_pruning and has_solution)
-                                {
-                                    float improvement = (best_cost - path_cost) / best_cost;
-                                    if (improvement > settings.prune_threshold)
-                                    {
-                                        should_prune = true;
-                                    }
-                                }
-
-                                best_cost = path_cost;
-                                best_path = std::move(candidate_path);
-                                has_solution = true;
-
-                                if (not settings.optimize)
-                                {
-                                    break;
-                                }
-
-                                // Compute greedy best cost (max f^ along solution path)
-                                if (settings.use_phs and phs_ptr and goals.size() == 1)
-                                {
-                                    greedy_best_cost = 0.F;
-                                    for (std::size_t i = 0; i < best_path.size(); ++i)
-                                    {
-                                        float g_hat = best_path[i].distance(start);
-                                        float h_hat = best_path[i].distance(goals[0]);
-                                        float f_hat = g_hat + h_hat;
-                                        greedy_best_cost = std::max(greedy_best_cost, f_hat);
-                                    }
-                                }
-
-                                if (should_prune)
-                                {
-                                    float prune_cost_threshold =
-                                        (settings.greedy_biasing_ratio > 0.5F) ? greedy_best_cost : best_cost;
-                                    prune_trees(prune_cost_threshold);
-                                }
-                            }
-                        }
+                        break;
                     }
                 }
             }

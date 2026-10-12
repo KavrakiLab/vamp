@@ -129,6 +129,8 @@ def configure_robot_and_planner_with_kwargs(robot_name: str, planner_name: str, 
         plan_settings = RRTCSettings()
         if robot_name in ROBOT_RRT_RANGES:
             plan_settings.range = ROBOT_RRT_RANGES[robot_name]
+        if robot_name in ROBOT_RRTC_DYNAMIC_DOMAIN:
+            plan_settings.dynamic_domain = ROBOT_RRTC_DYNAMIC_DOMAIN[robot_name]
 
     elif planner_name == "prm":
         plan_settings = PRMSettings(PRMNeighborParams(robot_module.dimension(), robot_module.space_measure()))

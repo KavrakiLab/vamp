@@ -8,6 +8,11 @@ ROBOT_RRT_RANGES = {
     "baxter": 0.5,
     }
 
+# Robots whose RRTConnect runs better without dynamic domain sampling (see #128).
+ROBOT_RRTC_DYNAMIC_DOMAIN = {
+    "baxter": False,
+    }
+
 ROBOT_FIRST_JOINT_LOCATIONS = {
     "fetch": [0.0, 0.0, 0.4],
     "ur5": [0.0, 0.0, 0.91],

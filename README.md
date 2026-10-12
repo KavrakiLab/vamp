@@ -282,7 +282,7 @@ Each planner supports a number of settings. Both support the following:
 
 For `rrtc`:
 - `--range`: RRT extension range. Set to sensible default for each robot, usually something in [0.5, 2].
-- `--dynamic_domain`: `True` or `False`, enables [dynamic domain](https://ieeexplore.ieee.org/document/1570709) sample filtering.
+- `--dynamic_domain`: `True` or `False`, enables [dynamic domain](https://ieeexplore.ieee.org/document/1570709) sample filtering. On by default, except for the Baxter.
 - `--radius`: initial restricted radius for dynamic domain. Usually between [0.5, 5].
 - `--alpha`: update parameter to shrink/grow dynamic domain. Usually between [0.00001, 0.01]
 - `--min_radius`: minimum radius of dynamic domain. Usually between [0.5, 1]

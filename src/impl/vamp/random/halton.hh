@@ -47,6 +47,9 @@ namespace vamp::rng
 
         inline constexpr auto bases() noexcept -> Configuration
         {
+            static_assert(
+                Robot::dimension <= primes.size(),
+                "Halton sampler does not have enough prime bases for this robot.");
             alignas(FloatVectorAlignment) std::array<float, Robot::dimension> a;
             std::copy_n(primes.cbegin(), Robot::dimension, a.begin());
             return Configuration(a);

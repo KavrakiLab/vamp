@@ -4,7 +4,6 @@
 #include <cassert>
 #include <cmath>
 #include <cstddef>
-#include <functional>
 #include <iostream>
 #include <ostream>
 #include <type_traits>
@@ -60,8 +59,8 @@ namespace vamp
         inline static constexpr std::size_t num_rows = Sig::num_rows;
         using DataT = typename Sig::DataT;
 
-        inline constexpr auto
-        to_array() const noexcept -> std::array<typename S::ScalarT, num_scalars_rounded>
+        inline constexpr auto to_array() const noexcept
+            -> std::array<typename S::ScalarT, num_scalars_rounded>
         {
             alignas(S::Alignment) std::array<typename S::ScalarT, num_scalars_rounded> result = {};
             to_array(result);
@@ -740,8 +739,9 @@ namespace vamp
             const MaskT &mask,
             const D &alternative) noexcept -> D
         {
-            return D(apply_indexed<S::template gather_select<void>>(
-                idxs.data, mask.template to<D>().data, alternative.data, base));
+            return D(
+                apply_indexed<S::template gather_select<void>>(
+                    idxs.data, mask.template to<D>().data, alternative.data, base));
         }
 
     protected:
